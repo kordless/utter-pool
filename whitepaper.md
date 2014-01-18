@@ -32,7 +32,7 @@ Once an instance is defined with given criteria, a Bitcoin wallet address will b
 
 When the payment clears, Blockchain.info will call the VA's endpoint, which could be proxied through something like ngrok.com or similar.  At this point the VA will initiate an instance start on the OpenStack cluster and make a callback to the pool operator (in this case, StackMonkey) to communicate the instance's details for access.  
 
-Note: Blockchain.info or similarly untilized services will eventually be required to move to the infrastructure provided by these distributed system to avoid single points of failure of existing external blockchain trust systems.
+*Note: Blockchain.info or similarly untilized services will eventually be required to move to the infrastructure provided by these distributed system to avoid single points of failure of existing external blockchain trust systems.*
 
 The pool operator will update a resource page created for the payment by the user with instance details.  Instances are managed by adding additional coin to the wallet address.  Wallets are drained as instances run and when a wallet is emptied, the instance is halted by the provider's VA.
 

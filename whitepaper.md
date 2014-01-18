@@ -1,10 +1,10 @@
 ### License
-All code providing basic infrastructure services will be Open Source.  Closed source code may be used to access APIs or used in VMs started with the exchange.  However, no closed source code which provides service to the infrastructure or network will be promoted by the network.  Infrastructure is meant to be open and trustworthy.
+All code providing basic infrastructure services will be Open Source.  Closed source code is welcomed and desired in both the purpose of accessing APIs externally and, more obviously, in the use of the virtual machines started within the exchange.  However, no closed source code which runs at the hypervisor level of the framework or which provides compute, network or storage will be promoted by the network or it's affiliates.  These rules will be enforced using contracts established using coin technologies. Infrastructure is meant to be open, trustworthy and secure.
 
 ### Concept
-The underlying concept is a cryptcoin operated 'compute exchange' powered by multiple OpenStack cluster deployments.  These deployments are run by 'providers' and managed by 'compute pools'.  A provider can participate in multiple pools by running multiple virtual appliance 'controllers'.
+The underlying concept of this 'service' is a cryptcoin operated 'compute pool' each of which is in turn powered by numerous OpenStack based clusters.  These micro clouds are run by 'providers' and are managed remotely through their respective 'compute pools'.  A provider can participate in multiple pools by running multiple virtual appliance 'controllers'.
 
-Various compute pools can provide levels of reliability, diverse instance types, custom OS images, unique branding, community reach and more.  Diversification is encouraged and welcome.
+Wildly distinct and uniquely optimized compute pools will be capable of providing various levels of compute type (CPU/GPU/ASIC), memory and storage speed, reliability, instance capacity sizes, OS images and deployment framework types, branding, community connectivity and more.  Diversification is encouraged and welcome in this project.  Centralization gives way to diversification and distribution.
 
 It is the intent of this project to create a fully distributed compute exchange which greatly minimizes the central control authority for server starts and access.
 

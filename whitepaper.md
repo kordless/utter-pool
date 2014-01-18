@@ -6,7 +6,7 @@ All code providing basic infrastructure services will be Open Source.  Closed so
 ### Concept
 The underlying concept of this 'service' are multiple cryptcoin operated 'compute pools', each of which is in turn powered by numerous OpenStack based clusters.  These micro clouds are run by 'providers' and are managed remotely through their respective 'compute pools'.  A provider can participate in multiple pools by running multiple virtual appliance 'controllers'.
 
-Wildly distinct and uniquely optimized compute pools will be capable of providing various levels of compute type (CPU/GPU/ASIC), memory and storage speed, reliability, instance capacity sizes, OS images and deployment framework types, branding, community connectivity and more.  Diversification is encouraged and welcome in this project.  Centralization gives way to diversification and distribution.
+Wildly distinct and uniquely optimized compute pools will be capable of providing various levels of compute type (CPU/GPU/ASIC), memory and storage speed, reliability, instance capacity sizes, OS images and deployment framework types, branding, community connectivity and more.  Diversification is encouraged and welcome in this project.  Decentralization provides a path to diversification and distribution.
 
 It is the intent of this project to create a fully distributed compute exchange which greatly minimizes the central control authority for server starts and access.
 

@@ -13,7 +13,7 @@ It is the intent of this project to create a fully distributed compute exchange 
 Put another way, this project aims to provide a bridge between crypto currency markets and the very thing that allows them to exist: compute.  Commodity compute has arrived.
 
 ### Implementation
-The initial compute pool will live at http://stackmonkey.com/ and will be hosted on Google Appengine.  StackMonkey will initially provide a low-cost, low-trust, low-reliability service providing VM services to developers, hackers and other individuals who need transitionary type instances.  Providers who sign up for the StackMonkey exchange should get comfortable with the concept of decentralized resource allocation and are encouraged to educate themselves on the coming decentralization revolution in in the computing and business markets.
+The initial compute pool (not to be confused with the distributed exchange) will live at http://stackmonkey.com/ and will be hosted on Google Appengine.  StackMonkey will initially provide a low-cost, low-trust, low-reliability service providing VM services to developers, hackers and other individuals who need transitionary type instances.  Providers who sign up for the StackMonkey exchange should get comfortable with the concept of decentralized resource allocation and are encouraged to educate themselves on the coming decentralization revolution in in the computing and business markets.
 
 Shit happens. The golden rule governs all feature sets and defines the code written for all aspects of the project.   We're building this for all humanity, and will make every attempt with our code to prevent pools of power from corrupting it.
 
@@ -29,6 +29,8 @@ To use the service, a user will access a list of compute resources on the StackM
 Once an instance is defined with given criteria, a Bitcoin wallet address will be generated with the Blockchain.info API.  A callback will be added to the address which represents the service provider's API endpoint for a VA on a given OpenStack cluster deployment.  The user will use this address to launch an instance by sending it Bitcoin.  Other currencies will be supported in the future through exchanges.
 
 When the payment clears, Blockchain.info will call the VA's endpoint, which could be proxied through something like ngrok.com or similar.  At this point the VA will initiate an instance start on the OpenStack cluster and make a callback to the pool operator (in this case, StackMonkey) to communicate the instance's details for access.  
+
+Note: Blockchain.info or similarly untilized services will eventually be required to move to the infrastructure provided by these distributed system to avoid single points of failure of existing external blockchain trust systems.
 
 The pool operator will update a resource page created for the payment by the user with instance details.  Instances are managed by adding additional coin to the wallet address.  Wallets are drained as instances run and when a wallet is emptied, the instance is halted by the provider's VA.
 

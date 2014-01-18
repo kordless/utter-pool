@@ -41,9 +41,11 @@ A trust system will eventually be built which allows for escrowed fund deposits.
 Hackers are encouraged to utilize the system for whatever purpose they deem important, but should consider the implications of their actions are being tied directly to the cost of starting instances for non-trusted entities.  Being naughty with this will cost you.
 
 ### Funding
-The StackMonkey service, it's employees and it's investors expect to be rewarded accordingly for bringing this concept to fruition.  Discussion around ownership share is encouraged, but this author feels strongly about the concept of "Benevolent Dictatorship".  It is my intent to do what is right for the ecosystem first (which entails considering the effects of features on power pooling) and what is right for the shareholders of the corporation second.
+The StackMonkey service, it's employees and it's investors expect to be rewarded accordingly for bringing this concept to fruition.  Discussion around ownership share is encouraged, but this author feels strongly about the concept of "Benevolent Dictatorship".  It is my intent to do what is right for the ecosystem first (which entails considering the effects of features on power pooling) and what is right for the shareholders of the corporation second
 
-A governance board will be established which in turn represents the interests of the corporation.  The corporation itself will be a multi-national corporation which will be eventually be controlled by an autonomous corporation implemented with Ethereum or similar.  This corporation will be open to public investment via Bitcoin and other currencies.
+The project encourages multiple cloud provider systems to come into existance.  Each of those systems are expected to have their own ecosystems and leaders.
+
+A governance board will be established which in turn represents the interests of the corporation and the xov.io project.  The StackMonkey corporation itself will be a multi-national corporation which will be eventually be controlled by an autonomous corporation implemented with Ethereum or similar.  This corporation will be open to public investment via Bitcoin and other currencies.
 
 Initial investments by venture capital or institutions will be papered in a traditional way, but the shares issued to these entities will be based on shares of colored cryptcoins.
 

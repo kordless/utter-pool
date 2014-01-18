@@ -22,7 +22,7 @@ A decentralized market exchange for the pools will later be created at http://xo
 It is likely that xov.io/xov.bit will be powered by Ethereum, although at this point details around how that will be done have not been fully considered.  If you have interest in working in developing this portion of concept further, please contact me at kordless@stackgeek.com.
 
 ### Operation
-The project is currently comprised of two repositories: this repository (stackmonkey-exchange) for running the StackMonkey site, and a second project called stackmonkey-vm (https://github.com/StackMonkey/stackmonkey-vm/) which is used to launch a virtual appliance (VA) on the provider's cluster.  This VA is responsible for listening to callbacks triggered from blockchain.info's service.
+The project is currently comprised of two repositories: this repository (xovio-pool) for running the StackMonkey site, and a second project called xovio-va (https://github.com/StackMonkey/xovio-va/) which is used to launch a virtual appliance (VA) on the provider's cluster.  This VA is responsible for listening to callbacks triggered from blockchain.info's service.
 
 To use the service, a user will access a list of compute resources on the StackMonkey site.  Basic filtering will be provided to search by criteria including instance type/size, OS image type, compute costs, and location.
 

@@ -1,3 +1,5 @@
+## Distributed Compute Exchange Whitepaper
+
 ### License
 All code providing basic infrastructure services will be Open Source.  Closed source code is welcomed and desired in both the purpose of accessing APIs externally and, more obviously, in the use of the virtual machines started within the exchange.  However, no closed source code which runs at the hypervisor level of the framework or which provides compute, network or storage will be promoted by the network or it's affiliates.  These rules will be enforced using contracts established using coin technologies. Infrastructure is meant to be open, trustworthy and secure.
 

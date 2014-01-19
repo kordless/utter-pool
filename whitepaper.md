@@ -41,7 +41,7 @@ A trust system will eventually be built which allows for escrowed fund deposits.
 Hackers are encouraged to utilize the system for whatever purpose they deem important, but should consider the implications of their actions are being tied directly to the cost of starting instances for non-trusted entities.  Being naughty with this will cost you.
 
 ### Funding
-The StackMonkey service, it's employees and it's investors expect to be rewarded accordingly for bringing this concept to fruition.  Discussion around ownership share is encouraged, but this author feels strongly about the concept of "Benevolent Dictatorship".  It is my intent to do what is right for the ecosystem first (which entails considering the effects of features on power pooling) and what is right for the shareholders of the corporation second
+The StackMonkey service, it's employees and it's investors expect to be rewarded accordingly for bringing this concept to fruition.  Discussion around ownership share is encouraged, but this author feels strongly about the concept of "Benevolent Dictatorship".  It is my intent to do what is right for the ecosystem first (which entails considering the effects of features on power pooling) and what is right for the shareholders of the corporation second.
 
 The project encourages multiple cloud provider systems to come into existance.  Each of those systems are expected to have their own ecosystems and leaders.
 

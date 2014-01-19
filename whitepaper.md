@@ -10,7 +10,7 @@ Wildly distinct and uniquely optimized compute pools will be capable of providin
 
 It is the intent of this project to create a fully distributed compute exchange which greatly minimizes the central control authority for server starts and access.
 
-Put another way, this project aims to provide a bridge between crypto currency markets and the very thing that allows them to exist: compute.  Commodity compute has arrived.
+Put another way, this project aims to provide a bridge between crypto currency markets and the very thing that allows them to exist: compute.  Commodity compute has arrived and this project implements market making for it.
 
 ### Implementation
 The initial compute pool (not to be confused with the distributed exchange) will live at http://stackmonkey.com/ and will be hosted on Google Appengine.  StackMonkey will initially provide a low-cost, low-trust, low-reliability service providing VM services to developers, hackers and other individuals who need transitionary type instances.  Providers who sign up for the StackMonkey exchange should get comfortable with the concept of decentralized resource allocation and are encouraged to educate themselves on the coming decentralization revolution in in the computing and business markets.

@@ -12,7 +12,7 @@ Wildly distinct and uniquely optimized compute pools will be capable of providin
 
 Users of StackMonkey will be able to start and stop instances with Bitcoin transactions.  No user account or authentication is needed.  Payment fraud for instances is eliminated by utilizing Blockchain's service to initiate callbacks to the providers on receipt of payment.
 
-![mockup](https://raw2.github.com/StackMonkey/xovio-pool/master/mockup.png =800x400)
+![mockup](https://raw2.github.com/StackMonkey/xovio-pool/master/mockup.png=800x400)
 
 It is the intent of this project to create a fully distributed compute exchange which greatly minimizes the central control authority for server starts and access.  Put another way, this project aims to provide a bridge between crypto currency markets and the very thing that allows them to exist: compute.  
 

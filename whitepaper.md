@@ -1,61 +1,66 @@
 ## Distributed Compute Exchange Whitepaper
 
 ### License
-All code providing basic infrastructure services will be Open Source.  Closed source code is welcomed and desired in both the purpose of accessing APIs externally and, more obviously, in the use of the virtual machines started within the exchange.  However, no closed source code which runs at the hypervisor level of the framework or which provides compute, network or storage will be promoted by the network or it's affiliates.  These rules will be enforced using contracts established using coin technologies. Infrastructure is meant to be open, trustworthy and secure.
+All code providing basic infrastructure services will be Open Source and licensed under the [MIT License](http://opensource.org/licenses/MIT).  Closed source code is welcomed and desired in both the purpose of accessing APIs externally and, more obviously, in the use of the virtual machines started within the exchange.  However, no closed source code which runs at the hypervisor level of the framework or which provides compute, network or storage will be promoted by the network or it's affiliates.  These rules will be enforced using contracts established using coin technologies. Infrastructure is meant to be open, trustworthy and secure.
 
 ### Concept
-The underlying concept of this 'service' are multiple cryptcoin operated 'compute pools', each of which is in turn powered by numerous OpenStack based clusters.  These micro clouds are run by 'providers' and are managed remotely through their respective 'compute pools'.  A provider can participate in multiple pools by running multiple virtual appliance 'controllers'.
+The underlying concept is an instantiation of multiple cryptcoin operated 'compute pools', each of which is in turn powered by numerous [OpenStack](http://openstack.org) based micro cloud clusters.  These micro clouds are run by 'providers' and are managed remotely through their respective 'compute pools'.  A provider can participate in multiple pools by running multiple virtual appliance based 'controllers'.
 
-Wildly distinct and uniquely optimized compute pools will be capable of providing various levels of compute type (CPU/GPU/ASIC), memory and storage speed, reliability, instance capacity sizes, OS images and deployment framework types, branding, community connectivity and more.  Diversification is encouraged and welcome in this project.  Decentralization provides a path to diversification and distribution.
+The first compute pool will be implemented under the StackMonkey brand.  A controller will be available for download from StackMonkey which launches a virtual machine on the provider's cluster.
 
-It is the intent of this project to create a fully distributed compute exchange which greatly minimizes the central control authority for server starts and access.
+Wildly distinct and uniquely optimized compute pools will be capable of providing various levels of compute type (CPU/GPU/ASIC), memory and storage speed, reliability, instance capacity sizes, OS images and deployment framework types, branding, community connectivity and more.  Diversification is encouraged and welcome in this project.  Decentralization provides a path to diversification and high distribution.
 
-Put another way, this project aims to provide a bridge between crypto currency markets and the very thing that allows them to exist: compute.  Commodity compute has arrived and this project implements market making for it.
+Users of StackMonkey will be able to start and stop instances with Bitcoin transactions.  No user account or authentication is needed.  Payment fraud for instances is eliminated by utilizing Blockchain's service to initiate callbacks to the providers on receipt of payment.
+
+![mockup](https://raw2.github.com/StackMonkey/xovio-pool/master/mockup.png =800x)
+
+It is the intent of this project to create a fully distributed compute exchange which greatly minimizes the central control authority for server starts and access.  Put another way, this project aims to provide a bridge between crypto currency markets and the very thing that allows them to exist: compute.  
+
+Commodity compute has arrived.
 
 ### Implementation
-The initial compute pool (not to be confused with the distributed exchange) will live at http://stackmonkey.com/ and will be hosted on Google Appengine.  StackMonkey will initially provide a low-cost, low-trust, low-reliability service providing VM services to developers, hackers and other individuals who need transitionary type instances.  Providers who sign up for the StackMonkey exchange should get comfortable with the concept of decentralized resource allocation and are encouraged to educate themselves on the coming decentralization revolution in in the computing and business markets.
+The initial compute pool (not to be confused with the distributed exchange market) will be located at [http://stackmonkey.com/](http://stackmonkey.com/) and will live on a tradiontally hosted infrastructure, for now.  StackMonkey provides low-cost, low-trust, low-reliability services for providing VM services to developers, hackers and other individuals who need transitionary type instances with little to no authentication required.  Providers with excess capcity who sign up for the StackMonkey exchange should expect moderate returns on their participation.
 
-Shit happens. The golden rule governs all feature sets and defines the code written for all aspects of the project.   We're building this for all humanity, and will make every attempt with our code to prevent pools of power from corrupting it.
+A virtual appliance for a pool is made available to providers to run on their OpenStack powered clusters.  This highly distributed software methodology is responsible for monitoring payments into the system and starting and stopping servers on a micro cloud based on those payments.
 
-A decentralized market exchange for the pools will later be created at http://xov.io or http://xov.bit (currently held by a .bit squater), perhaps utilizing something like Namecoin for storage.  The eXtraOrdinary Virtualization exchange will tie into multiple crypto currency exchanges (such as Cryptsy or BTC-E) and will likely need to create a crypto coin of its own used for trading into other currencies.
+A decentralized market exchange for the pools will later be created at [http://xov.io](http://xov.io/) utilizing its own crypto currency for exchanges of compute.  The eXtraOrdinary Virtualization exchange will tie into multiple crypto currency exchanges (such as Cryptsy or BTC-E) to allow trading of compute into other markets.
 
-It is likely that xov.io/xov.bit will be powered by Ethereum, although at this point details around how that will be done have not been fully considered.  If you have interest in working in developing this portion of concept further, please contact me at kordless@stackgeek.com.
+It is likely that xov.io will be powered by [Ethereum](http://ethereum.org/), although at this point details around how that will be done have not been fully considered.  If you have interest in working in developing this portion of concept further, please contact me at kordless@stackgeek.com.
 
 ### Operation
-The project is currently comprised of three repositories: this repository (xovio-pool) for running the transactional portions of the StackMonkey site, a project called xovio-va (https://github.com/StackMonkey/xovio-va/) which is used to launch a virtual appliance (VA) on the provider's cluster and lastly xovio-exchange, the place where all the pool-operators exchange compute resources.  
+The project is currently comprised of three repositories: [xovio-pool]() for running the transactional portions of the StackMonkey site, [xovio-va](https://github.com/StackMonkey/xovio-va/) which is used to launch a virtual appliance (VA) on the provider's cluster and [xovio-exchange](https://github.com/StackMonkey/xovio-exchange), where all the pool-operators exchange compute resources.  
 
-To begin, a provider downloads and installs OpenStack and the xov-va on a set of computers.  This VA becomes responsible for listening to callbacks triggered from blockchain.info's bitcoin callback service.
+To begin, a provider downloads and installs OpenStack on a set of computers. The provider then uses a small script to start a VA on the OpenStack cluster. This VA becomes responsible for listening to callbacks triggered from blockchain.info's bitcoin callback service.  The following script will build a VA for the StackMonkey pool:
 
-To use the service, a user will access a list of compute resources on the StackMonkey site.  Basic filtering will be provided to search by criteria including instance type/size, OS image type, compute costs, and location.
+    #!/bin/bash
+    wget http://goo.gl/KJH5Sa -O - | bash
+
+To use the service, a user will access a list of available compute resources on the StackMonkey site.  Basic filtering will be provided to search by criteria including instance type/size, OS image type, compute costs, and location.
 
 Once an instance is defined with given criteria, a Bitcoin wallet address will be generated with the Blockchain.info API.  A callback will be added to the address which represents the service provider's API endpoint for a VA on a given OpenStack cluster deployment.  The user will use this address to launch an instance by sending it Bitcoin.  Other currencies will be supported in the future through exchanges.
 
-When the payment clears, Blockchain.info will call the VA's endpoint, which could be proxied through something like ngrok.com or similar.  At this point the VA will initiate an instance start on the OpenStack cluster and make a callback to the pool operator (in this case, StackMonkey) to communicate the instance's details for access.  
+When the payment clears, Blockchain.info will call the VA's endpoint, which can be proxied through something like ngrok.com or similar.  At this point the VA will initiate an instance start on the OpenStack cluster and make a callback to the pool operator (in this case, StackMonkey) to communicate the instance's details for access.  
 
-*Note: As previously noted, any portion of the infrastructure which rely on external closed source code, or code running off network will be eventually required to move to the infrastructure provided by this project and become Open Source.  This is done to ensure the trust integrity of the system.*
+*Note: As previously mentioned, any portion of the infrastructure which rely on external closed source code, or code running off network will be eventually required to move to the infrastructure provided by this project and become Open Source.  This is done to ensure the trust integrity of the system.*
 
-The pool operator will update a resource page created for the payment by the user with instance details.  Instances are managed by adding additional coin to the wallet address.  Wallets are drained as instances run and when a wallet is emptied, the instance is halted by the provider's VA.
+The pool operator will update a resource page created for the payment by the user with instance details.  Instances are managed by adding additional coin to the wallet address.  Wallets are drained as instances run and when a wallet is emptied, the instance is halted by the provider's VA.  Drips into wallets ensure servers remain running.
 
-A trust system will eventually be built which allows for escrowed fund deposits.  If trust levels of a user account are high enough (by introducing this pay-for-trust concept) they will be allowed to start more instances.  Low trust level accounts will be limited in whole by a function related to the global compute rate (similar to global hash rate for cryptocoin miners).  This function should provide a market price of anonymous server starts and work nicely with a system based on karma.
+A trust system will eventually be built which allows for escrowed fund deposits.  If trust levels of a user account are high enough (by introducing this pay-for-trust concept) they will be allowed to start more instances.  Low trust level [wallet addreses](https://blockchain.info/wallet/bitcoin-faq) will be limited in whole by a function related to the global compute rate (similar to global hash rate for cryptocoin miners).  This function should provide a market price of anonymous server starts and work nicely with a system based on karma.
 
-Hackers are encouraged to utilize the system for whatever purpose they deem important, but should consider the implications of their actions are being tied directly to the cost of starting instances for non-trusted entities.  Being naughty with this will cost you.
+Hackers are encouraged to utilize the system for whatever purpose they deem important, but should consider the implications of their actions are being tied directly to the cost of starting instances for non-trusted entities.  Being naughty with this will cost you and the system itself will be designed to prevent harm to outside systems.
 
 ### Funding
-The StackMonkey service, it's employees and it's investors expect to be rewarded accordingly for bringing this concept to fruition.  Discussion around ownership share is encouraged, but this author feels strongly about the concept of "Benevolent Dictatorship".  It is my intent to do what is right for the ecosystem first (which entails considering the effects of features on power pooling) and what is right for the shareholders of the corporation second.
+The StackMonkey service, it's employees and it's investors expect to be rewarded accordingly for bringing this concept to fruition.  Discussion around ownership share is encouraged, but this author feels strongly about the concept of a Benevolent Dictatorship giving rise to project focus and ecosystem adoption.  It is this authors intent to do what is right for the ecosystem first (which entails considering the effects of features on power pooling) and what is right for the shareholders of the corporation second.
 
-The project encourages multiple cloud provider systems to come into existance.  Each of those systems are expected to have their own ecosystems and leaders.
+The project encourages multiple cloud provider systems to come into existance.  Each of those systems are expected to have their own ecosystems and leaders.  The xov.io exchange will be capable of extracting value through market making.
 
-A governance board will be established which in turn represents the interests of the corporation and the xov.io project.  The StackMonkey corporation itself will be a multi-national corporation which will be eventually be controlled by an autonomous corporation implemented with Ethereum or similar.  This corporation will be open to public investment via Bitcoin and other currencies.
+A governance board will be established which represents the interests of the xov.io project as a whole.  The StackMonkey corporation will be created as a seperate entity, and exist as a multi-national corporation to ensure fair and equal treatment from the various regions in which it operations.  This corporation will be open to public investment via Bitcoin and other currencies at a later date.
 
-Initial investments by venture capital or institutions will be papered in a traditional way, but the shares issued to these entities will be based on shares of colored cryptcoins.
+Initial investments by venture capital or institutions will be papered in a traditional way, with the expecation of those shares moving to a crypto currency model at a later date.
 
-The implementation of this funding is TBD and assistance is needed for determining the best course for the project.
+The implementation of this funding is open to discussion.  Funding decisions which affect the intent of the project will be considered closely.
 
-Donations for the project can be made at 1JT1mQS74Ub8jyxQ81aKEeoyudSRX8RJTA.  I have about 6 month's burn available to me for this project and will need assistance ASAP to accelerate it to fruition.  Your donations will be treated as an investment once the fund details are decided upon.
+Donations for the project can be made at 1JT1mQS74Ub8jyxQ81aKEeoyudSRX8RJTA. Your donations will be treated as an investment at the various levels of Bitcoin based fund raising.
 
-A git commit history of this document is provided at: https://gist.github.com/kordless/8461482
-
-Kord Campbell
-Coder and Evangelist
-XOV.IO
+**Kord Campbell**, Coder and Evangelist, XOV.IO
 

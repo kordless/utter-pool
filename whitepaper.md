@@ -10,7 +10,7 @@ The first compute pool will be implemented under the StackMonkey brand.  A contr
 
 Wildly distinct and uniquely optimized compute pools will be capable of providing various levels of compute type ([CPU](http://en.wikipedia.org/wiki/Central_processing_unit)/[GPU](http://en.wikipedia.org/wiki/Graphics_processing_unit)/[ASIC](http://en.wikipedia.org/wiki/Application-specific_integrated_circuit)), memory and storage speed, reliability, instance capacity sizes, OS images and deployment framework types, branding, community connectivity and more.  Diversification is encouraged and welcome in this project.  Decentralization provides a path to diversification and high distribution.
 
-Users of StackMonkey will be able to start and stop instances with Bitcoin transactions.  No user account or authentication is needed.  Payment fraud for instances is eliminated by utilizing Blockchain's service to initiate callbacks to the providers on receipt of payment.
+Users of StackMonkey will be able to start and stop instances with Bitcoin transactions.  No user account or authentication is needed.  Payment fraud for instances is eliminated by utilizing Bitcoin payment verification and Blockchain's service to initiate callbacks to the providers on receipt of payment.
 
 ![mockup](https://raw2.github.com/StackMonkey/xovio-pool/master/mockup.png)
 

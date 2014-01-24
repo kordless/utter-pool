@@ -54,7 +54,7 @@ StackMonkey, its employees and its investors expect to be rewarded accordingly f
 
 The project encourages multiple cloud provider systems to come into existance.  Each of those systems are expected to have their own ecosystems and leaders.  The xov.io exchange will be capable of extracting value through market making.
 
-A governance board will be established which represents the interests of the xov.io project as a whole.  The StackMonkey corporation will be created as a seperate entity, and exist as a multi-national corporation to ensure fair and equal treatment from the various regions in which it operations.  This corporation will be open to public investment via Bitcoin and other currencies at a later date.
+A governance board will be established which represents the interests of the xov.io project as a whole.  The StackMonkey corporation will be created as a seperate entity, and exist as a multi-national corporation to ensure fair and equal treatment from the various regions in which it operates.  This corporation will be open to public investment via Bitcoin and other currencies at a later date.
 
 Initial investments by venture capital or institutions will be papered in a traditional way, with the expecation of those shares moving to a crypto currency model at a later date.  Post money valuation is set at US$10M.  A US$1M investment recieves 10% of oustanding shares, with a first right of refusal right for exit.
 

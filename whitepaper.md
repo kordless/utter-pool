@@ -8,9 +8,9 @@ The underlying concept is an instantiation of multiple cryptcoin operated 'compu
 
 The first compute pool will be implemented under the StackMonkey brand.  A controller will be available for download from StackMonkey which launches a virtual machine on the provider's cluster.
 
-Wildly distinct and uniquely optimized compute pools will be capable of providing various levels of compute type (CPU/GPU/ASIC), memory and storage speed, reliability, instance capacity sizes, OS images and deployment framework types, branding, community connectivity and more.  Diversification is encouraged and welcome in this project.  Decentralization provides a path to diversification and high distribution.
+Wildly distinct and uniquely optimized compute pools will be capable of providing various levels of compute type ([CPU](http://en.wikipedia.org/wiki/Central_processing_unit)/[GPU](http://en.wikipedia.org/wiki/Graphics_processing_unit)/[ASIC](http://en.wikipedia.org/wiki/Application-specific_integrated_circuit)), memory and storage speed, reliability, instance capacity sizes, OS images and deployment framework types, branding, community connectivity and more.  Diversification is encouraged and welcome in this project.  Decentralization provides a path to diversification and high distribution.
 
-Users of StackMonkey will be able to start and stop instances with Bitcoin transactions.  No user account or authentication is needed.  Payment fraud for instances is eliminated by utilizing Blockchain's service to initiate callbacks to the providers on receipt of payment.
+Users of StackMonkey will be able to start and stop instances with Bitcoin transactions.  No user account or authentication is needed.  Payment fraud for instances is eliminated by utilizing Bitcoin payment verification and Blockchain's service to initiate callbacks to the providers on receipt of payment.
 
 ![mockup](https://raw2.github.com/StackMonkey/xovio-pool/master/mockup.png)
 
@@ -50,11 +50,11 @@ A trust system will eventually be built which allows for escrowed fund deposits.
 Hackers are encouraged to utilize the system for whatever purpose they deem important, but should consider the implications of their actions are being tied directly to the cost of starting instances for non-trusted entities.  Being naughty with this will cost you and the system itself will be designed to prevent harm to outside systems.
 
 ### Funding
-StackMonkey, its employees and itss investors expect to be rewarded accordingly for bringing this concept to fruition.  Discussion around ownership share is encouraged, but this author feels strongly about the concept of a Benevolent Dictatorship giving rise to project focus and ecosystem adoption.  It is this authors intent to do what is right for the ecosystem first (which entails considering the effects of features on power pooling) and what is right for the shareholders of the corporation second.
+StackMonkey, its employees and its investors expect to be rewarded accordingly for bringing this concept to fruition.  Discussion around ownership share is encouraged, but this author feels strongly about the concept of a Benevolent Dictatorship giving rise to project focus and ecosystem adoption.  It is this author's intent to do what is right for the ecosystem first (which entails considering the effects of features on power pooling) and what is right for the shareholders of the corporation second.
 
 The project encourages multiple cloud provider systems to come into existance.  Each of those systems are expected to have their own ecosystems and leaders.  The xov.io exchange will be capable of extracting value through market making.
 
-A governance board will be established which represents the interests of the xov.io project as a whole.  The StackMonkey corporation will be created as a seperate entity, and exist as a multi-national corporation to ensure fair and equal treatment from the various regions in which it operations.  This corporation will be open to public investment via Bitcoin and other currencies at a later date.
+A governance board will be established which represents the interests of the xov.io project as a whole.  The StackMonkey corporation will be created as a seperate entity, and exist as a multi-national corporation to ensure fair and equal treatment from the various regions in which it operates.  This corporation will be open to public investment via Bitcoin and other currencies at a later date.
 
 Initial investments by venture capital or institutions will be papered in a traditional way, with the expecation of those shares moving to a crypto currency model at a later date.  Post money valuation is set at US$10M.  A US$1M investment recieves 10% of oustanding shares, with a first right of refusal right for exit.
 

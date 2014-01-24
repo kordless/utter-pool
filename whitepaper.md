@@ -8,7 +8,7 @@ The underlying concept is an instantiation of multiple cryptcoin operated 'compu
 
 The first compute pool will be implemented under the StackMonkey brand.  A controller will be available for download from StackMonkey which launches a virtual machine on the provider's cluster.
 
-Wildly distinct and uniquely optimized compute pools will be capable of providing various levels of compute type (CPU/GPU/ASIC), memory and storage speed, reliability, instance capacity sizes, OS images and deployment framework types, branding, community connectivity and more.  Diversification is encouraged and welcome in this project.  Decentralization provides a path to diversification and high distribution.
+Wildly distinct and uniquely optimized compute pools will be capable of providing various levels of compute type ([CPU](http://en.wikipedia.org/wiki/Central_processing_unit)/[GPU](http://en.wikipedia.org/wiki/Graphics_processing_unit)/[ASIC](http://en.wikipedia.org/wiki/Application-specific_integrated_circuit)), memory and storage speed, reliability, instance capacity sizes, OS images and deployment framework types, branding, community connectivity and more.  Diversification is encouraged and welcome in this project.  Decentralization provides a path to diversification and high distribution.
 
 Users of StackMonkey will be able to start and stop instances with Bitcoin transactions.  No user account or authentication is needed.  Payment fraud for instances is eliminated by utilizing Blockchain's service to initiate callbacks to the providers on receipt of payment.
 

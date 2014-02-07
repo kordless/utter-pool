@@ -1,7 +1,7 @@
 ## Distributed Compute Exchange Whitepaper
 
 ### License
-All code providing basic infrastructure services will be Open Source and licensed under the [MIT License](http://opensource.org/licenses/MIT).  Closed source code is welcomed and desired in both the purpose of accessing APIs externally and, more obviously, in the use of the virtual machines started within the exchange.  However, no closed source code which runs at the hypervisor level of the framework or which provides compute, network or storage will be promoted by the network or it's affiliates.  These rules will be enforced using contracts established using coin technologies. Infrastructure is meant to be open, trustworthy and secure.
+All code providing basic infrastructure services will be Open Source and licensed under the [MIT License](http://opensource.org/licenses/MIT).  Closed source code is welcomed and desired in both the purpose of accessing APIs externally and, more obviously, in the use of the virtual machines started within the exchange.  However, no closed source code which runs at the hypervisor level of the framework or which provides compute, network or storage will be promoted by the network or its affiliates.  These rules will be enforced using contracts established using coin technologies. Infrastructure is meant to be open, trustworthy and secure.
 
 ### Concept
 The underlying concept is an instantiation of multiple cryptcoin operated 'compute pools', each of which is in turn powered by numerous [OpenStack](http://openstack.org) based micro cloud clusters.  These micro clouds are run by 'providers' and are managed remotely through their respective 'compute pools'.  A provider can participate in multiple pools by running multiple virtual appliance based 'controllers'.
@@ -19,7 +19,7 @@ It is the intent of this project to create a fully distributed compute exchange 
 Commodity compute has arrived.
 
 ### Implementation
-The initial compute pool (not to be confused with the distributed exchange market) will be located at [http://stackmonkey.com/](http://stackmonkey.com/) and will live on a tradiontally hosted infrastructure, for now.  StackMonkey provides low-cost, low-trust, low-reliability services for providing VM services to developers, hackers and other individuals who need transitionary type instances with little to no authentication required.  Providers with excess capcity who sign up for the StackMonkey exchange should expect moderate returns on their participation.
+The initial compute pool (not to be confused with the distributed exchange market) will be located at [http://stackmonkey.com/](http://stackmonkey.com/) and will live on a tradiontally hosted infrastructure, for now.  StackMonkey provides low-cost, low-trust, low-reliability services for providing VM services to developers, hackers and other individuals who need transitionary type instances with little to no authentication required via the pool controller.  Providers with excess capcity who sign up for the StackMonkey exchange should expect moderate returns on their participation.
 
 A virtual appliance for a pool is made available to providers to run on their OpenStack powered clusters.  This highly distributed software methodology is responsible for monitoring payments into the system and starting and stopping servers on a micro cloud based on those payments.
 

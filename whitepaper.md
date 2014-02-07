@@ -10,7 +10,7 @@ The first compute pool will be implemented under the StackMonkey brand.  A contr
 
 Wildly distinct and uniquely optimized compute pools will be capable of providing various levels of compute type ([CPU](http://en.wikipedia.org/wiki/Central_processing_unit)/[GPU](http://en.wikipedia.org/wiki/Graphics_processing_unit)/[ASIC](http://en.wikipedia.org/wiki/Application-specific_integrated_circuit)), memory and storage speed, reliability, instance capacity sizes, OS images and deployment framework types, branding, community connectivity and more.  Diversification is encouraged and welcome in this project.  Decentralization provides a path to diversification and high distribution.
 
-Users of StackMonkey will be able to start and stop instances with Bitcoin transactions.  No user account or authentication is needed.  Payment fraud for instances is eliminated by utilizing Bitcoin payment verification and Blockchain's service to initiate callbacks to the providers on receipt of payment.
+Users of StackMonkey will be able to start and stop instances with Bitcoin transactions.  No user account or authentication is needed.  Payment fraud for instances is eliminated by utilizing Bitcoin payment verification and Coinbase's service to initiate callbacks to the providers on receipt of payment.
 
 ![mockup](https://raw2.github.com/StackMonkey/xovio-pool/master/mockup.png)
 
@@ -30,16 +30,16 @@ It is likely that xov.io will be powered by [Ethereum](http://ethereum.org/), al
 ### Operation
 The project is currently comprised of three repositories: [xovio-pool]() for running the transactional portions of the StackMonkey site, [xovio-va](https://github.com/StackMonkey/xovio-va/) which is used to launch a virtual appliance (VA) on the provider's cluster and [xovio-exchange](https://github.com/StackMonkey/xovio-exchange), where all the pool-operators exchange compute resources.  
 
-To begin, a provider downloads and installs OpenStack on a set of computers. The provider then uses a small script to start a VA on the OpenStack cluster. This VA becomes responsible for listening to callbacks triggered from blockchain.info's bitcoin callback service.  The following script will build a VA for the StackMonkey pool:
+To begin, a provider downloads and installs OpenStack on a set of computers. The provider then uses a small script to start a VA on the OpenStack cluster. This VA becomes responsible for listening to callbacks triggered from Coinbase's bitcoin callback service.  The following script will build a VA for the StackMonkey pool:
 
     #!/bin/bash
     wget http://goo.gl/KJH5Sa -O - | bash
 
 To use the service, a user will access a list of available compute resources on the StackMonkey site.  Basic filtering will be provided to search by criteria including instance type/size, OS image type, compute costs, and location.
 
-Once an instance is defined with given criteria, a Bitcoin wallet address will be generated with the Blockchain.info API.  A callback will be added to the address which represents the service provider's API endpoint for a VA on a given OpenStack cluster deployment.  The user will use this address to launch an instance by sending it Bitcoin.  Other currencies will be supported in the future through exchanges.
+Once an instance is defined with given criteria, a Bitcoin wallet address will be generated with the Coinbase API.  A callback will be added to the address which represents the service provider's API endpoint for a VA on a given OpenStack cluster deployment.  The user will use this address to launch an instance by sending it Bitcoin.  Other currencies will be supported in the future through exchanges.
 
-When the payment clears, Blockchain.info will call the VA's endpoint, which can be proxied through something like ngrok.com or similar.  At this point the VA will initiate an instance start on the OpenStack cluster and make a callback to the pool operator (in this case, StackMonkey) to communicate the instance's details for access.  
+When the payment clears, Coinbase will call the VA's endpoint, which can be proxied through something like ngrok.com or similar.  At this point the VA will initiate an instance start on the OpenStack cluster and make a callback to the pool operator (in this case, StackMonkey) to communicate the instance's details for access.  
 
 *Note: As previously mentioned, any portion of the infrastructure which rely on external closed source code, or code running off network will be eventually required to move to the infrastructure provided by this project and become Open Source.  This is done to ensure the trust integrity of the system.*
 

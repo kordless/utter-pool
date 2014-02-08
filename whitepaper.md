@@ -4,7 +4,7 @@
 All code providing basic infrastructure services will be Open Source and licensed under the [MIT License](http://opensource.org/licenses/MIT).  Closed source code is welcomed and desired in both the purpose of accessing APIs externally and, more obviously, in the use of the virtual machines started within the exchange.  However, no closed source code which runs at the hypervisor level of the framework or which provides compute, network or storage will be promoted by the network or its affiliates.  These rules will be enforced using contracts established using coin technologies. Infrastructure is meant to be *distributed*, open, trustworthy and secure.
 
 ### Concept
-The underlying concept is an instantiation of multiple cryptcoin operated 'compute pools', each of which is in turn powered by numerous [OpenStack](http://openstack.org) based micro cloud clusters.  These micro clouds are run by 'providers' and are managed remotely through their respective 'compute pools'.  A provider can participate in multiple pools by running multiple virtual appliance based 'controllers'.
+The underlying concept is an instantiation of multiple cryptcoin operated 'compute pools', each of which are in turn powered by numerous [OpenStack](http://openstack.org) based micro cloud clusters.  These micro clouds are run by 'providers' and are managed remotely through their respective 'compute pools'.  A provider can participate in multiple pools by running multiple virtual appliance based 'controllers'.
 
 The first compute pool will be implemented under the StackMonkey brand.  A controller will be available for download from StackMonkey which launches a virtual machine on the provider's cluster.
 

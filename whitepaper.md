@@ -19,7 +19,7 @@ It is the intent of this project to create a fully distributed compute exchange 
 Commodity compute has arrived.
 
 ### Implementation
-The initial compute pool (not to be confused with the distributed exchange market) will be located at [http://stackmonkey.com/](http://stackmonkey.com/) and will live on a tradiontally hosted infrastructure, for now.  StackMonkey provides low-cost, low-trust, low-reliability services for providing VM services to developers, hackers and other individuals who need transitionary type instances with little to no authentication required via the pool controller.  Providers with excess capacity who sign up for the StackMonkey exchange should expect moderate returns on their participation.
+The initial compute pool (not to be confused with the distributed exchange market) will be located at [http://stackmonkey.com/](http://stackmonkey.com/) and will live on a tradiontally hosted infrastructure, for now.  StackMonkey provides low-cost, low-trust, low-reliability services for providing VM services to developers, hackers and other individuals who need transitionary type instances with little to no authentication required via the pool controller.  Providers with excess capacity who sign up for the StackMonkey pool should expect moderate returns on their participation.
 
 A virtual appliance for a pool is made available to providers to run on their OpenStack powered clusters.  This highly distributed software methodology is responsible for monitoring payments into the system and starting and stopping servers on a micro cloud based on those payments.
 

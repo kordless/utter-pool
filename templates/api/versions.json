@@ -1,0 +1,1 @@
+{"version": "{{ query_version }}", "valid": true, "upgrade": false}

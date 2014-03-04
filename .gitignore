@@ -1,0 +1,5 @@
+config.py
+config.py.bak
+.DS_Store
+*.pyc
+*.db

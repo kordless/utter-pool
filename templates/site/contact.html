@@ -1,0 +1,43 @@
+{% extends base_layout %}
+
+{% block title %}
+    Contact - 
+{% endblock %}
+
+{% block header_title_lead %}
+    <h1>Contact Us</h1>
+    <p class="lead">
+      Please use the form below to contact us questions regarding the site.  Please use the <a href="/forums/">forums</a> for technical questions!
+    </p>
+{% endblock %}
+
+{% block extra_nav %}{{ macros.nav_menu('', user_id) }}{% endblock %}
+
+{% block content %}
+    <form id="form_contact" action="{{ url|safe }}" method="post" class="well form-horizontal">
+        <fieldset>
+            <input type="hidden" name="exception" value="{{ exception }}">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+            {{ macros.input(form, "name", _("Name"), placeholder=_("Wow. Your name is awesome."), class="input-xlarge focused required") }}
+            {{ macros.input(form, "email", _("Email"), placeholder=_("your@emailaddress.com"), class="input-xlarge focused required email", type="email") }}
+            {{ macros.input(form, "message", _("Message"), placeholder=_("TinyProbe is the bomb."),class="input-xlarge required", cols="40", rows="8") }}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-large btn-inverse">Send Message</button>
+            </div>
+        </fieldset>
+    </form>
+{% endblock %}
+
+{% block mediaJS %}
+<script type="text/javascript">
+    $().ready(function() {
+        $("#form_contact").validate({
+            errorPlacement: function(error, element) {
+                element.parent().parent().addClass("error");
+                error.addClass("help-inline").appendTo( element.parent() );
+            }
+        });
+    });
+</script>
+{% endblock %}
+

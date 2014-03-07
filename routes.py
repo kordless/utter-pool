@@ -7,6 +7,7 @@ RedirectRoute: http://webapp-improved.appspot.com/api/webapp2_extras/routes.html
 from webapp2_extras.routes import RedirectRoute
 from web import handlers
 from web.users import userhandlers
+from web.providers import providerhandlers
 from web.api import apihandlers
 
 secure_scheme = 'https'
@@ -21,9 +22,6 @@ _routes = [
     RedirectRoute('/login/complete', userhandlers.CallbackSocialLoginHandler, name='social-login-complete', strict_slash=True),
     RedirectRoute('/login/delete', userhandlers.DeleteSocialProviderHandler, name='delete-social-provider', strict_slash=True),
 
-    # user settings
-    RedirectRoute('/settings/profile', userhandlers.EditProfileHandler, name='edit-profile', strict_slash=True),
-
     # website
     RedirectRoute('/', handlers.HomeRequestHandler, name='home', strict_slash=True),
     RedirectRoute('/about/', handlers.AboutHandler, name='company', strict_slash=True),
@@ -31,6 +29,17 @@ _routes = [
     RedirectRoute('/features/', handlers.TourHandler, name='features', strict_slash=True),
     RedirectRoute('/contact/', handlers.ContactHandler, name='contact', strict_slash=True),
     RedirectRoute('/forums/', handlers.ForumHandler, name='forums', strict_slash=True),
+
+    # providers
+    RedirectRoute('/provider/signup', providerhandlers.ProviderSignupHandler, name='provider-signup', strict_slash=True),
+    RedirectRoute('/provider/login', providerhandlers.ProviderLoginHandler, name='provider-login', strict_slash=True),
+    RedirectRoute('/provider/logout', providerhandlers.ProviderLogoutHandler, name='provider-logout', strict_slash=True),
+    RedirectRoute('/provider/profile', providerhandlers.ProviderProfileHandler, name='provider-profile', strict_slash=True),
+
+    # users
+    RedirectRoute('/about/', handlers.AboutHandler, name='company', strict_slash=True),
+    RedirectRoute('/about/', handlers.AboutHandler, name='company', strict_slash=True),
+    RedirectRoute('/about/', handlers.AboutHandler, name='company', strict_slash=True),
 
     # api
     RedirectRoute('/api/<public_method>', apihandlers.APIPublicHandler, name='api_public', strict_slash=True)

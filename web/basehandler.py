@@ -296,6 +296,7 @@ class BaseHandler(webapp2.RequestHandler):
         kwargs.update({
             'google_analytics_code' : config.google_analytics_code,
             'app_name': config.app_name,
+            'app_email': config.app_email,
             'app_description': config.app_description,
             'copyright_date': config.copyright_date,
             'copyright_name': config.copyright_name,

@@ -20,7 +20,7 @@
             <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
             {{ macros.input(form, "name", _("Name"), placeholder=_("Wow. Your name is awesome."), class="input-xlarge focused required") }}
             {{ macros.input(form, "email", _("Email"), placeholder=_("your@emailaddress.com"), class="input-xlarge focused required email", type="email") }}
-            {{ macros.input(form, "message", _("Message"), placeholder=_("TinyProbe is the bomb."),class="input-xlarge required", cols="40", rows="8") }}
+            {{ macros.input(form, "message", _("Message"), placeholder=_("{{ app_name }} is the bomb."),class="input-xlarge required", cols="40", rows="8") }}
             <div class="form-actions">
                 <button type="submit" class="btn btn-large btn-inverse">Send Message</button>
             </div>

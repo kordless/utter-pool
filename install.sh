@@ -21,12 +21,12 @@ fi
 
 # random 32 character string generator
 randstring() {
-  len=32
-  if [[ $OSTYPE == 'linux-gnu' ]]; then
-    date +%s | md5sum | base64 | head -c $len ; echo
+  if [[ -z $1 ]]; then
+    len=32
   else
-    date +%s | md5 | base64 | head -c $len ; echo
+    len=$1
   fi
+  openssl rand -hex $len | head -c$len
 }
 
 # webapp2 secret_key
@@ -39,11 +39,47 @@ fi
 
 echo;
 # contact form emails
-read -p "Enter the email address to use for the contact form emails: " email
+read -p "Enter the email address to use for the pool contact form emails: " email
 if [[ $OSTYPE == 'linux-gnu' ]]; then
   sed -i 's/CONTACT_EMAIL/'$email'/g' config.py
 else
   sed -i '' 's/CONTACT_EMAIL/'$email'/g' config.py
+fi
+
+echo;
+# instructions
+echo "==================================="
+echo "Hit <enter> to skip unused handles."
+echo "==================================="
+
+echo;
+# twitter
+read -p "Enter the Twitter handle for this pool: " twitter
+if [[ twitter = "" ]]; then
+  twitter = "NONE"
+fi
+if [[ $OSTYPE == 'linux-gnu' ]]; then
+  sed -i 's/TWITTER_HANDLE/'$twitter'/g' config.py
+else
+  sed -i '' 's/TWITTER_HANDLE/'$twitter'/g' config.py
+fi
+
+echo;
+# linkedin
+read -p "Enter the LinkedIn handle for this pool: " linkedin
+if [[ $OSTYPE == 'linux-gnu' ]]; then
+  sed -i 's/LINKEDIN_HANDLE/'$linkedin'/g' config.py
+else
+  sed -i '' 's/LINKEDIN_HANDLE/'$linkedin'/g' config.py
+fi
+
+echo;
+# google plus
+read -p "Enter the Google Plus handle for this pool: " googleplus
+if [[ $OSTYPE == 'linux-gnu' ]]; then
+  sed -i 's/GOOGLE_PLUS_HANDLE/'$googleplus'/g' config.py
+else
+  sed -i '' 's/GOOGLE_PLUS_HANDLE/'$googleplus'/g' config.py
 fi
 
 # aes and salt
@@ -98,7 +134,7 @@ else
 fi
 
 # long ass key
-rand_key=$(randstring)
+rand_key=$(randstring 64)
 if [[ $OSTYPE == 'linux-gnu' ]]; then
   sed -i 's/RAND_KEY/'$rand_key'/g' config.py
 else

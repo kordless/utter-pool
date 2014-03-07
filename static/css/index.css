@@ -1,0 +1,84 @@
+/* HOME STYLES
+-------------------------------------------------- */
+
+body {
+  color: #5a5a5a;
+}
+
+#map {
+  position:absolute; 
+  top:0; 
+  bottom:0; 
+  width:100%;
+  z-index: -1;
+}
+
+/* Special class on .container surrounding .navbar, used for positioning it into place. */
+.navbar-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+}
+
+/* Flip around the padding for proper display in narrow viewports */
+.navbar-wrapper .container {
+  padding-left: 0;
+  padding-right: 0;
+}
+.navbar-wrapper .navbar {
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-bottom: 4px;
+}
+
+.navbar-inverse .navbar-toggle {
+  margin-top: 12px;
+}
+
+/* responsive crap */
+@media (min-width: 768px) {
+
+  /* Navbar positioning foo */
+  .navbar-wrapper {
+    margin-top: 20px;
+  }
+  .navbar-wrapper .container {
+    padding-left:  15px;
+    padding-right: 15px;
+  }
+  .navbar-wrapper .navbar {
+    padding-left:  0;
+    padding-right: 0;
+  }
+  
+}
+
+/* home page overlay */
+.splash-container {
+  position: absolute;
+  z-index: 100;
+  left: 0;
+  right: 0;
+  top: 30%;
+  width: 60%;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  background: rgba(30, 30, 30, 0.5);
+  padding: 20px 60px 40px 60px;
+}
+
+.splash-container h1 {
+  color: white;
+}
+
+.splash-signup {
+  padding-top: 12px;
+  color: white;
+}
+
+.splash-signup a:link {
+  color: white;
+}

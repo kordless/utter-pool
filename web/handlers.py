@@ -142,9 +142,8 @@ class ContactHandler(BaseHandler):
 
 class HomeRequestHandler(BaseHandler):
     def get(self):
-        """ yo, it's the fucking homepage, yo! """
         params = {}
-        return self.render_template('site/home.html', **params)
+        return self.render_template('site/index.html', **params)
 
 
 class AboutHandler(BaseHandler):

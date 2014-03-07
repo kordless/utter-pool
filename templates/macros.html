@@ -29,7 +29,7 @@
 
 <!-- navigation menu -->
 {% macro navbar_links(page, user_id) -%}
-                <li><a class='{% if page=="blog" %}active{% endif %}' href='#'>Blog</a></li>
+                <li><a class='{% if page=="blog" %}active{% endif %}' href='{{ blog_url }}'>Blog</a></li>
                 <li><a class='{% if page=="features" %}active{% endif %}' href='{{ uri_for("features")}}'>Features</a></li>
                 <li><a class='{% if page=="pricing" %}active{% endif %}' href='{{ uri_for("pricing")}}'>Pricing</a></li>
 {%- endmacro %}
@@ -40,7 +40,7 @@
         data-url="{{data_url}}" 
         class="twitter-share-button" 
         data-text="{{data_text}}" 
-        data-via="getzenops" 
+        data-via="{{ twitter_handle }}" 
         data-size="medium">Tweet</a>
     
     <script type="text/javascript">
@@ -60,7 +60,7 @@
 <!-- google plus widget -->
 {% macro g_plus_widget(data_url) -%}
     <div class="g-plusone" 
-        data-href="{{data_url}}" 
+        data-href="{{ data_url }}" 
         data-size="medium" 
         data-annotation="none">
     </div>

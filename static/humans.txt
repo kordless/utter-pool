@@ -1,15 +1,14 @@
 /* the humans responsible & colophon */
 /* humanstxt.org */
 
-
 /* TEAM */
   Developer: Kord Campbell
-  Site: http://tinyprobe.com/
-  Twitter: @tinyprobe
+  Site: http://geekceo.com/
+  Twitter: @kordless
   Location: San Francisco, CA
 
 /* THANKS */
-  Who: All you fuckers at Loggly.
+  Who: Buddhism.
 
 /* SITE */
   Standards: Standards suck.

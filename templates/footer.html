@@ -24,7 +24,7 @@
               <h4>Company</h4>
               <ul class='unstyled'>
                 <li>
-                  <a href='/blog'>The Blog</a>
+                  <a href='{{ blog_url }}'>Blog</a>
                 </li>
                 <li>
                   <a href='/about'>About Us</a>
@@ -49,21 +49,26 @@
                 <li>
                   <a href='/support'>Support</a>
                 </li>
+                <li>
+                  <a href='https://github.com/stackmonkey/'>Code</a>
               </ul>
             </div>
             <div class='col-md-3'>
               <h4>Follow</h4>
               <ul class='unstyled' id='elsewhere-icons'>
                 <li>
-	              <a class="twitter" href="https://twitter.com/getzenops" title="Tweet @Electorum on Twitter">
-	                Twitter
-	              </a>
-	              <a class="linkedin" href="http://www.linkedin.com/company/getzenops-io/" title="Link Electorum on LinkedIn">
-	                LinkedIn
-	              </a>
-	              <a class="googleplus" href="https://plus.google.com/getzenops" title="Hangout with Electorum on Google+">
-	                Google Plus
-	              </a>
+                  <a class="github" href="http://www.github.com/stackgeek/" title="View code on Github.">
+                    Github
+                  </a>
+  	              <a class="twitter" href="https://twitter.com/{{ twitter_handle }}" title="Tweet @{{ twitter_handle }} on Twitter">
+  	                Twitter
+  	              </a>
+  	              <a class="linkedin" href="http://www.linkedin.com/company/{{ linkedin_handle }}/" title="Link {{ app_name }} on LinkedIn">
+  	                LinkedIn
+  	              </a>
+  	              <a class="googleplus" href="https://plus.google.com/{{ google_plus_handle }}" title="Hangout with {{ app_name }} on Google+">
+  	                Google Plus
+  	              </a>
                 </li>
               </ul>
             </div>

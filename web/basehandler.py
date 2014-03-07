@@ -4,21 +4,20 @@
 import logging
 import re
 import os
+import time
 
-# related third party imports
+import bleach
 import webapp2
+
 from google.appengine.api.users import NotAllowedError
 from google.appengine.api import users
 from webapp2_extras import jinja2
 from webapp2_extras import auth
 from webapp2_extras import sessions
 
-# local application/library specific imports
 import config
 from lib import utils
 import web.models.models as models
-import bleach
-import time
 
 
 def user_required(handler):
@@ -80,17 +79,38 @@ def jinja2_factory(app):
     return j
 
 def handle_error(request, response, exception):
-    c = {
-        'exception': str(exception),
+    # set or overwrite special vars for jinja templates
+    kwargs = {
+        'google_analytics_code' : config.google_analytics_code,
+        'app_name': config.app_name,
+        'app_description': config.app_description,
+        'copyright_date': config.copyright_date,
+        'copyright_name': config.copyright_name,
+        'twitter_handle': config.twitter_handle,
+        'linkedin_handle': config.linkedin_handle,
+        'google_plus_handle': config.google_plus_handle,
+        'blog_url': config.blog_url,
         'url': request.url,
-        'base_layout': config.base_layout
-        }
+        'path': request.path,
+        'query_string': request.query_string
+    }
+
+    c = {'exception': str(exception), 'url': request.url, 'base_layout': config.base_layout}
+
+
+    # get the status of the response we'll send
     status_int = hasattr(exception, 'status_int') and exception.status_int or 500
+    
+    # whack the template out
     template = config.error_templates[status_int]
     t = jinja2.get_jinja2(factory=jinja2_factory, app=webapp2.get_app()).render_template(template, **c)
+    
+    # log the error
     logging.error(str(status_int) + " - " + str(exception))
-    response.write(t)
+    
+    # repsonse
     response.set_status(status_int)
+    response.write(t)
 
 class ViewClass:
     """
@@ -279,6 +299,10 @@ class BaseHandler(webapp2.RequestHandler):
             'app_description': config.app_description,
             'copyright_date': config.copyright_date,
             'copyright_name': config.copyright_name,
+            'twitter_handle': config.twitter_handle,
+            'linkedin_handle': config.linkedin_handle,
+            'google_plus_handle': config.google_plus_handle,
+            'blog_url': config.blog_url,
             'user_id': self.user_id,
             'name': self.name,
             'username': self.username,
@@ -292,11 +316,11 @@ class BaseHandler(webapp2.RequestHandler):
             'base_layout': self.get_base_layout,
             'admin_interface_url': config.admin_interface_url,
             'admin': self.is_admin,
-            })
+        })
 
         if hasattr(self, 'form'):
             kwargs['form'] = self.form
         if self.messages:
             kwargs['messages'] = self.messages
-
+        print filename
         self.response.write(self.jinja2.render_template(filename, **kwargs))

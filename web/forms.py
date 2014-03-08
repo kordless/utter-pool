@@ -9,6 +9,10 @@ class BaseForm(Form):
     def __init__(self, request_handler):
         super(BaseForm, self).__init__(request_handler.request.POST)
 
+class LoginForm(BaseForm):
+    password = fields.TextField('Password', [validators.Required(), validators.Length(max=FIELD_MAXLENGTH)], id='l_password')
+    username = fields.TextField('Username', [validators.Required(), validators.Length(max=FIELD_MAXLENGTH)], id='l_username')
+
 class AppForm(BaseForm):
     appname = fields.TextField('App_Name', [validators.Required(), validators.Length(max=25)], id='appname')
     appdescription = fields.TextField('App_Description', [validators.Required(), validators.Length(max=140)], id='appdescription')

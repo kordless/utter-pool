@@ -79,6 +79,13 @@ def jinja2_factory(app):
     return j
 
 def handle_error(request, response, exception):
+    # grab our handler object
+    handler = jinja2.get_jinja2(factory=jinja2_factory, app=webapp2.get_app())
+
+    # make all self.view variables available in jinja2 templates
+    if hasattr(handler, 'view'):
+        kwargs.update(handler.view.__dict__)
+
     # set or overwrite special vars for jinja templates
     kwargs = {
         'google_analytics_code' : config.google_analytics_code,
@@ -92,18 +99,17 @@ def handle_error(request, response, exception):
         'blog_url': config.blog_url,
         'url': request.url,
         'path': request.path,
-        'query_string': request.query_string
+        'query_string': request.query_string,
+        'exception': str(exception),
+        'base_layout': config.base_layout
     }
-
-    c = {'exception': str(exception), 'url': request.url, 'base_layout': config.base_layout}
-
 
     # get the status of the response we'll send
     status_int = hasattr(exception, 'status_int') and exception.status_int or 500
     
     # whack the template out
     template = config.error_templates[status_int]
-    t = jinja2.get_jinja2(factory=jinja2_factory, app=webapp2.get_app()).render_template(template, **c)
+    t = handler.render_template(template, **kwargs)
     
     # log the error
     logging.error(str(status_int) + " - " + str(exception))
@@ -111,6 +117,7 @@ def handle_error(request, response, exception):
     # repsonse
     response.set_status(status_int)
     response.write(t)
+
 
 class ViewClass:
     """
@@ -122,7 +129,7 @@ class ViewClass:
             self.view.var1 = "hello"
             self.view.array = [1, 2, 3]
             self.view.dict = dict(a="abc", b="bcd")
-        Can be accessed in the template by just using the variables liek {{var1}} or {{dict.b}}
+        Can be accessed in the template by just using the variables like {{var1}} or {{dict.b}}
     """
     pass
 

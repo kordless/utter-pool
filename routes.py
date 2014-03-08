@@ -31,7 +31,7 @@ _routes = [
     RedirectRoute('/forums/', handlers.ForumHandler, name='forums', strict_slash=True),
 
     # providers
-    RedirectRoute('/provider/signup', providerhandlers.ProviderSignupHandler, name='provider-signup', strict_slash=True),
+    RedirectRoute('/provider/register', providerhandlers.ProviderRegisterHandler, name='provider-register', strict_slash=True),
     RedirectRoute('/provider/login', providerhandlers.ProviderLoginHandler, name='provider-login', strict_slash=True),
     RedirectRoute('/provider/logout', providerhandlers.ProviderLogoutHandler, name='provider-logout', strict_slash=True),
     RedirectRoute('/provider/profile', providerhandlers.ProviderProfileHandler, name='provider-profile', strict_slash=True),

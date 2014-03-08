@@ -29,14 +29,14 @@ class ProviderLogoutHandler(BaseHandler):
 		
 
 class ProviderLoginHandler(BaseHandler):
-	"""
-	Handler for Social authentication
-	"""
-
 	def get(self):
-		self.redirect_to('home')
+		params = {}
+		return self.render_template('provider/login.html', **params)
 
-
+	@webapp2.cached_property
+	def form(self):
+		return forms.EditProfileForm(self)
+		
 class ProviderProfileHandler(BaseHandler):
 	"""
 	Handler for Social authentication
@@ -46,10 +46,7 @@ class ProviderProfileHandler(BaseHandler):
 		self.redirect_to('home')
 
 
-class ProviderSignupHandler(BaseHandler):
-	"""
-	Handler for Social authentication
-	"""
+class ProviderRegisterHandler(BaseHandler):
 
 	def get(self):
 		self.redirect_to('home')

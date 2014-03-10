@@ -131,7 +131,7 @@ class ContactHandler(BaseHandler):
 
         except (AttributeError, KeyError), e:
             logging.error('Error sending contact form: %s' % e)
-            message = _('Error sending the message. Please try again later.')
+            message = 'Error sending the message. Please try again later.'
             self.add_message(message, 'error')
             return self.redirect_to('contact')
 

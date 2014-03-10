@@ -98,27 +98,21 @@ footer #elsewhere-icons {
 footer #elsewhere-icons a {
   background: url("/img/social_icons.png") 0 0 no-repeat;
   float: left;
-  width: 32px;
-  height: 32px;
+  width: 35px;
+  height: 35px;
   overflow: hidden;
   text-indent: -900px;
-  margin-right: 8px;
+  margin-right: 5px;
   margin-bottom: 10px;
 }
-footer #elsewhere-icons a.facebook { 
-	background-position:  0px;
-}
 footer #elsewhere-icons a.twitter { 
-	background-position: -32px; 
+	background-position: -0px; 
 }
 footer #elsewhere-icons a.github { 
-	background-position: -64px; 
-}
-footer #elsewhere-icons a.linkedin { 
-	background-position: -96px;
+	background-position: -70px; 
 }
 footer #elsewhere-icons a.googleplus { 
-	background-position: -128px; 
+	background-position: -35px; 
 }
 footer ul, h4 {
 	margin-top: 4px;

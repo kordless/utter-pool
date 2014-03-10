@@ -38,7 +38,7 @@ clean:
 	-rm ${PYLINT}
 
 
-push: lint
+push:
 	git push origin $(BRANCH)
 
 

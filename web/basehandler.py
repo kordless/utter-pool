@@ -20,17 +20,10 @@ from lib import utils
 import web.models.models as models
 
 
+# decorator for auth required
 def user_required(handler):
-    """
-         Decorator for checking if there's a user associated
-         with the current session.
-         Will also fail if there's no session present.
-    """
 
     def check_login(self, *args, **kwargs):
-        """
-            If handler has no login_url specified invoke a 403 error
-        """
         try:
             auth = self.auth.get_user_by_session()
             if not auth:
@@ -40,6 +33,7 @@ def user_required(handler):
                     self.abort(403)
             else:
                 return handler(self, *args, **kwargs)
+
         except AttributeError, e:
             # avoid AttributeError when the session was delete from the server
             logging.error(e)
@@ -54,10 +48,8 @@ def generate_csrf_token():
         session['_csrf_token'] = utils.random_string()
     return session['_csrf_token']
 
-
 def bleach_clean(value):
     return bleach.clean(value, config.bleach_tags, config.bleach_attributes)
-
 
 def jinja2_factory(app):
     j = jinja2.Jinja2(app)
@@ -301,7 +293,6 @@ class BaseHandler(webapp2.RequestHandler):
 
         # set or overwrite special vars for jinja templates
         kwargs.update({
-            'google_analytics_code' : config.google_analytics_code,
             'app_name': config.app_name,
             'app_email': config.app_email,
             'app_description': config.app_description,
@@ -311,6 +302,7 @@ class BaseHandler(webapp2.RequestHandler):
             'linkedin_handle': config.linkedin_handle,
             'google_plus_handle': config.google_plus_handle,
             'blog_url': config.blog_url,
+            'google_analytics_code' : config.google_analytics_code, 
             'user_id': self.user_id,
             'name': self.name,
             'username': self.username,

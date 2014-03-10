@@ -27,10 +27,7 @@ def user_required(handler):
         try:
             auth = self.auth.get_user_by_session()
             if not auth:
-                try:
-                    self.redirect(self.auth_config['login_url'], abort=True)
-                except (AttributeError, KeyError), e:
-                    self.abort(403)
+                return self.redirect_to('login')
             else:
                 return handler(self, *args, **kwargs)
 

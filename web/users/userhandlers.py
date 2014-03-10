@@ -79,7 +79,7 @@ class CallbackLoginHandler(BaseHandler):
                 user = User(
                     last_login = datetime.now(),
                     uid = str(uid),
-                    username = current_user.nickname(),
+                    username = current_user.email().split("@")[0],
                     email = current_user.email(),
                     activated = True
                 )

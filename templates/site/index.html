@@ -16,7 +16,7 @@
       <h1>Decentralized Clouds for Everyone</h1>
       <div>
         <button id="get-started" class="btn btn-lg btn-warning">Get Started</button>
-        <button id="get-started" class="btn btn-lg btn-success">Sign In</button>
+        <button id="splash-login" class="btn btn-lg btn-success">Sign In</button>
       </div>
       <div class="splash-register">
         Providers, <a href="{{ uri_for('login') }}">register</a> with your Google account now.
@@ -29,7 +29,8 @@
   <script type="text/javascript">
     $().ready(function() {
       // login button
-      $('#nav-login').on('click', function(e) { window.location = "/login" });
+      $('#nav-login').on('click', function(e) { window.location = "{{ uri_for('account') }}" });
+      $('#splash-login').on('click', function(e) { window.location = "{{ uri_for('account') }}" });
       $('#get-started').on('click', function(e) { window.location = "/register" });
       var themap = L.mapbox.map('map', 'xovio.h1o6ii64', {scrollWheelZoom: false, zoomControl: false}).setView([20, 20], 3);
       setInterval(function(){themap.panBy([-1, 0]);},3000);

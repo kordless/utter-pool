@@ -8,25 +8,24 @@ import hashlib
 import json
 
 from datetime import datetime
+from StringIO import StringIO
 
-# related webapp2 imports
 import webapp2
 from webapp2_extras import security
 from webapp2_extras.auth import InvalidAuthIdError, InvalidPasswordError
 from webapp2_extras.appengine.auth.models import Unique
 
-# google imports
 from google.appengine.api import taskqueue
 from google.appengine.api import users
 
-# local application/library specific imports
 import config
 import web.forms as forms
 from web.models.models import User
 from web.models.models import LogVisit
-from lib import utils, httpagentparser
 from web.basehandler import BaseHandler
 from web.basehandler import user_required
+from lib import utils, httpagentparser
+from lib import pyotp
 
 # user logout
 class LogoutHandler(BaseHandler):
@@ -115,9 +114,39 @@ class CallbackLoginHandler(BaseHandler):
 class AccountHandler(BaseHandler):
     @user_required
     def get(self):
+        current_user = users.get_current_user()
+        uid = current_user.user_id()
+        user = User.get_by_uid(uid)
+
+        # force user to setup 2FA
+        if user.tfenabled == False:
+            pass
+            # return self.redirect_to('account-twofactor')
         params = {}
         return self.render_template('user/dash.html', **params)
 
+
+class TwoFactorHandler(BaseHandler):
+    @user_required
+    def get(self):
+        current_user = users.get_current_user()
+        uid = current_user.user_id()
+        user = User.get_by_uid(uid)
+        
+        # force user to setup 2FA
+        if user.tfenabled == False:
+            key = pyotp.random_base32()
+            
+            # update the user's key
+            user.tfkey = key
+            user.put()
+
+            code = pyotp.TOTP()
+        steve = pyotp.random_base32()
+        t = pyotp.TOTP(steve)
+        qrcode = t.provisioning_uri(user.email)
+
+        pass
 
 class EditProfileHandler(BaseHandler):
     """

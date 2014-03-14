@@ -2,6 +2,7 @@ from webapp2_extras.routes import RedirectRoute
 from web import handlers
 from web.users import userhandlers
 from web.api import apihandlers
+from web.blog import bloghandlers
 
 secure_scheme = 'https'
 
@@ -22,9 +23,17 @@ _routes = [
     RedirectRoute('/logout/', userhandlers.LogoutHandler, name='logout', strict_slash=True),
     RedirectRoute('/login/complete', userhandlers.CallbackLoginHandler, name='login-complete', strict_slash=True),
     RedirectRoute('/account/', userhandlers.AccountHandler, name='account', strict_slash=True),
-    
+    RedirectRoute('/account/twofactor/', userhandlers.TwoFactorHandler, name='account-twofactor', strict_slash=True),
+
     # api
-    RedirectRoute('/api/<public_method>', apihandlers.APIPublicHandler, name='api_public', strict_slash=True)
+    RedirectRoute('/api/<public_method>', apihandlers.APIPublicHandler, name='api_public', strict_slash=True),
+
+    # blog handlers
+    RedirectRoute('/blog/', bloghandlers.PublicBlogHandler, name='blog', strict_slash=True),
+    RedirectRoute('/blog/feed/rss/', bloghandlers.PublicBlogRSSHandler, name='blog-rss', strict_slash=True),
+    RedirectRoute('/blog/articles/new/', bloghandlers.BlogArticleCreateHandler, name='blog-article-create', strict_slash=True),
+    RedirectRoute('/blog/articles/', bloghandlers.BlogArticleListHandler, name='blog-article-list', strict_slash=True),
+    RedirectRoute('/blog/<slug>', bloghandlers.BlogArticleSlugHandler, name='blog-article-slug', strict_slash=True),
 ]
 
 def get_routes():

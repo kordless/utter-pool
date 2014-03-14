@@ -5,15 +5,6 @@ body {
   color: #5a5a5a;
 }
 
-/* the almighty map */
-#map {
-  position:absolute; 
-  top:0; 
-  bottom:0; 
-  width:100%;
-  z-index: -1;
-}
-
 /* Special class on .container surrounding .navbar, used for positioning it into place. */
 .navbar-wrapper {
   position: absolute;
@@ -53,15 +44,26 @@ body {
   }
 }
 
+/* the almighty map */
+#map {
+  top:0; 
+  bottom:0; 
+  width:100%;
+  z-index: -1;
+  height: 740px;
+  border-bottom: 1px solid #888;
+  opacity:0.8;
+  filter:alpha(opacity=80);
+}
+
 /* home page overlay */
 .splash-container {
   position: absolute;
-  z-index: 100;
+  z-index: 10;
   left: 0;
   right: 0;
-  top: 30%;
-  width: 60%;
-  max-width: 1000px;
+  top: 300px;
+  max-width: 800px;
   margin-left: auto;
   margin-right: auto;
   background: rgba(30, 30, 30, 0.5);
@@ -70,11 +72,23 @@ body {
 .splash-container h1 {
   color: white;
 }
-.splash-register {
+.splash-instructions {
   padding-top: 12px;
   color: white;
 }
-.splash-instructions a:link {
+.splash-instructions > a:link,
+.splash-instructions > a:visited,
+.splash-instructions > a:active {
   color: white;
   text-decoration: underline;
+  padding-top: 12px;
+}
+
+/* marketing drivel */
+.marketing {
+  margin-top: 20px;
+}
+.marketing > .drivel {
+  padding-top: 30px;
+  min-height: 200px;
 }

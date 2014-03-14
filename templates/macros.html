@@ -1,79 +1,70 @@
-<!-- creates a form input field of the type specified.  
-	Note that in addition to the listed parameters, any set of kwargs can be passed and will appear as attributes on the html input element
-	type, class, value, placeholder are noteable kwargs for the input element -->
+<!-- creates a form input field -->
 {% macro input(form, name, label, type='text') -%}
-        <div class="control-group{% if getattr(form,name).errors %} error{% endif %}">
-            <label "control-label" for="{{ name }}">{{ label|safe }}{% if getattr(form,name).flags.required %}<span class="required">*</span>{% endif %}{% if name == 'password' %}<a class="forgot_pass" href="{{ uri_for("password-reset") }}">{% trans %}Forgot it?{% endtrans %}</a>{% endif %}</label>
-            <div class="">
-            {{ getattr(form,name)(type=type, **kwargs)|safe }}
-            {% if getattr(form,name).errors %}
-                {% for error in getattr(form,name).errors %}<label for="{{ name }}" class="error help-inline">{{ error }}</label>{% endfor %}
-            {% endif %}
-            </div>
-        </div>
-{%- endmacro %}
-
-<!-- renders federated login (openId and Oauth) login buttons -->
-{% macro federated_login(provider_info, provider_uris, enable_federated_login) -%}
-{% if enable_federated_login %}
-            <div id="third_party_login" class="form-actions">
-                <h4>{% trans %}Sign in using:{% endtrans %}</h4>
-                <div class="social-login-icons">
-                    {% for p in provider_info if provider_uris[p] %}
-                    <a href="{{ provider_uris[p] }}" class="social-btn social-btn-{{ p }}" title="{{ p.label }}">Login {{ p.label }}</a>
-                    {% endfor %}
-                </div>
-            </div>
-{% endif %}
-{%- endmacro %}
-
-<!-- navigation menu -->
-{% macro navbar_links(page, user_id) -%}
-                <li><a class='{% if page=="blog" %}active{% endif %}' href='{{ blog_url }}'>Blog</a></li>
-                <li><a class='{% if page=="features" %}active{% endif %}' href='{{ uri_for("features")}}'>Features</a></li>
-                <li><a class='{% if page=="pricing" %}active{% endif %}' href='{{ uri_for("pricing")}}'>Pricing</a></li>
+  <div class="control-group{% if getattr(form,name).errors %} error{% endif %}">
+    <label "control-label" for="{{ name }}">{{ label|safe }}
+      {% if getattr(form,name).flags.required %}
+        <span class="required">*</span>
+      {% endif %}
+    </label>
+    <div>
+      {{ getattr(form,name)(type=type, **kwargs)|safe }}
+      {% if getattr(form,name).errors %}
+          {% for error in getattr(form,name).errors %}<label for="{{ name }}" class="error help-inline">{{ error }}</label>{% endfor %}
+      {% endif %}
+    </div>
+    </div>
 {%- endmacro %}
 
 <!-- twitter widget -->
 {% macro tweet_widget(data_url, data_text) -%}
-    <a href="https://twitter.com/share" 
-        data-url="{{data_url}}" 
-        class="twitter-share-button" 
-        data-text="{{data_text}}" 
-        data-via="{{ twitter_handle }}" 
-        data-size="medium">Tweet</a>
-    
-    <script type="text/javascript">
-        !function(d,s,id){
-            var js,
-            fjs=d.getElementsByTagName(s)[0];
-            if(!d.getElementById(id)){
-                js=d.createElement(s);
-                js.id=id;
-                js.src="//platform.twitter.com/widgets.js";
-                fjs.parentNode.insertBefore(js,fjs);
-            }
-        }(document,"script","twitter-wjs");
-    </script>
+  <a href="https://twitter.com/share" 
+    data-url="{{data_url}}" 
+    class="twitter-share-button" 
+    data-text="{{data_text}}" 
+    data-via="{{ twitter_handle }}" 
+    data-size="medium">
+    Tweet
+  </a>
+  
+  <script type="text/javascript">
+    !function(d,s,id){
+      var js,
+      fjs=d.getElementsByTagName(s)[0];
+      if(!d.getElementById(id)){
+        js=d.createElement(s);
+        js.id=id;
+        js.src="//platform.twitter.com/widgets.js";
+        fjs.parentNode.insertBefore(js,fjs);
+      }
+    }(document,"script","twitter-wjs");
+  </script>
 {%- endmacro %}
 
 <!-- google plus widget -->
 {% macro g_plus_widget(data_url) -%}
-    <div class="g-plusone" 
-        data-href="{{ data_url }}" 
-        data-size="medium" 
-        data-annotation="none">
-    </div>
-    <script type="text/javascript">
-        (function() {
-            var po = document.createElement('script'); 
-            po.type = 'text/javascript'; 
-            po.async = true; 
-            po.src = 'https://apis.google.com/js/plusone.js';
-            var s = document.getElementsByTagName('script')[0]; 
-            s.parentNode.insertBefore(po, s);
-        }
-        )();
-    </script>
+  <div class="g-plusone" 
+    data-href="{{ data_url }}" 
+    data-size="medium" 
+    data-annotation="none">
+  </div>
+  <script type="text/javascript">
+    (function() {
+      var po = document.createElement('script'); 
+      po.type = 'text/javascript'; 
+      po.async = true; 
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; 
+      s.parentNode.insertBefore(po, s);
+    })();
+  </script>
 {%- endmacro %}
+
+<!-- navigation menu -->
+{% macro navbar_links(page, user_id, blog_url) -%}
+  <li><a class='{% if page=="blog" %}active{% endif %}' href='{{ blog_url }}'>Blog</a></li>
+  <li><a class='{% if page=="features" %}active{% endif %}' href='{{ uri_for("features")}}'>Features</a></li>
+  <li><a class='{% if page=="pricing" %}active{% endif %}' href='{{ uri_for("pricing")}}'>Pricing</a></li>
+{%- endmacro %}
+
+
 

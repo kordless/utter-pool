@@ -13,16 +13,74 @@
 
 {% block content %}
     <div class="splash-container">
-      <h1>Decentralized Clouds for Everyone</h1>
+      <h1>Decentralized Cloud Servers</h1>
       <div>
-        <button id="get-started" class="btn btn-lg btn-warning">Get Started</button>
-        <button id="splash-login" class="btn btn-lg btn-success">Sign In</button>
+        <button id="get-started" class="btn btn-lg btn-success">Launch a Cloud with Bitcoin</button>
+        <button id="splash-login" class="btn btn-lg btn-warning">Learn More</button>
       </div>
-      <div class="splash-register">
-        Providers, <a href="{{ uri_for('login') }}">register</a> with your Google account now.
+      <div class="splash-instructions">
+        Providers, <a href="{{ uri_for('login') }}">register</a> with your Google account to immediately start monitizing your spare compute.
       </div>
     </div>
+
     <div id='map'></div>
+    
+    <div class="container">
+      <div class="marketing">
+        <div class="row drivel">
+          <div class="col-md-4">
+            <h3><span class="glyphicon glyphicon-lock"></span> Login Secured by Google</h3>
+            <p>{{ app_name }}'s pool controller runs on <a href="https://developers.google.com/appengine/docs/whatisgoogleappengine">Google Appengine</a> and utilizes <a href="https://developers.google.com/appengine/articles/openid">Google's federated login system</a> to deter provider account theft. Supports two factor authentication via <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2">Google Authenticator</a>.</p>
+          </div>
+          <div class="col-md-4">
+            <h3><span class="glyphicon glyphicon-qrcode"></span> Payments by Bitcoin</h3>
+            <p>Start 100s of instances in minutes by simply sending Bitcoin.  An account is NOT required to start instances, helping protect against surveillance by agencies who threatens personal freedom and privacy.</p>
+          </div>
+          <div class="col-md-4">
+            <h3><span class="glyphicon glyphicon-map-marker"></span> Geo Diverse Instances</h3>
+            <p>{{ app_name }} providers can be located in any country around the globe.  Start instances based on geo requirements or take advantage of ultra cheap compute in emerging markets.</p>
+          </div>
+        </div><!--/row-->
+        <div class="row drivel">
+          <div class="col-md-4">
+            <h3><span class="glyphicon glyphicon-user"></span> A Compute Market</h3>
+            <p>Service providers who <a href="/login">signup with {{ app_name }}</a> start earning revenue immediately by selling their excess compute capacity. Individuals can fund micro deployments and enjoy participating in our education based community.</p>
+          </div>
+          <div class="col-md-4">
+            <h3><span class="glyphicon glyphicon-tasks"></span> Powered by OpenStack</h3>
+            <p>The <a href="http://openstack.org">OpenStack Open Source project</a> provides the cloud controller fabric for the xovio pools and can run on anything from a single desktop computer to an entire datacenter. Did you know that you can <a href="https://github.com/StackGeek/openstackgeek/tree/master/grizzly">install OpenStack in 10 minutes</a>?
+          </div>
+          <div class="col-md-4">
+            <h3><span class="glyphicon glyphicon-heart"></span> 100% Open Source</h3>
+            <p>Everything you see here is Open Source and free to use by anyone, anywhere, at any time. The Bitcoin methodology teaches high decentralization of all components, including infrastructure hardware and software.  Run your own <a href="https://github.com/stackmonkey/">pool or contribute</a> to the code today!</p>
+          </div>
+        </div><!--/row-->
+        <div class="row drivel">
+          <div class="col-md-4">
+            <h3><span class="glyphicon glyphicon-transfer"></span> IPv6 Ready</h3>
+            <p>The world is nearly out of IPV4 address space, so there's no sense in providing a highly distributed compute cloud without providing enough addresses for billions of instances.  Support for purchasing static public IPv4 addresses coming soon!</p>
+          </div>
+          <div class="col-md-4">
+            <h3><span class="glyphicon glyphicon-cog"></span> Powerful APIs</h3>
+            <p>Use our RESTful APIs to search and stop instances anywhere in the world.  Spin up a micro cluster in The Mission for streaming video or start instances in Madagascar, Missouri and Madrid for remote penetration testing.</p>
+          </div>
+          <div class="col-md-4">
+            <h3><span class="glyphicon glyphicon-bullhorn"></span> Call to Action</h3>
+            <p>If you feel strongly about the coming age of trust and transparency, pick up your phone and donate a small amount of Bitcoin to the project today.  We appreciate your support!</p>
+          </div>
+        </div><!--/row-->
+      </div>
+      <hr class="soften">
+      <blockquote class="big-quote">
+        <h2><em>&#8220;Until now, the term <strong>cloud</strong> has just been a bunch of marketing bullshit.&#8221;</em></h2>
+        <small>
+          Kord Campbell, Founder of StackGeek
+        </small>
+      </blockquote>
+    </div>
+  </div>
+
+
 {% endblock %}
 
 {% block javascript %}

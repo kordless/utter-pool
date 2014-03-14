@@ -224,13 +224,10 @@ class BaseHandler(webapp2.RequestHandler):
 
     @webapp2.cached_property
     def is_admin(self):
-        if self.user:
-            try:
-                user_info = models.User.get_by_id(long(self.user_id))
-                return user_info.admin
-            except AttributeError, e:
-                logging.error(e)
-        return False
+        if users.is_current_user_admin():
+            return True
+        else:
+            return False
 
     @webapp2.cached_property
     def email(self):

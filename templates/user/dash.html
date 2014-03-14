@@ -1,14 +1,31 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-	<title>Hello!</title>
-    <script type="text/javascript">
-	$(document).ready(function() {
-	});
-	</script>
-</head>
-<body id='home'>
-	Welcome {{username}}!  <a href="/logout">Click here</a> to logout!
-</body>
-</html>
+{% import "macros.html" as macros %}
+{% extends base_layout %}
+
+{% block page_styles %}
+    <!-- Home Page -->
+    <link href="/css/index.css" rel="stylesheet">
+{% endblock %}
+
+{% block navbar %}
+  {% include 'site/navbar.html' %}
+{% endblock %}
+
+{% block content %}
+  <div class="splash-container">
+	<h1>Hello there.  Your code is {{ secret }}.</h1>
+    <div>  Your code is {{ secret }}.</div>
+    <div id="qrcode"></div>
+  </div>
+{% endblock %}
+
+{% block javascript %}
+  <script type="text/javascript">
+    $().ready(function() {
+   	  $('#qrcode').qrcode("{{ qrcode }}");
+    })
+  </script>
+{% endblock %}
+
+{% block extras %}
+  <script type="text/javascript" src="/js/qrcode.min.js"></script>
+{% endblock %}

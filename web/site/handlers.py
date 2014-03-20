@@ -27,17 +27,13 @@ from web.basehandler import BaseHandler
 from web.basehandler import user_required
 
 class SendEmailHandler(BaseHandler):
-    """
-    Core Handler for sending Emails
-    Use with TaskQueue
-    """
+    # task queue stuff for sending emails
     def post(self):
-
         from google.appengine.api import mail, app_identity
         from google.appengine.api.datastore_errors import BadValueError
         from google.appengine.runtime import apiproxy_errors
         import config
-        from models import models
+        from web.models import models
 
         to = self.request.get("to")
         subject = self.request.get("subject")
@@ -60,6 +56,7 @@ class SendEmailHandler(BaseHandler):
                 when = utils.get_date_time("datetimeProperty")
             )
             logEmail.put()
+            
         except (apiproxy_errors.OverQuotaError, BadValueError):
             logging.error("Error saving Email Log in datastore")
 
@@ -74,9 +71,9 @@ class AboutHandler(BaseHandler):
                 self.form.name.data = user_info.name + " " + user_info.last_name
             if user_info.email:
                 self.form.email.data = user_info.email
-        params = {
-            "exception" : self.request.get('exception')
-            }
+        
+        # wtf is this?
+        params = {"exception" : self.request.get('exception')}
 
         return self.render_template('site/about.html', **params)
 
@@ -84,7 +81,7 @@ class AboutHandler(BaseHandler):
         # validate form
         if not self.form.validate():
             return self.get()
-
+            
         remoteip  = self.request.remote_addr
         user_agent  = self.request.user_agent
         exception = self.request.POST.get('exception')
@@ -93,11 +90,9 @@ class AboutHandler(BaseHandler):
         message = self.form.message.data.strip()
 
         try:
-            subject = _("Contact")
+            subject = "Contact this person, please."
+            
             # exceptions for error pages that redirect to contact
-            if exception != "":
-                subject = subject + " (Exception error: %s)" % exception
-
             template_val = {
                 "name": name,
                 "email": email,
@@ -119,15 +114,15 @@ class AboutHandler(BaseHandler):
                 'sender' : config.contact_sender,
                 })
 
-            message = _('Your message was sent successfully.')
+            message = "Your message was sent successfully."
             self.add_message(message, 'success')
-            return self.redirect_to('contact')
+            return self.redirect_to('about')
 
         except (AttributeError, KeyError), e:
             logging.error('Error sending contact form: %s' % e)
-            message = 'Error sending the message. Please try again later.'
+            message = "Error sending the message. Please try again later."
             self.add_message(message, 'error')
-            return self.redirect_to('contact')
+            return self.redirect_to('about')
 
     @webapp2.cached_property
     def form(self):
@@ -150,8 +145,3 @@ class FeaturesHandler(BaseHandler):
     def get(self):
         params = {}
         return self.render_template('site/features.html', **params)
-
-
-
-
-

@@ -13,7 +13,9 @@ body {
   right: 0;
   z-index: 20;
 }
-
+.caret {
+  float: right;
+}
 /* Flip around the padding for proper display in narrow viewports */
 .navbar-wrapper .container {
   padding-left: 0;
@@ -50,7 +52,7 @@ body {
   bottom:0; 
   width:100%;
   z-index: -1;
-  height: 740px;
+  height: 720px;
   border-bottom: 1px solid #888;
   opacity:0.8;
   filter:alpha(opacity=80);
@@ -62,7 +64,7 @@ body {
   z-index: 10;
   left: 0;
   right: 0;
-  top: 300px;
+  top: 260px;
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
@@ -91,4 +93,7 @@ body {
 .marketing > .drivel {
   padding-top: 30px;
   min-height: 200px;
+}
+.big-quote > p {
+  font-size: 24px;
 }

@@ -1,18 +1,9 @@
 <!-- creates a form input field -->
-{% macro input(form, name, label, type='text') -%}
-  <div class="control-group{% if getattr(form,name).errors %} error{% endif %}">
-    <label "control-label" for="{{ name }}">{{ label|safe }}
-      {% if getattr(form,name).flags.required %}
-        <span class="required">*</span>
-      {% endif %}
-    </label>
-    <div>
-      {{ getattr(form,name)(type=type, **kwargs)|safe }}
-      {% if getattr(form,name).errors %}
-          {% for error in getattr(form,name).errors %}<label for="{{ name }}" class="error help-inline">{{ error }}</label>{% endfor %}
-      {% endif %}
-    </div>
-    </div>
+{% macro input(form, name, label, size, type='text') -%}
+  <div class="{{size|safe}} {% if getattr(form,name).errors %} has-error{% endif %} form-padding">
+    <label class="control-label" for="{{ name }}">{{ label|safe }}</label>
+    {{ getattr(form,name)(type=type, **kwargs)|safe }}
+  </div>
 {%- endmacro %}
 
 <!-- twitter widget -->
@@ -25,7 +16,7 @@
     data-size="medium">
     Tweet
   </a>
-  
+
   <script type="text/javascript">
     !function(d,s,id){
       var js,
@@ -38,6 +29,12 @@
       }
     }(document,"script","twitter-wjs");
   </script>
+{%- endmacro %}
+
+<!-- twitter timeline -->
+{% macro tweet_timeline(twitter_handle, twitter_widget_id) -%}
+  <a class="twitter-timeline" href="https://twitter.com/{{twitter_handle}}" data-widget-id="{{twitter_widget_id}}">Tweets by @{{twitter_handle}}</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 {%- endmacro %}
 
 <!-- google plus widget -->
@@ -58,13 +55,5 @@
     })();
   </script>
 {%- endmacro %}
-
-<!-- navigation menu -->
-{% macro navbar_links(page, user_id, blog_url) -%}
-  <li><a class='{% if page=="blog" %}active{% endif %}' href='{{ blog_url }}'>Blog</a></li>
-  <li><a class='{% if page=="features" %}active{% endif %}' href='{{ uri_for("features")}}'>Features</a></li>
-  <li><a class='{% if page=="pricing" %}active{% endif %}' href='{{ uri_for("pricing")}}'>Pricing</a></li>
-{%- endmacro %}
-
 
 

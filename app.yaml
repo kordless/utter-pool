@@ -1,5 +1,5 @@
 application: stackmonkeyapp
-version: 1-0-1
+version: 1-0-4
 runtime: python27
 api_version: 1
 threadsafe: true
@@ -59,6 +59,10 @@ handlers:
   static_files: static/img/\1
   upload: static/img/(.*\.(gif|png|jpg))
 
+- url: /sounds
+  mime_type: application/octet-stream
+  static_dir: static/sounds
+  
 - url: /css
   mime_type: text/css
   static_dir: static/css
@@ -71,9 +75,13 @@ handlers:
   mime_type: application/octet-stream
   static_dir: static/fonts
 
+- url: /assets
+  mime_type: text/plain
+  static_dir: static/assets
+
 - url: /.*
   script: main.app
-#  secure: always
+  secure: always
 
 libraries:
 - name: jinja2

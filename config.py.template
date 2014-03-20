@@ -17,8 +17,10 @@ contact_recipient = "CONTACT_EMAIL"
 
 # social handles
 twitter_handle = "stackape"
+twitter_widget_id = "TWITTER_WIDGET_ID"
 linkedin_handle = "stackmonkey"
 google_plus_handle = "stackmonkey"
+disqus_shortname = "stackmonkey"
 
 # blog URL
 blog_url = "/blog"

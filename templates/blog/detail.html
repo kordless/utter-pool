@@ -1,8 +1,12 @@
-<!-- renders an individual blog post -->
+{% import "macros.html" as macros %}
 {% extends base_layout %}
 
 {% block title %}
-  {{ entry.article_title }}
+  {{ article_title }}
+{% endblock %}
+
+{% block page_styles %}
+  <link href="/css/blog.css" rel="stylesheet">
 {% endblock %}
 
 {% block rssfeed %}
@@ -11,88 +15,52 @@
   <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="http://feeds.feedburner.com/{{ app_feedburner_slug }}/" />
 {% endblock %}
 
-{% block extra_nav %}
-	{{ macros.nav_menu(menu_choice, user_id) }}
+{% block navbar %}
+  {% include 'site/navbar.html' %}
 {% endblock %}
 
 {% block content %}
-  <div class="row blog">
-    {% if is_mobile %}
-    <div class="span3">
-      <a class="twitter-timeline" data-dnt=true href="https://twitter.com/{{twitter_username}}" data-widget-id="{{twitter_widget_id}}"></a>
-      <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </div>
-    {% endif %}
-    <div class="span9">
-      <div class="apost">
-        <h1 class="postdetail"><a href="/blog/{{ entry.article_owner }}/{{ article_type }}/{{ entry.article_slug }}">{{ entry.article_title }}</a></h1>
-        <div class="date_social">
-          <div class="date"><span class="label label-important">{{ entry.created }}</span></div>
-          {% if user_id %}
-            {{ macros.fork_gist_widget(entry.article_owner, entry.article_id) }}
-          {% endif %}
-          {{ macros.g_plus_widget("http://%s/blog/%s/%s/%s"%(entry.article_host, entry.article_owner, entry.article_type, entry.article_slug)) }}
-          {{ macros.tweet_widget("http://%s/blog/%s/%s/%s"%(entry.article_host, entry.article_owner, entry.article_type, entry.article_slug), entry.article_summary) }}
+<div class="container">
+  <div class="row">
+    <div class="col-md-9">
+      <div class="row">
+        <div class="col-md-1 col-sm-1">
+          <img src="{{ article_gravatar_url }}" class="img-rounded avatar" alt="Author Image">
         </div>
-        <p>by <a href="/blog/{{ entry.article_owner }}/" rel="author">{{ name }}</a>
-        {{entry.article_html}}
-        <a name="comments"></a>
-        <div id="disqus_thread"></div>
-      </div>
-    </div>
-    {% if not is_mobile %}
-    <div class="span3">
-      <div class="twitter_block">
-        <a class="twitter-timeline" data-dnt=true href="https://twitter.com/{{twitter_username}}" data-widget-id="{{twitter_widget_id}}"></a>
-        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-      </div>
-      <div style="position: absolute;" class="ad_wrapper">
-        <div class="ad_block">
-          {{ macros.google_ads('square') }}
-        </div>
-        <div class="ad_block">
-          {{ macros.google_ads('skyscraper')}}
+        <div class="col-md-3 col-sm-3">
+          <span>{{ article_created }}</span>
+          <div class="article-owner">
+            by <strong>{{ article_owner }}</strong>
+          </div>
         </div>
       </div>
+      <div class="post">
+        {{ article_html }}
+      </div>
+      <ul class="pager">
+        <li class="previous"><a href="#">&larr; Older</a></li>
+        <li class="next"><a href="#">Newer &rarr;</a></li>
+      </ul>
+      <a name="comments"></a>
+      <div id="disqus_thread"></div>
     </div>
-    {% endif %}
+    <div class="col-md-3">
+      {{ macros.tweet_timeline(twitter_handle, twitter_widget_id) }}
+    </div>
   </div>
+</div>
 {% endblock %}
 
-{% block mediaJS %}
-    <!-- gotta pay for appengine instances! 
-    <script type="text/javascript">
-      var infolinks_pid = 1454967;
-      var infolinks_wsid = 0;
-    </script>
-    <script type="text/javascript" src="http://resources.infolinks.com/js/infolinks_main.js"></script>
-    -->
-    <script type="text/javascript" language="JavaScript">
-    $(window).load(function(){
-      var disqus_shortname = 'stackgeek';
-      var disqus_developer = 1;
-      (function() {
-          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-      })();
-    });
-    function scrolly () {
-      var top = 0;
-      var top_offset = 54;
-      var top_min = 700;
-      var ease = 1000;
-      if (parseInt(window.scrollY+top_offset) > top_min) {
-        top = parseInt(window.scrollY+top_offset);
-      } else {
-        top = top_min;
-      }
-      $(".ad_wrapper").animate({top: top}, {duration: ease});
-    }
-    var scroll_timer = 120000;
-    var scroll_refresh = 2000;
-    setTimeout(function() {
-      setInterval(function() { scrolly() }, scroll_refresh);
-    }, scroll_timer);
-    </script>
+{% block javascript %}
+<script type="text/javascript" language="JavaScript">
+  $(window).load(function(){
+    var disqus_shortname = '{{disqus_shortname}}';
+    var disqus_developer = 1;
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  });
+</script>
 {% endblock %}

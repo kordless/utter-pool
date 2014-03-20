@@ -1,0 +1,42 @@
+# A Fresh Start
+I recently realized I've been working on the distributed compute methodologies behind StackMonkey for 15 years. My first exposure to distributed computing was running the [SETI@home client](http://setiathome.ssl.berkeley.edu/) at my ISP in Oklahoma City back in the mid-90s. I was so taken by the technology that I ended up doing a startup called [Grub](http://en.wikipedia.org/wiki/Grub_%28search_engine%29) which conducted distributed crawls of the Internet. For good or bad, I [sold Grub to LookSmart in 2003](http://news.cnet.com/2100-1032-993591.html), which set off a chain of events that eventually led me to moving to the Bay area and getting a job as a technology evangelist at [Splunk](http://splunk.com/) in 2007.
+
+My team at Splunk got the ax in early 2009, when the board decided to shake up the executive management and quash our efforts to Open Source portions of the Splunk stack. After Splunk, I did a short operations gig at Mashery and then struck out on my own by founding [Loggly](http://loggly.com/) in early 2010 with a couple of friends. It was at Loggly I began to realize there were [significant issues with the chain of trust](http://www.stackgeek.com/blog/kordless/post/a-code-of-trust) between customers and the companies who offered infrastructure software and/or services. When I left Loggly a few years ago and cashed out, I realized these trust issues don't stop at the corporate level. Trust issues go [all the way up the chain right into to the investment community](http://nypost.com/2014/03/19/sac-hires-analytics-firm-to-monitor-employees/).
+
+The Internet and the services it provides has become far too important in our lives for us to ignore how we establish trust within its infrastructure. Moving forward, I'm making it my life's mission to elevate the function of **trust** to the same levels of the other infrastructure knobs: **compute, storage and networking**.
+
+Starting here and now, trust becomes the fourth knob of the **cloud**.
+
+## Broken Trust
+Until now, instantiating trust in the Internet's infrastructure has been a significant challenge. Infrastructure internals are a [black box to consumers](http://www.theregister.co.uk/2014/01/22/amazon_open_source_investigation/). [Fraud is rampant within the industry](http://www.crn.com/news/cloud/240155102/dimension-data-cloud-chief-cloud-platform-providers-must-fight-fraud-cybercrime.htm) and comprises a signification portion IaaS and SaaS costs which are passed on to the consumer. Rogue agencies are [forcing companies to collect our data](http://www.theguardian.com/world/2014/mar/19/us-tech-giants-knew-nsa-data-collection-rajesh-de) without permission or justification.  Centralized systems which house our data are [being compromised on a daily basis](https://www.google.com/search?q=hackers+break+into).
+
+Worse, the term **'cloud'**, which has been synonymous with the Internet for many years now, is being actively used as a catch all marketing phrase by companies to [mislead consumers into buying centralized services](http://blogs.gartner.com/rolf-jester/2013/02/13/when-to-stop-using-the-cloud-word/). It's only when your data lives in a centralized closed system that it becomes an easy target for both hackers and intelligence agencies.
+
+Amusingly, Amazon owns over 55% of the IaaS market and [openly calls AWS a 'cloud service'](http://aws.amazon.com/what-is-cloud-computing/). This is a patently false statement from a scientific standpoint. The term **'cloud'** is [traditionally defined](http://en.wikipedia.org/wiki/Distributed_computing) as **highly distributed computing** which enjoys high concurrency. While Amazon's infrastructure is impressive, it's definitely not highly distributed, nor does it participate in concurrency with other similar service offerings. As of this writing, [Amazon runs services at nine distinct locations around the globe](http://aws.amazon.com/about-aws/globalinfrastructure/regional-product-services/). Ten, if you count the one [they built for US intelligence agencies](http://www.networkworld.com/news/2013/111413-amazon-franken-cloud-275960.html). 
+
+Nine data centers are not a cloud and the closed source code Amazon runs does not lend itself well to concurrency or trustworthy computing.
+
+![Tim Time](/assets/blog/images/tim.jpg "Tim Burners-Lee")
+
+If you don't want to take my word, [read what Tim Burners-Lee's has to say about it](http://www.cnn.com/2014/03/12/tech/web/tim-berners-lee-web-freedom/).  This is the guy that invented what most people consider as the Internet today: The World Wide Web. Tim thinks the Web is broken, and I agree with him.
+
+To fix these problems, we must decentralize everything attached to the infrastructure of the Internet, apply cryptocurrency based trust to the components that require it, open up everything that runs on the infrastructure between my brain and yours, and then put it all back together and put it the hands of the people as a decentralized web of the future.  
+
+Back in 1999 I dreamed of creating such a thing, but was limited in ability and the state of technology. After grinding my way through the infrastructure space, and waiting around on new technologies that implement trust, I'm finally at a place I can build it.
+
+## Bitcoin Will Save the Internet
+I'm a huge fan of Bitcoin because I fundamentally [understand the processes by which it instantiates trust](http://radar.oreilly.com/2014/02/bitcoin-security-model-trust-by-computation.html). I'm well aware there are ongoing debates around its value and whether or not it can be considered a currency. I'm not here to argue those points or to lobby for a worldwide currency backed by Bitcoin. I'm here to point out the **trust** that is instantiated by the Bitcoin network can be applied to other functions of the Internet, including the infrastructure on which it is built.
+
+When you apply Bitcoin to the **three knobs of cloud**, you end up getting a fourth knob as a result: **trust**.
+
+![Bitcoin](/assets/blog/images/bitcoin.jpg "Bitcoin")
+
+StackMonkey is the first step in applying cryptocurrency's trust model to infrastructure. StackMonkey operates as the first of a one-of-many pool controllers which manage a highly distributed network of [OpenStack](http://openstack.org) based micro-cloud instances through a virtual appliance.  The code running the site and the virtual appliances is Open Source and freely available to all. Payments are handled through Bitcoin, with micro payment **'drips'** provided by [Coinbase's off-blockchain payments](http://blog.coinbase.com/post/57483182558/you-can-now-send-micro-transactions-with-zero-fees) feature.
+
+Servers start, run and stop based on Bitcoin callbacks. Storage and network payments can be purchased at will, even automatically. No accounts are needed for starting instances. Bitcoin input addresses will gain infrastructure usage karma over time. Providers can be ranked by performance and uptime. Compute costs will become commodity, where prices are determined by the market. Autonomous corporations will be able to pay for their own resources and juggle efficiency with transaction speed.
+
+There's a [whitepaper I've written on the system](https://github.com/StackMonkey/xovio-pool/blob/master/whitepaper.md) if you want more details. If you are interested in contributing to this cause, please contact me. If you are interested in investing in StackMonkey, I'll be at the [CoinSummit](http://www.coinsumm.it/) in San Francisco on the 25th of March, or you can [drop me a line](mailto:kordless@gmail.com). As of this moment, I'm actively raising.
+
+This changes everything and it's what gets me up and excited every single morning. Together, we can make our future brighter, better, nicer and more efficient.  
+
+Please come join me in changing the world for the better!

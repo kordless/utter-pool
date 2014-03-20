@@ -1,13 +1,19 @@
 /* General Styles */
 html, body {
   height: 100%;
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
-
 a:link, a:visited, a:hover, a:active {
   text-decoration: underline;
   color: #222;
 }
-/* Navbar */
+.breadcrumb-arrow {
+  background-color: #f8f8f8;
+}
+h4, h5, h6 {
+  margin-bottom: 10px;
+}
+/* navbar */
 .navbar-fixed-top {
   background-image: -webkit-linear-gradient(top, #fff, #f8f8f8);
   background-image: -o-linear-gradient(top, #fff, #f8f8f8);
@@ -26,13 +32,43 @@ a.navbar-brand.navbar-logo {
 .dropdown-menu a:link, a:active{
   text-decoration: none;
 }
-
+.dropdown-menu .dropdown-header {
+  padding: 3px 20px;
+  font-size: 12px;
+  font-weight: normal;
+  color: #999;
+}
+.dropdown-menu li a {
+  padding: 3px 20px;
+  color: #333;
+}
+.dropdown-menu .divider {
+  background-color: #e5e5e5;
+  border-bottom: none;
+}
+.dropdown-menu {
+  border: 1px solid #CCC;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background-color: #fff;
+}
+a.dropdown-toggle {
+  padding-top: 13px !important;
+  padding-bottom: 13px !important;
+}
 /* sign in button */
 ul.nav.navbar-nav > li > button {
   margin: 8px 0 0 10px;
   height: auto;
 }
-/* Footer */
+.nav > li > .active {
+  background-color: #efefef;
+}
+/* form errors */
+.error .help-inline {
+  color: #ff2323;
+}
+
+/* footer */
 #wrap {
   min-height: 100%;
   height: auto !important;
@@ -48,10 +84,10 @@ footer {
   vertical-align: baseline;
   padding-top: 16px;
   font-size: 13px;
-  background: #252525;
+  background-color: #252525;
   border-top: 0;
   border-top: 0;
-  height: 170px;
+  min-height: 170px;
 }
 footer h4 {
   color: #999;

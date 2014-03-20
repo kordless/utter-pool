@@ -1,5 +1,6 @@
 import os
 import logging
+import time
 
 import urllib
 import urllib2
@@ -83,8 +84,9 @@ class CallbackLoginHandler(BaseHandler):
                     activated = True
                 )
                 user.put()
+                time.sleep(2)
                 log_message = "new user registered"
-
+                
             else:
                 user.last_login = datetime.now()
                 user.put()
@@ -101,6 +103,8 @@ class CallbackLoginHandler(BaseHandler):
                 ip = self.request.remote_addr
             )
             log.put()
+            message = "You have successfully logged in!"            
+            self.add_message(message, 'success')
 
             # take user to the account page
             return self.redirect_to('account')
@@ -123,7 +127,7 @@ class AccountHandler(BaseHandler):
             pass
             # return self.redirect_to('account-twofactor')
         params = {}
-        return self.render_template('user/dash.html', **params)
+        return self.render_template('user/status.html', **params)
 
 
 class TwoFactorHandler(BaseHandler):
@@ -148,36 +152,25 @@ class TwoFactorHandler(BaseHandler):
 
         pass
 
-class EditProfileHandler(BaseHandler):
-    """
-    Handler for Edit User Profile
-    """
-
+class SettingsHandler(BaseHandler):
     @user_required
     def get(self):
-        """ Returns a simple HTML form for edit profile """
-
         params = {}
 
         if self.user:
-            logging.info("logged in")
-        if self.user:
-            user_info = models.User.get_by_id(long(self.user_id))
+            user_info = User.get_by_id(long(self.user_id))
             self.form.username.data = user_info.username
             self.form.name.data = user_info.name
             self.form.last_name.data = user_info.last_name
             self.form.country.data = user_info.country
-            providers_info = user_info.get_social_providers_info()
-            params['used_providers'] = providers_info['used']
-            params['unused_providers'] = providers_info['unused']
+
+            # update paramaters
             params['country'] = user_info.country
             params['company'] = user_info.company
 
-        return self.render_template('user/edit_profile.html', **params)
+        return self.render_template('user/settings.html', **params)
 
     def post(self):
-        """ Get fields from POST dict """
-
         if not self.form.validate():
             return self.get()
         username = self.form.username.data.lower()
@@ -186,7 +179,7 @@ class EditProfileHandler(BaseHandler):
         country = self.form.country.data
 
         try:
-            user_info = models.User.get_by_id(long(self.user_id))
+            user_info = User.get_by_id(long(self.user_id))
 
             try:
                 message=''

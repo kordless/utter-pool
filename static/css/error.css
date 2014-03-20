@@ -68,6 +68,7 @@ body {
 }
 .splash-container h1 {
   color: white;
+  margin-bottom: 0px;
 }
 .splash-message {
   padding-top: 12px;

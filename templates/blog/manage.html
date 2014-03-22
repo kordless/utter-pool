@@ -40,7 +40,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <h4 class="modal-title" id="myModalLabel">Create New Article</h4>
         </div>
-        <form id="form_edit_profile" action="{{ url|safe }}#new" method="post" class="form-horizontal">
+        <form id="form_edit_profile" action="{{ url|safe }}" method="post" class="form-horizontal">
           <div class="modal-body">
             <p>Fill out the following form to create a new article.</p>
             <div class="row">
@@ -62,11 +62,9 @@
   <!-- end modal -->
 
   <div class="container">
-    <ol class="breadcrumb breadcrumb-arrow">
-      <li><a href="/">Home</a></li>
-      <li><a href="{{ blog_url }}">Blog</a></li>
-      <li class="active"><span>Manage</span></li>
-    </ol>
+    <div class="page-header">
+      <h2>Let's blog!</h2>
+    </div>
     <table class="table table-striped table-hover">
       <thead>
         <tr>
@@ -86,7 +84,9 @@
             <td>{{item.summary}}</td>
             <td>{{item.filename}}</td>
             <td>
-              <div class="iphone"><div id="article-{{item.key.id()}}" class="toggle{% if item.draft %} draft{% endif %}"></div></div>
+              <div class="toggle-modern">
+                <div id="article-{{item.key.id()}}" class="toggle{% if item.draft %} draft{% endif %}"></div>
+              </div>
             </td>
             <td>
               <button type="button" id="remove-{{item.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
@@ -118,6 +118,7 @@
     $('#dropdown-new-article').click(function() {
       $('#new-article-modal').modal();
     });
+    // replace with function that looks for error class in modal forms
     if(window.location.hash == '#new') {
       $('#new-article-modal').modal();
       window.location.hash = '';
@@ -146,9 +147,11 @@
     $('div[id^="article-"]').each(function(index){
       article_id = this.id.split("-").pop();
       $('#article-'+article_id).toggles({
-        ontext:'LIVE',
-        offtext:'DRAFT',
-        on: !$(this).hasClass('draft'),
+        text: {
+          on: 'LIVE',
+          off:'DRAFT',
+        },
+        on: !$(this).hasClass('draft')
       });
       $('#article-'+article_id).click(function() {
         // button state to draft truth 

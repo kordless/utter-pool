@@ -29,14 +29,16 @@ class BlogArticleForm(BaseForm):
 
 
 class AboutForm(BaseForm):
-    email = fields.TextField('Email', [validators.Required(), validators.Length(max=50), validators.regexp(utils.EMAIL_REGEXP, message='Invalid email address.')])
+    email = fields.TextField('Email', [validators.Required(), validators.Length(max=100), validators.regexp(utils.EMAIL_REGEXP, message='Invalid email address.')])
     name = fields.TextField('Name', [validators.Required(), validators.Length(max=50)])
     message = fields.TextAreaField('Message', [validators.Required(), validators.Length(max=2048)])
 
 
 class EditProfileForm(BaseForm):
-    username = fields.TextField('Username', [validators.Length(max=50)])
+    username = fields.TextField('Username', [validators.Required(), validators.Length(max=50)])
     name = fields.TextField('Name', [validators.Length(max=50)])
+    email = fields.TextField('Email', [validators.Required(), validators.Length(max=100), validators.regexp(utils.EMAIL_REGEXP, message='Invalid email address.')])
     last_name = fields.TextField('Last_Name', [validators.Length(max=50)])
     company = fields.TextField('Company')
     country = fields.SelectField('Country', choices=utils.COUNTRIES)
+    timezone = fields.SelectField('Timezone', choices=utils.timezones())

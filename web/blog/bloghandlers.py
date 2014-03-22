@@ -63,7 +63,7 @@ class BlogHandler(BaseHandler):
 				if not owner_info.name:
 					article_owner = owner_info.username
 				else:
-					article_owner = "%s %s" % (owner_info.name, owner_info.last_name)
+					article_owner = owner_info.name
 
 				# build gravatar URL
 				gravatar_hash = md5.new(owner_info.email.lower().strip()).hexdigest()

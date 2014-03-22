@@ -12,21 +12,21 @@ from google.appengine.ext import ndb
 
 # user model
 class User(User):
+    uid = ndb.StringProperty()
+    username = ndb.StringProperty()
+    email = ndb.StringProperty()
+    name = ndb.StringProperty()
+    timezone = ndb.StringProperty()
+    country = ndb.StringProperty()
+    company = ndb.StringProperty()
+    blogger = ndb.BooleanProperty(default=False)
+    activated = ndb.BooleanProperty(default=False)
     created = ndb.DateTimeProperty(auto_now_add=True)
     updated = ndb.DateTimeProperty(auto_now=True)
     last_login = ndb.DateTimeProperty()
-    uid = ndb.StringProperty()
-    email = ndb.StringProperty()
-    tfkey = ndb.StringProperty()
+    tfsecret = ndb.StringProperty()
     tfenabled = ndb.BooleanProperty(default=False)
-    username = ndb.StringProperty()
-    name = ndb.StringProperty()
-    last_name = ndb.StringProperty()
-    country = ndb.StringProperty()
-    company = ndb.StringProperty()
-    gravatar_url = ndb.StringProperty()
-    activated = ndb.BooleanProperty(default=False)
-    blogger = ndb.BooleanProperty(default=False)
+    tfauth = ndb.BooleanProperty(default=False)
 
     @classmethod
     def get_by_email(cls, email):

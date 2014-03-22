@@ -28,6 +28,7 @@ def user_required(handler):
 	def check_login(self, *args, **kwargs):
 		try:
 			auth = self.auth.get_user_by_session()
+			
 			if not auth:
 				return self.redirect_to('login')
 			else:
@@ -216,7 +217,7 @@ class BaseHandler(webapp2.RequestHandler):
 		if self.user:
 			try:
 				user_info = models.User.get_by_id(long(self.user_id))
-				return "%s %s" % (user_info.name, user_info.last_name)
+				return "%s" % (user_info.name)
 				
 			except AttributeError, e:
 				# avoid AttributeError when the session was delete from the server

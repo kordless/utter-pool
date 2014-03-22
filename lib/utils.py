@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 import Cookie
 
 import config
+from pytz.gae import pytz
 
 def random_string(size=6, chars=string.ascii_letters + string.digits):
     """ Generate random string """
@@ -204,9 +205,13 @@ def slugify(value):
     value = unicode(_slugify_strip_re.sub('', value).strip().lower())
     return _slugify_hyphenate_re.sub('-', value)
 
-# TODO: Use locale (Babel)
+def timezones():
+    zones = [("UTC", "UTC")]
+    for zone in pytz.common_timezones:
+        zones.append((zone, zone))
+    return zones
+
 COUNTRIES = [
-    ("", ""),
     ("AF", "Afghanistan"),
     ("AL", "Albania"),
     ("DZ", "Algeria"),

@@ -1,6 +1,7 @@
 import os
 import logging
 import time
+import random
 
 import urllib
 import urllib2
@@ -30,203 +31,294 @@ from lib import pyotp
 
 # user logout
 class LogoutHandler(BaseHandler):
+	def get(self):
+		if self.user:
+			user_info = User.get_by_id(long(self.user_id))
+			user_info.tfauth = False
+			user_info.put()
 
-    def get(self):
-        if self.user:
-            message = "You have been logged out."
-            self.add_message(message, 'info')
+			message = "You have been logged out."
+			self.add_message(message, 'info')
 
-        self.auth.unset_session()
-        self.redirect_to('home')
+		self.auth.unset_session()
+		self.redirect_to('home')
 
 
 # user login w/google
 class LoginHandler(BaseHandler):
-    
-    def get(self):
-        callback_url = "%s/login/complete" % (self.request.host_url)
-        continue_url = self.request.get('continue_url')
-        
-        if continue_url:
-            dest_url=self.uri_for('login-complete', continue_url=continue_url)
-        else:
-            dest_url=self.uri_for('login-complete')
-        
-        try:
-            login_url = users.create_login_url(federated_identity='gmail.com', dest_url=dest_url)
-            self.redirect(login_url)
-        except users.NotAllowedError:
-            self.add_message("The pool operator must enable Federated Login for this application before you can login.", "error")
-            self.redirect_to('login')
+	def get(self):
+		callback_url = "%s/login/complete" % (self.request.host_url)
+		continue_url = self.request.get('continue_url')
+		
+		# check if we have somewhere to go
+		if continue_url:
+			dest_url=self.uri_for('login-complete', continue_url=continue_url)
+		else:
+			dest_url=self.uri_for('login-complete')
+		
+		try:
+			login_url = users.create_login_url(federated_identity='gmail.com', dest_url=dest_url)
+			self.redirect(login_url)
+		except users.NotAllowedError:
+			self.add_message("The pool operator must enable Federated Login before you can login.", "error")
+			self.redirect_to('login')
 
 
 # google auth callback
 class CallbackLoginHandler(BaseHandler):
+	def get(self):
+		# get info from Google login
+		current_user = users.get_current_user()
 
-    def get(self):
-        # get info from Google login
-        current_user = users.get_current_user()
+		# handle old and new users
+		try:
+			uid = current_user.user_id()
 
-        # handle old and new users
-        try:
-            uid = current_user.user_id()
+			# see if user is in database
+			user = User.get_by_uid(uid)
 
-            # see if user is in database
-            user = User.get_by_uid(uid)
+			# create association if user doesn't exist
+			if user is None:
+				username = current_user.email().split("@")[0]
+				email = current_user.email()
 
-            # create association if user doesn't exist
-            if user is None:
-                user = User(
-                    last_login = datetime.now(),
-                    uid = str(uid),
-                    username = current_user.email().split("@")[0],
-                    email = current_user.email(),
-                    activated = True
-                )
-                user.put()
-                time.sleep(2)
-                log_message = "new user registered"
-                
-            else:
-                user.last_login = datetime.now()
-                user.put()
-                log_message = "user login"
+				# create entry in db
+				user = User(
+					last_login = datetime.now(),
+					uid = str(uid),
+					username = username,
+					email = email,
+					activated = True
+				)
 
-            # set the user's session
-            self.auth.set_session(self.auth.store.user_to_dict(user), remember=True)
-            
-            # log visit
-            log = LogVisit(
-                user = user.key,
-                message = log_message,
-                uastring = self.request.user_agent,
-                ip = self.request.remote_addr
-            )
-            log.put()
-            message = "You have successfully logged in!"            
-            self.add_message(message, 'success')
+				# try to create unique username
+				while True:
+					user.unique_properties = ['username']
+					uniques = ['User.username:%s' % user.username]
+					success, existing = Unique.create_multi(uniques)
 
-            # take user to the account page
-            return self.redirect_to('account')
+					# if we already have that username, create a new one and try again
+					if existing:
+						user.username = "%s%s" % (username, random.randrange(100)) 
+					else:
+						break
+				
+				# write out the user
+				user.put()
 
-        except:
-            message = "No user authentication information received from Google."            
-            self.add_message(message, 'error')
-            return self.redirect_to('home')
+				# wait a few seconds for database server to update
+				time.sleep(1)
+				log_message = "new user registered"
+				
+			else:
+				# user logging in, check if two factor is required
+				if user.tfenabled and not user.tfauth:
+					return self.redirect_to('login-tfa')
+				else:
+					# two factor is disabled, or already complete
+					user.last_login = datetime.now()
+					user.put()
+					log_message = "user login"
+
+			# set the user's session
+			self.auth.set_session(self.auth.store.user_to_dict(user), remember=True)
+			
+			# log visit
+			log = LogVisit(
+				user = user.key,
+				message = log_message,
+				uastring = self.request.user_agent,
+				ip = self.request.remote_addr
+			)
+			log.put()
+			message = "You have successfully logged in!"            
+			self.add_message(message, 'success')
+
+			# take user to the account page - fix this to test to see if they need setup or status page
+			return self.redirect_to('account-settings')
+
+		except Exception as ex:
+			message = "No user authentication information received from Google: %s" % ex            
+			self.add_message(message, 'error')
+			return self.redirect_to('home')
+
+
+class TwoFactorLoginHandler(BaseHandler):
+	def get(self):
+		params = {}
+		return self.render_template('user/twofactorlogin.html', **params)
+
+	def post(self):
+		print 
+		# user information from google login
+		current_user = users.get_current_user()
+		uid = current_user.user_id()
+		user_info = User.get_by_uid(uid)
+		
+		# pull in tfa info
+		authcode = self.request.get('authcode')
+		secret = user_info.tfsecret
+		totp = pyotp.TOTP(secret)
+
+		# check if token verifies
+		if totp.verify(authcode):
+			# user has completed tfa
+			user_info.tfauth = True
+			user_info.put()
+			time.sleep(1)
+			return self.redirect_to('login-complete')
+
+		# log them out just to be safe
+		self.redirect_to('logout')
 
 
 class AccountHandler(BaseHandler):
-    @user_required
-    def get(self):
-        current_user = users.get_current_user()
-        uid = current_user.user_id()
-        user = User.get_by_uid(uid)
+	@user_required
+	def get(self):
+		# lookup user's auth info
+		user_info = User.get_by_id(long(self.user_id))
 
-        # force user to setup 2FA
-        if user.tfenabled == False:
-            pass
-            # return self.redirect_to('account-twofactor')
-        params = {}
-        return self.render_template('user/status.html', **params)
+		params = {}
+		return self.render_template('user/account.html', **params)
 
 
-class TwoFactorHandler(BaseHandler):
-    @user_required
-    def get(self):
-        current_user = users.get_current_user()
-        uid = current_user.user_id()
-        user = User.get_by_uid(uid)
-        
-        # force user to setup 2FA
-        if user.tfenabled == False:
-            key = pyotp.random_base32()
-            
-            # update the user's key
-            user.tfkey = key
-            user.put()
+class TwoFactorSetupHandler(BaseHandler):
+	@user_required
+	def get(self):
+		# get the authcode and desired action
+		authcode = self.request.get('authcode')
+		action = self.request.get('action')
 
-            code = pyotp.TOTP()
-        steve = pyotp.random_base32()
-        t = pyotp.TOTP(steve)
-        qrcode = t.provisioning_uri(user.email)
+		# lookup user's auth info
+		user_info = User.get_by_id(long(self.user_id))
+		secret = user_info.tfsecret
+		totp = pyotp.TOTP(secret)
+		
+		# verify
+		if action == "enable" and totp.verify(authcode):
+			# authorized to enable
+			user_info.tfenabled = True
+			user_info.put()
+		elif action == "disable" and totp.verify(authcode):
+			# authorized to disable
+			user_info.tfenabled = False
+			user_info.put()
+		else:
+			# not authorized - javascript will handle adding a user message to the UI
+			self.response.set_status(401)
+			self.response.headers['Content-Type'] = 'application/json'
+			return self.render_template('api/response.json', response="fail")
 
-        pass
+		# respond
+		self.response.set_status(200)
+		self.response.headers['Content-Type'] = "application/json"
+		return self.render_template('api/response.json', response="success")
+
 
 class SettingsHandler(BaseHandler):
-    @user_required
-    def get(self):
-        params = {}
+	@user_required
+	def get(self):
+		params = {}
 
-        if self.user:
-            user_info = User.get_by_id(long(self.user_id))
-            self.form.username.data = user_info.username
-            self.form.name.data = user_info.name
-            self.form.last_name.data = user_info.last_name
-            self.form.country.data = user_info.country
+		user_info = User.get_by_id(long(self.user_id))
 
-            # update paramaters
-            params['country'] = user_info.country
-            params['company'] = user_info.company
+		# form fields
+		self.form.username.data = user_info.username
+		self.form.name.data = user_info.name
+		self.form.email.data = user_info.email
+		self.form.company.data = user_info.company
+		self.form.country.data = user_info.country
+		self.form.timezone.data = user_info.timezone
+	
+		# extras
+		params['tfenabled'] = user_info.tfenabled
 
-        return self.render_template('user/settings.html', **params)
+		# create holder token to setup 2FA - this will continue until user enabled 2fa
+		if user_info.tfenabled == False:
+			secret = pyotp.random_base32()
+			totp = pyotp.TOTP(secret)
+			qrcode = totp.provisioning_uri("%s-%s" % (config.app_name, user_info.email))
+			params['qrcode'] = qrcode
+			params['secret'] = secret
+			
+			# update the user's key
+			user_info.tfsecret = secret
+			user_info.put()
 
-    def post(self):
-        if not self.form.validate():
-            return self.get()
-        username = self.form.username.data.lower()
-        name = self.form.name.data.strip()
-        last_name = self.form.last_name.data.strip()
-        country = self.form.country.data
+		return self.render_template('user/settings.html', **params)
 
-        try:
-            user_info = User.get_by_id(long(self.user_id))
+	def post(self):
+		if not self.form.validate():
+			self.add_message("There were errors in subbitting the form.", "error")
+			return self.get()
 
-            try:
-                message=''
-                # update username if it has changed and it isn't already taken
-                if username != user_info.username:
-                    user_info.unique_properties = ['username','email']
-                    uniques = [
-                               'User.username:%s' % username,
-                               'User.auth_id:own:%s' % username,
-                               ]
-                    # Create the unique username and auth_id.
-                    success, existing = Unique.create_multi(uniques)
-                    if success:
-                        # free old uniques
-                        Unique.delete_multi(['User.username:%s' % user_info.username, 'User.auth_id:own:%s' % user_info.username])
-                        # The unique values were created, so we can save the user.
-                        user_info.username=username
-                        user_info.auth_ids[0]='own:%s' % username
-                        message+= 'Your new username is %s' % '<strong>{0:>s}</strong>'.format(username)
+		username = self.form.username.data.lower()
+		name = self.form.name.data.strip()
+		email = self.form.email.data.strip()
+		company = self.form.company.data.strip()
+		country = self.form.country.data.strip()
+		timezone = self.form.timezone.data.strip()
 
-                    else:
-                        message+= 'The username %s is already taken. Please choose another.' \
-                                % '<strong>{0:>s}</strong>'.format(username)
-                        # At least one of the values is not unique.
-                        self.add_message(message, 'error')
-                        return self.get()
-                user_info.name=name
-                user_info.last_name=last_name
-                user_info.country=country
-                user_info.put()
-                message+= " " + 'Your settings have been saved.  You may now dance.'
-                self.add_message(message, 'success')
-                return self.get()
+	
+		user_info = User.get_by_id(long(self.user_id))
 
-            except (AttributeError, KeyError, ValueError), e:
-                logging.error('Error updating profile: ' + e)
-                message = 'Unable to update profile. Please try again later.'
-                self.add_message(message, 'error')
-                return self.get()
+		try:
+			# update username if it has changed and it isn't already taken
+			if username != user_info.username:
+				user_info.unique_properties = ['username']
+				uniques = ['User.username:%s' % username]
+				
+				# create the unique username and auth_id
+				success, existing = Unique.create_multi(uniques)
 
-        except (AttributeError, TypeError), e:
-            login_error_message = 'Sorry you are not logged in.'
-            self.add_message(login_error_message, 'error')
-            self.redirect_to('login')
+				if success:
+					# free old uniques and update user
+					Unique.delete_multi(['User.username:%s' % user_info.username])
+					user_info.username = username
+					self.add_message('Your new username is %s.' % format(username), 'success')
 
-    @webapp2.cached_property
-    def form(self):
-        return forms.EditProfileForm(self)
+				else:
+					# username not unique
+					self.add_message('The username %s is already in use.' % format(username), 'error')
+					return self.get()
+
+			# update email if it has changed and it isn't already taken
+			if email != user_info.email:
+				user_info.unique_properties = ['email']
+				uniques = ['User.email:%s' % email]
+				
+				# create the unique username and auth_id
+				success, existing = Unique.create_multi(uniques)
+
+				if success:
+					# free old uniques and update user
+					Unique.delete_multi(['User.email:%s' % user_info.email])
+					user_info.email = email
+					self.add_message('Your new email is %s.' % format(email), 'success')
+
+				else:
+					# username not unique
+					self.add_message('That email address is already in use.', 'error')
+					return self.get()
+
+			# update database                
+			user_info.name = name
+			user_info.company = company
+			user_info.country = country
+			user_info.timezone = timezone
+			user_info.put()
+
+			self.add_message("Your settings have been saved.", 'success')
+			return self.get()
+
+		except (AttributeError, KeyError, ValueError), e:
+			logging.error('Error updating profile: ' + e)
+			self.add_message('Unable to update profile. Please try again later.', 'error')
+			return self.get()
+
+
+	@webapp2.cached_property
+	def form(self):
+		return forms.EditProfileForm(self)
 
 

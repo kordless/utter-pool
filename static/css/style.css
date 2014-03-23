@@ -55,6 +55,9 @@ a.dropdown-toggle {
   padding-top: 13px !important;
   padding-bottom: 13px !important;
 }
+.navbar-toggle .icon-bar {
+  background-color: #444;
+}
 /* sign in button */
 ul.nav.navbar-nav > li > button {
   margin: 8px 0 0 10px;

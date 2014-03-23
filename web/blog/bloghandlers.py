@@ -60,13 +60,19 @@ class BlogHandler(BaseHandler):
 				owner_info = models.User.get_by_id(article.owner.id())
 				
 				# load name
-				if not owner_info.name:
-					article_owner = owner_info.username
-				else:
-					article_owner = owner_info.name
+				try:
+					if not owner_info.name:
+						article_owner = owner_info.username
+					else:
+						article_owner = owner_info.name
+				except:
+						article_owner = "StackMonkey"
 
 				# build gravatar URL
-				gravatar_hash = md5.new(owner_info.email.lower().strip()).hexdigest()
+				try:
+					gravatar_hash = md5.new(owner_info.email.lower().strip()).hexdigest()
+				except:
+					gravatar_hash = md5.new(config.app_email.strip()).hexdigest()
 				article_gravatar_url = "https://www.gravatar.com/avatar/%s?s=48" % gravatar_hash
 
 				# build entry

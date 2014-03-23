@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""
-Main Site Handlers
-"""
 # standard library imports
 import logging, os
 import urllib, urllib2, httplib2
@@ -67,8 +62,8 @@ class AboutHandler(BaseHandler):
     def get(self):
         if self.user:
             user_info = models.User.get_by_id(long(self.user_id))
-            if user_info.name or user_info.last_name:
-                self.form.name.data = user_info.name + " " + user_info.last_name
+            if user_info.name:
+                self.form.name.data = user_info.name
             if user_info.email:
                 self.form.email.data = user_info.email
         

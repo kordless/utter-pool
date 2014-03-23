@@ -21,6 +21,7 @@ class TOTP(OTP):
         """
         if not isinstance(for_time, datetime.datetime):
             for_time = datetime.datetime.fromtimestamp(int(for_time))
+
         return self.generate_otp(self.timecode(for_time))
 
     def now(self):
@@ -37,8 +38,7 @@ class TOTP(OTP):
         """
         if for_time is None:
             for_time = datetime.datetime.now()
-
-        return unicode(otp) == unicode(self.at(for_time))
+        return unicode(otp) == unicode(self.at(for_time)).zfill(6)
 
     def provisioning_uri(self, name):
         """

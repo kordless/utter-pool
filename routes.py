@@ -22,8 +22,10 @@ _routes = [
     RedirectRoute('/login/complete', userhandlers.CallbackLoginHandler, name='login-complete', strict_slash=True),
     RedirectRoute('/login/tfa', userhandlers.TwoFactorLoginHandler, name='login-tfa', strict_slash=True),
     RedirectRoute('/account/', userhandlers.AccountHandler, name='account', strict_slash=True),
+    RedirectRoute('/clouds/', userhandlers.CloudHandler, name='account-clouds', strict_slash=True),
     RedirectRoute('/settings/', userhandlers.SettingsHandler, name='account-settings', strict_slash=True),
-    RedirectRoute('/settings/tfa', userhandlers.TwoFactorSetupHandler, name='account-tfa', strict_slash=True),
+    RedirectRoute('/settings/tfa', userhandlers.TwoFactorSettingsHandler, name='account-tfa', strict_slash=True),
+    RedirectRoute('/appliances/', userhandlers.ApplianceHandler, name='account-appliances', strict_slash=True),
 
     # api
     RedirectRoute('/api/<public_method>', apihandlers.APIPublicHandler, name='api_public', strict_slash=True),

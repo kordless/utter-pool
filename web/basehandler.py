@@ -1,6 +1,3 @@
-# *-* coding: UTF-8 *-*
-
-# standard library imports
 import logging
 import re
 import md5
@@ -35,7 +32,7 @@ def user_required(handler):
 				return handler(self, *args, **kwargs)
 
 		except AttributeError, e:
-			# avoid AttributeError when the session was delete from the server
+			# avoid AttributeError when the session was deleted from the server
 			logging.error(e)
 			self.auth.unset_session()
 			self.redirect_to('home')

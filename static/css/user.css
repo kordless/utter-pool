@@ -23,9 +23,6 @@ html, body {
 h2 small {
 	color: #777;
 }
-.row {
-	margin-bottom: 20px;
-}
 #login-tfa {
   margin-top: 10px;
 }

@@ -10,6 +10,7 @@ import hashlib
 import json
 
 from datetime import datetime
+from datetime import timedelta
 from StringIO import StringIO
 
 import webapp2
@@ -34,8 +35,13 @@ class LogoutHandler(BaseHandler):
 	def get(self):
 		if self.user:
 			user_info = User.get_by_id(long(self.user_id))
-			user_info.tfauth = False
-			user_info.put()
+
+			# if 2fa enabled, set the last login to an hour ago
+			if user_info.tfenabled:
+				print 'setting logout time'
+				now_minus_an_hour = datetime.now() + timedelta(0, -config.session_age)
+				user_info.last_login = now_minus_an_hour
+				user_info.put()
 
 			message = "You have been logged out."
 			self.add_message(message, 'info')
@@ -75,15 +81,15 @@ class CallbackLoginHandler(BaseHandler):
 			uid = current_user.user_id()
 
 			# see if user is in database
-			user = User.get_by_uid(uid)
+			user_info = User.get_by_uid(uid)
 
 			# create association if user doesn't exist
-			if user is None:
+			if user_info is None:
 				username = current_user.email().split("@")[0]
 				email = current_user.email()
 
 				# create entry in db
-				user = User(
+				user_info = User(
 					last_login = datetime.now(),
 					uid = str(uid),
 					username = username,
@@ -93,39 +99,41 @@ class CallbackLoginHandler(BaseHandler):
 
 				# try to create unique username
 				while True:
-					user.unique_properties = ['username']
-					uniques = ['User.username:%s' % user.username]
+					user_info.unique_properties = ['username']
+					uniques = ['User.username:%s' % user_info.username]
 					success, existing = Unique.create_multi(uniques)
 
 					# if we already have that username, create a new one and try again
 					if existing:
-						user.username = "%s%s" % (username, random.randrange(100)) 
+						user_info.username = "%s%s" % (username, random.randrange(100)) 
 					else:
 						break
 				
 				# write out the user
-				user.put()
+				user_info.put()
 
 				# wait a few seconds for database server to update
 				time.sleep(1)
 				log_message = "new user registered"
 				
 			else:
-				# user logging in, check if two factor is required
-				if user.tfenabled and not user.tfauth:
-					return self.redirect_to('login-tfa')
+				# existing user logging in - force a2fa check before continuing
+				now_minus_an_hour = datetime.now() + timedelta(0, -config.session_age)
+				print user_info.last_login < now_minus_an_hour
+				if user_info.tfenabled and (user_info.last_login < now_minus_an_hour): 
+						return self.redirect_to('login-tfa')
 				else:
 					# two factor is disabled, or already complete
-					user.last_login = datetime.now()
-					user.put()
+					user_info.last_login = datetime.now()
+					user_info.put()
 					log_message = "user login"
 
 			# set the user's session
-			self.auth.set_session(self.auth.store.user_to_dict(user), remember=True)
+			self.auth.set_session(self.auth.store.user_to_dict(user_info), remember=True)
 			
 			# log visit
 			log = LogVisit(
-				user = user.key,
+				user = user_info.key,
 				message = log_message,
 				uastring = self.request.user_agent,
 				ip = self.request.remote_addr
@@ -149,7 +157,6 @@ class TwoFactorLoginHandler(BaseHandler):
 		return self.render_template('user/twofactorlogin.html', **params)
 
 	def post(self):
-		print 
 		# user information from google login
 		current_user = users.get_current_user()
 		uid = current_user.user_id()
@@ -162,27 +169,17 @@ class TwoFactorLoginHandler(BaseHandler):
 
 		# check if token verifies
 		if totp.verify(authcode):
-			# user has completed tfa
-			user_info.tfauth = True
+			# user has completed tfa - update login time
+			user_info.last_login = datetime.now()
 			user_info.put()
-			time.sleep(1)
+			time.sleep(2)
 			return self.redirect_to('login-complete')
 
-		# log them out just to be safe
-		self.redirect_to('logout')
+		# did not 2fa - force them back through login
+		self.redirect_to('login')
 
 
-class AccountHandler(BaseHandler):
-	@user_required
-	def get(self):
-		# lookup user's auth info
-		user_info = User.get_by_id(long(self.user_id))
-
-		params = {}
-		return self.render_template('user/account.html', **params)
-
-
-class TwoFactorSetupHandler(BaseHandler):
+class TwoFactorSettingsHandler(BaseHandler):
 	@user_required
 	def get(self):
 		# get the authcode and desired action
@@ -233,7 +230,7 @@ class SettingsHandler(BaseHandler):
 		# extras
 		params['tfenabled'] = user_info.tfenabled
 
-		# create holder token to setup 2FA - this will continue until user enabled 2fa
+		# create holder token to setup 2FA - this will continue until user enables 2fa
 		if user_info.tfenabled == False:
 			secret = pyotp.random_base32()
 			totp = pyotp.TOTP(secret)
@@ -244,6 +241,9 @@ class SettingsHandler(BaseHandler):
 			# update the user's key
 			user_info.tfsecret = secret
 			user_info.put()
+
+			# tell the user they need to setup 2fa
+			self.add_message("Please take a moment and set up two factor authentication.", "error")
 
 		return self.render_template('user/settings.html', **params)
 
@@ -322,3 +322,31 @@ class SettingsHandler(BaseHandler):
 		return forms.EditProfileForm(self)
 
 
+class AccountHandler(BaseHandler):
+	@user_required
+	def get(self):
+		# lookup user's auth info
+		user_info = User.get_by_id(long(self.user_id))
+
+		params = {}
+		return self.render_template('user/account.html', **params)
+
+
+class CloudHandler(BaseHandler):
+	@user_required
+	def get(self):
+		# lookup user's auth info
+		user_info = User.get_by_id(long(self.user_id))
+
+		params = {}
+		return self.render_template('user/clouds.html', **params)
+
+
+class ApplianceHandler(BaseHandler):
+	@user_required
+	def get(self):
+		# lookup user's auth info
+		user_info = User.get_by_id(long(self.user_id))
+
+		params = {}
+		return self.render_template('user/appliances.html', **params)

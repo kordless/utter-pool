@@ -73,18 +73,21 @@
   <div class="row">
     <div class="col-md-2">
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="/status/">Overview</a></li>
-        <li class="active"><a href="/settings/">Settings</a></li>
-        <li><a href="#">Appliances</a></li>
+        <li><a href="{{ uri_for('account') }}">Status</a></li>
+        <li><a href="{{ uri_for('account-clouds') }}">Clouds</a></li>
+        <li class="active"><a href="{{ uri_for('account-settings') }}">Settings</a></li>
+        <li><a href="{{ uri_for('account-appliances') }}">Appliances</a></li>
       </ul>
     </div>
     <div class="col-md-9">
       <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-9">
           <div class="section-header">
-            <h2><small>Account Information</small></h2>
+            <h2><small>Account Settings</small></h2>
           </div>
         </div>
+      </div>
+      <div class="row">
         <div class="col-md-5">
           <form id="form_edit_profile" action="{{ url|safe }}" method="post" class="">
             <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
@@ -95,7 +98,7 @@
             {{ macros.input(form, "timezone", "Timezone", class="form-control pulldown") }}
             {{ macros.input(form, "country", "Country", class="form-control pulldown") }}
             <div class="form-actions">
-              <button type="submit" class="btn btn-success">Update Profile</button>
+              <button type="submit" class="btn btn-success">Save Settings</button>
             </div>
           </form>
         </div>
@@ -106,6 +109,8 @@
             <h2><small>Two Factor Authentication</small></h2>
           </div>
         </div>
+      </div>
+      <div class="row">
         <div class="col-md-5">
           {% if tfenabled %}
             <p>Two factor authentication is enabled.</p>
@@ -241,5 +246,6 @@
     socket.onmessage = onMessage;
   });
 </script>
+
 {% endblock %}
 

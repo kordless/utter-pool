@@ -33,13 +33,15 @@ captcha_private_key = "PRIVATE_CAPTCHA"
 google_analytics_code = "GA_CODE"
 
 # webapp config
+session_age = 3600
 webapp2_config = {}
 webapp2_config['webapp2_extras.sessions'] = {
     'secret_key': 'SECRET_KEY',
 }
 webapp2_config['webapp2_extras.auth'] = {
     'user_model': 'web.models.models.User',
-    'cookie_name': 'session_name'
+    'cookie_name': 'pool_session',
+    'token_max_age': session_age,
 }
 webapp2_config['webapp2_extras.jinja2'] = {
     'template_path': 'templates',

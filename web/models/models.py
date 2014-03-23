@@ -10,7 +10,7 @@ from webapp2_extras.appengine.auth.models import User
 from google.appengine.ext import ndb
 
 
-# user model
+# user model - extends webapp2 User model
 class User(User):
     uid = ndb.StringProperty()
     username = ndb.StringProperty()
@@ -26,7 +26,6 @@ class User(User):
     last_login = ndb.DateTimeProperty()
     tfsecret = ndb.StringProperty()
     tfenabled = ndb.BooleanProperty(default=False)
-    tfauth = ndb.BooleanProperty(default=False)
 
     @classmethod
     def get_by_email(cls, email):
@@ -35,6 +34,37 @@ class User(User):
     @classmethod
     def get_by_uid(cls, uid):
         return cls.query(cls.uid == uid).get()
+
+
+# appliance model
+class Appliance(ndb.Model):
+    name = ndb.StringProperty()
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    updated = ndb.DateTimeProperty(auto_now=True) 
+    owner = ndb.KeyProperty(kind=User)
+    token = ndb.StringProperty()
+
+
+# cloud group model
+class Group(ndb.Model):
+    name = ndb.StringProperty()
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    updated = ndb.DateTimeProperty(auto_now=True)
+
+    @classmethod
+    def get_by_name(cls, groupname):
+        return cls.query(cls.groupname == groupname).get()
+
+    @classmethod
+    def get_all(cls):
+        return cls.query().filter().order(-cls.created).fetch()
+
+
+# cloud model
+class Cloud(ndb.Model):
+    name = ndb.StringProperty()
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    updated = ndb.DateTimeProperty(auto_now=True)   
 
 
 # blog posts and pages

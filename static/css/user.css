@@ -1,7 +1,7 @@
 html, body {
 }
 .content {
-	margin-top: 70px;
+	margin: 70px 0 70px;
 	background-color: white;
 }
 .page-header > h1, .page-header > h2 , .page-header {

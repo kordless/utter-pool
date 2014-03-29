@@ -42,3 +42,9 @@ class EditProfileForm(BaseForm):
     company = fields.TextField('Company')
     country = fields.SelectField('Country', choices=utils.COUNTRIES)
     timezone = fields.SelectField('Timezone', choices=utils.timezones())
+
+
+class ApplianceForm(BaseForm):
+    name = fields.TextField('Name', [validators.Required(), validators.Length(max=50)])
+    token = fields.TextField('Token', [validators.Length(max=64)])
+    group = fields.SelectField('Group', choices=utils.GROUPS)

@@ -20,6 +20,12 @@ indexes:
   - name: public
   - name: updated
 
+- kind: Appliance
+  properties:
+  - name: owner
+  - name: created
+    direction: desc
+
 - kind: Apps
   properties:
   - name: owner

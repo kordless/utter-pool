@@ -211,6 +211,10 @@ def timezones():
         zones.append((zone, zone))
     return zones
 
+GROUPS = [
+    ("public", "Public")
+]
+
 COUNTRIES = [
     ("AF", "Afghanistan"),
     ("AL", "Albania"),

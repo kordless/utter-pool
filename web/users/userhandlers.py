@@ -215,8 +215,7 @@ class TwoFactorSettingsHandler(BaseHandler):
 class SettingsHandler(BaseHandler):
 	@user_required
 	def get(self):
-		params = {}
-
+		# load user information
 		user_info = User.get_by_id(long(self.user_id))
 
 		# form fields
@@ -228,6 +227,7 @@ class SettingsHandler(BaseHandler):
 		self.form.timezone.data = user_info.timezone
 	
 		# extras
+		params = {}
 		params['tfenabled'] = user_info.tfenabled
 
 		# create holder token to setup 2FA - this will continue until user enables 2fa
@@ -341,12 +341,3 @@ class CloudHandler(BaseHandler):
 		params = {}
 		return self.render_template('user/clouds.html', **params)
 
-
-class ApplianceHandler(BaseHandler):
-	@user_required
-	def get(self):
-		# lookup user's auth info
-		user_info = User.get_by_id(long(self.user_id))
-
-		params = {}
-		return self.render_template('user/appliances.html', **params)

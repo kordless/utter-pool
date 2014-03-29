@@ -36,20 +36,12 @@ class User(User):
         return cls.query(cls.uid == uid).get()
 
 
-# appliance model
-class Appliance(ndb.Model):
-    name = ndb.StringProperty()
-    created = ndb.DateTimeProperty(auto_now_add=True)
-    updated = ndb.DateTimeProperty(auto_now=True) 
-    owner = ndb.KeyProperty(kind=User)
-    token = ndb.StringProperty()
-
-
-# cloud group model
+# appliance group model
 class Group(ndb.Model):
     name = ndb.StringProperty()
     created = ndb.DateTimeProperty(auto_now_add=True)
     updated = ndb.DateTimeProperty(auto_now=True)
+    owner = ndb.KeyProperty(kind=User)
 
     @classmethod
     def get_by_name(cls, groupname):
@@ -58,6 +50,25 @@ class Group(ndb.Model):
     @classmethod
     def get_all(cls):
         return cls.query().filter().order(-cls.created).fetch()
+
+
+# appliance model
+class Appliance(ndb.Model):
+    name = ndb.StringProperty()
+    token = ndb.StringProperty()
+    ssluri = ndb.StringProperty()
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    updated = ndb.DateTimeProperty(auto_now=True) 
+    owner = ndb.KeyProperty(kind=User)
+    group = ndb.KeyProperty(kind=Group)
+    ipv4enabled = ndb.BooleanProperty(default=False)
+    ipv6enabled = ndb.BooleanProperty(default=False)
+    ipv4net = ndb.StringProperty()
+    ipv6net = ndb.StringProperty()
+
+    @classmethod
+    def get_by_user(cls, user):
+        return cls.query().filter(cls.owner == user).order(-cls.created).fetch()
 
 
 # cloud model

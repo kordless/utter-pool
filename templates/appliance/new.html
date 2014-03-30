@@ -12,6 +12,32 @@
 {% endblock %}
 
 {% block content %}
+<!-- hidden tfactor disable modal -->
+<div id="new-group-modal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Create a New Appliance Group</h4>
+      </div>
+      <div class="modal-body">
+        <p>Enter the name of the new appliance group you'd like to create. You will be the owner of this group and the group will be private.</p>
+        <div class="row">
+          <div class="col-md-8 form-padding" id="groupname-form">
+            <label class="control-label" for="authcode">Group Name</label>
+            <input length=20 class="form-control" id="groupname" name="groupname" placeholder="awesome group" type="text">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="new-group-modal-close-button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" id="new-group-modal-create-button" class="btn btn-danger">Create New Group</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end modal -->
+
 <div class="container content">
   <div class="row">
     <div class="col-md-2">
@@ -38,8 +64,8 @@
 			        <div class="col-md-8 form-padding" id="authcode-form">
 			          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
 			   		    {{ macros.input(form, "name", "Name", "col-xs-12", placeholder="appliance name", class="form-control") }}
-			          {{ macros.input(form, "token", "Token", "col-xs-12", placeholder="appliance token", class="form-control", disabled=True) }}
-			          {{ macros.input(form, "group", "Group", "col-xs-3", class="form-control pulldown") }}
+			          {{ macros.input(form, "token", "Token", "col-xs-12", placeholder="appliance token", class="form-control") }}
+			          {{ macros.input(form, "group", "Group", "col-xs-5", class="form-control pulldown") }}
 			          <button type="button" id="new-group-create-button" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span></button>
 			        </div>
 			      </div>
@@ -68,6 +94,32 @@
     var csrf_token = "{{ csrf_token() }}";
     var channel_token = "{{ channel_token }}";
     var refresh_channel = "{{ refresh_channel }}";
+
+    // show new group modal
+    $("#new-group-create-button").click(function() {
+      console.log("wat?");
+      $("#new-group-modal").modal();
+    });
+
+    // handle the new group creation
+    $("#new-group-modal-create-button").click(function() {
+      $.ajax({
+          url: '/api/groups/?name='+$('#groupname').val()+"&_csrf_token="+csrf_token,
+          type: 'POST',
+          success: function() {
+            // reload the page
+            $('#groupname').val('');
+            location.reload();
+          },
+          error: function() {
+            // code failed, clear value and alert
+            var name = $('#groupname').val();
+            $('#groupname').val('');
+            $('#groupname-form').addClass('has-error');
+            alertify.log("Error while adding group <em>"+name+"</em> to groups.", "error");
+          }
+        });
+    });
 
     // listen to our refresh channel for page reload
     onMessage = function() {

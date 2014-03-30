@@ -36,3 +36,20 @@ indexes:
   - name: owner
   - name: created
     direction: desc
+
+- kind: Group
+  properties:
+  - name: owner
+  - name: created
+    direction: desc
+
+- kind: Group
+  properties:
+  - name: owner
+  - name: public
+  - name: created
+
+- kind: Group
+  properties:
+  - name: public
+  - name: created

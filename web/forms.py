@@ -2,7 +2,7 @@ from wtforms import fields
 from wtforms import Form
 from wtforms import validators
 from lib import utils
-
+from lib import groups
 
 class BaseForm(Form):
     def __init__(self, request_handler):
@@ -46,5 +46,5 @@ class EditProfileForm(BaseForm):
 
 class ApplianceForm(BaseForm):
     name = fields.TextField('Name', [validators.Required(), validators.Length(max=50)])
-    token = fields.TextField('Token', [validators.Length(max=64)])
-    group = fields.SelectField('Group', choices=utils.GROUPS)
+    token = fields.TextField('Token', [validators.Required(), validators.Length(max=64)])
+    group = fields.SelectField('Group')

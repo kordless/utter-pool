@@ -27,7 +27,33 @@
         <div class="col-md-12">
           <div class="section-header">
             <h2><small>Account Appliances</small></h2>
+            {% if appliances %}
+            <div class="row">
+              <div class="col-md-12">
+                <p>The following account appliances are tied to this provider account. You may click on the <strong>'New Appliance'</strong> button below to view instructions for adding a new appliance.</p>
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Token</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for appliance in appliances %}
+                    <tr>
+                      <td>{{ appliance.name }}</td>
+                      <td>{{ appliance.token }}</td>
+                      <td></td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            {% else %}
             <p>You don't have any appliances configured. Click the <strong>'New Appliance'</strong> button below to create your first appliance.</p>
+            {% endif %}
           </div>
         </div>
       </div>

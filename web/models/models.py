@@ -10,6 +10,31 @@ from webapp2_extras.appengine.auth.models import User
 from google.appengine.ext import ndb
 
 
+# appliance group model
+class Group(ndb.Model):
+    name = ndb.StringProperty()
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    updated = ndb.DateTimeProperty(auto_now=True)
+    owner = ndb.KeyProperty(kind=User)
+    public = ndb.BooleanProperty(default=False)
+
+    @classmethod
+    def get_by_name(cls, groupname):
+        return cls.query(cls.groupname == groupname).get()
+
+    @classmethod
+    def get_all(cls):
+        return cls.query().filter().order(-cls.created).fetch()
+
+    @classmethod
+    def get_by_owner_private(cls, owner):
+        return cls.query(cls.owner == owner, cls.public == False).order(cls.created).fetch()
+    
+    @classmethod
+    def get_public(cls):
+        return cls.query(cls.public == True).order(cls.created).fetch()
+
+
 # user model - extends webapp2 User model
 class User(User):
     uid = ndb.StringProperty()
@@ -27,6 +52,9 @@ class User(User):
     tfsecret = ndb.StringProperty()
     tfenabled = ndb.BooleanProperty(default=False)
 
+    # group membership
+    groups = ndb.StructuredProperty(Group, repeated=True)
+
     @classmethod
     def get_by_email(cls, email):
         return cls.query(cls.email == email).get()
@@ -34,22 +62,6 @@ class User(User):
     @classmethod
     def get_by_uid(cls, uid):
         return cls.query(cls.uid == uid).get()
-
-
-# appliance group model
-class Group(ndb.Model):
-    name = ndb.StringProperty()
-    created = ndb.DateTimeProperty(auto_now_add=True)
-    updated = ndb.DateTimeProperty(auto_now=True)
-    owner = ndb.KeyProperty(kind=User)
-
-    @classmethod
-    def get_by_name(cls, groupname):
-        return cls.query(cls.groupname == groupname).get()
-
-    @classmethod
-    def get_all(cls):
-        return cls.query().filter().order(-cls.created).fetch()
 
 
 # appliance model
@@ -65,6 +77,10 @@ class Appliance(ndb.Model):
     ipv6enabled = ndb.BooleanProperty(default=False)
     ipv4net = ndb.StringProperty()
     ipv6net = ndb.StringProperty()
+
+    @classmethod
+    def get_by_token(cls, token):
+        return cls.query(cls.token == token).get()
 
     @classmethod
     def get_by_user(cls, user):

@@ -4,6 +4,8 @@ from web.users import userhandlers
 from web.api import apihandlers
 from web.blog import bloghandlers
 from web.appliances import appliancehandlers
+from web.groups import grouphandlers
+from web.clouds import cloudhandlers
 
 secure_scheme = 'https'
 
@@ -31,11 +33,12 @@ _routes = [
     RedirectRoute('/appliances/new/', appliancehandlers.NewApplianceHandler, name='account-appliances-new', strict_slash=True),
 
     # clouds
-    RedirectRoute('/clouds/', userhandlers.CloudHandler, name='account-clouds', strict_slash=True),
-    
-    # api
-    RedirectRoute('/api/<public_method>', apihandlers.APIPublicHandler, name='api_public', strict_slash=True),
+    RedirectRoute('/clouds/', cloudhandlers.CloudHandler, name='account-clouds', strict_slash=True),
 
+    # api
+    RedirectRoute('/api/groups/', grouphandlers.GroupHandler, name='api_public', strict_slash=True),
+    RedirectRoute('/api/<public_method>', apihandlers.APIPublicHandler, name='api_public', strict_slash=True),
+    
     # blog handlers
     RedirectRoute('/blog/', bloghandlers.BlogHandler, name='blog', strict_slash=True),
     RedirectRoute('/blog/feed/rss/', bloghandlers.RSSHandler, name='blog-rss', strict_slash=True),

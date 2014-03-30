@@ -7,6 +7,7 @@ import web.forms as forms
 from web.models.models import User
 from web.models.models import LogVisit
 from web.models.models import Appliance
+from web.models.models import Group
 from web.basehandler import BaseHandler
 from web.basehandler import user_required
 
@@ -32,10 +33,40 @@ class NewApplianceHandler(BaseHandler):
 		# lookup user's auth info
 		user_info = User.get_by_id(long(self.user_id))
 
-
 		# load token and produce form page or show instructions
 		if self.request.get('token'):
 			self.form.token.data = self.request.get('token')
+
+			# initialize form choices for group
+			self.form.group.choices = []
+
+			# add public list of groups
+			public_groups = Group.get_public()
+			for group in public_groups:
+				self.form.group.choices.insert(0, (group.key.id(), group.name))
+
+			# add to group list from owner's groups
+			private_groups = Group.get_by_owner_private(user_info.key)
+			for group in private_groups:
+				self.form.group.choices.insert(0, (group.key.id(), group.name))
+
+			# should run only one time when there are no groups in db
+			# add public group if we have an empty set
+			if len(self.form.group.choices) == 0:
+				group = Group(
+					name = "Public",
+					owner = User.get_by_email(config.contact_sender).key,
+					public = True
+				)
+				group.put()
+				time.sleep(2)
+				
+				# rerun the insert into list
+				public_groups = Group.get_public()
+				for group in public_groups:
+					self.form.group.choices.insert(0, (group.key.id(), group.name))
+
+				self.add_message("A new public group named <em>Public</em> was created and placed in the database.");
 
 			# render new appliance page
 			return self.render_template('appliance/new.html')
@@ -46,32 +77,53 @@ class NewApplianceHandler(BaseHandler):
 
 	@user_required
 	def post(self):
-		if not self.form.validate():          
-			self.add_message("The new appliance form did not validate.", 'error')
-			return self.get()
-
 		# lookup user's auth info
 		user_info = User.get_by_id(long(self.user_id))
+		
+		# initialize form choices for group
+		self.form.group.choices = []
+
+		# populate with all possible groups for this user
+		# add public list of groups
+		public_groups = Group.get_public()
+		for group in public_groups:
+			self.form.group.choices.insert(0, (str(group.key.id()), group.name))
+
+		# add to group list from owner's groups
+		private_groups = Group.get_by_owner_private(user_info.key)
+		for group in private_groups:
+			self.form.group.choices.insert(0, (str(group.key.id()), group.name))
+
+		# check what was returned from form validates
+		if not self.form.validate():          
+			self.add_message("The new appliance form did not validate.", "error")
+			return self.get()
 
 		# load form values
 		name = self.form.name.data.strip()
-		token = self.form.name.data.strip()
-		group = self.form.group.data.strip()
+		token = self.form.token.data.strip()
+		group = Group.get_by_id(int(self.form.group.data.strip()))
 
-		# save the appliance in our database            
+		# check if we have it already
+		if Appliance.get_by_token(token):
+			self.add_message("An appliance with that token already exists!", "error")
+			return self.redirect_to('account-appliances')
+		
+		# save the new appliance in our database            
 		appliance = Appliance(
 			name = name,
 			token = token,
-			group = group,
+			group = group.key,
+			owner = user_info.key
 		)
 		appliance.put()
 
 		# log to alert
-		self.add_message('Appliance <em>%s</em> successfully created!' % name, 'success')
+		self.add_message("Appliance <em>%s</em> successfully created!" % name, "success")
 
 		# give it a few seconds to update db, then redirect
 		time.sleep(2)
-		return self.redirect_to('appliances')
+		return self.redirect_to('account-appliances')
 
 	@webapp2.cached_property
 	def form(self):

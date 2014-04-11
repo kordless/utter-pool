@@ -1,7 +1,7 @@
 {% import "macros.html" as macros %}
 {% extends base_layout %}
 
-{% block title %}Appliances :: {% endblock %}
+{% block title %}Groups :: {% endblock %}
 
 {% block page_styles %}
   <link href="/css/appliance.css" rel="stylesheet">
@@ -21,11 +21,11 @@
         <h4 class="modal-title" id="myModalLabel">Confirm Deletion</h4>
       </div>
       <div class="modal-body">
-        <p>Deleting this appliance will cause the cluster it's running on to disconnect from the pool controller.  Are you sure you want to do this?</p>
+        <p>Are you sure you want to delete this group?  If the group is in use, it will not be deleted.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" id="delete-button" class="btn btn-danger">Delete Appliance</button>
+        <button type="button" id="delete-button" class="btn btn-danger">Delete Group</button>
       </div>
     </div>
   </div>
@@ -39,38 +39,46 @@
         <li><a href="{{ uri_for('account') }}">Status</a></li>
         <li><a href="{{ uri_for('account-clouds') }}">Clouds</a></li>
         <li><a href="{{ uri_for('account-settings') }}">Settings</a></li>
-        <li class="active"><a href="{{ uri_for('account-appliances') }}">Appliances</a></li>
-        <li><a href="{{ uri_for('account-appliances-groups') }}">Groups</a></li>
+        <li><a href="{{ uri_for('account-appliances') }}">Appliances</a></li>
+        <li class="active"><a href="{{ uri_for('account-appliances-groups') }}">Groups</a></li>
       </ul>
     </div>
     <div class="col-md-10">
       <div class="row">
         <div class="col-md-12">
           <div class="section-header">
-            <h2><small>Account Appliances</small></h2>
-            {% if appliances %}
+            <h2><small>Appliance Groups</small></h2>
+            {% if public_groups %}
             <div class="row">
               <div class="col-md-12">
-                <p>The following virtual appliances are tied to your provider account. You may click on the <strong>New Appliance</strong> button below to view instructions for adding a new appliance. If you need to change an appliance's group, delete it and then add it back to the system from the virtual appliance's interface.</p>
+                <p>The following groups are available for use with this provider account.  If you'd like to add a new group, click the <strong>New Group</strong> button below.</p>
                 <table class="table table-hover">
                   <thead>
                     <tr>
                       <th>Name</th>
-                      <th>Group</th>
-                      <th>Token</th>
-                      <th>Status</th>
+                      <th># Appliances</th>
+                      <th>Public?</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {% for appliance in appliances %}
+                    {% for group in public_groups %}
                     <tr>
-                      <td>{{ appliance.name }}</td>
-                      <td>{{ appliance.group.get().name }}</td>
-                      <td>{{ appliance.token }}</td>
+                      <td>{{ group.name }}</td>
+                      <td>20</td>
                       <td><span class="glyphicon glyphicon-ok"></span></td>
                       <td>
-                        <button type="button" id="remove-{{appliance.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
+                        <button type="button" id="remove-{{group.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                    {% for group in private_groups %}
+                    <tr>
+                      <td>{{ group.name }}</td>
+                      <td>20</td>
+                      <td><span class="glyphicon glyphicon-ban-circle"></span></td>
+                      <td>
+                        <button type="button" id="remove-{{group.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
                       </td>
                     </tr>
                     {% endfor %}
@@ -79,14 +87,14 @@
               </div>
             </div>
             {% else %}
-            <p>You don't have any appliances configured. Click the <strong>'New Appliance'</strong> button below to create your first appliance.</p>
+            <p>There are no appliance groups available for this account.  Add an appliance to auto-create the <strong>public</strong> group.</p>
             {% endif %}
           </div>
         </div>
       </div>
       <div class="row">
         <div class="col-md-5">
-        	<button type="button" id="new-appliance-button" class="btn btn-success">New Appliance</button>
+        	<button type="button" id="new-group-button" class="btn btn-success">New Group</button>
         </div>
       </div>  
     </div>

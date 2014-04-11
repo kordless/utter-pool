@@ -38,7 +38,6 @@ class LogoutHandler(BaseHandler):
 
 			# if 2fa enabled, set the last login to an hour ago
 			if user_info.tfenabled:
-				print 'setting logout time'
 				now_minus_an_hour = datetime.now() + timedelta(0, -config.session_age)
 				user_info.last_login = now_minus_an_hour
 				user_info.put()
@@ -54,11 +53,11 @@ class LogoutHandler(BaseHandler):
 class LoginHandler(BaseHandler):
 	def get(self):
 		callback_url = "%s/login/complete" % (self.request.host_url)
-		continue_url = self.request.get('continue_url')
-		
+
 		# check if we have somewhere to go
-		if continue_url:
-			dest_url=self.uri_for('login-complete', continue_url=continue_url)
+		next = self.request.get('next')
+		if next:
+			dest_url=self.uri_for('login-complete', next=next)
 		else:
 			dest_url=self.uri_for('login-complete')
 		
@@ -82,6 +81,9 @@ class CallbackLoginHandler(BaseHandler):
 
 			# see if user is in database
 			user_info = User.get_by_uid(uid)
+
+			# get the destination URL from the next parameter
+			next = self.request.get('next')
 
 			# create association if user doesn't exist
 			if user_info is None:
@@ -119,9 +121,9 @@ class CallbackLoginHandler(BaseHandler):
 			else:
 				# existing user logging in - force a2fa check before continuing
 				now_minus_an_hour = datetime.now() + timedelta(0, -config.session_age)
-				print user_info.last_login < now_minus_an_hour
+
 				if user_info.tfenabled and (user_info.last_login < now_minus_an_hour): 
-						return self.redirect_to('login-tfa')
+						return self.redirect_to('login-tfa', next=next)
 				else:
 					# two factor is disabled, or already complete
 					user_info.last_login = datetime.now()
@@ -142,8 +144,8 @@ class CallbackLoginHandler(BaseHandler):
 			message = "You have successfully logged in!"            
 			self.add_message(message, 'success')
 
-			# take user to the account page - fix this to test to see if they need setup or status page
-			return self.redirect_to('account-settings')
+			# take user to whatever page was originally requested
+			return self.redirect(str(next))
 
 		except Exception as ex:
 			message = "No user authentication information received from Google: %s" % ex            
@@ -167,16 +169,19 @@ class TwoFactorLoginHandler(BaseHandler):
 		secret = user_info.tfsecret
 		totp = pyotp.TOTP(secret)
 
+		# get the destination URL from the next parameter
+		next = self.request.get('next')
+
 		# check if token verifies
 		if totp.verify(authcode):
 			# user has completed tfa - update login time
 			user_info.last_login = datetime.now()
 			user_info.put()
 			time.sleep(2)
-			return self.redirect_to('login-complete')
+			return self.redirect_to('login-complete', next=next)
 
 		# did not 2fa - force them back through login
-		self.redirect_to('login')
+		self.redirect_to('login', next=next)
 
 
 class TwoFactorSettingsHandler(BaseHandler):
@@ -191,6 +196,9 @@ class TwoFactorSettingsHandler(BaseHandler):
 		secret = user_info.tfsecret
 		totp = pyotp.TOTP(secret)
 		
+		# build paramater list
+		params = {}
+		
 		# verify
 		if action == "enable" and totp.verify(authcode):
 			# authorized to enable
@@ -202,14 +210,17 @@ class TwoFactorSettingsHandler(BaseHandler):
 			user_info.put()
 		else:
 			# not authorized - javascript will handle adding a user message to the UI
+			params['response'] = "fail"
+			params['result'] = "two factor auth failed"
 			self.response.set_status(401)
 			self.response.headers['Content-Type'] = 'application/json'
-			return self.render_template('api/response.json', response="fail")
+			return self.render_template('api/response.json', **params)
 
 		# respond
-		self.response.set_status(200)
+		params['response'] = "success"
+		params['result'] = "two factor auth successful"
 		self.response.headers['Content-Type'] = "application/json"
-		return self.render_template('api/response.json', response="success")
+		return self.render_template('api/response.json', **params)
 
 
 class SettingsHandler(BaseHandler):

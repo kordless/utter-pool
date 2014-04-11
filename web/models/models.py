@@ -63,14 +63,30 @@ class User(User):
     def get_by_uid(cls, uid):
         return cls.query(cls.uid == uid).get()
 
+    @classmethod
+    def get_all(cls):
+        return cls.query().filter().order(-cls.created).fetch()
+
+
+# cloud model
+class Cloud(ndb.Model):
+    name = ndb.StringProperty()
+    group = ndb.KeyProperty(kind=Group)
+    owner = ndb.KeyProperty(kind=User)
+    address = ndb.StringProperty()
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    updated = ndb.DateTimeProperty(auto_now=True)
+
 
 # appliance model
 class Appliance(ndb.Model):
     name = ndb.StringProperty()
     token = ndb.StringProperty()
+    activated = ndb.BooleanProperty(default=True)
     ssluri = ndb.StringProperty()
     created = ndb.DateTimeProperty(auto_now_add=True)
-    updated = ndb.DateTimeProperty(auto_now=True) 
+    updated = ndb.DateTimeProperty(auto_now=True)
+    last_active = ndb.DateTimeProperty()
     owner = ndb.KeyProperty(kind=User)
     group = ndb.KeyProperty(kind=Group)
     ipv4enabled = ndb.BooleanProperty(default=False)
@@ -87,11 +103,31 @@ class Appliance(ndb.Model):
         return cls.query().filter(cls.owner == user).order(-cls.created).fetch()
 
 
-# cloud model
-class Cloud(ndb.Model):
-    name = ndb.StringProperty()
+class Image(ndb.Model):
+    name = ndb.StringProperty
     created = ndb.DateTimeProperty(auto_now_add=True)
-    updated = ndb.DateTimeProperty(auto_now=True)   
+    updated = ndb.DateTimeProperty(auto_now=True)
+
+
+class Flavor(ndb.Model):
+    name = ndb.StringProperty
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    updated = ndb.DateTimeProperty(auto_now=True)
+
+
+# instance model
+class Instance(ndb.Model):
+    name = ndb.StringProperty()
+    provider = ndb.KeyProperty(kind=User)
+    appliance = ndb.KeyProperty(kind=Appliance)
+    cloud = ndb.KeyProperty(kind=Cloud)
+    address = ndb.StringProperty()
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    updated = ndb.DateTimeProperty(auto_now=True)
+    flavor = ndb.KeyProperty(kind=Flavor)
+    image = ndb.KeyProperty(kind=Image)
+    ipv4_address = ndb.StringProperty()
+    ipv6_address = ndb.StringProperty()
 
 
 # blog posts and pages
@@ -135,6 +171,13 @@ class Article(ndb.Model):
         article_query = cls.query().filter(cls.slug == slug)
         article = article_query.get()
         return article
+
+
+# log tracking pings
+class LogTracking(ndb.Model):
+    timestamp = ndb.DateTimeProperty(auto_now_add=True)
+    message = ndb.StringProperty()
+    ip = ndb.StringProperty()    
 
 
 # log visits

@@ -2,12 +2,11 @@ import time
 
 import webapp2
 
+from google.appengine.api import channel
+
 import config
 import web.forms as forms
-from web.models.models import User
-from web.models.models import LogVisit
-from web.models.models import Appliance
-from web.models.models import Group
+from web.models.models import User, LogVisit, Appliance, Group
 from web.basehandler import BaseHandler
 from web.basehandler import user_required
 
@@ -20,11 +19,36 @@ class ApplianceHandler(BaseHandler):
 		# look up appliances
 		appliances = Appliance.get_by_user(user_info.key)
 
+		# setup channel to do page refresh
+		channel_token = user_info.key.urlsafe()
+		refresh_channel = channel.create_channel(channel_token)
+
+		# params build out
 		params = {
-			'appliances': appliances
+			'appliances': appliances, 
+			'refresh_channel': refresh_channel,
+			'channel_token': channel_token 
 		}
 
 		return self.render_template('appliance/appliances.html', **params)
+
+
+class ApplianceDetailHandler(BaseHandler):
+	@user_required
+	def delete(self, appliance_id = None):
+		# delete the entry from the db
+		appliance = Appliance.get_by_id(long(appliance_id))
+
+		if appliance:
+			appliance.key.delete()
+			self.add_message('Appliance successfully deleted!', 'success')
+		else:
+			self.add_message('Appliance was not deleted.  Something went horribly wrong somewhere!', 'warning')
+
+		# use the channel to tell the browser we are done and reload
+		channel_token = self.request.get('channel_token')
+		channel.send_message(channel_token, 'reload')
+		return
 
 
 class NewApplianceHandler(BaseHandler):
@@ -59,7 +83,7 @@ class NewApplianceHandler(BaseHandler):
 					public = True
 				)
 				group.put()
-				time.sleep(2)
+				time.sleep(1)
 				
 				# rerun the insert into list
 				public_groups = Group.get_public()
@@ -128,3 +152,28 @@ class NewApplianceHandler(BaseHandler):
 	@webapp2.cached_property
 	def form(self):
 		return forms.ApplianceForm(self)
+
+
+class ApplianceGroupHandler(BaseHandler):
+	@user_required
+	def get(self):
+		# lookup user's auth info
+		user_info = User.get_by_id(long(self.user_id))
+
+		# look up groups
+		private_groups = Group.get_by_owner_private(user_info.key)
+		public_groups = Group.get_public()
+
+		# setup channel to do page refresh
+		channel_token = user_info.key.urlsafe()
+		refresh_channel = channel.create_channel(channel_token)
+
+		# params build out
+		params = {
+			'public_groups': public_groups,
+			'private_groups': private_groups, 
+			'refresh_channel': refresh_channel,
+			'channel_token': channel_token 
+		}
+
+		return self.render_template('appliance/groups.html', **params)

@@ -19,6 +19,9 @@ class GroupHandler(BaseHandler):
 		# lookup user's auth info
 		user_info = User.get_by_id(long(self.user_id))
 
+		# build parameter list
+		params = {}
+
 		#load new group info
 		if self.request.get('name'):
 			
@@ -31,12 +34,16 @@ class GroupHandler(BaseHandler):
 			time.sleep(2)
 			
 			# yup, all good
+			params['response'] = "success"
+			params['result'] = "group created"
 			self.response.headers['Content-Type'] = 'application/json'
-			return self.render_template('response.json', result="success")
+			return self.render_template('api/response.json', **params)
 
 		else:
 			# that's a no go, jim
+			params['response'] = "fail"
+			params['result'] = "group not created created"
 			self.response.set_status(403)
 			self.response.headers['Content-Type'] = 'application/json'
-			return self.render_template('response.json', result="fail")
+			return self.render_template('api/response.json', **params)
 

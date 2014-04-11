@@ -33,10 +33,11 @@
                     <li class="divider"></li>
                     <li class="dropdown-header">Content</li>
                     <li><a id="dropdown-new-article" href="{{ uri_for('blog-article-list') }}#new">New Article</a></li>
-                    <li><a href="{{ uri_for('blog-article-list') }}">Manage</a></li>
+                    <li><a href="{{ uri_for('blog-article-list') }}">Manage Articles</a></li>
                     <li class="divider"></li>
-                    <li class="dropdown-header">Admin</li>
-                    <li><a target="_blank" href="{{ admin_interface_url }}">Dashboard</a></li>
+                    <li class="dropdown-header">Pool</li>
+                    <li><a target="_blank" href="{{ admin_interface_url }}">Google Dashboard</a></li>
+                    <li><a href="{{ uri_for('admin') }}">Administration</a></li>
                     {% endif %}
                     <li class="divider"></li>
                     <li><a href="{{ uri_for('logout') }}">Logout</a></li>

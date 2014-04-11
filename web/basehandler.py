@@ -21,16 +21,16 @@ import web.models.models as models
 
 # decorator for auth required
 def user_required(handler):
-
 	def check_login(self, *args, **kwargs):
 		try:
 			auth = self.auth.get_user_by_session()
-			
-			if not auth:
-				return self.redirect_to('login')
-			else:
-				return handler(self, *args, **kwargs)
 
+			if auth:
+				return handler(self, *args, **kwargs)
+			else:
+				next = self.request.url
+				return self.redirect(self.uri_for('login', next=next))
+				
 		except AttributeError, e:
 			# avoid AttributeError when the session was deleted from the server
 			print e
@@ -40,14 +40,28 @@ def user_required(handler):
 
 	return check_login
 
+# decorator for blogger required
 def blogger_required(handler):
-	
 	def check_login(self, *args, **kwargs):
 		# load user
 		user_info = models.User.get_by_id(long(self.user_id))
 		
 		# check if they are a blogger
 		if users.is_current_user_admin() or user_info.blogger:
+			return handler(self, *args, **kwargs)
+		else:
+			return self.redirect_to('home')
+
+	return check_login
+
+# decorator for admin required
+def admin_required(handler):
+	def check_login(self, *args, **kwargs):
+		# load user
+		user_info = models.User.get_by_id(long(self.user_id))
+		
+		# check if they are a blogger
+		if users.is_current_user_admin():
 			return handler(self, *args, **kwargs)
 		else:
 			return self.redirect_to('home')

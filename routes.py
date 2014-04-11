@@ -1,23 +1,24 @@
 from webapp2_extras.routes import RedirectRoute
-from web.site import handlers
-from web.users import userhandlers
-from web.api import apihandlers
-from web.blog import bloghandlers
-from web.appliances import appliancehandlers
-from web.groups import grouphandlers
-from web.clouds import cloudhandlers
+from web.handlers import sitehandlers, adminhandlers, userhandlers, apihandlers, bloghandlers, appliancehandlers, grouphandlers, cloudhandlers
 
 secure_scheme = 'https'
 
 _routes = [
     # mail processing
-    RedirectRoute('/taskqueue-send-email/', handlers.SendEmailHandler, name='taskqueue-send-email', strict_slash=True),
+    RedirectRoute('/taskqueue-send-email/', sitehandlers.SendEmailHandler, name='taskqueue-send-email', strict_slash=True),
+
+    # admin
+    RedirectRoute('/admin/', adminhandlers.AdminHandler, name='admin', strict_slash=True),
+    RedirectRoute('/admin/users/', adminhandlers.UsersHandler, name='admin-users', strict_slash=True),
+    RedirectRoute('/admin/flavors/', adminhandlers.FlavorsHandler, name='admin-flavors', strict_slash=True),
+    RedirectRoute('/admin/images/', adminhandlers.ImagesHandler, name='admin-images', strict_slash=True),
+    RedirectRoute('/admin/groups/', adminhandlers.GroupsHandler, name='admin-groups', strict_slash=True),
 
     # website
-    RedirectRoute('/', handlers.HomeRequestHandler, name='home', strict_slash=True),
-    RedirectRoute('/about/', handlers.AboutHandler, name='about', strict_slash=True),
-    RedirectRoute('/pricing/', handlers.PricingHandler, name='pricing', strict_slash=True),
-    RedirectRoute('/features/', handlers.FeaturesHandler, name='features', strict_slash=True),
+    RedirectRoute('/', sitehandlers.HomeRequestHandler, name='home', strict_slash=True),
+    RedirectRoute('/about/', sitehandlers.AboutHandler, name='about', strict_slash=True),
+    RedirectRoute('/pricing/', sitehandlers.PricingHandler, name='pricing', strict_slash=True),
+    RedirectRoute('/features/', sitehandlers.FeaturesHandler, name='features', strict_slash=True),
 
     # users
     RedirectRoute('/login/', userhandlers.LoginHandler, name='login', strict_slash=True),
@@ -31,14 +32,18 @@ _routes = [
     # appliances
     RedirectRoute('/appliances/', appliancehandlers.ApplianceHandler, name='account-appliances', strict_slash=True),
     RedirectRoute('/appliances/new/', appliancehandlers.NewApplianceHandler, name='account-appliances-new', strict_slash=True),
+    RedirectRoute('/appliances/groups/', appliancehandlers.ApplianceGroupHandler, name='account-appliances-groups', strict_slash=True),
+    RedirectRoute('/appliances/<appliance_id>/', appliancehandlers.ApplianceDetailHandler, name='account-appliances-detail', strict_slash=True),
 
     # clouds
     RedirectRoute('/clouds/', cloudhandlers.CloudHandler, name='account-clouds', strict_slash=True),
 
     # api
-    RedirectRoute('/api/groups/', grouphandlers.GroupHandler, name='api_public', strict_slash=True),
-    RedirectRoute('/api/<public_method>', apihandlers.APIPublicHandler, name='api_public', strict_slash=True),
-    
+    RedirectRoute('/api/v1/groups', grouphandlers.GroupHandler, name='api-groups', strict_slash=False),
+    RedirectRoute('/api/v1/authorization', apihandlers.TokenValidate, name='api-token-validate', strict_slash=False),
+    RedirectRoute('/api/v1/track', apihandlers.TrackingPingHandler, name='api-track', strict_slash=False),
+    RedirectRoute('/api/v1/<public_method>', apihandlers.APIPublicHandler, name='api_public', strict_slash=False),
+
     # blog handlers
     RedirectRoute('/blog/', bloghandlers.BlogHandler, name='blog', strict_slash=True),
     RedirectRoute('/blog/feed/rss/', bloghandlers.RSSHandler, name='blog-rss', strict_slash=True),

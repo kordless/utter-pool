@@ -1,7 +1,7 @@
 {% import "macros.html" as macros %}
 {% extends base_layout %}
 
-{% block title %}Clouds :: {% endblock %}
+{% block title %}New Appliance :: {% endblock %}
 
 {% block page_styles %}
   <link href="/css/appliance.css" rel="stylesheet">
@@ -12,13 +12,13 @@
 {% endblock %}
 
 {% block content %}
-<!-- hidden tfactor disable modal -->
+<!-- hidden new group modal -->
 <div id="new-group-modal" class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="myModalLabel">Create a New Appliance Group</h4>
+        <h4 class="modal-title">Create a New Appliance Group</h4>
       </div>
       <div class="modal-body">
         <p>Enter the name of the new appliance group you'd like to create. You will be the owner of this group and the group will be private.</p>
@@ -46,6 +46,7 @@
         <li><a href="{{ uri_for('account-clouds') }}">Clouds</a></li>
         <li><a href="{{ uri_for('account-settings') }}">Settings</a></li>
         <li class="active"><a href="{{ uri_for('account-appliances') }}">Appliances</a></li>
+        <li><a href="{{ uri_for('account-appliances-groups') }}">Groups</a></li>
       </ul>
     </div>
     <div class="col-md-10">
@@ -97,7 +98,6 @@
 
     // show new group modal
     $("#new-group-create-button").click(function() {
-      console.log("wat?");
       $("#new-group-modal").modal();
     });
 

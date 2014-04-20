@@ -1,46 +1,15 @@
 {"response": "success",
-	"result": {
-		"images": [
-			{ 
-				"id": "0", 
-				"md5": "141291930ebf556642311a53ce8c735d",
-				"name": "Ubuntu Precise Server 12.04.3 64-bit for StackMonkey Appliance",
-				"url": "http://cloud-images.ubuntu.com/precise/current/precise-server-cloudimg-amd64-disk1.img",
-				"size": 255524864,
-				"diskformat": "qcow2",
-				"containerformat": "bare",
-				"flags": 2
-			},
-			{
-				"id": "1", 
-				"md5": "51bc16b900bf0f814bb6c0c3dd8f0790",
-				"name": "Fedora 20 64-bit for StackMonkey Appliance",
-				"url": "http://download.fedoraproject.org/pub/fedora/linux/releases/20/Images/x86_64/Fedora-x86_64-20-20131211.1-sda.qcow2",
-				"size": 214106112,
-				"diskformat": "qcow2",
-				"containerformat": "bare",
-				"flags": 2
-			},
-			{
-				"id": "2",
-				"md5": "d972013792949d0d3ba628fbe8685bce",
-				"name": "Cirros 0.3.1 64-bit for StackMonkey Appliance",
-				"url": "http://download.cirros-cloud.net/0.3.1/cirros-0.3.1-x86_64-disk.img",	
-				"diskformat": "qcow2",
-				"containerformat": "bare",
-				"size": 13147648,
-				"flags": 2
-			},
-			{
-				"id": "3",
-				"md5": "ba6a7933681963b2c8f017f64a4d8b5f",
-				"name": "Ubuntu Raring Server 13.04 64-bit for StackMonkey Appliance",
-				"url": "http://cloud-images.ubuntu.com/raring/current/raring-server-cloudimg-amd64-disk1.img",	
-				"diskformat": "qcow2",
-				"containerformat": "bare",
-				"size": 237109248,
-				"flags": 2
-			}
-		]
-	}
+  "result": {
+    "images": [{% for image in images %}
+      { 
+        "id": "{{ image.key.id() }}",
+        "name": "{{ image.name }}",
+        "description": "{{ image.description }}",
+        "url": "{{ image.url }}",
+        "size": {{ image.size }},
+        "diskformat": "{{ image.diskformat }}",
+        "containerformat": "{{ image.containerformat }}",
+        "flags": 1
+      }{% if not loop.last %},{% endif %}{% endfor %}]
+  }
 }

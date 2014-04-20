@@ -68,16 +68,6 @@ class User(User):
         return cls.query().filter().order(-cls.created).fetch()
 
 
-# cloud model
-class Cloud(ndb.Model):
-    name = ndb.StringProperty()
-    group = ndb.KeyProperty(kind=Group)
-    owner = ndb.KeyProperty(kind=User)
-    address = ndb.StringProperty()
-    created = ndb.DateTimeProperty(auto_now_add=True)
-    updated = ndb.DateTimeProperty(auto_now=True)
-
-
 # appliance model
 class Appliance(ndb.Model):
     name = ndb.StringProperty()
@@ -103,14 +93,53 @@ class Appliance(ndb.Model):
         return cls.query().filter(cls.owner == user).order(-cls.created).fetch()
 
 
+# image model
 class Image(ndb.Model):
-    name = ndb.StringProperty
+    name = ndb.StringProperty()
+    description = ndb.StringProperty()
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    updated = ndb.DateTimeProperty(auto_now=True)
+    url = ndb.StringProperty()
+    size = ndb.IntegerProperty()
+    diskformat = ndb.StringProperty()
+    containerformat = ndb.StringProperty()
+    active = ndb.BooleanProperty(default=True)
+
+    @classmethod
+    def get_all(cls):
+        return cls.query().filter().order(cls.created).fetch()
+
+
+# flavor model
+class Flavor(ndb.Model):
+    name = ndb.StringProperty()
+    description = ndb.StringProperty()
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    updated = ndb.DateTimeProperty(auto_now=True)
+    vpus = ndb.IntegerProperty()
+    memory = ndb.IntegerProperty()
+    disk = ndb.IntegerProperty()
+    network = ndb.IntegerProperty()
+    rate = ndb.IntegerProperty() # current market rate
+    launches = ndb.IntegerProperty() # number of launches
+
+    @classmethod
+    def get_all(cls):
+        return cls.query().filter().order(cls.created).fetch()
+
+
+# address model
+class Address(ndb.Model):
     created = ndb.DateTimeProperty(auto_now_add=True)
     updated = ndb.DateTimeProperty(auto_now=True)
 
 
-class Flavor(ndb.Model):
-    name = ndb.StringProperty
+# cloud model
+class Cloud(ndb.Model):
+    name = ndb.StringProperty()
+    group = ndb.KeyProperty(kind=Group)
+    owner = ndb.KeyProperty(kind=User)
+    address = ndb.StringProperty()
     created = ndb.DateTimeProperty(auto_now_add=True)
     updated = ndb.DateTimeProperty(auto_now=True)
 
@@ -126,8 +155,29 @@ class Instance(ndb.Model):
     updated = ndb.DateTimeProperty(auto_now=True)
     flavor = ndb.KeyProperty(kind=Flavor)
     image = ndb.KeyProperty(kind=Image)
+    ipv4_private_address = ndb.StringProperty()
     ipv4_address = ndb.StringProperty()
     ipv6_address = ndb.StringProperty()
+
+
+# bid model
+class Bid(ndb.Model):
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    updated = ndb.DateTimeProperty(auto_now=True)
+    callback = ndb.StringProperty()
+    address = ndb.KeyProperty(kind=Address)
+    flavor = ndb.KeyProperty(kind=Flavor)
+    amount = ndb.IntegerProperty()
+    price = ndb.IntegerProperty()
+
+
+# ask model
+class Ask(ndb.Model):
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    updated = ndb.DateTimeProperty(auto_now=True)
+    appliance = ndb.KeyProperty(kind=Appliance)
+    flavor = ndb.KeyProperty(kind=Flavor)
+    price = ndb.IntegerProperty()
 
 
 # blog posts and pages

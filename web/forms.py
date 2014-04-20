@@ -4,6 +4,7 @@ from wtforms import validators
 from lib import utils
 from lib import groups
 
+
 class BaseForm(Form):
     def __init__(self, request_handler):
         super(BaseForm, self).__init__(request_handler.request.POST)
@@ -48,3 +49,22 @@ class ApplianceForm(BaseForm):
     name = fields.TextField('Name', [validators.Required(), validators.Length(max=50)])
     token = fields.TextField('Token', [validators.Required(), validators.Length(max=64)])
     group = fields.SelectField('Group')
+
+
+class FlavorForm(BaseForm):
+    name = fields.TextField('Name', [validators.Required(), validators.Length(max=50)])
+    description = fields.TextField('Description', [validators.Required(), validators.Length(max=100)])
+    vpus = fields.IntegerField('VPUs', [validators.Required()])
+    memory = fields.IntegerField('Memory (MB)', [validators.Required()])
+    disk = fields.IntegerField('Disk (GB)', [validators.Required()])
+    network = fields.IntegerField('Network (Mbits/sec)', [validators.Required()])
+    rate = fields.IntegerField('Starting Rate', [validators.Required()])
+
+
+class ImageForm(BaseForm):
+    name = fields.TextField('Name', [validators.Required(), validators.Length(max=50)])
+    description = fields.TextField('Description', [validators.Required(), validators.Length(max=100)])
+    url = fields.TextField('Source URL', [validators.Required(), validators.Length(max=250)])
+    size = fields.IntegerField('Size', [validators.Required()])
+    diskformat = fields.SelectField('Disk Format', choices=utils.DISKFORMATS)
+    containerformat = fields.SelectField('Container Format', choices=utils.CONTAINERFORMATS)

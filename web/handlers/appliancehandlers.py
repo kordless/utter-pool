@@ -45,6 +45,9 @@ class ApplianceDetailHandler(BaseHandler):
 		else:
 			self.add_message('Appliance was not deleted.  Something went horribly wrong somewhere!', 'warning')
 
+		# hangout for a second
+		time.sleep(1)
+
 		# use the channel to tell the browser we are done and reload
 		channel_token = self.request.get('channel_token')
 		channel.send_message(channel_token, 'reload')

@@ -35,7 +35,7 @@ from lib import utils, httpagentparser
 
 class BlogHandler(BaseHandler):
 	def get(self):
-		# load articles in from db and github, stuff them in an array
+		# load articles in from db and then stuff them in an array
 		date_format = "%A, %d %b %Y"
 		articles = models.Article.get_all()
 		
@@ -286,7 +286,7 @@ class SlugHandler(BaseHandler):
 		if not owner_info.name:
 			article_owner = owner_info.username
 		else:
-			article_owner = "%s %s" % (owner_info.name, owner_info.last_name)
+			article_owner = owner_info.name
 
 		# build gravatar URL
 		gravatar_hash = md5.new(owner_info.email.lower().strip()).hexdigest()

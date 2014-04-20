@@ -10,8 +10,10 @@ _routes = [
     # admin
     RedirectRoute('/admin/', adminhandlers.AdminHandler, name='admin', strict_slash=True),
     RedirectRoute('/admin/users/', adminhandlers.UsersHandler, name='admin-users', strict_slash=True),
-    RedirectRoute('/admin/flavors/', adminhandlers.FlavorsHandler, name='admin-flavors', strict_slash=True),
-    RedirectRoute('/admin/images/', adminhandlers.ImagesHandler, name='admin-images', strict_slash=True),
+    RedirectRoute('/admin/flavors/', adminhandlers.FlavorsListHandler, name='admin-flavors', strict_slash=True),
+    RedirectRoute('/admin/flavors/<flavor_id>/', adminhandlers.FlavorsActionsHandler, name='admin-flavors-action', strict_slash=True),
+    RedirectRoute('/admin/images/', adminhandlers.ImagesListHandler, name='admin-images', strict_slash=True),
+    RedirectRoute('/admin/images/<image_id>/', adminhandlers.ImagesActionsHandler, name='admin-images-action', strict_slash=True),
     RedirectRoute('/admin/groups/', adminhandlers.GroupsHandler, name='admin-groups', strict_slash=True),
 
     # website
@@ -42,8 +44,9 @@ _routes = [
     RedirectRoute('/api/v1/groups', grouphandlers.GroupHandler, name='api-groups', strict_slash=False),
     RedirectRoute('/api/v1/authorization', apihandlers.TokenValidate, name='api-token-validate', strict_slash=False),
     RedirectRoute('/api/v1/track', apihandlers.TrackingPingHandler, name='api-track', strict_slash=False),
-    RedirectRoute('/api/v1/<public_method>', apihandlers.APIPublicHandler, name='api_public', strict_slash=False),
-
+    RedirectRoute('/api/v1/images', apihandlers.ImagesHandler, name='api-images', strict_slash=False),
+    RedirectRoute('/api/v1/flavors', apihandlers.FlavorsHandler, name='api-flavors', strict_slash=False),
+    
     # blog handlers
     RedirectRoute('/blog/', bloghandlers.BlogHandler, name='blog', strict_slash=True),
     RedirectRoute('/blog/feed/rss/', bloghandlers.RSSHandler, name='blog-rss', strict_slash=True),

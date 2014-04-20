@@ -211,6 +211,14 @@ def timezones():
         zones.append((zone, zone))
     return zones
 
+DISKFORMATS = [
+    ("qcow2", "QEMU Emulator")
+]
+
+CONTAINERFORMATS = [
+    ("bare", "Bare")
+]
+
 GROUPS = [
     ("public", "Public")
 ]

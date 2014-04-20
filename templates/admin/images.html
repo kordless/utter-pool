@@ -1,7 +1,7 @@
 {% import "macros.html" as macros %}
 {% extends base_layout %}
 
-{% block title %}Admin :: {% endblock %}
+{% block title %}Admin Images :: {% endblock %}
 
 {% block page_styles %}
   <link href="/css/admin.css" rel="stylesheet">
@@ -12,6 +12,57 @@
 {% endblock %}
 
 {% block content %}
+<!-- hidden delete modal -->
+<div id="delete" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Confirm Deletion</h4>
+      </div>
+      <div class="modal-body">
+        <p>Deleting this image will remove it from the database and remove it from the site.  Are you sure that's what you want to do?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" id="delete-button" class="btn btn-danger">Delete Image</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end modal -->
+
+<!-- hidden new image modal -->
+<div id="new-image-modal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Create a New Image</h4>
+      </div>
+      <form id="form_new_image" action="{{ url|safe }}" method="post" class="form-horizontal">
+        <div class="modal-body">
+          <p>Fill out the following form to create a new image.</p>
+          <div class="row">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+            {{ macros.input(form, "name", "Name", "col-xs-9", placeholder="ubuntu_precise_64_12.04", class="form-control required") }}
+            {{ macros.input(form, "description", "Description", "col-xs-12", placeholder="Ubuntu Image", class="form-control required") }}
+            {{ macros.input(form, "url", "Source URL", "col-xs-12", placeholder="http://images.com/ubuntu.img", class="form-control required") }} 
+            {{ macros.input(form, "diskformat", "Disk Format", "col-xs-5", placeholder="http://images.com/ubuntu.img", class="form-control pulldown") }} 
+            {{ macros.input(form, "containerformat", "Container Format", "col-xs-5", placeholder="http://images.com/ubuntu.img", class="form-control pulldown") }}
+            {{ macros.input(form, "size", "Size", "col-xs-6", placeholder="200000", class="form-control required") }} 
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="new-image-modal-close-button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" id="new-image-modal-create-button" class="btn btn-danger">Create New Image</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- end modal -->
+
 <div class="container content">
   <div class="row">
     <div class="col-md-2">
@@ -27,15 +78,50 @@
       <div class="row">
         <div class="col-md-12">
           <div class="section-header">
-            <h2><small>Admin Images</small></h2>
-            <div class="row">
-              <div class="col-md-12">
-                <p>All systems nominal.</p>
-              </div>
+          <h2><small>Admin Images</small></h2>
+          {% if images %}
+          <div class="row">
+            <div class="col-md-12">
+              <p>The following images are configured for the system to sell. You may click on the <strong>New Image</strong> button below to create a new image.</p>
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Disk Format</th>
+                    <th>Container Format</th>
+                    <th>Size</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for image in images %}
+                  <tr>
+                    <td><a href="{{ image.url }}">{{ image.name }}</td>
+                    <td>{{ image.description }}</td>
+                    <td>{{ image.diskformat }}</td>
+                    <td>{{ image.containerformat }}</td>
+                    <td>{{ image.size }}</td>
+                    <td>
+                      <button type="button" id="remove-{{image.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
             </div>
+          </div>
+          {% else %}
+          <p>No images configured. Click the <strong>'New Image'</strong> button below to create a image.</p>
+          {% endif %}
           </div>
         </div>
       </div>
+      <div class="row">
+        <div class="col-md-5">
+          <button type="button" id="new-image-button" class="btn btn-success">New Image</button>
+        </div>
+      </div> 
     </div>
   </div> 
 </div>
@@ -53,6 +139,39 @@
     var csrf_token = "{{ csrf_token() }}";
     var channel_token = "{{ channel_token }}";
     var refresh_channel = "{{ refresh_channel }}";
+    
+    // show new image modal
+    $('#new-image-button').click( function() {
+      $("#new-image-modal").modal();
+    });
+    
+    // remove buttons
+    $('button[id^="remove-"]').each(function(index){
+      $('#'+this.id).click(function() {
+        image_id = this.id.split("-").pop();
+        button_id = '#'+this.id;
+        $('#delete').modal();
+        $('#delete-button').click(function() {
+          $.ajax({
+            url: '/admin/images/'+image_id+'/?channel_token='+channel_token,
+            type: 'DELETE',
+            success:(function() {
+              $(button_id).unbind("click");
+              $(button_id).addClass("disabled");
+            })
+          });
+        });
+      })
+    });
+    
+    // show new flavor modal on any errors
+    {% if messages|safe %}
+      {% for message in messages %}
+        {% if message[1] == 'error' %}
+          $("#new-image-modal").modal();
+        {% endif %}
+      {% endfor %}
+    {% endif %}
 
     // listen to our refresh channel for page reload
     onMessage = function() {

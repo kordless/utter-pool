@@ -18,7 +18,7 @@ from webapp2_extras.appengine.auth.models import Unique
 # local application/library specific imports
 import config
 from web.basehandler import BaseHandler
-from web.models.models import Appliance, LogTracking
+from web.models.models import Appliance, Image, Flavor, LogTracking
 
 
 # used to log installs of openstack and whatever else we want to track
@@ -51,7 +51,7 @@ class TokenValidate(BaseHandler):
 		apitoken = self.request.get("apitoken")
 		appliance = Appliance.get_by_token(apitoken)
 		
-		# build paramter list
+		# build parameter list
 		params = {}
 
 		# check if appliance is activated
@@ -71,6 +71,35 @@ class TokenValidate(BaseHandler):
 		self.response.set_status(401)
 		self.response.headers['Content-Type'] = 'application/json'
 		return self.render_template('api/response.json', **params)
+
+
+class ImagesHandler(BaseHandler):
+	def get(self):
+		images = Image().get_all()
+		
+		# build parameter list
+		params = {
+			'images': images
+		}
+
+		# return images via template
+		self.response.headers['Content-Type'] = 'application/json'
+		return self.render_template('api/images.json', **params)
+
+
+class FlavorsHandler(BaseHandler):
+	def get(self):
+		# get current flavors
+		flavors = Flavor().get_all()
+		
+		# build parameter list
+		params = {
+			'flavors': flavors
+		}
+
+		# return images via template
+		self.response.headers['Content-Type'] = 'application/json'
+		return self.render_template('api/flavors.json', **params)
 
 
 class APIPublicHandler(BaseHandler):

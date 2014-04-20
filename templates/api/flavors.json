@@ -1,51 +1,18 @@
 {"response": "success",
-	"result": {
-		"flavors": [
-			{ 
-				"id": "0", 
-				"name": "m512.v1.d20",
-				"comment": "512MB Memory, 1 Core, 20GB Disk",
-				"vpu": 1,
-				"mem": 512,
-				"disk": 20,
-				"flags": 2
-			},
-			{ 
-				"id": "1", 
-				"name": "m1024.v2.d30",
-				"comment": "1GB Memory, 2 Core, 30GB Disk",
-				"vpu": 2,
-				"mem": 1024,
-				"disk": 30,
-				"flags": 2
-			},
-			{ 
-				"id": "2", 
-				"name": "m2048.v2.d40",
-				"comment": "2GB Memory, 2 Core, 40GB Disk",
-				"vpu": 2,
-				"mem": 2048,
-				"disk": 40,
-				"flags": 2
-			},
-			{ 
-				"id": "3", 
-				"name": "m4096.v2.d60",
-				"comment": "4GB Memory, 2 Core, 60GB Disk",
-				"vpu": 2,
-				"mem": 4096,
-				"disk": 60,
-				"flags": 2
-			},
-			{ 
-				"id": "4", 
-				"name": "m8192.v4.d80.e0",
-				"comment": "8GB Memory, 4 Core, 80GB Disk",
-				"vpu": 4,
-				"mem": 8192,
-				"disk": 80,
-				"flags": 2
-			}
-		]
-	}
+  "result": {
+    "flavors": [{% for flavor in flavors %}
+      { 
+        "id": "{{ flavor.key.id() }}",
+        "name": "{{ flavor.name }}",
+        "description": "{{ flavor.description }}",
+        "vpus": {{ flavor.vpus }},
+        "disk": {{ flavor.disk }},
+        "memory": {{ flavor.memory }},
+        "network": {{ flavor.network }},
+        "rate": {{ flavor.rate }},
+        "launches": {{ flavor.launches }},
+        "flags": 0
+      }{% if not loop.last %},{% endif %}{% endfor %}
+    ]
+  }
 }

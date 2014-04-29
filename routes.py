@@ -46,6 +46,8 @@ _routes = [
     RedirectRoute('/api/v1/track', apihandlers.TrackingPingHandler, name='api-track', strict_slash=False),
     RedirectRoute('/api/v1/images', apihandlers.ImagesHandler, name='api-images', strict_slash=False),
     RedirectRoute('/api/v1/flavors', apihandlers.FlavorsHandler, name='api-flavors', strict_slash=False),
+    RedirectRoute('/api/v1/instances', apihandlers.InstancesHandler, name='api-instances', strict_slash=False),
+    RedirectRoute('/api/v1/instances/<instance_name>', apihandlers.InstanceDetailHandler, name='api-instance-details', strict_slash=False),
     
     # blog handlers
     RedirectRoute('/blog/', bloghandlers.BlogHandler, name='blog', strict_slash=True),

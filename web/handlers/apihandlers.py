@@ -73,6 +73,46 @@ class TokenValidate(BaseHandler):
 		return self.render_template('api/response.json', **params)
 
 
+class InstancesHandler(BaseHandler):
+	def get(self):
+		pass
+
+class InstanceDetailHandler(BaseHandler):
+	# disable csrf check in basehandler
+	csrf_exempt = True
+
+	def get(self, instance_name):
+		# build parameter list
+		params = {}
+		params['response'] = "success"
+		params['result'] = ""
+		return self.render_template('api/instances.json', **params)
+
+	def post(self, instance_name):
+		# build parameter list
+		instance = json.loads(self.request.body)
+
+		name = instance['name']
+		image = instance['image']
+		flavor = instance['flavor']
+		ask = instance['ask']
+		address = instance['address']
+
+		# load the instance back into the response
+		response = "success"
+		params = {
+			'response': response,
+			'instance_name': name,
+			'image': image,
+			'flavor': flavor,
+			'ask': ask,
+			'address': address
+		}
+
+		self.response.headers['Content-Type'] = 'application/json'
+		return self.render_template('api/instances.json', **params)
+
+
 class ImagesHandler(BaseHandler):
 	def get(self):
 		images = Image().get_all()
@@ -102,30 +142,3 @@ class FlavorsHandler(BaseHandler):
 		return self.render_template('api/flavors.json', **params)
 
 
-class APIPublicHandler(BaseHandler):
-	def get(self, public_method = None):
-		
-		if public_method == "version":
-			query_version = self.request.get("ver")
-			logging.info("value is: %s" % query_version)
-			params = {
-				'query_version': query_version,
-			}
-
-			# return all versions as good for now
-			self.response.headers['Content-Type'] = 'application/json'
-			return self.render_template('api/versions.json', **params)
-				
-		elif public_method == "flavors":
-			query_version = self.request.get("ver")
-			logging.info("version is: %s" % query_version)
-
-			self.response.headers['Content-Type'] = 'application/json'
-			return self.render_template('api/flavors.json')
-
-		elif public_method == "images":
-			query_version = self.request.get("ver")
-			logging.info("version is: %s" % query_version)
-
-			self.response.headers['Content-Type'] = 'application/json'
-			return self.render_template('api/images.json')

@@ -18,7 +18,6 @@ import config
 from lib import utils
 import web.models.models as models
 
-
 # decorator for auth required
 def user_required(handler):
 	def check_login(self, *args, **kwargs):
@@ -153,28 +152,22 @@ class ViewClass:
 
 
 class BaseHandler(webapp2.RequestHandler):
-	"""
-		BaseHandler for all requests
-
-		Holds the auth and session properties so they
-		are reachable for all requests
-	"""
+	# all children default to csrf enabled
+	csrf_exempt = False
 
 	def __init__(self, request, response):
-		""" Override the initialiser in order to set the language.
-		"""
+		# Override the initialiser in order to set the language.
 		self.initialize(request, response)
 		self.view = ViewClass()
 
 	def dispatch(self):
-		"""
-			Get a session store for this request.
-		"""
+		# Get a session store for this request.
 		self.session_store = sessions.get_store(request=self.request)
 
 		try:
 			# csrf protection
-			if self.request.method == "POST" and not self.request.path.startswith('/taskqueue'):
+			is_post = self.request.method in ['POST', 'PUT', 'DELETE']
+			if is_post and not self.request.path.startswith('/taskqueue') and not self.csrf_exempt:
 				token = self.session.get('_csrf_token')
 				if not token or token != self.request.get('_csrf_token'):
 					self.abort(403)

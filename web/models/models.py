@@ -122,6 +122,7 @@ class Flavor(ndb.Model):
     network = ndb.IntegerProperty()
     rate = ndb.IntegerProperty() # current market rate
     launches = ndb.IntegerProperty() # number of launches
+    active = ndb.BooleanProperty(default=False)
 
     @classmethod
     def get_all(cls):

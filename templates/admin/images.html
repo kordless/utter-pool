@@ -21,7 +21,7 @@
         <h4 class="modal-title">Confirm Deletion</h4>
       </div>
       <div class="modal-body">
-        <p>Deleting this image will remove it from the database and remove it from the site.  Are you sure that's what you want to do?</p>
+        <p>Deleting this image will remove it from the database and remove it from the site.  You should ensure this image has been disabled for a few days before you delete it to ensure the appliances will know to uninstall it!</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -90,7 +90,7 @@
                     <th>Description</th>
                     <th>Disk Format</th>
                     <th>Container Format</th>
-                    <th>Size</th>
+                    <th>Serving</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -101,7 +101,11 @@
                     <td>{{ image.description }}</td>
                     <td>{{ image.diskformat }}</td>
                     <td>{{ image.containerformat }}</td>
-                    <td>{{ image.size }}</td>
+                    <td>
+                      <div class="toggle-modern">
+                        <div id="image-{{ image.key.id() }}" class="toggle{% if image.active %} enabled{% endif %}"></div>
+                      </div>
+                    </td>
                     <td>
                       <button type="button" id="remove-{{image.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
                     </td>
@@ -145,6 +149,36 @@
       $("#new-image-modal").modal();
     });
     
+    $('div[id^="image-"]').each(function(index){
+      image_id = this.id.split("-").pop();
+      $('#image-'+image_id).toggles({
+        text: {
+          on: 'ON',
+          off:'OFF',
+        },
+        on: $(this).hasClass('enabled')
+      });
+      $('#image-'+image_id).click(function() {
+        // button state to enabled 
+        enabled = $('#'+this.id).children('.active').length;
+        image_id = this.id.split("-").pop();
+        console.log(image_id);
+        if (enabled == 1) {
+          var state_out = "enabled";
+        } else {
+          var state_out = "disabled";
+        }
+        $.ajax({
+          url: '/admin/images/'+image_id+'/?channel_token='+channel_token,
+          type: 'PUT',
+          data: {_csrf_token: csrf_token, enable: enabled},
+          success: function() {
+            alertify.log("Image has been " + state_out +"!", "success");
+          }
+        });
+      });
+    });
+
     // remove buttons
     $('button[id^="remove-"]').each(function(index){
       $('#'+this.id).click(function() {
@@ -164,7 +198,7 @@
       })
     });
     
-    // show new flavor modal on any errors
+    // show new image modal on any errors
     {% if messages|safe %}
       {% for message in messages %}
         {% if message[1] == 'error' %}

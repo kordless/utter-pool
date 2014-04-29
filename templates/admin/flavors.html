@@ -93,6 +93,7 @@
                       <th>Disk</th>
                       <th>Network</th>
                       <th>Rate</th>
+                      <th>Serving</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -105,6 +106,11 @@
                       <td>{{ flavor.disk }}GB</td>
                       <td>{{ flavor.network }}Mb/sec</td>
                       <td>{{ flavor.rate }} μBTC/Hour</td>
+                      <td>
+                        <div class="toggle-modern">
+                          <div id="flavor-{{ flavor.key.id() }}" class="toggle{% if flavor.active %} enabled{% endif %}"></div>
+                        </div>
+                      </td>
                       <td>
                         <button type="button" id="remove-{{flavor.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
                       </td>
@@ -149,6 +155,36 @@
       $("#new-flavor-modal").modal();
     });
     
+    $('div[id^="flavor-"]').each(function(index){
+      flavor_id = this.id.split("-").pop();
+      $('#flavor-'+flavor_id).toggles({
+        text: {
+          on: 'ON',
+          off:'OFF',
+        },
+        on: $(this).hasClass('enabled')
+      });
+      $('#flavor-'+flavor_id).click(function() {
+        // button state to enabled 
+        enabled = $('#'+this.id).children('.active').length;
+        flavor_id = this.id.split("-").pop();
+        console.log(flavor_id);
+        if (enabled == 1) {
+          var state_out = "enabled";
+        } else {
+          var state_out = "disabled";
+        }
+        $.ajax({
+          url: '/admin/flavors/'+flavor_id+'/?channel_token='+channel_token,
+          type: 'PUT',
+          data: {_csrf_token: csrf_token, enable: enabled},
+          success: function() {
+            alertify.log("Flavor has been " + state_out +"!", "success");
+          }
+        });
+      });
+    });
+
     // remove buttons
     $('button[id^="remove-"]').each(function(index){
       $('#'+this.id).click(function() {

@@ -102,6 +102,27 @@ class FlavorsListHandler(BaseHandler):
 class FlavorsActionsHandler(BaseHandler):
 	@user_required
 	@admin_required
+	def put(self, flavor_id = None):
+		flavor = Flavor.get_by_id(long(flavor_id))
+
+		# get the enable/active state
+		enable = self.request.get("enable")
+		
+		if flavor:
+			if enable == '1':
+				flavor.active = True
+				flavor.put()
+			else:
+				flavor.active = False
+				flavor.put()
+		
+		# hangout for a second
+		time.sleep(1)
+		
+		return
+
+	@user_required
+	@admin_required
 	def delete(self, flavor_id = None):
 		# delete the entry from the db
 		flavor = Flavor.get_by_id(long(flavor_id))
@@ -180,6 +201,27 @@ class ImagesListHandler(BaseHandler):
 
 
 class ImagesActionsHandler(BaseHandler):
+	@user_required
+	@admin_required
+	def put(self, image_id = None):
+		image = Image.get_by_id(long(image_id))
+
+		# get the enable/active state
+		enable = self.request.get("enable")
+
+		if image:
+			if enable == '1':
+				image.active = True
+				image.put()
+			else:
+				image.active = False
+				image.put()
+		
+		# hangout for a second
+		time.sleep(1)
+		
+		return
+
 	@user_required
 	@admin_required
 	def delete(self, image_id = None):

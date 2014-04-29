@@ -9,7 +9,7 @@
         "size": {{ image.size }},
         "diskformat": "{{ image.diskformat }}",
         "containerformat": "{{ image.containerformat }}",
-        "flags": 1
+        "flags": {% if image.active == False %}8{% else %}1{% endif %}
       }{% if not loop.last %},{% endif %}{% endfor %}]
   }
 }

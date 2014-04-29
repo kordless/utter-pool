@@ -1,0 +1,35 @@
+{"response": "{{ response }}",
+  "result": {
+    "instance": {
+      "name": "{{ instance_name }}",
+      "image": "{{ image }}",
+      "image_url": "http://example.com/image.img",
+      "flavor": "{{ flavor }}",
+      "ask": "{{ ask }}",
+      "address": "{{ address }}",
+      "callback_url": "http://example.com/callback",
+      "ssl_tunnel": "sometunnelinfohere",
+      "ssh_key": "somesshkeyhere",
+      "boot_script_url": "http://example.com/textfile.sh",
+      "security_group": {
+        "name": "security-{{ instance_name }}",
+        "rules": [
+          {
+            "protocol": "icmp", 
+            "port_from": 80, 
+            "port_to": 80, 
+            "cidr": "0.0.0.0/0", 
+            "version": "ipv4"
+          },
+          {
+            "protocol": "tcp", 
+            "port_from": 22, 
+            "port_to": 22, 
+            "cidr": "0.0.0.0/0", 
+            "version": "ipv4"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -11,7 +11,7 @@
         "network": {{ flavor.network }},
         "rate": {{ flavor.rate }},
         "launches": {{ flavor.launches }},
-        "flags": 0
+        "flags": {% if flavor.active == False %}8{% else %}1{% endif %}
       }{% if not loop.last %},{% endif %}{% endfor %}
     ]
   }

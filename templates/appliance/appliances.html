@@ -120,7 +120,7 @@
         $('#delete').modal();
         $('#delete-button').click(function() {
           $.ajax({
-            url: '/appliances/'+appliance_id+'/?channel_token='+channel_token,
+            url: '/appliances/'+appliance_id+'/?_csrf_token='+csrf_token+'&channel_token='+channel_token,
             type: 'DELETE',
             success:(function() {
               $(button_id).unbind("click");

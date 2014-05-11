@@ -88,7 +88,7 @@ class FlavorsListHandler(BaseHandler):
 		flavor.put()
 
 		# log to alert
-		self.add_message(('Flavor <em>%s</em> successfully created!' % name), 'success')
+		self.add_message(('Flavor %s successfully created!' % name), 'success')
 
 		# give it a few seconds to update db, then redirect
 		time.sleep(1)
@@ -189,7 +189,7 @@ class ImagesListHandler(BaseHandler):
 		image.put()
 
 		# log to alert
-		self.add_message(('Image <em>%s</em> successfully created!' % name), 'success')
+		self.add_message(('Image %s successfully created!' % name), 'success')
 
 		# give it a few seconds to update db, then redirect
 		time.sleep(1)

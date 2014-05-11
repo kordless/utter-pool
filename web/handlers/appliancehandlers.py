@@ -93,7 +93,7 @@ class NewApplianceHandler(BaseHandler):
 				for group in public_groups:
 					self.form.group.choices.insert(0, (group.key.id(), group.name))
 
-				self.add_message("A new public group named <em>Public</em> was created and placed in the database.");
+				self.add_message("A new public group named Public was created and placed in the database.");
 
 			# render new appliance page
 			return self.render_template('appliance/new.html')
@@ -146,7 +146,7 @@ class NewApplianceHandler(BaseHandler):
 		appliance.put()
 
 		# log to alert
-		self.add_message("Appliance <em>%s</em> successfully created!" % name, "success")
+		self.add_message("Appliance %s successfully created!" % name, "success")
 
 		# give it a few seconds to update db, then redirect
 		time.sleep(2)

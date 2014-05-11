@@ -97,6 +97,7 @@ class InstanceDetailHandler(BaseHandler):
 		flavor = instance['flavor']
 		ask = instance['ask']
 		address = instance['address']
+		state = instance['state']
 
 		# load the instance back into the response
 		response = "success"

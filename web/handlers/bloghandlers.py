@@ -214,7 +214,7 @@ class ListHandler(BaseHandler):
 		article.put()
 
 		# log to alert
-		self.add_message(_('Article <em>%s</em> successfully created!' % title), 'success')
+		self.add_message(_('Article %s successfully created!' % title), 'success')
 
 		# give it a few seconds to update db, then redirect
 		time.sleep(2)

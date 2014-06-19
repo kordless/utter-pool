@@ -71,6 +71,7 @@ class User(User):
 # appliance model
 class Appliance(ndb.Model):
     name = ndb.StringProperty()
+    description = ndb.StringProperty()
     token = ndb.StringProperty()
     activated = ndb.BooleanProperty(default=True)
     ssluri = ndb.StringProperty()
@@ -81,8 +82,9 @@ class Appliance(ndb.Model):
     group = ndb.KeyProperty(kind=Group)
     ipv4enabled = ndb.BooleanProperty(default=False)
     ipv6enabled = ndb.BooleanProperty(default=False)
-    ipv4net = ndb.StringProperty()
-    ipv6net = ndb.StringProperty()
+    dynamicimages = ndb.BooleanProperty(default=True)
+    location = ndb.GeoPtProperty()
+    ipv4_address = ndb.StringProperty()
 
     @classmethod
     def get_by_token(cls, token):
@@ -104,10 +106,17 @@ class Image(ndb.Model):
     diskformat = ndb.StringProperty()
     containerformat = ndb.StringProperty()
     active = ndb.BooleanProperty(default=True)
+    dynamic = ndb.BooleanProperty(default=False)
 
     @classmethod
     def get_all(cls):
         return cls.query().filter().order(cls.created).fetch()
+
+    @classmethod
+    def get_by_name(cls, name):
+        image_query = cls.query().filter(cls.name == name)
+        image = image_query.get()
+        return image
 
 
 # flavor model
@@ -121,65 +130,152 @@ class Flavor(ndb.Model):
     disk = ndb.IntegerProperty()
     network = ndb.IntegerProperty()
     rate = ndb.IntegerProperty() # current market rate
+    hot = ndb.IntegerProperty() # number hot
     launches = ndb.IntegerProperty() # number of launches
     active = ndb.BooleanProperty(default=False)
 
     @classmethod
     def get_all(cls):
-        return cls.query().filter().order(cls.created).fetch()
+        return cls.query().filter().order(-cls.rate).fetch()
+
+    @classmethod
+    def get_by_name(cls, name):
+        flavor_query = cls.query().filter(cls.name == name)
+        flavor = flavor_query.get()
+        return flavor
 
 
 # address model
 class Address(ndb.Model):
     created = ndb.DateTimeProperty(auto_now_add=True)
     updated = ndb.DateTimeProperty(auto_now=True)
-
+    address = ndb.StringProperty()
 
 # cloud model
 class Cloud(ndb.Model):
-    name = ndb.StringProperty()
-    group = ndb.KeyProperty(kind=Group)
-    owner = ndb.KeyProperty(kind=User)
-    address = ndb.StringProperty()
     created = ndb.DateTimeProperty(auto_now_add=True)
     updated = ndb.DateTimeProperty(auto_now=True)
+    name = ndb.StringProperty()
+    description = ndb.StringProperty()
+    owner = ndb.KeyProperty(kind=User)
+    address = ndb.StringProperty()
 
+    @classmethod
+    def get_by_user(cls, user):
+        cloud_query = cls.query().filter(cls.owner == user).order(-cls.created)
+        clouds = cloud_query.fetch()
+        return clouds
+
+    @classmethod
+    def get_by_user_name(cls, user, name):
+        cloud_query = cls.query().filter(cls.owner == user, cls.name == name)
+        cloud = cloud_query.get()
+        return cloud
+
+# callback model
+class Callback(ndb.Model):
+    name = ndb.StringProperty()
+    owner = ndb.KeyProperty(kind=User)
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    updated = ndb.DateTimeProperty(auto_now=True)
+    json_content = ndb.StringProperty()
+
+
+# wisp model
+class Wisp(ndb.Model):
+    name = ndb.StringProperty()
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    updated = ndb.DateTimeProperty(auto_now=True)
+    image = ndb.KeyProperty(kind=Image)
+    cloud = ndb.KeyProperty(kind=Cloud)
+    group = ndb.KeyProperty(kind=Group)
+    public_ssh_key = ndb.StringProperty()
+    post_creation = ndb.StringProperty()
+    dynamic_image_url = ndb.StringProperty()
+    callback_url = ndb.StringProperty()
+    owner = ndb.KeyProperty(kind=User)
+    bid = ndb.IntegerProperty()
+    amount = ndb.IntegerProperty()
+
+    @classmethod
+    def get_by_cloud(cls, cloud):
+        wisp_query = cls.query().filter(cls.cloud == cloud.key)
+        wisps = wisp_query.fetch()
+        return wisps
+
+    @classmethod
+    def get_by_user(cls, user):
+        wisp_query = cls.query().filter(cls.owner == user).order(-cls.created)
+        wisps = wisp_query.fetch()
+        return wisps
+
+    @classmethod
+    def get_by_user_name(cls, user, name):
+        cloud_query = cls.query().filter(cls.owner == user, cls.name == name)
+        cloud = cloud_query.get()
+        return cloud
+
+# instance bid model
+class InstanceBid(ndb.Model):
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    updated = ndb.DateTimeProperty(auto_now=True)
+    cloud = ndb.KeyProperty(kind=Cloud)
+    flavor = ndb.KeyProperty(kind=Flavor)
+    bid = ndb.IntegerProperty()
+    group = ndb.KeyProperty(kind=Group)
+    wisp = ndb.KeyProperty(kind=Wisp)
+    location = ndb.GeoPtProperty()
+    radius = ndb.IntegerProperty()
+    need_ipv4_address = ndb.BooleanProperty()
+    need_ipv6_address = ndb.BooleanProperty()
+    status = ndb.IntegerProperty() # 0 - not filled, 1 - filled
 
 # instance model
 class Instance(ndb.Model):
     name = ndb.StringProperty()
-    provider = ndb.KeyProperty(kind=User)
+    owner = ndb.KeyProperty(kind=User)
     appliance = ndb.KeyProperty(kind=Appliance)
     cloud = ndb.KeyProperty(kind=Cloud)
     address = ndb.StringProperty()
     created = ndb.DateTimeProperty(auto_now_add=True)
     updated = ndb.DateTimeProperty(auto_now=True)
+    expires = ndb.DateTimeProperty(auto_now=True)
     flavor = ndb.KeyProperty(kind=Flavor)
     image = ndb.KeyProperty(kind=Image)
     ipv4_private_address = ndb.StringProperty()
     ipv4_address = ndb.StringProperty()
     ipv6_address = ndb.StringProperty()
+    ask = ndb.IntegerProperty()
+    wisp = ndb.KeyProperty(kind=Wisp)
+    state = ndb.IntegerProperty()
 
+    @classmethod
+    def get_by_name_appliance(cls, name, appliance):
+        instance_query = cls.query().filter(cls.name == name, cls.appliance == appliance.key)
+        instance = instance_query.fetch()
+        return instance
 
-# bid model
-class Bid(ndb.Model):
-    created = ndb.DateTimeProperty(auto_now_add=True)
-    updated = ndb.DateTimeProperty(auto_now=True)
-    callback = ndb.StringProperty()
-    address = ndb.KeyProperty(kind=Address)
-    flavor = ndb.KeyProperty(kind=Flavor)
-    amount = ndb.IntegerProperty()
-    price = ndb.IntegerProperty()
+    @classmethod
+    def add(cls, appliance_instance, appliance):
+        # lookups
+        image = Image().get_by_name(appliance_instance['image'])
+        flavor = Flavor().get_by_name(appliance_instance['flavor'])
+        
+        # create new entry
+        instance = Instance()
+        instance.name = appliance_instance['name']
+        instance.address = appliance_instance['address']
+        instance.ask = appliance_instance['ask']
+        instance.state = appliance_instance['state']
+        instance.flavor = flavor.key
+        instance.image = image.key
+        instance.appliance = appliance.key
+        instance.owner = appliance.owner
+        instance.put()
 
-
-# ask model
-class Ask(ndb.Model):
-    created = ndb.DateTimeProperty(auto_now_add=True)
-    updated = ndb.DateTimeProperty(auto_now=True)
-    appliance = ndb.KeyProperty(kind=Appliance)
-    flavor = ndb.KeyProperty(kind=Flavor)
-    price = ndb.IntegerProperty()
-
+    @classmethod
+    def update(cls, appliance_instance, appliance):
+        pass
 
 # blog posts and pages
 class Article(ndb.Model):

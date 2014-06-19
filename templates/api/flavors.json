@@ -10,6 +10,7 @@
         "memory": {{ flavor.memory }},
         "network": {{ flavor.network }},
         "rate": {{ flavor.rate }},
+        "hot": {{ flavor.hot }},
         "launches": {{ flavor.launches }},
         "flags": {% if flavor.active == False %}8{% else %}1{% endif %}
       }{% if not loop.last %},{% endif %}{% endfor %}

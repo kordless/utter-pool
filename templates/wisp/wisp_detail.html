@@ -1,0 +1,143 @@
+{% import "macros.html" as macros %}
+{% extends base_layout %}
+
+{% block title %}Cloud Wisps :: {% endblock %}
+
+{% block page_styles %}
+  <link href="/css/configure.css" rel="stylesheet">
+{% endblock %}
+
+{% block navbar %}
+  {% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<!-- hidden delete modal -->
+<div id="modal-delete" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Confirm Deletion</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this wisp? This action cannot be reversed.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" id="modal-delete-button" class="btn btn-danger">Delete Wisp</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end modal -->
+
+<div class="container content">
+  <div class="row">
+    <div class="col-md-2">
+    {{ macros.side_menu("wisps") }}
+    </div>
+    <div class="col-md-10">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="section-header">
+            <h2><small>Cloud Wisp <strong>{{ wisp.name }}</strong></small></h2>
+            <div class="row">
+              <div class="col-md-10">
+  				      <form id="form-edit-wisp" action="{{ url|safe }}" method="post" class="form-horizontal">
+				          <p>The following values can be edited for this wisp.  Changes to this wisp will only take affect on newly created instances.</p>
+			          	<div class="row">
+			            	<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+				            {{ macros.input(form, "name", "Name", "col-xs-8", placeholder="Awesome Instance Template", class="form-control required") }}
+										{{ macros.input(form, "callback", "Callback Type", "col-xs-8", class="form-control pulldown") }}
+				        		<div id="custom-callback" class="hidden">
+				        			{{ macros.input(form, "callback_url", "Custom Callback URL", "col-xs-8", placeholder="http://secretserver.com/myserver.json", class="form-control") }}
+				        		</div>
+				        		<div id="custom-callback-hide">				           
+					        		{{ macros.input(form, "image", "Image", "col-xs-8", class="form-control pulldown") }}
+					        		<div id="dynamic-image" class="hidden">
+					        			{{ macros.input(form, "dynamic_image_url", "Dynamic Image URL", "col-xs-8", placeholder="http://example.com/myfavoriteimage.img", class="form-control") }}
+					        		</div>
+					        		{{ macros.input(form, "public_ssh_key", "Public SSH Key", "col-xs-12", class="form-control form-ssh-key", rows=6, placeholder="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAklOUpkDHrfHY17SbrmTIpNLTGK9Tjom/BWDSUGPl+nafzlHDTYW7hdI4yZ5ew18JH4JW9jbhUFrviQzM7xlELEVf4h9lFX5QVkbPppSwg0cda3Pbv7kOdJ/MTyBlWXFCR+HAo3FXRitBqxiX1nKhXpHAZsMciLq8V6RjsNAQwdsdMFvSlVK/7XAt3FaoJoAsncM1Q9x5+3V0Ww68/eIFmb1zuUFljQJKprrX88XypNDvjYNby6vw/Pb0rwert/EnmZ+AW4OZPnTPI89ZPmVMLuayrD2cE86Z/il8b+gw3r3+1nKatmIkjn2so1d01QraTlMqVSsbxNrRFi9wrf+M7Q== anonymous@bitcoin.local") }}
+					        		{{ macros.input(form, "post_creation", "Post Creation Script", "col-xs-8", class="form-control", rows=8, placeholder="#!/bin/bash") }}
+					        	</div>
+			          	</div>
+				          <button type="submit" id="create-button" class="btn btn-success">Save Wisp</button>
+				          <button type="button" id="delete-button" class="btn btn-danger">Delete Wisp</button>
+					      </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> 
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="/_ah/channel/jsapi"></script>
+<script type="text/javascript">
+  $().ready(function() {
+    // standard stuff
+    var username = "{{username}}";
+    var csrf_token = "{{ csrf_token() }}";
+    var channel_token = "{{ channel_token }}";
+    var refresh_channel = "{{ refresh_channel }}";
+
+    // listen to our refresh channel for page reload
+    onMessage = function() {
+        window.location.reload();
+    };
+    channel = new goog.appengine.Channel(refresh_channel);
+    socket = channel.open();
+    socket.onmessage = onMessage;
+
+
+    // show custom image input if selected
+    $('#image').change(function() {
+    	if ($('#image option:selected').val() == "custom") {
+    		$('#dynamic-image').removeClass('hidden');
+    	} else {
+    		$('#dynamic-image').addClass('hidden');
+    		$('#dynamic_image_url').val('');
+    	}
+    });
+
+    // configure form to show the right fields for custom settings
+    if ($('#callback option:selected').val() == "custom") {
+    	$('#custom-callback').removeClass('hidden');
+    	$('#custom-callback-hide').addClass('hidden');
+    }
+		if ($('#image option:selected').val() == "custom") {
+    	$('#dynamic-image').removeClass('hidden');
+    }
+
+    // show custom callback input and hide others
+    $('#callback').change(function() {
+    	if ($('#callback option:selected').val() == "custom") {
+    		$('#custom-callback').removeClass('hidden');
+    		$('#custom-callback-hide').addClass('hidden');
+    	} else {
+    		$('#custom_callback_url').val('');
+    		$('#custom-callback').addClass('hidden');
+    		$('#custom-callback-hide').removeClass('hidden');
+    	}
+    });
+
+    // remove wisp button
+    $('#delete-button').click(function() {
+      $('#modal-delete').modal();
+      $('#modal-delete-button').click(function() {
+        $('#modal-delete').modal("hide");
+        $.ajax({
+          url: '?_csrf_token='+csrf_token+'&channel_token='+channel_token,
+          type: 'DELETE'
+        });
+      });
+    });
+  });
+
+</script>
+{% endblock %}
+

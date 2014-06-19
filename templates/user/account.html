@@ -3,7 +3,7 @@
 
 {% block page_styles %}
     <!-- Home Page -->
-    <link href="/css/index.css" rel="stylesheet">
+    <link href="/css/configure.css" rel="stylesheet">
 {% endblock %}
 
 {% block navbar %}
@@ -11,19 +11,15 @@
 {% endblock %}
 
 {% block content %}
-  <div class="splash-container">
-	<h1>Not done yet.</h1>
-  </div>
 {% endblock %}
 
 {% block javascript %}
   <script type="text/javascript">
     $().ready(function() {
-   	  $('#qrcode').qrcode("{{ qrcode }}");
     })
   </script>
 {% endblock %}
 
 {% block extras %}
-  <script type="text/javascript" src="/js/qrcode.min.js"></script>
+
 {% endblock %}

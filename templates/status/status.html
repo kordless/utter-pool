@@ -1,0 +1,79 @@
+{% import "macros.html" as macros %}
+{% extends base_layout %}
+
+{% block title %}Status :: {% endblock %}
+
+{% block page_styles %}
+  <link href="/css/configure.css" rel="stylesheet">
+  <link href="/css/docs.css" rel="stylesheet">
+{% endblock %}
+
+{% block navbar %}
+  {% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="container content">
+  <div class="row">
+    <div class="col-md-2">
+    {{ macros.side_menu("status") }}
+    </div>
+    <div class="col-md-10">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="section-header">
+            <h2><small>Account Status</small></h2>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="bs-callout bs-callout-info bs-callout-top">
+                  <h4>Welcome to StackMonkey!</h4>
+                  <p>{% if not twofactor_enabled %}Please begin by turning on <strong>Two Factor Authentication</strong> and setting up your <strong>Account Information</strong> by clicking on the <span class="label label-danger">Review Settings</span> button below.{% endif %}  {% if not wisps_exist %}You {% if not twofactor_enabled %}also{% endif %} need to create a <strong>Wisp Server Template</strong> by clicking on the <span class="label label-success">Create a New Wisp</span> button.{% endif %}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-5">
+          {% if not twofactor_enabled %}<button type="button" id="review-settings-button" class="btn btn-danger">Review Settings</button>{% endif %}
+          {% if not wisps_exist %}<button type="button" id="new-wisp-button" class="btn btn-success">Create a New Wisp</button>{% endif %}
+        </div>
+      </div>  
+    </div>
+  </div> 
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="/_ah/channel/jsapi"></script>
+<script type="text/javascript">
+  $().ready(function() {
+    // standard stuff
+    var username = "{{username}}";
+    var csrf_token = "{{ csrf_token() }}";
+    var channel_token = "{{ channel_token }}";
+    var refresh_channel = "{{ refresh_channel }}";
+
+    // listen to our refresh channel for page reload
+    onMessage = function() {
+        window.location.reload();
+    };
+    channel = new goog.appengine.Channel(refresh_channel);
+    socket = channel.open();
+    socket.onmessage = onMessage;
+
+    // new wisp
+    $('#new-wisp-button').click(function() {
+      window.location = "{{ uri_for('account-wisps-new') }}";
+    });
+    
+    // review settings
+    $('#review-settings-button').click(function() {
+      window.location = "{{ uri_for('account-settings') }}";
+    });  
+  });
+
+</script>
+{% endblock %}
+

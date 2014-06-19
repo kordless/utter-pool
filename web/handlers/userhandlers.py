@@ -145,8 +145,9 @@ class CallbackLoginHandler(BaseHandler):
 			self.add_message(message, 'success')
 
 			# take user to whatever page was originally requested
-			return self.redirect(str(next))
-
+			#return self.redirect(str(next))
+			return self.redirect_to('account-status')
+			
 		except Exception as ex:
 			message = "No user authentication information received from Google: %s" % ex            
 			self.add_message(message, 'error')

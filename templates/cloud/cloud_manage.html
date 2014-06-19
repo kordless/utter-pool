@@ -1,0 +1,125 @@
+{% import "macros.html" as macros %}
+{% extends base_layout %}
+
+{% block title %}Clouds :: {% endblock %}
+
+{% block page_styles %}
+  <link href="/css/configure.css" rel="stylesheet">
+  <link href="/css/docs.css" rel="stylesheet">
+{% endblock %}
+
+{% block navbar %}
+  {% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<!-- hidden create modal -->
+<div id="create-modal" class="modal fade">
+  <div class="modal-dialog">
+    <form id="form-new-cloud" action="{{ url|safe }}" method="post" class="form-horizontal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Create New Cloud</h4>
+        </div>
+        <div class="modal-body">
+          <p>Enter the name and description for the new cloud.</p>
+          <div class="row form-group">
+            <div class="col-md-12">
+              <div class="row">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                {{ macros.input(form, "name", "Name", "col-xs-8", placeholder="My Fluffy Cloud", class="form-control required") }}
+                {{ macros.input(form, "description", "Description", "col-xs-12", placeholder="Fluffy clouds are the best clouds.", class="form-control required") }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="modal-close-button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" id="modal-create-button" class="btn btn-success">Create Cloud</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- end modal -->
+
+<div class="container content">
+  <div class="row">
+    <div class="col-md-2">
+    {{ macros.side_menu("clouds") }}
+    </div>
+    <div class="col-md-10">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="section-header">
+            <h2><small>Manage Cloud <strong>{{ cloud.name }}</strong></small></h2>
+            <div class="row">
+              <div class="col-md-10">
+                <div class="bs-callout bs-callout-info bs-callout-top">
+                  <h4>Forming a Cloud</h4>
+                  <p><strong>Clouds</strong> use <strong>Instance Bids</strong> to launch instances which meet or exceed <strong>Ask Prices</strong> for a given <strong>Instance Flavor</strong>. Instance bids use <strong>Appliance Groups</strong> and <strong>Appliance Location</strong> to help find suitable appliances for launching instances.  Instance bids use <strong>Wisps</strong> to provision instances after a trade occurs.</p>
+                  <p>Click the <span class="label label-success">Add Instance Bid</span> button below to add an instance bid to this cloud.</p>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+            	<div class="col-md-4">
+            		<button type="submit" id="add-button" class="btn btn-success">Add Instance Bid</button>
+          		</div>
+          	</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> 
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="/_ah/channel/jsapi"></script>
+<script type="text/javascript">
+  $().ready(function() {
+    // standard stuff
+    var username = "{{username}}";
+    var csrf_token = "{{ csrf_token() }}";
+    var channel_token = "{{ channel_token }}";
+    var refresh_channel = "{{ refresh_channel }}";
+  
+
+    // listen to our refresh channel for page reload
+    onMessage = function() {
+        window.location.reload();
+    };
+    channel = new goog.appengine.Channel(refresh_channel);
+    socket = channel.open();
+    socket.onmessage = onMessage;
+
+    // add button
+    $('#add-button').click(function() {
+      $('#modal-create').modal();
+    });
+
+    // edit button
+    $('#edit-button').click(function() {
+    	window.location = "edit";
+    });
+
+    // show create modal on any errors
+    {% if messages|safe %}
+      {% for message in messages %}
+        {% if message[1] == 'error' %}
+          $("#modal-create").modal();
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+  });
+
+</script>
+{% endblock %}
+
+{% block extras %}
+    <script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.js'></script>
+{% endblock %}
+

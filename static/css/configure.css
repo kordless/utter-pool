@@ -1,0 +1,84 @@
+html, body {
+}
+.container {
+  width: 98% !important;
+  margin-left: 14px;
+  padding-right: 30px;
+}
+.content {
+	margin-top: 70px;
+  margin-bottom: 70px;
+	background-color: white;
+}
+.page-header > h1, .page-header > h2 , .page-header {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+.section-header > h1, .section-header > h2 {
+  padding-bottom: 10px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #999;
+}
+.table > thead > tr > th {
+  color: #888;
+}
+.form-padding {
+	margin-bottom: 20px;
+}
+.form-buttons {
+  margin-left: 30px;
+}
+.form-ssh-key {
+  word-break: break-all;
+}
+#new-group-create-button {
+  margin-top: 25px;
+}
+.steps {
+  margin-bottom: 30px;
+}
+.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+  color: #3BAFDA;
+  background-color: #FFF;
+  border: 1px solid #3BAFDA;
+  border-left: 6px solid #3BAFDA;
+}
+.nav-pills a {
+	text-decoration: none;
+}
+span.label-info {
+  background-color: #3BAFDA;
+}
+button.btn-inverse {
+  background-color: #444;
+}
+btn:hover, .btn:focus, .btn:active, .btn.active {
+color: #FFF;
+/* border-color: #CCD1D9; */
+/* background-color: #CCD1D9; */
+outline: none !important;
+}
+
+.btn-inverse:hover, .btn-inverse:focus, .btn-inverse:active, .btn-inverse.active {
+  background-color: #666;
+}
+h2 small {
+	color: #777;
+}
+.nav-stacked {
+  padding-top: 20px;
+}
+.install-video {
+	margin: 20px 0 20px;
+}
+#login-tfa {
+  margin-top: 10px;
+}
+#map { 
+  position:relative; 
+  top:0; 
+  bottom:0;
+  height: 500px;
+  width:100%;
+}

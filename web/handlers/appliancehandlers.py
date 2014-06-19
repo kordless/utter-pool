@@ -32,8 +32,8 @@ class ApplianceHandler(BaseHandler):
 
 		return self.render_template('appliance/appliances.html', **params)
 
-
-class ApplianceDetailHandler(BaseHandler):
+# appliance detail
+class ApplianceConfigureHandler(BaseHandler):
 	@user_required
 	def delete(self, appliance_id = None):
 		# delete the entry from the db
@@ -53,8 +53,8 @@ class ApplianceDetailHandler(BaseHandler):
 		channel.send_message(channel_token, 'reload')
 		return
 
-
-class NewApplianceHandler(BaseHandler):
+# new appliances
+class ApplianceNewHandler(BaseHandler):
 	@user_required
 	def get(self):
 		# lookup user's auth info

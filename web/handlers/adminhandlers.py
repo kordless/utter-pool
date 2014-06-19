@@ -82,8 +82,9 @@ class FlavorsListHandler(BaseHandler):
 			memory = memory,
 			disk = disk,
 			network = network,
-			rate = rate,
-			launches = 0
+			rate = rate, # current market rate
+			launches = 0, # number of total launches
+			hot = 2 # suggest minimum two instance addresses hot
 		)
 		flavor.put()
 

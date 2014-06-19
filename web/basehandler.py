@@ -252,6 +252,19 @@ class BaseHandler(webapp2.RequestHandler):
 			return False
 
 	@webapp2.cached_property
+	def twofactor_enabled(self):
+		if self.user:
+			try:
+				user_info = models.User.get_by_id(long(self.user_id))
+				return user_info.tfenabled
+			except AttributeError, e:
+				# avoid AttributeError when the session was delete from the server
+				logging.error(e)
+				self.auth.unset_session()
+				self.redirect_to('home')
+		return None
+
+	@webapp2.cached_property
 	def email(self):
 		if self.user:
 			try:
@@ -348,8 +361,9 @@ class BaseHandler(webapp2.RequestHandler):
 			'is_mobile': self.is_mobile,
 			'enable_federated_login': config.enable_federated_login,
 			'base_layout': self.get_base_layout,
+			'twofactor_enabled': self.twofactor_enabled,
 			'admin_interface_url': config.admin_interface_url,
-			'admin': self.is_admin,
+			'admin': self.is_admin
 		})
 	
 		if hasattr(self, 'form'):

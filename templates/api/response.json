@@ -1,1 +1,1 @@
-{ "response": "{{ response }}", "result": "{{ result }}" }
+{ "response": "{{ response }}", "result": { "message": "{{ message }}"} }

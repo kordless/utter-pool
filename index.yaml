@@ -37,6 +37,12 @@ indexes:
   - name: created
     direction: desc
 
+- kind: Cloud
+  properties:
+  - name: owner
+  - name: created
+    direction: desc
+
 - kind: Group
   properties:
   - name: owner
@@ -53,3 +59,9 @@ indexes:
   properties:
   - name: public
   - name: created
+
+- kind: Wisp
+  properties:
+  - name: owner
+  - name: created
+    direction: desc

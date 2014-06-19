@@ -1288,6 +1288,10 @@ h1[id] {
     margin-bottom: 20px;
 }
 
+.bs-callout-top {
+    margin-top: 0px;
+}
+
 #focusedInput {
     border-color: #ccc;
     border-color: rgba(82,168,236,.8);

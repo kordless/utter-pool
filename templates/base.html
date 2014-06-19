@@ -84,7 +84,7 @@
       $().ready(function() {
         console.log("base online");
         // login button
-        $('#nav-login').on('click', function(e) { window.location = "{{ uri_for('account') }}" });
+        $('#nav-login').on('click', function(e) { window.location = "{{ uri_for('account-status') }}" });
       
         {% if messages|safe %}
           {% for message in messages %}

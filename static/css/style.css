@@ -150,7 +150,16 @@ footer ul {
 .footer, .push {
 	height: 200px;
 }
-
+.btn-info, .btn-info:active, .btn-info.active, .btn-info.disabled, .btn-info[disabled] {
+  color: #FFF;
+  background-color: #3BAFD9;
+  border-color: #46B8DA;
+}
+.btn-info:hover, .btn-info:focus {
+  color: #fff;
+  background-color: #4BBFE9;
+  border-color: #36aacc;
+}
 /* sliders - the guy that wrote this has no clue about documentation */
 .toggle {
   height: 22px;

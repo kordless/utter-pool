@@ -4,7 +4,7 @@
 {% block title %}Appliances :: {% endblock %}
 
 {% block page_styles %}
-  <link href="/css/appliance.css" rel="stylesheet">
+  <link href="/css/configure.css" rel="stylesheet">
 {% endblock %}
 
 {% block navbar %}
@@ -35,13 +35,7 @@
 <div class="container content">
   <div class="row">
     <div class="col-md-2">
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="{{ uri_for('account') }}">Status</a></li>
-        <li><a href="{{ uri_for('account-clouds') }}">Clouds</a></li>
-        <li><a href="{{ uri_for('account-settings') }}">Settings</a></li>
-        <li class="active"><a href="{{ uri_for('account-appliances') }}">Appliances</a></li>
-        <li><a href="{{ uri_for('account-appliances-groups') }}">Groups</a></li>
-      </ul>
+    {{ macros.side_menu("appliances") }}
     </div>
     <div class="col-md-10">
       <div class="row">
@@ -51,11 +45,11 @@
             {% if appliances %}
             <div class="row">
               <div class="col-md-12">
-                <p>The following virtual appliances are tied to your provider account. You may click on the <strong>New Appliance</strong> button below to view instructions for adding a new appliance. If you need to change an appliance's group, delete it and then add it back to the system from the virtual appliance's interface.</p>
+                <p>The following virtual appliances are tied to your provider account. You may click on the <span class="label label-success">New Appliance</span> button below to view instructions for adding a new appliance. If you need to change an appliance's group, delete it and then add it back to the system from the virtual appliance's interface.</p>
                 <table class="table table-hover">
                   <thead>
                     <tr>
-                      <th>Name</th>
+                      <th>Appliance</th>
                       <th>Group</th>
                       <th>Token</th>
                       <th>Status</th>
@@ -65,11 +59,12 @@
                   <tbody>
                     {% for appliance in appliances %}
                     <tr>
-                      <td>{{ appliance.name }}</td>
+                      <td><a href="{{ uri_for('account-appliances-configure', self.request, appliance_id=appliance.key.id()) }}">{{ appliance.name }}</a></td>
                       <td>{{ appliance.group.get().name }}</td>
-                      <td>{{ appliance.token }}</td>
+                      <td>{{ appliance.token|truncate(32, killwords=True) }}</td>
                       <td><span class="glyphicon glyphicon-ok"></span></td>
                       <td>
+                        <button type="button" id="edit-{{appliance.key.id()}}" class="btn btn-inverse btn-xs" title="edit" href="#"><span class="glyphicon glyphicon-pencil"></span></button>
                         <button type="button" id="remove-{{appliance.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
                       </td>
                     </tr>
@@ -112,6 +107,14 @@
       window.location.href = "{{ uri_for('account-appliances-new') }}";
     });
 
+    // edit buttons
+    $('button[id^="edit-"]').each(function(index){
+      $('#'+this.id).click(function() {
+        appliance_id = this.id.split("-").pop();
+        window.location = appliance_id+"/edit/"
+      })
+    });
+
     // remove buttons
     $('button[id^="remove-"]').each(function(index){
       $('#'+this.id).click(function() {
@@ -119,13 +122,10 @@
         button_id = '#'+this.id;
         $('#delete').modal();
         $('#delete-button').click(function() {
+          $('#delete').modal('hide');
           $.ajax({
             url: '/appliances/'+appliance_id+'/?_csrf_token='+csrf_token+'&channel_token='+channel_token,
-            type: 'DELETE',
-            success:(function() {
-              $(button_id).unbind("click");
-              $(button_id).addClass("disabled");
-            })
+            type: 'DELETE'
           });
         });
       })

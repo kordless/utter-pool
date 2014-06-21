@@ -187,13 +187,10 @@
         $('#delete').modal();
         $('#delete-button').click(function() {
           $.ajax({
-            url: '/admin/images/'+image_id+'/?channel_token='+channel_token,
-            type: 'DELETE',
-            success:(function() {
-              $(button_id).unbind("click");
-              $(button_id).addClass("disabled");
-            })
+            url: '/admin/images/'+image_id+'/?_csrf_token='+csrf_token+'&channel_token='+channel_token,
+            type: 'DELETE'
           });
+          $('#delete').modal("hide");
         });
       })
     });

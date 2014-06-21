@@ -224,6 +224,7 @@ GROUPS = [
 ]
 
 COUNTRIES = [
+    ("None", "None"),
     ("AF", "Afghanistan"),
     ("AL", "Albania"),
     ("DZ", "Algeria"),

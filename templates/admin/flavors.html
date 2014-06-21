@@ -193,13 +193,10 @@
         $('#delete').modal();
         $('#delete-button').click(function() {
           $.ajax({
-            url: '/admin/flavors/'+flavor_id+'/?channel_token='+channel_token,
+            url: '/admin/flavors/'+flavor_id+'/?_csrf_token='+csrf_token+'&channel_token='+channel_token,
             type: 'DELETE',
-            success:(function() {
-              $(button_id).unbind("click");
-              $(button_id).addClass("disabled");
-            })
           });
+          $('#delete').modal("hide");
         });
       })
     });

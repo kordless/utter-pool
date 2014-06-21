@@ -32,26 +32,6 @@ class ApplianceHandler(BaseHandler):
 
 		return self.render_template('appliance/appliances.html', **params)
 
-# appliance detail
-class ApplianceConfigureHandler(BaseHandler):
-	@user_required
-	def delete(self, appliance_id = None):
-		# delete the entry from the db
-		appliance = Appliance.get_by_id(long(appliance_id))
-
-		if appliance:
-			appliance.key.delete()
-			self.add_message('Appliance successfully deleted!', 'success')
-		else:
-			self.add_message('Appliance was not deleted.  Something went horribly wrong somewhere!', 'warning')
-
-		# hangout for a second
-		time.sleep(1)
-
-		# use the channel to tell the browser we are done and reload
-		channel_token = self.request.get('channel_token')
-		channel.send_message(channel_token, 'reload')
-		return
 
 # new appliances
 class ApplianceNewHandler(BaseHandler):
@@ -104,6 +84,7 @@ class ApplianceNewHandler(BaseHandler):
 
 	@user_required
 	def post(self):
+		print "***************************************"
 		# lookup user's auth info
 		user_info = User.get_by_id(long(self.user_id))
 		
@@ -149,13 +130,35 @@ class ApplianceNewHandler(BaseHandler):
 		self.add_message("Appliance %s successfully created!" % name, "success")
 
 		# give it a few seconds to update db, then redirect
-		time.sleep(2)
+		time.sleep(1)
 		return self.redirect_to('account-appliances')
 
 	@webapp2.cached_property
 	def form(self):
 		return forms.ApplianceForm(self)
 
+
+# appliance detail
+class ApplianceConfigureHandler(BaseHandler):
+	@user_required
+	def delete(self, appliance_id = None):
+		# delete the entry from the db
+		appliance = Appliance.get_by_id(long(appliance_id))
+
+		if appliance:
+			appliance.key.delete()
+			self.add_message('Appliance successfully deleted!', 'success')
+		else:
+			self.add_message('Appliance was not deleted.  Something went horribly wrong somewhere!', 'warning')
+
+		# hangout for a second
+		time.sleep(1)
+
+		# use the channel to tell the browser we are done and reload
+		channel_token = self.request.get('channel_token')
+		channel.send_message(channel_token, 'reload')
+		return
+		
 
 class ApplianceGroupHandler(BaseHandler):
 	@user_required

@@ -115,8 +115,8 @@ class CloudConfigureHandler(BaseHandler):
 		
 		# check what was returned from form validates
 		if not self.form.validate():          
-			self.add_message("The new cloud form did not validate.", "error")
-			return self.get()
+			self.add_message("The %s cloud was not updated." % cloud.name, "info")
+			return self.redirect_to('account-clouds')
 
 		# load form values
 		name = self.form.name.data.strip()

@@ -271,7 +271,6 @@ class SettingsHandler(BaseHandler):
 		country = self.form.country.data.strip()
 		timezone = self.form.timezone.data.strip()
 
-	
 		user_info = User.get_by_id(long(self.user_id))
 
 		try:
@@ -309,7 +308,7 @@ class SettingsHandler(BaseHandler):
 					self.add_message('Your new email is %s.' % format(email), 'success')
 
 				else:
-					# username not unique
+					# user's email not unique
 					self.add_message('That email address is already in use.', 'error')
 					return self.get()
 

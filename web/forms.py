@@ -64,7 +64,7 @@ class WispForm(BaseForm):
     image = fields.SelectField('Image')
     dynamic_image_url = fields.TextField('Dynamic Image URL', [validate_dynamic_image, validators.Length(max=1024)])
     public_ssh_key = fields.TextAreaField('Public SSH Key', [validators.Length(max=2048)])
-    post_creation = fields.TextAreaField('Post Creation Script', [validators.Length(max=2048)])
+    post_creation = fields.TextAreaField('Cloud Configuration', [validators.Length(max=2048)])
     callback = fields.SelectField('Callback', choices=[('default', "Default Callback"), ('custom', "Custom Callback URL")])
     callback_url = fields.TextField('Custom Callback URL', [validate_custom_callback, validators.Length(max=1024)]) 
 
@@ -73,6 +73,11 @@ class ApplianceForm(BaseForm):
     name = fields.TextField('Name', [validators.Required(), validators.Length(max=50)])
     token = fields.TextField('Token', [validators.Required(), validators.Length(max=64)])
     group = fields.SelectField('Group')
+    custom = fields.HiddenField('Custom')
+
+class GroupForm(BaseForm):
+    name = fields.TextField('Name', [validators.Required(), validators.Length(max=50)])
+    description = fields.TextField('Description', [validators.Required(), validators.Length(max=100)])
 
 
 class FlavorForm(BaseForm):

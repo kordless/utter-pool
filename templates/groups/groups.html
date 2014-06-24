@@ -5,6 +5,7 @@
 
 {% block page_styles %}
   <link href="/css/configure.css" rel="stylesheet">
+  <link href="/css/docs.css" rel="stylesheet">
 {% endblock %}
 
 {% block navbar %}
@@ -18,16 +19,78 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="myModalLabel">Confirm Deletion</h4>
+        <h4 class="modal-title" id="myModalLabel">Remove Appliance Group</h4>
       </div>
       <div class="modal-body">
-        <p>Are you sure you want to delete this group?  If the group is in use, it will not be deleted.</p>
+        <p>Are you sure you want to remove this appliance group from your account?  Any appliances in your account using this group will be automatically placed in the <strong>Public</strong> group.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" id="delete-button" class="btn btn-danger">Delete Group</button>
+        <button type="button" id="delete-button" class="btn btn-danger">Remove Appliance Group</button>
       </div>
     </div>
+  </div>
+</div>
+<!-- end modal -->
+
+<!-- hidden create modal -->
+<div id="modal-create" class="modal fade">
+  <div class="modal-dialog">
+    <form id="form-new-group" action="{{ url|safe }}" method="post" class="form-horizontal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Create New Appliance Group</h4>
+        </div>
+        <div class="modal-body">
+          <p>Enter the name for the new appliance group.</p>
+          <div class="row form-group">
+            <div class="col-md-12">
+              <div class="row">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                {{ macros.input(form, "name", "Name", "col-xs-8", placeholder="My Shibes", class="form-control required") }}
+                {{ macros.input(form, "description", "Description", "col-xs-12", placeholder="This is a group going to the Moon.", class="form-control required") }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="modal-close-button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" id="modal-create-button" class="btn btn-success">Create Appliance Group</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- end modal -->
+
+<!-- hidden edit modal -->
+<div id="modal-edit" class="modal fade">
+  <div class="modal-dialog">
+    <form id="form-edit-group" action="{{ url|safe }}" method="post" class="form-horizontal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="modal-edit-title">Edit Appliance Group</h4>
+        </div>
+        <div class="modal-body">
+          <p>Edit the name and description of the group and then click <strong>Save Appliance Group</strong>.</p>
+          <div class="row form-group">
+            <div class="col-md-12">
+              <div class="row">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                {{ macros.input(form, "name", "Name", "col-xs-8", placeholder="Operations Group", class="form-control required edit") }}
+                {{ macros.input(form, "description", "Description", "col-xs-12", placeholder="This is the operations group.", class="form-control required edit") }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="modal-close-button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" id="modal-save-button" class="btn btn-success">Save Appliance Group</button>
+        </div>
+      </div>
+    </form>
   </div>
 </div>
 <!-- end modal -->
@@ -42,53 +105,47 @@
         <div class="col-md-12">
           <div class="section-header">
             <h2><small>Appliance Groups</small></h2>
-            {% if public_groups %}
             <div class="row">
               <div class="col-md-12">
-                <p>The following groups are available for use with this provider account.  If you'd like to add a new group, click the <strong>New Group</strong> button below.</p>
+                {% if not groups %}
+                <div class="bs-callout bs-callout-info bs-callout-top">
+                  <h4>Groups</h4>
+                  <p><strong>Appliance Groups</strong> are collections of <strong>Private Appliances</strong> owned, operated and shared by one or more <strong>Providers</strong>. Appliance groups allow providers to limit the use and sale of the <strong>Instances</strong> running on their <strong>Private OpenStack Clouds</strong>.</p><p>Click on the <span class="label label-success">Create Appliance Group</span> button below to create a new private group.</p>
+                </div>
+                {% else %}
+                <p>The following private appliance groups are available for use with this provider account.</p>
                 <table class="table table-hover">
                   <thead>
                     <tr>
                       <th>Name</th>
-                      <th># Appliances</th>
-                      <th>Public?</th>
+                      <th>Description</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {% for group in public_groups %}
+                    {% for group in groups %}
                     <tr>
-                      <td>{{ group.name }}</td>
-                      <td>20</td>
-                      <td><span class="glyphicon glyphicon-ok"></span></td>
+                      <td><a href="{{ uri_for('account-groups-configure', self.request, group_id=group.key.id()) }}">{{ group.name }}</a></td>
+                      <td>{{ group.description }}</td>
                       <td>
-                        <button type="button" id="remove-{{group.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
-                      </td>
-                    </tr>
-                    {% endfor %}
-                    {% for group in private_groups %}
-                    <tr>
-                      <td>{{ group.name }}</td>
-                      <td>20</td>
-                      <td><span class="glyphicon glyphicon-ban-circle"></span></td>
-                      <td>
+                        {% if str(group.owner.id()) == str(user_id) %}
+                        <button type="button" data-name="{{ group.name }}" data-description="{{ group.description }}" id="edit-{{group.key.id()}}" class="btn btn-inverse btn-xs" title="edit" href="#"><span class="glyphicon glyphicon-pencil"></span></button>
+                        {% endif %}
                         <button type="button" id="remove-{{group.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
                       </td>
                     </tr>
                     {% endfor %}
                   </tbody>
                 </table>
+                {% endif %}
               </div>
             </div>
-            {% else %}
-            <p>There are no appliance groups available for this account.  Add an appliance to auto-create the <strong>public</strong> group.</p>
-            {% endif %}
           </div>
         </div>
       </div>
       <div class="row">
         <div class="col-md-5">
-        	<button type="button" id="new-group-button" class="btn btn-success">New Group</button>
+        	<button type="button" id="create-button" class="btn btn-success">Create Appliance Group</button>
         </div>
       </div>  
     </div>
@@ -109,30 +166,6 @@
     var channel_token = "{{ channel_token }}";
     var refresh_channel = "{{ refresh_channel }}";
 
-    // go to new appliance instructions
-    $('#new-appliance-button').click( function() {
-      window.location.href = "{{ uri_for('account-appliances-new') }}";
-    });
-
-    // remove buttons
-    $('button[id^="remove-"]').each(function(index){
-      $('#'+this.id).click(function() {
-        appliance_id = this.id.split("-").pop();
-        button_id = '#'+this.id;
-        $('#delete').modal();
-        $('#delete-button').click(function() {
-          $.ajax({
-            url: '/appliances/'+appliance_id+'/?channel_token='+channel_token,
-            type: 'DELETE',
-            success:(function() {
-              $(button_id).unbind("click");
-              $(button_id).addClass("disabled");
-            })
-          });
-        });
-      })
-    });
-
     // listen to our refresh channel for page reload
     onMessage = function() {
         window.location.reload();
@@ -140,6 +173,50 @@
     channel = new goog.appengine.Channel(refresh_channel);
     socket = channel.open();
     socket.onmessage = onMessage;
+
+    // create button
+    $('#create-button').click(function() {
+      $('#modal-create').modal();
+    });
+
+    // edit buttons
+    $('button[id^="edit-"]').each(function(index){
+      $('#'+this.id).click(function() {
+        group_id = this.id.split("-").pop();
+        group_name = $('#'+this.id).attr('data-name');
+        group_description = $('#'+this.id).attr('data-description');
+        $('#name.edit').val(group_name);
+        $('#description.edit').val(group_description);
+        $('#form-edit-group').attr('action', "/groups/" + group_id + "/");
+        $('#modal-edit-title').html('Editing <em>' + group_name + '</em>');
+        $('#modal-edit').modal();
+      })
+    });
+
+    // remove buttons
+    $('button[id^="remove-"]').each(function(index){
+      $('#'+this.id).click(function() {
+        object_id = this.id.split("-").pop();
+        $('#delete').modal();
+        $('#delete-button').click(function() {
+          $('#delete').modal("hide");  
+          $.ajax({
+            url: '/groups/'+object_id+'/?channel_token='+channel_token+'&_csrf_token='+csrf_token,
+            type: 'DELETE'
+          });
+        });
+      })
+    });
+    
+    // show create modal on any errors
+    {% if messages|safe %}
+      {% for message in messages %}
+        {% if message[1] == 'error' %}
+          $("#modal-create").modal();
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
   });
 </script>
 

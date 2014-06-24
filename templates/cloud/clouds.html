@@ -177,7 +177,7 @@
       $('#modal-create').modal();
     });
 
-    // edit cloud buttons
+    // edit buttons
     $('button[id^="edit-"]').each(function(index){
       $('#'+this.id).click(function() {
         cloud_id = this.id.split("-").pop();
@@ -191,7 +191,7 @@
       })
     });
 
-    // remove cloud buttons
+    // remove buttons
     $('button[id^="remove-"]').each(function(index){
       $('#'+this.id).click(function() {
         cloud_id = this.id.split("-").pop();

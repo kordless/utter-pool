@@ -84,10 +84,6 @@ class CloudConfigureHandler(BaseHandler):
 		if not cloud or cloud.owner != user_info.key:
 			return self.redirect_to('account-clouds')
 
-		# load form values
-		self.form.name.data = cloud.name
-		self.form.description.data = cloud.description
-
 		# setup channel to do page refresh
 		channel_token = user_info.key.urlsafe()
 		refresh_channel = channel.create_channel(channel_token)

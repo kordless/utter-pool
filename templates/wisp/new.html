@@ -27,7 +27,7 @@
               <div class="col-md-10">
               	<div class="bs-callout bs-callout-info bs-callout-top">
 			    				<h4>Cloud Wisps</h4>
-			    			  <p><strong>Wisps</strong> are configuration templates used by <strong>Clouds</strong> and <strong>Appliances</strong> to start <strong>Instances</strong>. Wisps send <strong>SSH Keys</strong> and <strong>Post Creation Scripts</strong> to instances using <strong>Callback URLs</strong> accessed by the pool's appliances after they receive payments. If you want more control over your instance starts, you can add a <strong>Custom Callback URL</strong> to your wisp.</p>
+			    			  <p><strong>Wisps</strong> are configuration templates used by <strong>Clouds</strong> and <strong>Appliances</strong> to start <strong>Instances</strong>. Wisps send <strong>SSH Keys</strong> and <strong>Post Creation Scripts</strong> to instances using <strong>Callback URLs</strong> accessed by the pool's appliances after they receive payments. Add a <strong>Custom Callback URL</strong> to your wisp if you want more control over your instance starts.</p>
 			    			  <p><strong>Note:</strong> Using a custom callback URL will cause the instance to ignore the image, ssh key and post creation script defined here.</p>
 			  				</div>
   				      <form id="form-new-wisp" action="{{ url|safe }}" method="post" class="form-horizontal">
@@ -44,7 +44,7 @@
 					        			{{ macros.input(form, "dynamic_image_url", "Dynamic Image URL", "col-xs-8", placeholder="http://example.com/myfavoriteimage.img", class="form-control") }}
 					        		</div>
 					        		{{ macros.input(form, "public_ssh_key", "Public SSH Key", "col-xs-12", class="form-control form-ssh-key", rows=6, placeholder="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAklOUpkDHrfHY17SbrmTIpNLTGK9Tjom/BWDSUGPl+nafzlHDTYW7hdI4yZ5ew18JH4JW9jbhUFrviQzM7xlELEVf4h9lFX5QVkbPppSwg0cda3Pbv7kOdJ/MTyBlWXFCR+HAo3FXRitBqxiX1nKhXpHAZsMciLq8V6RjsNAQwdsdMFvSlVK/7XAt3FaoJoAsncM1Q9x5+3V0Ww68/eIFmb1zuUFljQJKprrX88XypNDvjYNby6vw/Pb0rwert/EnmZ+AW4OZPnTPI89ZPmVMLuayrD2cE86Z/il8b+gw3r3+1nKatmIkjn2so1d01QraTlMqVSsbxNrRFi9wrf+M7Q== anonymous@bitcoin.local") }}
-					        		{{ macros.input(form, "post_creation", "Post Creation Script", "col-xs-8", class="form-control", rows=8, placeholder="#!/bin/bash") }}
+					        		{{ macros.input(form, "post_creation", "Cloud Configuration", "col-xs-8", class="form-control", rows=8, placeholder="#!/bin/bash") }}
 					        	</div>
 			          	</div>
 				          <button type="submit" id="create-button" class="btn btn-success">Create Wisp</button>

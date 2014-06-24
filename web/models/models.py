@@ -10,31 +10,6 @@ from webapp2_extras.appengine.auth.models import User
 from google.appengine.ext import ndb
 
 
-# appliance group model
-class Group(ndb.Model):
-    name = ndb.StringProperty()
-    created = ndb.DateTimeProperty(auto_now_add=True)
-    updated = ndb.DateTimeProperty(auto_now=True)
-    owner = ndb.KeyProperty(kind=User)
-    public = ndb.BooleanProperty(default=False)
-
-    @classmethod
-    def get_by_name(cls, groupname):
-        return cls.query(cls.groupname == groupname).get()
-
-    @classmethod
-    def get_all(cls):
-        return cls.query().filter().order(-cls.created).fetch()
-
-    @classmethod
-    def get_by_owner_private(cls, owner):
-        return cls.query(cls.owner == owner, cls.public == False).order(cls.created).fetch()
-    
-    @classmethod
-    def get_public(cls):
-        return cls.query(cls.public == True).order(cls.created).fetch()
-
-
 # user model - extends webapp2 User model
 class User(User):
     uid = ndb.StringProperty()
@@ -52,9 +27,6 @@ class User(User):
     tfsecret = ndb.StringProperty()
     tfenabled = ndb.BooleanProperty(default=False)
 
-    # group membership
-    groups = ndb.StructuredProperty(Group, repeated=True)
-
     @classmethod
     def get_by_email(cls, email):
         return cls.query(cls.email == email).get()
@@ -66,6 +38,69 @@ class User(User):
     @classmethod
     def get_all(cls):
         return cls.query().filter().order(-cls.created).fetch()
+
+
+# appliance group model
+class Group(ndb.Model):
+    name = ndb.StringProperty()
+    description = ndb.StringProperty()
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    updated = ndb.DateTimeProperty(auto_now=True)
+    owner = ndb.KeyProperty(kind=User)
+
+    @classmethod
+    def get_by_name(cls, name):
+        return cls.query(cls.name == name).get()
+
+    @classmethod
+    def get_all(cls):
+        return cls.query().filter().order(-cls.created).fetch()
+
+    @classmethod
+    def get_by_owner(cls, owner):
+        return cls.query(cls.owner == owner).order(-cls.created).fetch()
+
+
+# class for group membership
+class GroupMembers(ndb.Model):
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    updated = ndb.DateTimeProperty(auto_now=True)
+    group = ndb.KeyProperty(kind=Group)    
+    member = ndb.KeyProperty(kind=User)
+    invitor = ndb.KeyProperty(kind=User)
+    token = ndb.StringProperty()
+    active = ndb.BooleanProperty(default=False)
+
+    @classmethod
+    def get_by_userid_groupid(cls, user, group):
+        return cls.query().filter(cls.member == user, cls.group == group).get()
+
+    @classmethod
+    def get_user_groups(cls, user):
+        groups = []
+        entries = cls.query(cls.member == user).fetch()
+        for entry in entries:
+            group = Group.get_by_id(entry.group.id())
+            groups.append(group)
+        return groups
+
+    @classmethod
+    def get_group_users(cls, group):
+        users = []
+        entries = cls.query(cls.group == group).fetch()
+        for entry in entries:
+            stuff = entry.member
+            user = User.get_by_id(entry.member.id())
+            users.append(user)
+        return users
+
+    @classmethod
+    def is_member(cls, user, group):
+        entry = cls.query().filter(cls.member == user, cls.group == group)
+        if entry:
+            return True
+        else:
+            return False
 
 
 # appliance model
@@ -93,6 +128,10 @@ class Appliance(ndb.Model):
     @classmethod
     def get_by_user(cls, user):
         return cls.query().filter(cls.owner == user).order(-cls.created).fetch()
+
+    @classmethod
+    def get_by_group(cls, group):
+        return cls.query().filter(cls.group == group).fetch()
 
 
 # image model
@@ -150,6 +189,7 @@ class Address(ndb.Model):
     created = ndb.DateTimeProperty(auto_now_add=True)
     updated = ndb.DateTimeProperty(auto_now=True)
     address = ndb.StringProperty()
+
 
 # cloud model
 class Cloud(ndb.Model):

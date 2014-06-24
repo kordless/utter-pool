@@ -6,7 +6,7 @@ from google.appengine.api import channel
 
 import config
 import web.forms as forms
-from web.models.models import User, LogVisit, Appliance, Group
+from web.models.models import User, LogVisit, Appliance, Group, GroupMembers
 from web.basehandler import BaseHandler
 from web.basehandler import user_required
 
@@ -44,65 +44,72 @@ class ApplianceNewHandler(BaseHandler):
 		if self.request.get('token'):
 			self.form.token.data = self.request.get('token')
 
-			# initialize form choices for group
-			self.form.group.choices = []
-
-			# add public list of groups
-			public_groups = Group.get_public()
-			for group in public_groups:
+			# group choices pulldown
+			self.form.group.choices=[]
+			
+			# add list of user's groups, if any
+			groups = Group.get_by_owner(user_info.key)
+			for group in groups:
 				self.form.group.choices.insert(0, (group.key.id(), group.name))
 
-			# add to group list from owner's groups
-			private_groups = Group.get_by_owner_private(user_info.key)
-			for group in private_groups:
-				self.form.group.choices.insert(0, (group.key.id(), group.name))
-
-			# should run only one time when there are no groups in db
-			# add public group if we have an empty set
-			if len(self.form.group.choices) == 0:
-				group = Group(
-					name = "Public",
-					owner = User.get_by_email(config.contact_sender).key,
-					public = True
-				)
-				group.put()
-				time.sleep(1)
-				
-				# rerun the insert into list
-				public_groups = Group.get_public()
-				for group in public_groups:
-					self.form.group.choices.insert(0, (group.key.id(), group.name))
-
-				self.add_message("A new public group named Public was created and placed in the database.");
+			# public group
+			self.form.group.choices.insert(0, ('public', "Public"))
 
 			# render new appliance page
-			return self.render_template('appliance/new.html')
-		
+			parms = {'gform': self.gform, 'appliance_token': self.request.get('token')}
+			return self.render_template('appliance/new.html', **parms)
+
 		else:
 			# render instructions
 			return self.render_template('appliance/instructions.html')
 
 	@user_required
 	def post(self):
-		print "***************************************"
 		# lookup user's auth info
 		user_info = User.get_by_id(long(self.user_id))
 		
 		# initialize form choices for group
 		self.form.group.choices = []
 
-		# populate with all possible groups for this user
-		# add public list of groups
-		public_groups = Group.get_public()
-		for group in public_groups:
+		# add list of user's groups, if any
+		groups = Group.get_by_owner(user_info.key)
+		for group in groups:
 			self.form.group.choices.insert(0, (str(group.key.id()), group.name))
 
-		# add to group list from owner's groups
-		private_groups = Group.get_by_owner_private(user_info.key)
-		for group in private_groups:
-			self.form.group.choices.insert(0, (str(group.key.id()), group.name))
+		# public group
+		self.form.group.choices.insert(0, ('public', "Public"))
 
-		# check what was returned from form validates
+		# check if we are getting a custom group entry
+		if self.form.group.data == "custom":
+			# make the new group
+			group = Group(
+				name = self.form.custom.data.strip(),
+				owner = user_info.key
+			)
+			group.put()
+			group_key = group.key
+
+			# create the group member entry
+			groupmember = GroupMembers(
+				group = group_key,
+				member = user_info.key,
+				invitor = user_info.key, # same same
+				active = True
+			)
+			groupmember.put()
+
+			# hack the form with new group
+			self.form.group.choices.insert(0, ('custom', "Custom"))
+		else:
+			# grab an existing group
+			if self.form.group.data.strip() == 'public':
+				# no group for public appliances
+				group_key = None
+			else:
+				group = Group.get_by_id(int(self.form.group.data.strip()))
+				group_key = group.key
+
+		# check what was returned from the rest of the form validates
 		if not self.form.validate():          
 			self.add_message("The new appliance form did not validate.", "error")
 			return self.get()
@@ -110,9 +117,8 @@ class ApplianceNewHandler(BaseHandler):
 		# load form values
 		name = self.form.name.data.strip()
 		token = self.form.token.data.strip()
-		group = Group.get_by_id(int(self.form.group.data.strip()))
 
-		# check if we have it already
+		# check if we have it already - all that work bitches?
 		if Appliance.get_by_token(token):
 			self.add_message("An appliance with that token already exists!", "error")
 			return self.redirect_to('account-appliances')
@@ -121,7 +127,7 @@ class ApplianceNewHandler(BaseHandler):
 		appliance = Appliance(
 			name = name,
 			token = token,
-			group = group.key,
+			group = group_key,
 			owner = user_info.key
 		)
 		appliance.put()
@@ -134,9 +140,12 @@ class ApplianceNewHandler(BaseHandler):
 		return self.redirect_to('account-appliances')
 
 	@webapp2.cached_property
+	def gform(self):
+		return forms.GroupForm(self)
+
+	@webapp2.cached_property
 	def form(self):
 		return forms.ApplianceForm(self)
-
 
 # appliance detail
 class ApplianceConfigureHandler(BaseHandler):
@@ -158,28 +167,4 @@ class ApplianceConfigureHandler(BaseHandler):
 		channel_token = self.request.get('channel_token')
 		channel.send_message(channel_token, 'reload')
 		return
-		
 
-class ApplianceGroupHandler(BaseHandler):
-	@user_required
-	def get(self):
-		# lookup user's auth info
-		user_info = User.get_by_id(long(self.user_id))
-
-		# look up groups
-		private_groups = Group.get_by_owner_private(user_info.key)
-		public_groups = Group.get_public()
-
-		# setup channel to do page refresh
-		channel_token = user_info.key.urlsafe()
-		refresh_channel = channel.create_channel(channel_token)
-
-		# params build out
-		params = {
-			'public_groups': public_groups,
-			'private_groups': private_groups, 
-			'refresh_channel': refresh_channel,
-			'channel_token': channel_token 
-		}
-
-		return self.render_template('appliance/groups.html', **params)

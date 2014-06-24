@@ -46,10 +46,9 @@ _routes = [
 		RedirectRoute('/appliances/new/', appliancehandlers.ApplianceNewHandler, name='account-appliances-new', strict_slash=True),
 		RedirectRoute('/appliances/<appliance_id>/', appliancehandlers.ApplianceConfigureHandler, name='account-appliances-configure', strict_slash=True),
 		RedirectRoute('/groups/', grouphandlers.GroupHandler, name='account-groups', strict_slash=True),
-		RedirectRoute('/groups/<group_id>/', grouphandlers.GroupDetailHandler, name='account-groups-detail', strict_slash=True),
+		RedirectRoute('/groups/<group_id>/', grouphandlers.GroupConfigureHandler, name='account-groups-configure', strict_slash=True),
 
 		# api
-		RedirectRoute('/api/v1/groups', grouphandlers.GroupHandler, name='api-groups', strict_slash=False),
 		RedirectRoute('/api/v1/authorization', apihandlers.TokenValidate, name='api-token-validate', strict_slash=False),
 		RedirectRoute('/api/v1/track', apihandlers.TrackingPingHandler, name='api-track', strict_slash=False),
 		RedirectRoute('/api/v1/images', apihandlers.ImagesHandler, name='api-images', strict_slash=False),

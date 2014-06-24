@@ -60,7 +60,7 @@
                     {% for appliance in appliances %}
                     <tr>
                       <td><a href="{{ uri_for('account-appliances-configure', self.request, appliance_id=appliance.key.id()) }}">{{ appliance.name }}</a></td>
-                      <td>{{ appliance.group.get().name }}</td>
+                      <td>{% if appliance.group %}{{ appliance.group.get().name }}{% else %}Public{% endif %}</td>
                       <td>{{ appliance.token|truncate(32, killwords=True) }}</td>
                       <td><span class="glyphicon glyphicon-ok"></span></td>
                       <td>

@@ -1,12 +1,12 @@
 from webapp2_extras.routes import RedirectRoute
-from web.handlers import sitehandlers, adminhandlers, userhandlers, apihandlers, bloghandlers 
+from web.handlers import sitehandlers, adminhandlers, userhandlers, apihandlers, bloghandlers, emailhandlers
 from web.handlers import statushandlers, appliancehandlers, grouphandlers, cloudhandlers, wisphandlers
 
 secure_scheme = 'https'
 
 _routes = [
 		# mail processing
-		RedirectRoute('/taskqueue-send-email/', sitehandlers.SendEmailHandler, name='taskqueue-send-email', strict_slash=True),
+		RedirectRoute('/taskqueue-send-invite/', emailhandlers.SendEmailInviteHandler, name='taskqueue-send-invite', strict_slash=True),
 
 		# admin
 		RedirectRoute('/admin/', adminhandlers.AdminHandler, name='admin', strict_slash=True),
@@ -47,6 +47,7 @@ _routes = [
 		RedirectRoute('/appliances/<appliance_id>/', appliancehandlers.ApplianceConfigureHandler, name='account-appliances-configure', strict_slash=True),
 		RedirectRoute('/groups/', grouphandlers.GroupHandler, name='account-groups', strict_slash=True),
 		RedirectRoute('/groups/<group_id>/', grouphandlers.GroupConfigureHandler, name='account-groups-configure', strict_slash=True),
+		RedirectRoute('/groups/<group_id>/members/', grouphandlers.GroupMemberHandler, name='account-groups-members', strict_slash=True),
 
 		# api
 		RedirectRoute('/api/v1/authorization', apihandlers.TokenValidate, name='api-token-validate', strict_slash=False),

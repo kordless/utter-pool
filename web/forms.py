@@ -59,6 +59,7 @@ def validate_dynamic_image(form, field):
     if form.image.data == "custom" and form.callback.data != "custom" and field.data == "":
         raise ValidationError("You must specify a custom image URL.")
 
+
 class WispForm(BaseForm):
     name = fields.TextField('Name', [validators.Required(), validators.Length(max=50)])
     image = fields.SelectField('Image')
@@ -75,9 +76,14 @@ class ApplianceForm(BaseForm):
     group = fields.SelectField('Group')
     custom = fields.HiddenField('Custom')
 
+
 class GroupForm(BaseForm):
     name = fields.TextField('Name', [validators.Required(), validators.Length(max=50)])
     description = fields.TextField('Description', [validators.Required(), validators.Length(max=100)])
+
+
+class GroupMemberForm(BaseForm):
+    email = fields.TextField('Email', [validators.Email(message=u'Invalid email address.'), validators.Required(), validators.Length(max=100)])
 
 
 class FlavorForm(BaseForm):

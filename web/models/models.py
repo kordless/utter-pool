@@ -9,6 +9,8 @@ import config
 from webapp2_extras.appengine.auth.models import User
 from google.appengine.ext import ndb
 
+from lib.utils import generate_token
+
 
 # user model - extends webapp2 User model
 class User(User):
@@ -66,10 +68,30 @@ class GroupMembers(ndb.Model):
     created = ndb.DateTimeProperty(auto_now_add=True)
     updated = ndb.DateTimeProperty(auto_now=True)
     group = ndb.KeyProperty(kind=Group)    
+    email = ndb.StringProperty()
     member = ndb.KeyProperty(kind=User)
     invitor = ndb.KeyProperty(kind=User)
     token = ndb.StringProperty()
     active = ndb.BooleanProperty(default=False)
+
+    @classmethod
+    def invite(cls, email, group, owner):
+        # do we have the email already?
+        member = cls.query(cls.email == email).get()
+        
+        if not member:
+            # generate new token and create new entry 
+            token = "%s" % generate_token(size=16, caselimit=True)
+            member = GroupMembers(
+                group = group,
+                email = email,
+                invitor = owner,
+                token = token,
+                active = False
+            )
+            member.put()
+
+        return member
 
     @classmethod
     def get_by_userid_groupid(cls, user, group):
@@ -87,7 +109,7 @@ class GroupMembers(ndb.Model):
     @classmethod
     def get_group_users(cls, group):
         users = []
-        entries = cls.query(cls.group == group).fetch()
+        entries = cls.query().filter(cls.group == group, cls.active == True).fetch()
         for entry in entries:
             stuff = entry.member
             user = User.get_by_id(entry.member.id())
@@ -96,7 +118,7 @@ class GroupMembers(ndb.Model):
 
     @classmethod
     def is_member(cls, user, group):
-        entry = cls.query().filter(cls.member == user, cls.group == group)
+        entry = cls.query().filter(cls.member == user, cls.group == group).get()
         if entry:
             return True
         else:
@@ -212,6 +234,7 @@ class Cloud(ndb.Model):
         cloud = cloud_query.get()
         return cloud
 
+
 # callback model
 class Callback(ndb.Model):
     name = ndb.StringProperty()
@@ -255,6 +278,7 @@ class Wisp(ndb.Model):
         cloud = cloud_query.get()
         return cloud
 
+
 # instance bid model
 class InstanceBid(ndb.Model):
     created = ndb.DateTimeProperty(auto_now_add=True)
@@ -269,6 +293,7 @@ class InstanceBid(ndb.Model):
     need_ipv4_address = ndb.BooleanProperty()
     need_ipv6_address = ndb.BooleanProperty()
     status = ndb.IntegerProperty() # 0 - not filled, 1 - filled
+
 
 # instance model
 class Instance(ndb.Model):

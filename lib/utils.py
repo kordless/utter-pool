@@ -15,6 +15,14 @@ def random_string(size=6, chars=string.ascii_letters + string.digits):
     """ Generate random string """
     return ''.join(random.choice(chars) for _ in range(size))
 
+def generate_token(size=64, caselimit=False):
+    if caselimit:
+        characters  = string.ascii_lowercase + string.digits
+    else:
+        characters  = string.ascii_uppercase + string.ascii_lowercase + string.digits
+    token = ''.join(random.choice(characters) for x in range(size))
+    return token
+
 def hashing(plaintext, salt="", sha="512"):
     """ Returns the encrypted hexdigest of a plaintext and salt"""
 

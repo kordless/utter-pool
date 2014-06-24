@@ -3,6 +3,7 @@ import time
 import webapp2
 
 from google.appengine.api import channel
+from google.appengine.api import taskqueue
 
 import config
 import web.forms as forms
@@ -85,13 +86,13 @@ class GroupConfigureHandler(BaseHandler):
 		# lookup user's auth info
 		user_info = User.get_by_id(long(self.user_id))
 		
-		# get the cloud in question
+		# get the group in question
 		group = Group.get_by_id(long(group_id))
 
 		# scan for this user
 		is_member = GroupMembers.is_member(user_info.key, group.key)
 
-		# bail if cloud doesn't exist user isn't in the membership list
+		# bail if group doesn't exist user isn't in the membership list
 		if not group or not is_member:
 			return self.redirect_to('account-groups')
 
@@ -106,6 +107,7 @@ class GroupConfigureHandler(BaseHandler):
 		params = {
 			'group': group,
 			'members': members,
+			'gmform': self.gmform,
 			'refresh_channel': refresh_channel,
 			'channel_token': channel_token 
 		}
@@ -117,10 +119,10 @@ class GroupConfigureHandler(BaseHandler):
 		# lookup user's auth info
 		user_info = User.get_by_id(long(self.user_id))
 		
-		# get the cloud in question
+		# get the group in question
 		group = Group.get_by_id(long(group_id))
 
-		# bail if cloud doesn't exist user isn't in the membership list
+		# bail if group doesn't exist user isn't the owner/admin
 		if not group or group.owner != user_info.key:
 			return self.redirect_to('account-groups')
 
@@ -194,3 +196,52 @@ class GroupConfigureHandler(BaseHandler):
 	@webapp2.cached_property
 	def form(self):
 		return forms.GroupForm(self)
+
+	@webapp2.cached_property
+	def gmform(self):
+		return forms.GroupMemberForm(self)
+
+
+class GroupMemberHandler(BaseHandler):
+	@user_required
+	def post(self, group_id = None):
+		# lookup user's auth info
+		user_info = User.get_by_id(long(self.user_id))
+		
+		# get the group in question
+		group = Group.get_by_id(long(group_id))
+
+		# bail if group doesn't exist user isn't the owner/admin
+		if not group or group.owner != user_info.key:
+			return self.redirect_to('account-groups-configure', group_id = group.key.id())
+
+		# check what was returned from form validates
+		if not self.form.validate():          
+			self.add_message("The email form did not validate.", "error")
+			return self.redirect_to('account-groups-configure', group_id = group.key.id())
+
+		# load form values
+		email = self.form.email.data.strip()
+
+		# create the invite
+		member = GroupMembers.invite(email, group.key, user_info.key)
+		
+		email_url = self.uri_for('taskqueue-send-invite')
+		taskqueue.add(url = email_url, params={
+				'to': str(email),
+				'group_id': group.key,
+				'invitor_id' : user_info.key,
+		})
+
+		# log to alert
+		self.add_message("User invited to group!", "success")
+
+		# give it a few seconds to update db, then redirect
+		time.sleep(1)
+		
+		return self.redirect_to('account-groups-configure', group_id = group.key.id())
+
+	@webapp2.cached_property
+	def form(self):
+		return forms.GroupMemberForm(self)
+

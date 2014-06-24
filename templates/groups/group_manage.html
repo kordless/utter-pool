@@ -13,20 +13,29 @@
 {% endblock %}
 
 {% block content %}
-<!-- hidden add member modal -->
-<div id="modal-add" class="modal fade">
+<!-- hidden invite modal -->
+<div id="modal-invite" class="modal fade">
   <div class="modal-dialog">
-    <form id="form-new-cloud" action="{{ url|safe }}" method="post" class="form-horizontal">
+    <form id="form-new-group" action="{{ url|safe }}members/" method="post" class="form-horizontal">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">Not Implemented</h4>
+          <h4 class="modal-title">Invite a New Group Member</h4>
         </div>
         <div class="modal-body">
-          <p>This feature is not yet implemented.</p>
+          <p>Enter the email address of the new member to invite.  An email will be sent to this email address.  <strong>Ensure you have a trusted relationship with this user!</strong></p>
+          <div class="row form-group">
+            <div class="col-md-12">
+              <div class="row">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                {{ macros.input(gmform, "email", "Email", "col-xs-10", placeholder="servers@everywhere.com", class="form-control required") }}
+              </div>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" id="modal-close-button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" id="modal-invite-button" class="btn btn-success">Invite Group Member</button>
         </div>
       </div>
     </form>
@@ -47,15 +56,15 @@
             <div class="row">
               <div class="col-md-10">
                 <div class="bs-callout bs-callout-info bs-callout-top">
-                  <h4>Adding Group Members</h4>
+                  <h4>Inviting Group Members</h4>
                   <p><strong>Group Members</strong> are users who are members of a private <strong>Appliance Group</strong>.  Members of a this group are able to start <strong>Instances</strong> on <strong>OpenStack Clusters</strong> managed by <strong>Appliances</strong> in this group.  They may also add new appliances to the group.</p>
-                  <p>Click the <span class="label label-success">Add Group Member</span> button below to add a new member to the group.</p>
+                  <p>Click the <span class="label label-success">Invite Group Member</span> button below to invite a new member to join the group.</p>
                 </div>
               </div>
             </div>
             <div class="row">
             	<div class="col-md-4">
-            		<button type="submit" id="add-button" class="btn btn-success">Add Group Member</button>
+            		<button type="submit" id="invite-button" class="btn btn-success">Invite Group Member</button>
           		</div>
           	</div>
           </div>
@@ -85,15 +94,15 @@
     socket.onmessage = onMessage;
 
     // add button
-    $('#add-button').click(function() {
-      $('#modal-add').modal();
+    $('#invite-button').click(function() {
+      $('#modal-invite').modal();
     });
 
     // show create modal on any errors
     {% if messages|safe %}
       {% for message in messages %}
         {% if message[1] == 'error' %}
-          $("#modal-create").modal();
+          $("#modal-invite").modal();
         {% endif %}
       {% endfor %}
     {% endif %}

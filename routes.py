@@ -48,6 +48,7 @@ _routes = [
 		RedirectRoute('/groups/', grouphandlers.GroupHandler, name='account-groups', strict_slash=True),
 		RedirectRoute('/groups/<group_id>/', grouphandlers.GroupConfigureHandler, name='account-groups-configure', strict_slash=True),
 		RedirectRoute('/groups/<group_id>/members/', grouphandlers.GroupMemberHandler, name='account-groups-members', strict_slash=True),
+		RedirectRoute('/invites/<invite_token>/', grouphandlers.GroupInviteHandler, name='account-groups-invites', strict_slash=True),
 
 		# api
 		RedirectRoute('/api/v1/authorization', apihandlers.TokenValidate, name='api-token-validate', strict_slash=False),

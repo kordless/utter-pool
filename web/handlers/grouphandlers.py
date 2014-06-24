@@ -226,11 +226,14 @@ class GroupMemberHandler(BaseHandler):
 		# create the invite
 		member = GroupMembers.invite(email, group.key, user_info.key)
 		
+		# build an invite URL, load the email_url, and then execute the task to send invite
+		invite_url = "%s%s" % (self.request.host_url, self.uri_for('account-groups-invites', invite_token = member.token))
 		email_url = self.uri_for('taskqueue-send-invite')
 		taskqueue.add(url = email_url, params={
 				'to': str(email),
-				'group_id': group.key,
-				'invitor_id' : user_info.key,
+				'group_id': group.key.id(),
+				'invitor_id' : user_info.key.id(),
+				'invite_url' : invite_url
 		})
 
 		# log to alert
@@ -245,3 +248,7 @@ class GroupMemberHandler(BaseHandler):
 	def form(self):
 		return forms.GroupMemberForm(self)
 
+
+class GroupInviteHandler(BaseHandler):
+	def get(self, invite_token = None):
+		pass

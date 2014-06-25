@@ -1,5 +1,5 @@
 application: stackmonkeyapp
-version: 1-0-15
+version: 1-0-16
 runtime: python27
 api_version: 1
 threadsafe: true

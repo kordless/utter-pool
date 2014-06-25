@@ -30,7 +30,7 @@ class SendEmailInviteHandler(BaseHandler):
 			body = """
 Howdy!
 
-You've been invited to the %s group on the %s Compute Pool by %s.  Click on the URL to accept:
+You've been invited to the %s group on the %s Compute Pool by %s.  Acceptance of the invite will require logging into to a Google account.
 
 %s
 
@@ -40,13 +40,9 @@ If this email comes as a complete surprise to you, simply delete it.  We may yet
 
 Cheers,
 
-Kord Campbell
-Founder
-StackMonkey & utter.io
-
-t: @kordless, @stackape, @stackgeek, @utterio
-c: 510.230.3482
-		""" % (group.name, config.app_name, invitor.username, invite_url, group.name)
+%s
+%s
+		""" % (group.name, config.app_name, invitor.username, invite_url, group.name, config.app_owner, config.app_name)
 
 			logEmail = LogEmail(
 				sender = sender,

@@ -113,12 +113,13 @@
                   <p><strong>Appliance Groups</strong> are collections of <strong>Private Appliances</strong> owned, operated and shared by one or more <strong>Providers</strong>. Appliance groups allow providers to limit the use and sale of the <strong>Instances</strong> running on their <strong>Private OpenStack Clouds</strong>.</p><p>Click on the <span class="label label-success">Create Appliance Group</span> button below to create a new private group.</p>
                 </div>
                 {% else %}
-                <p>The following private appliance groups are available for use with this provider account.</p>
+                <p>The following private appliance groups are available for use with this account. These groups may be used with <a href="{{ uri_for('account-clouds') }}">clouds</a> or  <a href="{{ uri_for('account-appliances') }}">appliances</a>.</p>
                 <table class="table table-hover">
                   <thead>
                     <tr>
                       <th>Name</th>
                       <th>Description</th>
+                      <th class="text-center"># Members</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -127,6 +128,7 @@
                     <tr>
                       <td><a href="{{ uri_for('account-groups-configure', self.request, group_id=group.key.id()) }}">{{ group.name }}</a></td>
                       <td>{{ group.description }}</td>
+                      <td class="text-center">1</td>
                       <td>
                         {% if str(group.owner.id()) == str(user_id) %}
                         <button type="button" data-name="{{ group.name }}" data-description="{{ group.description }}" id="edit-{{group.key.id()}}" class="btn btn-inverse btn-xs" title="edit" href="#"><span class="glyphicon glyphicon-pencil"></span></button>

@@ -48,7 +48,7 @@ class ApplianceNewHandler(BaseHandler):
 			self.form.group.choices=[]
 			
 			# add list of user's groups, if any
-			groups = Group.get_by_owner(user_info.key)
+			groups = GroupMembers.get_user_groups(user_info.key)
 			for group in groups:
 				self.form.group.choices.insert(0, (group.key.id(), group.name))
 
@@ -72,7 +72,7 @@ class ApplianceNewHandler(BaseHandler):
 		self.form.group.choices = []
 
 		# add list of user's groups, if any
-		groups = Group.get_by_owner(user_info.key)
+		groups = GroupMembers.get_user_groups(user_info.key)
 		for group in groups:
 			self.form.group.choices.insert(0, (str(group.key.id()), group.name))
 

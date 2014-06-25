@@ -60,6 +60,17 @@ indexes:
   - name: public
   - name: created
 
+- kind: GroupMembers
+  properties:
+  - name: group
+  - name: created
+    direction: desc
+
+- kind: GroupMembers
+  properties:
+  - name: group
+  - name: member
+
 - kind: Wisp
   properties:
   - name: owner

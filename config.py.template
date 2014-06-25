@@ -10,6 +10,8 @@ copyright_name = "StackGeek, Inc."
 # application info
 app_name = "StackMonkey"
 app_description = "Distributed servers for everyone."
+app_email = "info@stackmonkey.com"
+app_owner = "Kord Campbell"
 
 # contact form emails
 contact_sender = "CONTACT_EMAIL"

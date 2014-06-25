@@ -75,27 +75,35 @@ class GroupMembers(ndb.Model):
     active = ndb.BooleanProperty(default=False)
 
     @classmethod
-    def invite(cls, email, group, owner):
+    def invite(cls, email, group, invitor):
         # do we have the email already?
-        member = cls.query(cls.email == email).get()
+        entry = cls.query(cls.email == email).get()
         
-        if not member:
+        if not entry:
             # generate new token and create new entry 
             token = "%s" % generate_token(size=16, caselimit=True)
-            member = GroupMembers(
+            entry = GroupMembers(
                 group = group,
                 email = email,
-                invitor = owner,
+                invitor = invitor,
                 token = token,
                 active = False
             )
-            member.put()
+            entry.put()
 
-        return member
+        return entry
+
+    @classmethod
+    def get_by_token(cls, token):
+        return cls.query().filter(cls.token == token).get()
 
     @classmethod
     def get_by_userid_groupid(cls, user, group):
         return cls.query().filter(cls.member == user, cls.group == group).get()
+
+    @classmethod
+    def get_new_owner(cls, user, group):
+        return cls.query().filter(cls.group == group, cls.member != user).get()
 
     @classmethod
     def get_user_groups(cls, user):
@@ -154,6 +162,10 @@ class Appliance(ndb.Model):
     @classmethod
     def get_by_group(cls, group):
         return cls.query().filter(cls.group == group).fetch()
+
+    @classmethod
+    def get_by_user_group(cls, user, group):
+        return cls.query().filter(cls.owner == user, cls.group == group).fetch()
 
 
 # image model

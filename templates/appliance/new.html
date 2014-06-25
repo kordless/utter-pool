@@ -58,17 +58,18 @@
       	<div class="col-md-10">
           <div class="bs-callout bs-callout-info bs-callout-top">
             <h4>Appliances</h4>
-            <p><strong>Appliances</strong> are <strong>Virtual Machines</strong> which run on your <strong>OpenStack Cluster</strong>. Appliances control the start and stops of instances based on Bitcoin drips provided by the <strong>{{ app_name }} Pool</strong>.  Fill out this form to finish creating a new virtual appliance for this account.</p>
+            <p><strong>Appliances</strong> are one or more <strong>Virtual Machines</strong> which run on top of an <strong>OpenStack Cluster</strong>.  Appliances provide <strong>Starts and Stops</strong> of <strong>Instances</strong> sold on the system.  Appliances can be optionally isolated within <strong>Private Appliance Groups</strong> for sharing infrastructure with <strong>Trusted Entities</strong>.</p>
+            <p>Fill out this form to finish creating a new virtual appliance for this account.</p>
             <p><strong>Note:</strong> The virtual appliance page in the previous tab will auto refresh once you've submitted this form.</p>
           </div>
 					<form id="form_edit_profile" action="{{ url|safe }}" method="post" class="">
 			      <div class="row">
-			        <div class="col-md-8 form-padding" id="authcode-form">
+			        <div class="col-md-10 form-padding" id="authcode-form">
 			          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" id="hidden-custom" name="custom" value="Custom">
 			   		    {{ macros.input(form, "name", "Name", "col-xs-12", placeholder="Awesome Appliance", class="form-control") }}
 			          {{ macros.input(form, "token", "Token", "col-xs-12", placeholder="7DOItbpFuVYWFthFVYlxlBzMbaRuVyswpJ89mK94PfWjxpKBaa1KMARJh6SlRHEm", class="form-control") }}
-			          {{ macros.input(form, "group", "Group", "col-xs-5", class="form-control pulldown") }}
+			          {{ macros.input(form, "group", "Group", "col-xs-8", class="form-control pulldown") }}
 			          <button type="button" id="new-group-create-button" class="btn btn-danger"><span class="glyphicon glyphicon-plus"></span></button>
 			        </div>
 			      </div>

@@ -5,6 +5,7 @@
 
 {% block page_styles %}
   <link href="/css/configure.css" rel="stylesheet">
+  <link href="/css/docs.css" rel="stylesheet">
 {% endblock %}
 
 {% block navbar %}
@@ -42,10 +43,17 @@
         <div class="col-md-12">
           <div class="section-header">
             <h2><small>Account Appliances</small></h2>
-            {% if appliances %}
             <div class="row">
               <div class="col-md-12">
-                <p>The following virtual appliances are tied to your provider account. You may click on the <span class="label label-success">New Appliance</span> button below to view instructions for adding a new appliance. If you need to change an appliance's group, delete it and then add it back to the system from the virtual appliance's interface.</p>
+                {% if not appliances %}
+                <div class="bs-callout bs-callout-info bs-callout-top">
+                  <h4>Appliances</h4>
+                  <p><strong>Appliances</strong> are one or more <strong>Virtual Machines</strong> which run on top of an <strong>OpenStack Cluster</strong>.  Appliances provide <strong>Starts and Stops</strong> of <strong>Instances</strong> sold on the system.  Appliances can be optionally isolated within <strong>Private Appliance Groups</strong> for sharing infrastructure with <strong>Trusted Entities</strong>.</p>
+                  <p>Click on the <span class="label label-success">Create New Appliance</span> button below to view instructions for creating a new appliance.</p>
+                  <p><strong>Note:</strong> Running an appliance is not required to purchase instances on the system.</p>
+                </div>
+                {% else %}
+                <p>The following virtual appliances are tied to your provider account.</p>
                 <table class="table table-hover">
                   <thead>
                     <tr>
@@ -71,17 +79,15 @@
                     {% endfor %}
                   </tbody>
                 </table>
+                {% endif %}
               </div>
             </div>
-            {% else %}
-            <p>You don't have any appliances configured. Click the <strong>'New Appliance'</strong> button below to create your first appliance.</p>
-            {% endif %}
           </div>
         </div>
       </div>
       <div class="row">
         <div class="col-md-5">
-        	<button type="button" id="new-appliance-button" class="btn btn-success">New Appliance</button>
+        	<button type="button" id="new-appliance-button" class="btn btn-success">Create New Appliance</button>
         </div>
       </div>  
     </div>

@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 
 import webapp2
 
@@ -80,6 +81,7 @@ class GroupHandler(BaseHandler):
 	def form(self):
 		return forms.GroupForm(self)
 
+# http://example.com/groups/5645717330722816/
 class GroupConfigureHandler(BaseHandler):
 	@user_required
 	def get(self, group_id = None):
@@ -89,10 +91,15 @@ class GroupConfigureHandler(BaseHandler):
 		# get the group in question
 		group = Group.get_by_id(long(group_id))
 
-		# scan for this user
-		is_member = GroupMembers.is_member(user_info.key, group.key)
+		# scan if this user is a member and/or admin
+		if group.owner == user_info.key:
+			is_admin = True
+			is_member = True # obvious
+		else:
+			is_admin = False
+			is_member = GroupMembers.is_member(user_info.key, group.key)
 
-		# bail if group doesn't exist user isn't in the membership list
+		# bail if group doesn't exist or user isn't in the membership list
 		if not group or not is_member:
 			return self.redirect_to('account-groups')
 
@@ -103,10 +110,13 @@ class GroupConfigureHandler(BaseHandler):
 		channel_token = user_info.key.urlsafe()
 		refresh_channel = channel.create_channel(channel_token)
 
-		# params build out
+		# params build out - ugly cause instructions/admin stuff
 		params = {
+			'is_admin': is_admin,
+			'is_member': is_member,
 			'group': group,
 			'members': members,
+			'num_members': len(members),
 			'gmform': self.gmform,
 			'refresh_channel': refresh_channel,
 			'channel_token': channel_token 
@@ -159,27 +169,33 @@ class GroupConfigureHandler(BaseHandler):
 		# this member's membership
 		membership = GroupMembers.get_by_userid_groupid(user_info.key, group.key)
 
-		# bail if group doesn't exist or not owned by this user
-		if not group or group.owner != user_info.key:
-			self.add_message('Group was not deleted.', 'warning')
-			return self.redirect_to('account-groups')
-
 		# list of users that have the group enabled
 		members = GroupMembers.get_group_users(group.key)
 
-		# delete the groupmember's entry (members still contains result)
+		# remove this user's membership
 		membership.key.delete()
+		
+		# if this user is not the group owner, we simply notify we are done
+		if not group or group.owner != user_info.key:
+			# use the channel to tell the browser we are done and reload
+			self.add_message('Group was removed from account.', 'success')
+			channel_token = self.request.get('channel_token')
+			channel.send_message(channel_token, 'reload')
+			return
 
 		# was there more than just this member?
 		if len(members) > 1:
 			# find the next user by date and assign them as owner
-			pass # TODO
+			entry = GroupMembers.get_new_owner(user_info.key, group.key)
+			new_owner = entry.member
+			group.owner = new_owner
+			group.put()
 		else:
 			# no more members, so delete the group
-			group.key.delete()
+			#group.key.delete()
 			self.add_message('Group successfully deleted!', 'success')
 
-			# remove group from appliances
+			# remove group from any and all appliances (we are deleting group)
 			appliances = Appliance.get_by_group(group.key)
 			for appliance in appliances:
 				appliance.group = None # public group
@@ -201,7 +217,8 @@ class GroupConfigureHandler(BaseHandler):
 	def gmform(self):
 		return forms.GroupMemberForm(self)
 
-
+# email an invite to the group
+# http://example.com/groups/5645717330722816/members/
 class GroupMemberHandler(BaseHandler):
 	@user_required
 	def post(self, group_id = None):
@@ -211,9 +228,12 @@ class GroupMemberHandler(BaseHandler):
 		# get the group in question
 		group = Group.get_by_id(long(group_id))
 
-		# bail if group doesn't exist user isn't the owner/admin
-		if not group or group.owner != user_info.key:
-			return self.redirect_to('account-groups-configure', group_id = group.key.id())
+		# get this user's membership
+		is_member	= GroupMembers.is_member(user_info.key, group.key)
+
+		# bail if group doesn't exist or user not a member
+		if not group or not is_member:
+			return self.redirect_to('account-groups')
 
 		# check what was returned from form validates
 		if not self.form.validate():          
@@ -226,8 +246,10 @@ class GroupMemberHandler(BaseHandler):
 		# create the invite
 		member = GroupMembers.invite(email, group.key, user_info.key)
 		
+		time.sleep(1)
+
 		# build an invite URL, load the email_url, and then execute the task to send invite
-		invite_url = "%s%s" % (self.request.host_url, self.uri_for('account-groups-invites', invite_token = member.token))
+		invite_url = "%s%s?token=%s" % (self.request.host_url, self.uri_for('account-groups-invites'), member.token)
 		email_url = self.uri_for('taskqueue-send-invite')
 		taskqueue.add(url = email_url, params={
 				'to': str(email),
@@ -238,9 +260,6 @@ class GroupMemberHandler(BaseHandler):
 
 		# log to alert
 		self.add_message("User invited to group!", "success")
-
-		# give it a few seconds to update db, then redirect
-		time.sleep(1)
 		
 		return self.redirect_to('account-groups-configure', group_id = group.key.id())
 
@@ -248,7 +267,87 @@ class GroupMemberHandler(BaseHandler):
 	def form(self):
 		return forms.GroupMemberForm(self)
 
+# handle removal of users from the group
+# http://example.com/groups/5645717330722816/members/6428569609699328/
+class GroupMemberConfigureHandler(BaseHandler):
+	@user_required
+	def delete(self, group_id = None, member_id = None):
+		# lookup user's auth info
+		user_info = User.get_by_id(long(self.user_id))
+		
+		# get the group in question
+		group = Group.get_by_id(long(group_id))
+		member = User.get_by_id(long(member_id))
 
+		# get this user's admin rights
+		is_admin = False
+		if group.owner == user_info.key:
+			is_admin = True
+
+		# bail if group doesn't exist or user is not admin
+		if not group or not is_admin:
+			# log to alert
+			self.add_message("You may not remove this user from group.", "error")
+		else:	
+			# look up the other user's group membership
+			membership = GroupMembers.get_by_userid_groupid(member.key, group.key)
+
+			# kill the membership
+			membership.key.delete()
+
+			# find member's appliances that match that group and remove
+			appliances = Appliance.get_by_user_group(member.key, group.key)
+			for appliance in appliances:
+				appliance.group = None # public group
+				appliance.put()
+
+			# log to alert
+			self.add_message("User removed from group!", "success")
+			
+		# use the channel to tell the browser we are done and reload
+		channel_token = self.request.get('channel_token')
+		channel.send_message(channel_token, 'reload')
+		return
+
+
+# handle the invite request from the emailed URL
+# http://example.com/invites/?token=aixv62utat0bi3gt
 class GroupInviteHandler(BaseHandler):
-	def get(self, invite_token = None):
-		pass
+	@user_required
+	def get(self):
+		# lookup user's auth info
+		user_info = User.get_by_id(long(self.user_id))
+
+		# load token and produce form page or show instructions
+		if self.request.get('token'):
+			invite_token = self.request.get('token')
+
+		# lookup the invite
+		invite = GroupMembers.get_by_token(invite_token)
+
+		if not invite:
+			# log to alert
+			self.add_message("Invite key not found.", "info")
+			return self.redirect_to('account-groups')
+
+		# check if the user is already a member of the group
+		entry = GroupMembers.get_by_userid_groupid(user_info.key, invite.group.get().key)
+
+		if entry:
+			# log to alert
+			self.add_message("You are already a member of this group!", "info")
+		else:
+			# modify the invite to place this user in the member group
+			invite.token = None
+			invite.active = True
+			invite.member = user_info.key
+			invite.updated = datetime.now()
+			invite.put()
+
+			# log to alert
+			self.add_message("Welcome to the group!", "success")
+
+		# give it a few seconds to update db, then redirect
+		time.sleep(1)
+		
+		return self.redirect_to('account-groups-configure', group_id = invite.group.get().key.id())

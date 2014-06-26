@@ -45,6 +45,7 @@ _routes = [
 		RedirectRoute('/appliances/', appliancehandlers.ApplianceHandler, name='account-appliances', strict_slash=True),
 		RedirectRoute('/appliances/new/', appliancehandlers.ApplianceNewHandler, name='account-appliances-new', strict_slash=True),
 		RedirectRoute('/appliances/<appliance_id>/', appliancehandlers.ApplianceConfigureHandler, name='account-appliances-configure', strict_slash=True),
+		RedirectRoute('/appliances/<appliance_id>/status/', appliancehandlers.ApplianceStatusHandler, name='account-appliances-configure', strict_slash=True),
 		RedirectRoute('/groups/', grouphandlers.GroupHandler, name='account-groups', strict_slash=True),
 		RedirectRoute('/groups/<group_id>/', grouphandlers.GroupConfigureHandler, name='account-groups-configure', strict_slash=True),
 		RedirectRoute('/groups/<group_id>/members/', grouphandlers.GroupMemberHandler, name='account-groups-members', strict_slash=True),

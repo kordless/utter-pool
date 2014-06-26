@@ -106,7 +106,7 @@
           <div class="section-header">
             <h2><small>Appliance Groups</small></h2>
             <div class="row">
-              <div class="col-md-12">
+              <div class="col-md-10">
                 {% if not groups %}
                 <div class="bs-callout bs-callout-info bs-callout-top">
                   <h4>Groups</h4>
@@ -128,7 +128,7 @@
                     <tr>
                       <td><a href="{{ uri_for('account-groups-configure', self.request, group_id=group.key.id()) }}">{{ group.name }}</a></td>
                       <td>{{ group.description }}</td>
-                      <td class="text-center">1</td>
+                      <td class="text-center">{{ group_count[group.key.id()] }}</td>
                       <td>
                         {% if str(group.owner.id()) == str(user_id) %}
                         <button type="button" data-name="{{ group.name }}" data-description="{{ group.description }}" id="edit-{{group.key.id()}}" class="btn btn-inverse btn-xs" title="edit" href="#"><span class="glyphicon glyphicon-pencil"></span></button>

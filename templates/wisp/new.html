@@ -86,6 +86,9 @@
     	$('#dynamic-image').removeClass('hidden');
     }
 
+    // focus the name input field
+    $('#name').focus();
+
     // show custom callback input and hide others
     $('#callback').change(function() {
     	if ($('#callback option:selected').val() == "custom") {

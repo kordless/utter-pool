@@ -177,6 +177,16 @@
       $('#modal-create').modal();
     });
 
+    // set focus on input when modal is done showing up
+    $('#modal-create').on('shown.bs.modal', function () {
+      $('#name').focus();
+    });
+
+    // set focus on input when modal is done showing up
+    $('#modal-edit').on('shown.bs.modal', function () {
+      $('#name.edit').focus();
+    });
+
     // edit buttons
     $('button[id^="edit-"]').each(function(index){
       $('#'+this.id).click(function() {

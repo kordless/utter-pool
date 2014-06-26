@@ -81,6 +81,11 @@ class ApplianceNewHandler(BaseHandler):
 
 		# check if we are getting a custom group entry
 		if self.form.group.data == "custom":
+			# check if the group exists
+			if Group.get_by_name(self.form.custom.data.strip()):
+				self.add_message("A group with that name already exists!", "error")
+				return self.redirect_to('account-appliances')
+
 			# make the new group
 			group = Group(
 				name = self.form.custom.data.strip(),
@@ -106,8 +111,12 @@ class ApplianceNewHandler(BaseHandler):
 				# no group for public appliances
 				group_key = None
 			else:
+				# check membership
 				group = Group.get_by_id(int(self.form.group.data.strip()))
-				group_key = group.key
+				if GroupMembers.is_member(user_info.key, group.key):
+					group_key = group.key
+				else:
+					group_key = None
 
 		# check what was returned from the rest of the form validates
 		if not self.form.validate():          
@@ -150,6 +159,130 @@ class ApplianceNewHandler(BaseHandler):
 # appliance detail
 class ApplianceConfigureHandler(BaseHandler):
 	@user_required
+	def get(self, appliance_id = None):
+		# lookup user's auth info
+		user_info = User.get_by_id(long(self.user_id))
+
+		# lookup the appliance
+		appliance = Appliance.get_by_id(long(appliance_id))
+
+		# group choices pulldown
+		self.form.group.choices=[]
+		
+		# add list of user's groups, if any
+		groups = GroupMembers.get_user_groups(user_info.key)
+		for group in groups:
+			print group.key.id()
+			self.form.group.choices.insert(0, (group.key.id(), group.name))
+
+		# public group
+		self.form.group.choices.insert(0, ('public', "Public"))
+
+		self.form.name.data = appliance.name
+		self.form.token.data = appliance.token
+
+		# hacking the form pulldown with javascript because I'm in a hurry
+		if appliance.group:
+			group_id = appliance.group.get().key.id()
+		else:
+			group_id = "public"
+
+		# this should work, but doesn't - see javascript in appliance_edit.html
+		self.form.group.data = group_id
+
+		# render new appliance page
+		parms = {
+			'appliance': appliance,
+			'group_id': group_id,
+			'gform': self.gform
+		}
+		return self.render_template('appliance/appliance_edit.html', **parms)
+
+	@user_required
+	def post(self, appliance_id = None):
+		# lookup user's auth info
+		user_info = User.get_by_id(long(self.user_id))
+
+		# seek out the appliance in question
+		appliance = Appliance.get_by_id(long(appliance_id))
+		
+		# bail if appliance doesn't exist user isn't the owner
+		if not appliance or appliance.owner != user_info.key:
+			return self.redirect_to('account-appliances')
+
+		# initialize form choices for group
+		self.form.group.choices = []
+
+		# add list of user's groups, if any
+		groups = GroupMembers.get_user_groups(user_info.key)
+		for group in groups:
+			self.form.group.choices.insert(0, (str(group.key.id()), group.name))
+
+		# public group
+		self.form.group.choices.insert(0, ('public', "Public"))
+
+		# check if we are getting a custom group entry
+		if self.form.group.data == "custom":
+			# check if the group exists
+			if Group.get_by_name(self.form.custom.data.strip()):
+				self.add_message("A group with that name already exists!", "error")
+				return self.redirect_to('account-appliances')
+
+			# make the new group
+			group = Group(
+				name = self.form.custom.data.strip(),
+				owner = user_info.key
+			)
+			group.put()
+			group_key = group.key
+
+			# create the group member entry
+			groupmember = GroupMembers(
+				group = group_key,
+				member = user_info.key,
+				invitor = user_info.key, # same same
+				active = True
+			)
+			groupmember.put()
+
+			# hack the form with new group
+			self.form.group.choices.insert(0, ('custom', "Custom"))
+		else:
+			# grab an existing group
+			if self.form.group.data.strip() == 'public':
+				# no group for public appliances
+				group_key = None
+			else:
+				# check membership
+				group = Group.get_by_id(int(self.form.group.data.strip()))
+				if GroupMembers.is_member(user_info.key, group.key):
+					group_key = group.key
+				else:
+					group_key = None
+
+		# check what was returned from the rest of the form validates
+		if not self.form.validate():          
+			self.add_message("The new appliance form did not validate.", "error")
+			return self.get()
+
+		# load form values
+		name = self.form.name.data.strip()
+		token = self.form.token.data.strip()
+
+		# save the new appliance in our database            
+		appliance.name = name
+		appliance.token = token
+		appliance.group = group_key
+		appliance.put()
+
+		# log to alert
+		self.add_message("Appliance %s successfully updated!" % name, "success")
+
+		# give it a few seconds to update db, then redirect
+		time.sleep(1)
+		return self.redirect_to('account-appliances')
+
+	@user_required
 	def delete(self, appliance_id = None):
 		# delete the entry from the db
 		appliance = Appliance.get_by_id(long(appliance_id))
@@ -168,3 +301,16 @@ class ApplianceConfigureHandler(BaseHandler):
 		channel.send_message(channel_token, 'reload')
 		return
 
+	@webapp2.cached_property
+	def gform(self):
+		return forms.GroupForm(self)
+
+	@webapp2.cached_property
+	def form(self):
+		return forms.ApplianceForm(self)
+
+
+class ApplianceStatusHandler(BaseHandler):
+	@user_required
+	def get(self, appliance_id = None):
+		pass

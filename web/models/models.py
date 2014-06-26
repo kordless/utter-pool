@@ -76,8 +76,8 @@ class GroupMembers(ndb.Model):
 
     @classmethod
     def invite(cls, email, group, invitor):
-        # do we have the email already?
-        entry = cls.query(cls.email == email).get()
+        # do we have this combo already?
+        entry = cls.query().filter(cls.email == email, cls.group == group).get()
         
         if not entry:
             # generate new token and create new entry 
@@ -92,6 +92,10 @@ class GroupMembers(ndb.Model):
             entry.put()
 
         return entry
+
+    @classmethod
+    def get_group_user_count(cls, group):
+        return cls.query().filter(cls.group == group, cls.active == True).count()
 
     @classmethod
     def get_by_token(cls, token):
@@ -150,6 +154,10 @@ class Appliance(ndb.Model):
     dynamicimages = ndb.BooleanProperty(default=True)
     location = ndb.GeoPtProperty()
     ipv4_address = ndb.StringProperty()
+
+    @classmethod
+    def get_appliance_count_by_user_group(cls, user, group):
+        return cls.query().filter(cls.owner == user, cls.group == group).count()
 
     @classmethod
     def get_by_token(cls, token):

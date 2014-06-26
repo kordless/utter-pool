@@ -342,4 +342,9 @@ class AccountHandler(BaseHandler):
 		return self.render_template('user/account.html', **params)
 
 
-
+class AccountDeleteHandler(BaseHandler):
+	@user_required
+	def get(self):
+		# delete a user from the system
+		pass
+		

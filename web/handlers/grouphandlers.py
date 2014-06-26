@@ -21,6 +21,13 @@ class GroupHandler(BaseHandler):
 		# look up user's groups
 		groups = GroupMembers.get_user_groups(user_info.key)
 
+		# create an object with group_id and member counts
+		group_count = {}
+		for group in groups:
+			# get the member counts
+			count = GroupMembers.get_group_user_count(group.key)
+			group_count[group.key.id()] = count
+
 		# setup channel to do page refresh
 		channel_token = user_info.key.urlsafe()
 		refresh_channel = channel.create_channel(channel_token)
@@ -28,6 +35,7 @@ class GroupHandler(BaseHandler):
 		# params build out
 		params = {
 			'groups': groups,
+			'group_count': group_count,
 			'refresh_channel': refresh_channel,
 			'channel_token': channel_token 
 		}
@@ -106,6 +114,13 @@ class GroupConfigureHandler(BaseHandler):
 		# get the members
 		members = GroupMembers.get_group_users(group.key)
 
+		# create an object with appliance counts per user
+		appliance_count = {}
+		for member in members:
+			# get the appliance counts per user for this group
+			count = Appliance.get_appliance_count_by_user_group(member.key, group.key)
+			appliance_count[member.key.id()] = count
+
 		# setup channel to do page refresh
 		channel_token = user_info.key.urlsafe()
 		refresh_channel = channel.create_channel(channel_token)
@@ -116,6 +131,7 @@ class GroupConfigureHandler(BaseHandler):
 			'is_member': is_member,
 			'group': group,
 			'members': members,
+			'appliance_count': appliance_count,
 			'num_members': len(members),
 			'gmform': self.gmform,
 			'refresh_channel': refresh_channel,
@@ -145,6 +161,11 @@ class GroupConfigureHandler(BaseHandler):
 		name = self.form.name.data.strip()
 		description = self.form.description.data.strip()
 
+		# check if we have a group named that already
+		if Group.get_by_name(name):
+			self.add_message("A group with that name already exists!", "error")
+			return self.redirect_to('account-groups')
+			
 		# save the new group            
 		group.name = name
 		group.description = description
@@ -187,15 +208,23 @@ class GroupConfigureHandler(BaseHandler):
 		if len(members) > 1:
 			# find the next user by date and assign them as owner
 			entry = GroupMembers.get_new_owner(user_info.key, group.key)
+			print "new owner is %s" % entry.member
 			new_owner = entry.member
 			group.owner = new_owner
 			group.put()
+		
+			# find member's appliances that match this group and remove
+			appliances = Appliance.get_by_user_group(user_info.key, group.key)
+			for appliance in appliances:
+				appliance.group = None # public group
+				appliance.put()
+		
 		else:
 			# no more members, so delete the group
-			#group.key.delete()
+			group.key.delete()
 			self.add_message('Group successfully deleted!', 'success')
 
-			# remove group from any and all appliances (we are deleting group)
+			# remove group from any and all appliances (heavy handed)
 			appliances = Appliance.get_by_group(group.key)
 			for appliance in appliances:
 				appliance.group = None # public group
@@ -321,7 +350,10 @@ class GroupInviteHandler(BaseHandler):
 		# load token and produce form page or show instructions
 		if self.request.get('token'):
 			invite_token = self.request.get('token')
-
+		else:
+			self.add_message("Invite key not found.", "info")
+			return self.redirect_to('account-groups')
+		
 		# lookup the invite
 		invite = GroupMembers.get_by_token(invite_token)
 
@@ -351,3 +383,48 @@ class GroupInviteHandler(BaseHandler):
 		time.sleep(1)
 		
 		return self.redirect_to('account-groups-configure', group_id = invite.group.get().key.id())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# hello you.
+# why no tests?  because I am alone.
+# fuck tests then.
+# time is short.
+# life is shorter.
+# but.
+# time passed.
+# you are here now.
+# because insane funding.
+# come to my office.
+# i may be taking a nap.
+# but.
+# i'm going to give you $5K for finding this.
+# there is always a catch, isn't there?
+# going make you write tests tomorrow!

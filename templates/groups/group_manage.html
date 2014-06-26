@@ -79,7 +79,7 @@
               	<div class="bs-callout bs-callout-info bs-callout-top">
                   <h4>Group Members</h4>
                   <p><strong>Group Members</strong> are users who are members of a private <strong>Appliance Group</strong>.  Members of a this group are able to start <strong>Instances</strong> on <strong>OpenStack Clusters</strong> managed by <strong>Appliances</strong> in this group.  They may also add new appliances to the group.</p>
-                  <p>Click the <span class="label label-success">Invite Group Member</span> button below to invite a new member to join the group.</p>
+                  <p>As you are the only one in this group, you should click the <span class="label label-success">Invite Group Member</span> button below to invite a new member!</p>
                 </div>
                 {% else %}
                 <p>The following users are members of this group.  These users are allowed to add appliances to the group or launch instances within the group's existing appliances. These users may also invite other users to the group, but they are not allowed to delete existing members.</p>
@@ -102,7 +102,7 @@
                     <tr>
                       <td>{{ member.username }}</td>
                       <td>{{ member.email }}</td>
-                      <td class="text-center">100</td>
+                      <td class="text-center">{{ appliance_count[member.key.id()] }}</td>
                       <td>
                       {% if is_admin and member.username != username %}
                         <button type="button" id="remove-{{member.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
@@ -149,8 +149,11 @@
     // add button
     $('#invite-button').click(function() {
       $('#modal-invite').modal();
-      $('#email').focus();
+    });
 
+    // set focus on input when modal is done showing up
+    $('#modal-invite').on('shown.bs.modal', function () {
+      $('#email').focus();
     });
 
     // show create modal on any errors

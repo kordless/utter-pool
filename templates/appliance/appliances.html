@@ -38,13 +38,13 @@
     <div class="col-md-2">
     {{ macros.side_menu("appliances") }}
     </div>
-    <div class="col-md-10">
+    <div class="col-md-9">
       <div class="row">
         <div class="col-md-12">
           <div class="section-header">
             <h2><small>Account Appliances</small></h2>
             <div class="row">
-              <div class="col-md-10">
+              <div class="col-md-12">
                 {% if not appliances %}
                 <div class="bs-callout bs-callout-info bs-callout-top">
                   <h4>Appliances</h4>
@@ -53,7 +53,7 @@
                   <p><strong>Note:</strong> Running an appliance is not required to purchase instances on the system.</p>
                 </div>
                 {% else %}
-                <p>The following virtual appliances are tied to your provider account.</p>
+                <p>The following appliances are configured for your account. If you need to rename an appliance, use <span class="glyphicon glyphicon-pencil"></span> to edit.  Use <span class="glyphicon glyphicon-remove"></span> to delete the appliance.</p>
                 <table class="table table-hover">
                   <thead>
                     <tr>

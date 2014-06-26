@@ -12,7 +12,7 @@ Wildly distinct and uniquely optimized compute pools will be capable of providin
 
 Users of StackMonkey will be able to start and stop instances with Bitcoin transactions.  No user account or authentication is needed.  Payment fraud for instances is eliminated by utilizing Bitcoin payment verification and Coinbase's service to initiate callbacks to the providers on receipt of payment.
 
-![mockup](https://raw2.github.com/StackMonkey/xovio-pool/master/mockup.png)
+![mockup](https://raw2.github.com/StackMonkey/utter-pool/master/mockup.png)
 
 It is the intent of this project to create a fully distributed compute exchange which greatly minimizes the central control authority for server starts and access.  Put another way, this project aims to provide a bridge between crypto currency markets and the very thing that allows them to exist: compute.  
 
@@ -23,12 +23,12 @@ The initial compute pool (not to be confused with the distributed exchange marke
 
 A virtual appliance for a pool is made available to providers to run on their OpenStack powered clusters.  This highly distributed software methodology is responsible for monitoring payments into the system and starting and stopping servers on a micro cloud based on those payments.
 
-A decentralized market exchange for the pools will later be created at [http://xov.io](http://xov.io/) utilizing its own crypto currency for exchanges of compute.  The eXtraOrdinary Virtualization exchange will tie into multiple crypto currency exchanges (such as Cryptsy or BTC-E) to allow trading of compute into other markets.
+A decentralized market exchange for the pools will later be created at [http://utter.io](http://utter.io/) utilizing its own crypto currency for exchanges of compute.  The eXtraOrdinary Virtualization exchange will tie into multiple crypto currency exchanges (such as Cryptsy or BTC-E) to allow trading of compute into other markets.
 
-It is likely that xov.io will be powered by [Ethereum](http://ethereum.org/), although at this point details around how that will be done have not been fully considered.  If you have interest in working in developing this portion of concept further, please contact me at kordless@stackgeek.com.
+It is likely that utter.io will be powered by [Ethereum](http://ethereum.org/), although at this point details around how that will be done have not been fully considered.  If you have interest in working in developing this portion of concept further, please contact me at kordless@stackgeek.com.
 
 ### Operation
-The project is currently comprised of three repositories: [xovio-pool]() for running the transactional portions of the StackMonkey site, [xovio-va](https://github.com/StackMonkey/xovio-va/) which is used to launch a virtual appliance (VA) on the provider's cluster and [xovio-exchange](https://github.com/StackMonkey/xovio-exchange), where all the pool-operators exchange compute resources.  
+The project is currently comprised of three repositories: [utter-pool]() for running the transactional portions of the StackMonkey site, [utter-va](https://github.com/StackMonkey/utter-va/) which is used to launch a virtual appliance (VA) on the provider's cluster and [utter-exchange](https://github.com/StackMonkey/utter-exchange), where all the pool-operators exchange compute resources.  
 
 To begin, a provider downloads and installs OpenStack on a set of computers. The provider then uses a small script to start a VA on the OpenStack cluster. This VA becomes responsible for listening to callbacks triggered from Coinbase's bitcoin callback service.  The following script will build a VA for the StackMonkey pool:
 
@@ -52,9 +52,9 @@ Hackers are encouraged to utilize the system for whatever purpose they deem impo
 ### Funding
 StackMonkey, its employees and its investors expect to be rewarded accordingly for bringing this concept to fruition.  Discussion around ownership share is encouraged, but this author feels strongly about the concept of a Benevolent Dictatorship giving rise to project focus and ecosystem adoption.  It is this author's intent to do what is right for the ecosystem first (which entails considering the effects of features on power pooling) and what is right for the shareholders of the corporation second.
 
-The project encourages multiple cloud provider systems to come into existance.  Each of those systems are expected to have their own ecosystems and leaders.  The xov.io exchange will be capable of extracting value through market making.
+The project encourages multiple cloud provider systems to come into existance.  Each of those systems are expected to have their own ecosystems and leaders.  The utter.io exchange will be capable of extracting value through market making.
 
-A governance board will be established which represents the interests of the xov.io project as a whole.  The StackMonkey corporation will be created as a seperate entity, and exist as a multi-national corporation to ensure fair and equal treatment from the various regions in which it operates.  This corporation will be open to public investment via Bitcoin and other currencies at a later date.
+A governance board will be established which represents the interests of the utter.io project as a whole.  The StackMonkey corporation will be created as a seperate entity, and exist as a multi-national corporation to ensure fair and equal treatment from the various regions in which it operates.  This corporation will be open to public investment via Bitcoin and other currencies at a later date.
 
 Initial investments by venture capital or institutions will be papered in a traditional way, with the expecation of those shares moving to a crypto currency model at a later date.  Post money valuation is set at US$10M.  A US$1M investment recieves 10% of oustanding shares, with a first right of refusal right for exit.
 
@@ -62,5 +62,5 @@ The implementation of this funding is open to discussion.  Funding decisions whi
 
 Donations for the project can be made at 1JT1mQS74Ub8jyxQ81aKEeoyudSRX8RJTA. Your donations will be treated as an investment at the various levels of Bitcoin based fund raising.
 
-**Kord Campbell**, Coder and Evangelist, XOV.IO
+**Kord Campbell**, Coder and Evangelist
 

@@ -18,13 +18,13 @@
     <div class="col-md-2">
     {{ macros.side_menu("wisps") }}
     </div>
-    <div class="col-md-10">
+    <div class="col-md-9">
       <div class="row">
         <div class="col-md-12">
           <div class="section-header">
             <h2><small>Create a <strong>New Wisp</strong></small></h2>
             <div class="row">
-              <div class="col-md-10">
+              <div class="col-md-12">
                 <div class="bs-callout bs-callout-info bs-callout-top">
                   <h4>Cloud Wisps</h4>
                   <p><strong>Wisps</strong> are configuration templates used by <strong>Clouds</strong> and <strong>Appliances</strong> to start <strong>Instances</strong>. Wisps send <strong>SSH Keys</strong> and <strong>Post Creation Scripts</strong> to instances using <strong>Callback URLs</strong> accessed by the pool's appliances after they receive payments. Add a <strong>Custom Callback URL</strong> to your wisp if you want more control over your instance starts.</p>
@@ -33,17 +33,17 @@
                 <form id="form-new-wisp" action="{{ url|safe }}" method="post" class="form-horizontal">
                   <div class="row">
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-                    {{ macros.input(form, "name", "Name", "col-xs-8", placeholder="Awesome Instance Template", class="form-control required") }}
-                    {{ macros.input(form, "callback", "Callback Type", "col-xs-8", class="form-control pulldown") }}
+                    {{ macros.input(form, "name", "Name", "col-xs-10", placeholder="Awesome Instance Template", class="form-control required") }}
+                    {{ macros.input(form, "callback", "Callback Type", "col-xs-4", class="form-control pulldown") }}
                     <div id="custom-callback" class="hidden">
-                      {{ macros.input(form, "callback_url", "Custom Callback URL", "col-xs-8", placeholder="http://secretserver.com/myserver.json", class="form-control") }}
+                      {{ macros.input(form, "callback_url", "Custom Callback URL", "col-xs-6", placeholder="http://secretserver.com/myserver.json", class="form-control") }}
                     </div>
                     <div id="custom-callback-hide">
-                      {{ macros.input(form, "image", "Image", "col-xs-8", class="form-control pulldown") }}
+                      {{ macros.input(form, "image", "Image", "col-xs-6", class="form-control pulldown") }}
                       <div id="dynamic-image" class="hidden">
-                        {{ macros.input(form, "dynamic_image_url", "Dynamic Image URL", "col-xs-8", placeholder="http://example.com/myfavoriteimage.img", class="form-control") }}
+                        {{ macros.input(form, "dynamic_image_url", "Dynamic Image URL", "col-xs-10", placeholder="http://example.com/myfavoriteimage.img", class="form-control") }}
                       </div>
-                      {{ macros.input(form, "public_ssh_key", "Public SSH Key", "col-xs-12", class="form-control form-ssh-key", rows=6, placeholder="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAklOUpkDHrfHY17SbrmTIpNLTGK9Tjom/BWDSUGPl+nafzlHDTYW7hdI4yZ5ew18JH4JW9jbhUFrviQzM7xlELEVf4h9lFX5QVkbPppSwg0cda3Pbv7kOdJ/MTyBlWXFCR+HAo3FXRitBqxiX1nKhXpHAZsMciLq8V6RjsNAQwdsdMFvSlVK/7XAt3FaoJoAsncM1Q9x5+3V0Ww68/eIFmb1zuUFljQJKprrX88XypNDvjYNby6vw/Pb0rwert/EnmZ+AW4OZPnTPI89ZPmVMLuayrD2cE86Z/il8b+gw3r3+1nKatmIkjn2so1d01QraTlMqVSsbxNrRFi9wrf+M7Q== anonymous@bitcoin.local") }}
+                      {{ macros.input(form, "public_ssh_key", "Public SSH Key", "col-xs-10", class="form-control form-ssh-key", rows=6, placeholder="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAklOUpkDHrfHY17SbrmTIpNLTGK9Tjom/BWDSUGPl+nafzlHDTYW7hdI4yZ5ew18JH4JW9jbhUFrviQzM7xlELEVf4h9lFX5QVkbPppSwg0cda3Pbv7kOdJ/MTyBlWXFCR+HAo3FXRitBqxiX1nKhXpHAZsMciLq8V6RjsNAQwdsdMFvSlVK/7XAt3FaoJoAsncM1Q9x5+3V0Ww68/eIFmb1zuUFljQJKprrX88XypNDvjYNby6vw/Pb0rwert/EnmZ+AW4OZPnTPI89ZPmVMLuayrD2cE86Z/il8b+gw3r3+1nKatmIkjn2so1d01QraTlMqVSsbxNrRFi9wrf+M7Q== anonymous@bitcoin.local") }}
                       {{ macros.input(form, "post_creation", "Cloud Configuration", "col-xs-8", class="form-control", rows=8, placeholder="#!/bin/bash") }}
                     </div>
                   </div>

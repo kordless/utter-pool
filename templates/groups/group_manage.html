@@ -75,8 +75,8 @@
             <h2><small>Manage Group <strong>{{ group.name }}</strong></small></h2>
             <div class="row">
               <div class="col-md-10">
-              	{% if num_members < 2 %}
-              	<div class="bs-callout bs-callout-info bs-callout-top">
+                {% if num_members < 2 %}
+                <div class="bs-callout bs-callout-info bs-callout-top">
                   <h4>Group Members</h4>
                   <p><strong>Group Members</strong> are users who are members of a private <strong>Appliance Group</strong>.  Members of a this group are able to start <strong>Instances</strong> on <strong>OpenStack Clusters</strong> managed by <strong>Appliances</strong> in this group.  They may also add new appliances to the group.</p>
                   <p>As you are the only one in this group, you should click the <span class="label label-success">Invite Group Member</span> button below to invite a new member!</p>
@@ -86,7 +86,7 @@
                 {% if is_admin %}
                 <p><strong>Note:</strong> As an admin, you may remove a user from the group by clicking on the <span class="glyphicon glyphicon-remove"></span> button next to their membership entry.</p>
                 {% endif %}
-              	<table class="table table-hover">
+                <table class="table table-hover">
                   <thead>
                     <tr>
                       <th>Username</th>
@@ -98,7 +98,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                  	{% for member in members %}
+                    {% for member in members %}
                     <tr>
                       <td>{{ member.username }}</td>
                       <td>{{ member.email }}</td>
@@ -106,8 +106,8 @@
                       <td>
                       {% if is_admin and member.username != username %}
                         <button type="button" id="remove-{{member.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
-                    	{% endif %}
-                    	</td>
+                      {% endif %}
+                      </td>
                     </tr>
                     {% endfor %}
                   </tbody>
@@ -116,10 +116,10 @@
               </div>
             </div>
             <div class="row">
-            	<div class="col-md-4">
-            		<button type="submit" id="invite-button" class="btn btn-success">Invite Group Member</button>
-          		</div>
-          	</div>
+              <div class="col-md-4">
+                <button type="submit" id="invite-button" class="btn btn-success">Invite Group Member</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

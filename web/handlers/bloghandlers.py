@@ -239,6 +239,9 @@ class ActionsHandler(BaseHandler):
 		else:
 			self.add_message(_('Article was not deleted.  Something went horribly wrong somewhere!'), 'warning')
 
+		# hang out for a second
+		time.sleep(1)
+
 		# use the channel to tell the browser we are done and reload
 		channel_token = self.request.get('channel_token')
 		channel.send_message(channel_token, 'reload')

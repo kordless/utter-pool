@@ -2,7 +2,7 @@
 {% extends base_layout %}
 
 {% block page_styles %}
-  <link href="/css/blog.css" rel="stylesheet">
+  <link href="/css/configure.css" rel="stylesheet">
 {% endblock %}
 
 {% block navbar %}
@@ -12,93 +12,114 @@
 {% set date_format = "%a, %d %b %Y" %}
 
 {% block content %}
-  <!-- hidden delete modal -->
-  <div id="delete" class="modal fade">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">Confirm Deletion</h4>
-        </div>
+<!-- hidden delete modal -->
+<div id="delete" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Confirm Deletion</h4>
+      </div>
+      <div class="modal-body">
+        <p>Deleting this article will remove it from the database and unpublish it from the site.  Are you sure that's what you want to do?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" id="delete-button" class="btn btn-danger">Delete Article</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end modal -->
+
+<!-- hidden add content modal -->
+<div id="new-article-modal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Create New Article</h4>
+      </div>
+      <form id="form_edit_profile" action="{{ url|safe }}" method="post" class="form-horizontal">
         <div class="modal-body">
-          <p>Deleting this article will remove it from the database and unpublish it from the site.  Are you sure that's what you want to do?</p>
+          <p>Fill out the following form to create a new article.</p>
+          <div class="row">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+            {{ macros.input(form, "article_type", "Article Type", "col-xs-3", class="form-control pulldown") }}
+            {{ macros.input(form, "title", "Title", "col-xs-9", placeholder="Awesome Article", class="form-control focused required") }}
+            {{ macros.input(form, "summary", "Summary", "col-xs-12", placeholder="Article detailing things in detail.", class="form-control required") }} 
+            {{ macros.input(form, "filename", "Filename", "col-xs-6", placeholder="filename.md", class="form-control required") }} 
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" id="delete-button" class="btn btn-danger">Delete Article</button>
+          <button type="submit" id="create-button" class="btn btn-success">Create Article</button>
         </div>
-      </div>
+      </form>
     </div>
   </div>
-  <!-- end modal -->
-
-  <!-- hidden add content modal -->
-  <div id="new-article-modal" class="modal fade">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">Create New Article</h4>
-        </div>
-        <form id="form_edit_profile" action="{{ url|safe }}" method="post" class="form-horizontal">
-          <div class="modal-body">
-            <p>Fill out the following form to create a new article.</p>
+</div>
+<!-- end modal -->
+<div class="container content">
+  <div class="row">
+    <div class="col-md-2">
+    {{ macros.admin_side_menu("blog") }}
+    </div>
+    <div class="col-md-9">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="section-header">
+            <h2><small>Admin Content</small></h2>
             <div class="row">
-              <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-              {{ macros.input(form, "article_type", "Article Type", "col-xs-3", class="form-control pulldown") }}
-              {{ macros.input(form, "title", "Title", "col-xs-9", placeholder="Awesome Article", class="form-control focused required") }}
-              {{ macros.input(form, "summary", "Summary", "col-xs-12", placeholder="Article detailing things in detail.", class="form-control required") }} 
-              {{ macros.input(form, "filename", "Filename", "col-xs-6", placeholder="filename.md", class="form-control required") }} 
+              <div class="col-md-12">
+                {% if articles %}
+                <p>The following content is being served by the system. You may click on the <strong>New Article</strong> button below to create new content.</p>                
+                <table class="table table-striped table-hover">
+                  <thead>
+                    <tr>
+                      <th>Created</th>
+                      <th>Title</th>
+                      <th>Summary</th>
+                      <th>Filename</th>
+                      <th>Published</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in articles %}
+                      <tr>
+                        <td>{{item.created.strftime(date_format)}}</td>
+                        <td><a href="/blog/{{item.slug}}">{{item.title}}</a></td>
+                        <td>{{item.summary}}</td>
+                        <td>{{item.filename}}</td>
+                        <td>
+                          <div class="toggle-modern">
+                            <div id="article-{{item.key.id()}}" class="toggle{% if item.draft %} draft{% endif %}"></div>
+                          </div>
+                        </td>
+                        <td>
+                          <button type="button" id="remove-{{item.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                {% else %}
+                <p>No content has been created. Click the <strong>New Article</strong> button below to add new content.</p>
+                {% endif %}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-5">
+                <button type="button" id="new-article" class="btn btn-success">New Article</button>
+              </div>
             </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="submit" id="create-button" class="btn btn-success">Create Article</button>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
-  </div>
-  <!-- end modal -->
-
-  <div class="container">
-    <div class="page-header">
-      <h2>Let's blog!</h2>
-    </div>
-    <table class="table table-striped table-hover">
-      <thead>
-        <tr>
-          <th>Created</th>
-          <th>Title</th>
-          <th>Summary</th>
-          <th>Filename</th>
-          <th>Published</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in articles %}
-          <tr>
-            <td>{{item.created.strftime(date_format)}}</td>
-            <td><a href="/blog/{{item.slug}}">{{item.title}}</a></td>
-            <td>{{item.summary}}</td>
-            <td>{{item.filename}}</td>
-            <td>
-              <div class="toggle-modern">
-                <div id="article-{{item.key.id()}}" class="toggle{% if item.draft %} draft{% endif %}"></div>
-              </div>
-            </td>
-            <td>
-              <button type="button" id="remove-{{item.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    <div>
-      <button type="button" id="new-article" class="btn btn-success">New Article</button>
-    </div>
-  </div>
+  </div> 
+</div>
 {% endblock %}
 
 {% block javascript %}
@@ -132,13 +153,10 @@
         $('#delete').modal();
         $('#delete-button').click(function() {
           $.ajax({
-            url: '/blog/actions/'+article_id+'/?channel_token='+channel_token,
-            type: 'DELETE',
-            success:(function() {
-              $(button_id).unbind("click");
-              $(button_id).addClass("disabled");
-            })
+            url: '/blog/actions/'+article_id+'/?_csrf_token='+csrf_token+'&channel_token='+channel_token,
+            type: 'DELETE'
           });
+          $('#delete').modal("hide");
         });
       })
     });

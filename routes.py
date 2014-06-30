@@ -1,12 +1,13 @@
 from webapp2_extras.routes import RedirectRoute
-from web.handlers import sitehandlers, adminhandlers, userhandlers, apihandlers, bloghandlers, emailhandlers
+from web.handlers import sitehandlers, adminhandlers, userhandlers, apihandlers, bloghandlers, emailhandlers, taskhandlers
 from web.handlers import statushandlers, appliancehandlers, grouphandlers, cloudhandlers, wisphandlers
 
 secure_scheme = 'https'
 
 _routes = [
-		# mail processing
-		RedirectRoute('/taskqueue-send-invite/', emailhandlers.SendEmailInviteHandler, name='taskqueue-send-invite', strict_slash=True),
+		# tasks
+		RedirectRoute('/tasks/sendinvite/', emailhandlers.SendEmailInviteHandler, name='tasks-sendinvite', strict_slash=True),
+		RedirectRoute('/tasks/instances/', taskhandlers.InstancesHandler, name='tasks-instances', strict_slash=True),
 
 		# admin
 		RedirectRoute('/admin/', adminhandlers.AdminHandler, name='admin', strict_slash=True),
@@ -53,14 +54,14 @@ _routes = [
 		RedirectRoute('/invites/', grouphandlers.GroupInviteHandler, name='account-groups-invites', strict_slash=True),
 
 		# api
-		RedirectRoute('/api/v1/authorization', apihandlers.TokenValidate, name='api-token-validate', strict_slash=False),
-		RedirectRoute('/api/v1/track', apihandlers.TrackingPingHandler, name='api-track', strict_slash=False),
-		RedirectRoute('/api/v1/images', apihandlers.ImagesHandler, name='api-images', strict_slash=False),
-		RedirectRoute('/api/v1/flavors', apihandlers.FlavorsHandler, name='api-flavors', strict_slash=False),
-		RedirectRoute('/api/v1/instances', apihandlers.InstancesHandler, name='api-instances', strict_slash=False),
-		RedirectRoute('/api/v1/instances/<instance_name>', apihandlers.InstanceDetailHandler, name='api-instance-details', strict_slash=False),
-		RedirectRoute('/api/v1/broker', apihandlers.BrokerHandler, name='api-broker', strict_slash=False),
- 
+		RedirectRoute('/api/v1/authorization/', apihandlers.TokenValidate, name='api-token-validate', strict_slash=True),
+		RedirectRoute('/api/v1/track/', apihandlers.TrackingPingHandler, name='api-track', strict_slash=True),
+		RedirectRoute('/api/v1/images/', apihandlers.ImagesHandler, name='api-images', strict_slash=True),
+		RedirectRoute('/api/v1/flavors/', apihandlers.FlavorsHandler, name='api-flavors', strict_slash=True),
+		RedirectRoute('/api/v1/instances/', apihandlers.InstancesHandler, name='api-instances', strict_slash=True),
+		RedirectRoute('/api/v1/instances/broker/', apihandlers.BrokerHandler, name='api-broker', strict_slash=True),
+		RedirectRoute('/api/v1/instances/<instance_name>/', apihandlers.InstancesHandler, name='api-instance-details', strict_slash=True),
+
 		# blog handlers
 		RedirectRoute('/blog/', bloghandlers.BlogHandler, name='blog', strict_slash=True),
 		RedirectRoute('/blog/feed/rss/', bloghandlers.RSSHandler, name='blog-rss', strict_slash=True),

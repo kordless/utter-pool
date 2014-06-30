@@ -75,10 +75,25 @@ h2 small {
 #login-tfa {
   margin-top: 10px;
 }
+.map-overlay {
+  position:absolute;
+  background: rgba(255, 255, 255, 0.5);
+  top: 32px;
+  right: 20px;
+  width: 150px;
+  padding: 5px;
+  font-size: 11px;
+}
+.map-overlay input {
+  font:inherit;
+}
+.map-overlay label {
+  margin: 0px;
+}
 #map { 
   position:relative; 
-  top:0; 
-  bottom:0;
+  top: 0; 
+  bottom: 0;
   height: 500px;
-  width:100%;
+  width: 100%;
 }

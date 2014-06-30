@@ -279,7 +279,7 @@ class GroupMemberHandler(BaseHandler):
 
 		# build an invite URL, load the email_url, and then execute the task to send invite
 		invite_url = "%s%s?token=%s" % (self.request.host_url, self.uri_for('account-groups-invites'), member.token)
-		email_url = self.uri_for('taskqueue-send-invite')
+		email_url = self.uri_for('tasks-sendinvite')
 		taskqueue.add(url = email_url, params={
 				'to': str(email),
 				'group_id': group.key.id(),

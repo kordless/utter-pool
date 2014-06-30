@@ -83,6 +83,14 @@ handlers:
   script: main.app
   secure: always
 
+- url: /tasks/instances/
+  script: main.app
+  login: admin
+
+- url: /tasks/sendinvite/
+  script: main.app
+  login: admin
+
 libraries:
 - name: jinja2
   version: "2.6"

@@ -1,0 +1,4 @@
+cron:
+- description: hourly instance task
+  url: /tasks/instances/
+  schedule: every 1 minutes

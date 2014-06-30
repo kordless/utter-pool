@@ -6,7 +6,7 @@ from google.appengine.api import channel
 
 import config
 import web.forms as forms
-from web.models.models import User, LogVisit, Appliance, Group, GroupMembers
+from web.models.models import User, LogVisit, Appliance, Group, GroupMembers, Instance
 from web.basehandler import BaseHandler
 from web.basehandler import user_required
 
@@ -313,4 +313,22 @@ class ApplianceConfigureHandler(BaseHandler):
 class ApplianceStatusHandler(BaseHandler):
 	@user_required
 	def get(self, appliance_id = None):
-		pass
+		# lookup user's auth info
+		user_info = User.get_by_id(long(self.user_id))
+
+		# seek out the appliance in question
+		appliance = Appliance.get_by_id(long(appliance_id))
+
+		# bail if appliance doesn't exist user isn't the owner
+		if not appliance or appliance.owner != user_info.key:
+			return self.redirect_to('account-appliances')
+		
+		# find instances associated with this appliance
+		instances = Instance.get_by_appliance(appliance.key)
+
+		# render new appliance page
+		parms = {
+			'appliance': appliance,
+			'instances': instances
+		}
+		return self.render_template('appliance/status.html', **parms)

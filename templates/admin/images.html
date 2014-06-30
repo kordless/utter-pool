@@ -66,70 +66,68 @@
 <div class="container content">
   <div class="row">
     <div class="col-md-2">
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="{{ uri_for('admin') }}">Status</a></li>
-        <li><a href="{{ uri_for('admin-users') }}">Users</a></li>
-        <li><a href="{{ uri_for('admin-groups') }}">Groups</a></li>
-        <li><a href="{{ uri_for('admin-flavors') }}">Flavors</a></li>
-        <li class="active"><a href="{{ uri_for('admin-images') }}">Images</a></li>
-      </ul>
+    {{ macros.admin_side_menu("images") }}
     </div>
     <div class="col-md-9">
       <div class="row">
         <div class="col-md-12">
           <div class="section-header">
-          <h2><small>Admin Images</small></h2>
-          {% if images %}
-          <div class="row">
-            <div class="col-md-12">
-              <p>The following images are configured for the system to sell. You may click on the <strong>New Image</strong> button below to create a new image.</p>
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Disk Format</th>
-                    <th>Container Format</th>
-                    <th>Serving</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for image in images %}
-                  <tr>
-                    <td><a href="{{ image.url }}">{{ image.name }}</td>
-                    <td>{{ image.description }}</td>
-                    <td>{{ image.diskformat }}</td>
-                    <td>{{ image.containerformat }}</td>
-                    <td>
-                      <div class="toggle-modern">
-                        <div id="image-{{ image.key.id() }}" class="toggle{% if image.active %} enabled{% endif %}"></div>
-                      </div>
-                    </td>
-                    <td>
-                      <button type="button" id="remove-{{image.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
+            <h2><small>Admin Images</small></h2>
+            <div class="row">
+              <div class="col-md-12">
+                {% if images %}
+                <p>The following images are configured for the system to sell. You may click on the <strong>New Image</strong> button below to create a new image.</p>
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Description</th>
+                      <th>Disk Format</th>
+                      <th>Container Format</th>
+                      <th>Serving</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for image in images %}
+                    <tr>
+                      <td><a href="{{ image.url }}">{{ image.name }}</td>
+                      <td>{{ image.description }}</td>
+                      <td>{{ image.diskformat }}</td>
+                      <td>{{ image.containerformat }}</td>
+                      <td>
+                        <div class="toggle-modern">
+                          <div id="image-{{ image.key.id() }}" class="toggle{% if image.active %} enabled{% endif %}"></div>
+                        </div>
+                      </td>
+                      <td>
+                        <button type="button" id="remove-{{image.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                {% else %}
+                <p>No operating system images configured. Click the <strong>New Image</strong> button below to add a new image.</p>
+                {% endif %}
+              </div>
             </div>
-          </div>
-          {% else %}
-          <p>No images configured. Click the <strong>'New Image'</strong> button below to create a image.</p>
-          {% endif %}
+            <div class="row">
+              <div class="col-md-5">
+                <button type="button" id="new-image-button" class="btn btn-success">New Image</button>
+              </div>
+            </div> 
           </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col-md-5">
-          <button type="button" id="new-image-button" class="btn btn-success">New Image</button>
-        </div>
-      </div> 
     </div>
   </div> 
 </div>
 {% endblock %}
+
+
+
+
 
 {% block javascript %}
 <script type="text/javascript" src="/js/jquery.qrcode.js"></script>

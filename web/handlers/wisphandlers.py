@@ -101,7 +101,7 @@ class WispNewHandler(BaseHandler):
 			
 		# check if we have it already
 		if Wisp.get_by_user_name(user_info.key, name):
-			self.add_message("A wisp with that name already exists!", "error")
+			self.add_message("A wisp with that name already exists in this account!", "error")
 			return self.redirect_to('account-wisps')		
 
 		# save the new wisp in our database            

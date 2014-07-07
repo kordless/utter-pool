@@ -50,8 +50,9 @@
                     <tr>
                       <th>Wisp</th>
                       <th>Image</th>
-                      <th>Public Key</th>
-                      <th class="text-center">Custom Callback?</th>
+                      <th class="text-center">Default</th>
+                      <th class="text-center">Custom Callback</th>
+                      <th>Public SSH Key</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -59,9 +60,10 @@
                     {% for wisp in wisps %}
                     <tr>
                       <td><a href="{{ uri_for('account-wisps-detail', self.request, wisp_id=wisp.key.id()) }}">{{ wisp.name }}</a></td>
-                      <td>{% if wisp.image %}{{ wisp.image.get().description|truncate(32, killwords=True) }}{% else %}Custom{% endif %}</td>
-                      <td class="form-ssh-key">{% if wisp.public_ssh_key %}{{ wisp.public_ssh_key|truncate(32, killwords=True) }}{% else %}None{% endif %}</td>
-                      <td class="text-center"><span class="glyphicon glyphicon-{% if wisp.callback_url %}ok{% else %}ban-circle{% endif %}"></span></td>
+                      <td>{% if wisp.image %}{{ wisp.image.get().description|truncate(32, killwords=True) }}{% else %}Dynamic Image {% if wisp.callback_url %} from Callback {% endif %}{% endif %}</td>
+                      <td class="text-center">{% if wisp.default %}<span class="glyphicon glyphicon-ok"></span>{% endif %}</td>
+                      <td class="text-center">{% if wisp.callback_url %}<span class="glyphicon glyphicon-ok"></span>{% endif %}</td>
+                      <td class="form-ssh-key">{% if wisp.ssh_key %}{{ wisp.ssh_key|truncate(32, killwords=True) }}{% endif %}</td>
                       <td>
                         <button type="button" id="remove-{{wisp.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
                       </td>

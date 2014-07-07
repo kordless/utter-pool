@@ -59,7 +59,7 @@ _routes = [
 		RedirectRoute('/api/v1/images/', apihandlers.ImagesHandler, name='api-images', strict_slash=True),
 		RedirectRoute('/api/v1/flavors/', apihandlers.FlavorsHandler, name='api-flavors', strict_slash=True),
 		RedirectRoute('/api/v1/instances/', apihandlers.InstancesHandler, name='api-instances', strict_slash=True),
-		RedirectRoute('/api/v1/instances/broker/', apihandlers.BrokerHandler, name='api-broker', strict_slash=True),
+		RedirectRoute('/api/v1/broker/', apihandlers.BrokerHandler, name='api-broker', strict_slash=True),
 		RedirectRoute('/api/v1/instances/<instance_name>/', apihandlers.InstancesHandler, name='api-instance-details', strict_slash=True),
 
 		# blog handlers

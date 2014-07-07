@@ -35,6 +35,15 @@ class WispHandler(BaseHandler):
 			'channel_token': channel_token 
 		}
 
+		# check for default
+		default = False
+		for wisp in wisps:
+			if wisp.default:
+				default = True
+		if not default:
+			print "wtf"
+			self.add_message("Please set a wisp to be default!", "error")
+
 		return self.render_template('wisp/wisps.html', **params)
 
 class WispNewHandler(BaseHandler):
@@ -79,10 +88,11 @@ class WispNewHandler(BaseHandler):
 
 		# load form values
 		name = self.form.name.data.strip()
-		public_ssh_key = self.form.public_ssh_key.data.strip()
+		ssh_key = self.form.ssh_key.data.strip()
 		dynamic_image_url = self.form.dynamic_image_url.data.strip()
 		post_creation = self.form.post_creation.data.strip()
 		callback_url = self.form.callback_url.data.strip()
+		default = self.form.default.data # no strip cause bool
 
 		# hack up form to deal with custom image
 		if self.form.image.data.strip() == "custom":
@@ -93,7 +103,7 @@ class WispNewHandler(BaseHandler):
 		# hack up form to deal with custom callback
 		if self.form.callback.data.strip() == "custom":
 			image = None
-			public_ssh_key = None
+			ssh_key = None
 			dynamic_image_url = None
 			post_creation = None
 		else:
@@ -109,12 +119,16 @@ class WispNewHandler(BaseHandler):
 			name = name,
 			owner = user_info.key,
 			image = image,
-			public_ssh_key = public_ssh_key,
+			ssh_key = ssh_key,
 			dynamic_image_url = dynamic_image_url,
 			post_creation = post_creation,
-			callback_url = callback_url
+			callback_url = callback_url,
 		)
 		wisp.put()
+
+		# set default if true
+		if default:
+			Wisp.set_default(wisp)
 
 		# log to alert
 		self.add_message("Wisp %s successfully created!" % name, "success")
@@ -148,11 +162,12 @@ class WispDetailHandler(BaseHandler):
 
 		# load form values
 		self.form.name.data = wisp.name
-		self.form.public_ssh_key.data = wisp.public_ssh_key
+		self.form.ssh_key.data = wisp.ssh_key
 		self.form.dynamic_image_url.data = wisp.dynamic_image_url
 		self.form.post_creation.data = wisp.post_creation
 		self.form.callback_url.data = wisp.callback_url
-		
+		self.form.default.data = wisp.default
+
 		# hack up the form a bit
 		if wisp.callback_url:
 			self.form.callback.data = "custom"
@@ -205,10 +220,11 @@ class WispDetailHandler(BaseHandler):
 
 		# load form values
 		name = self.form.name.data.strip()
-		public_ssh_key = self.form.public_ssh_key.data.strip()
+		ssh_key = self.form.ssh_key.data.strip()
 		dynamic_image_url = self.form.dynamic_image_url.data.strip()
 		post_creation = self.form.post_creation.data.strip()
 		callback_url = self.form.callback_url.data.strip()
+		default = self.form.default.data
 
 		# hack up form to deal with custom image
 		if self.form.image.data.strip() == "custom":
@@ -219,7 +235,7 @@ class WispDetailHandler(BaseHandler):
 		# hack up form to deal with custom callback
 		if self.form.callback.data.strip() == "custom":
 			image = None
-			public_ssh_key = None
+			ssh_key = None
 			dynamic_image_url = None
 			post_creation = None
 		else:
@@ -230,11 +246,18 @@ class WispDetailHandler(BaseHandler):
 			# save the new wisp in our database            
 			wisp.name = name
 			wisp.image = image
-			wisp.public_ssh_key = public_ssh_key
+			wisp.ssh_key = ssh_key
 			wisp.dynamic_image_url = dynamic_image_url
 			wisp.post_creation = post_creation
 			wisp.callback_url = callback_url
 			wisp.put()
+
+			# set default if true, or turn it off if false
+			if default:
+				Wisp.set_default(wisp)
+			else:
+				wisp.default = False
+				wisp.put()
 
 			# log to alert
 			self.add_message("Wisp %s updated!" % name, "success")

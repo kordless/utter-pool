@@ -186,7 +186,7 @@ class Image(ndb.Model):
 	size = ndb.IntegerProperty()
 	diskformat = ndb.StringProperty()
 	containerformat = ndb.StringProperty()
-	active = ndb.BooleanProperty(default=True)
+	active = ndb.BooleanProperty(default=False)
 	dynamic = ndb.BooleanProperty(default=False)
 
 	@classmethod
@@ -270,34 +270,52 @@ class Wisp(ndb.Model):
 	created = ndb.DateTimeProperty(auto_now_add=True)
 	updated = ndb.DateTimeProperty(auto_now=True)
 	image = ndb.KeyProperty(kind=Image)
-	cloud = ndb.KeyProperty(kind=Cloud)
-	group = ndb.KeyProperty(kind=Group)
-	public_ssh_key = ndb.StringProperty()
+	ssh_key = ndb.StringProperty()
 	post_creation = ndb.StringProperty()
 	dynamic_image_url = ndb.StringProperty()
 	callback_url = ndb.StringProperty()
 	owner = ndb.KeyProperty(kind=User)
 	bid = ndb.IntegerProperty()
 	amount = ndb.IntegerProperty()
-
-	@classmethod
-	def get_by_cloud(cls, cloud):
-		wisp_query = cls.query().filter(cls.cloud == cloud.key)
-		wisps = wisp_query.fetch()
-		return wisps
+	default = ndb.BooleanProperty(default=False)
 
 	@classmethod
 	def get_by_user(cls, user):
-		wisp_query = cls.query().filter(cls.owner == user).order(-cls.created)
+		wisp_query = cls.query().filter(cls.owner == user).order(cls.name)
 		wisps = wisp_query.fetch()
 		return wisps
 
 	@classmethod
 	def get_by_user_name(cls, user, name):
-		cloud_query = cls.query().filter(cls.owner == user, cls.name == name)
-		cloud = cloud_query.get()
-		return cloud
+		wisp_query = cls.query().filter(cls.owner == user, cls.name == name)
+		wisp = wisp_query.get()
+		return wisp
 
+	@classmethod
+	def get_user_default(cls, user):
+		wisp_query = cls.query().filter(cls.owner == user, cls.default == True)
+		wisp = wisp_query.get()
+		return wisp
+
+	@classmethod
+	def set_default(cls, wisp):
+		# find the owner of this wisp
+		owner = wisp.owner
+	
+		# get all wisps by this owner
+		wisp_query = cls.query().filter(cls.owner == owner)
+		wisps = wisp_query.fetch()
+
+		# all other wisps not default wisp
+		for wispr in wisps:
+			wispr.default = False
+			wispr.put()
+
+		# this wisp is default
+		wisp.default = True
+		wisp.put()
+	
+		return wisp
 
 # instance bid model
 class InstanceBid(ndb.Model):
@@ -317,26 +335,31 @@ class InstanceBid(ndb.Model):
 
 # instance model
 class Instance(ndb.Model):
-	name = ndb.StringProperty()
-	owner = ndb.KeyProperty(kind=User)
-	appliance = ndb.KeyProperty(kind=Appliance)
-	cloud = ndb.KeyProperty(kind=Cloud)
-	address = ndb.StringProperty()
 	created = ndb.DateTimeProperty(auto_now_add=True)
 	updated = ndb.DateTimeProperty(auto_now=True)
 	expires = ndb.DateTimeProperty()
+	name = ndb.StringProperty()
+	address = ndb.StringProperty() # bitcoin
+	owner = ndb.KeyProperty(kind=User)
+	appliance = ndb.KeyProperty(kind=Appliance)
+	cloud = ndb.KeyProperty(kind=Cloud)
 	flavor = ndb.KeyProperty(kind=Flavor)
-	image = ndb.KeyProperty(kind=Image)
+	ask = ndb.IntegerProperty()
+	wisp = ndb.KeyProperty(kind=Wisp)
 	ipv4_private_address = ndb.StringProperty()
 	ipv4_address = ndb.StringProperty()
 	ipv6_address = ndb.StringProperty()
-	ask = ndb.IntegerProperty()
-	wisp = ndb.KeyProperty(kind=Wisp)
 	state = ndb.IntegerProperty()
 
 	@classmethod
 	def get_by_name_appliance(cls, name, appliance):
 		instance_query = cls.query().filter(cls.name == name, cls.appliance == appliance)
+		instance = instance_query.get()
+		return instance
+
+	@classmethod
+	def get_by_name(cls, name):
+		instance_query = cls.query().filter(cls.name == name)
 		instance = instance_query.get()
 		return instance
 

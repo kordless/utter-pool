@@ -76,3 +76,8 @@ indexes:
   - name: owner
   - name: created
     direction: desc
+
+- kind: Wisp
+  properties:
+  - name: owner
+  - name: name

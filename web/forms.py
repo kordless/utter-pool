@@ -64,10 +64,11 @@ class WispForm(BaseForm):
     name = fields.TextField('Name', [validators.Required(), validators.Length(max=50)])
     image = fields.SelectField('Image')
     dynamic_image_url = fields.TextField('Dynamic Image URL', [validate_dynamic_image, validators.Length(max=1024)])
-    public_ssh_key = fields.TextAreaField('Public SSH Key', [validators.Length(max=2048)])
+    ssh_key = fields.TextAreaField('Public SSH Key', [validators.Length(max=2048)])
     post_creation = fields.TextAreaField('Cloud Configuration', [validators.Length(max=2048)])
     callback = fields.SelectField('Callback', choices=[('default', "Default Callback"), ('custom', "Custom Callback URL")])
     callback_url = fields.TextField('Custom Callback URL', [validate_custom_callback, validators.Length(max=1024)]) 
+    default = fields.BooleanField('Default Wisp')
 
 
 class ApplianceForm(BaseForm):

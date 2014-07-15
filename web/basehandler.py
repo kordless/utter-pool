@@ -4,6 +4,8 @@ import md5
 import os
 import time
 
+from datetime import datetime
+
 import bleach
 import webapp2
 import httplib2
@@ -73,14 +75,20 @@ def generate_csrf_token():
 		session['_csrf_token'] = utils.random_string()
 	return session['_csrf_token']
 
+# jinja2 custom filters
 def bleach_clean(value):
 	return bleach.clean(value, config.bleach_tags, config.bleach_attributes)
+
+def appliance_update(value):
+	appliance_time = int(value.strftime("%s"))
+	return utils.pretty_date(appliance_time)
 
 def jinja2_factory(app):
 	j = jinja2.Jinja2(app)
 	j.environment.filters.update({
 		# Set filters.
 		'bleach': bleach_clean,
+		'appliance_update': appliance_update
 	})
 	j.environment.globals.update({
 		# Set global variables.

@@ -60,7 +60,7 @@
                       <th>Appliance</th>
                       <th>Group</th>
                       <th>Token</th>
-                      <th>Status</th>
+                      <th>Last Updated</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -70,7 +70,7 @@
                       <td><a href="{{ uri_for('account-appliances-configure', self.request, appliance_id=appliance.key.id()) }}">{{ appliance.name }}</a></td>
                       <td>{% if appliance.group %}{{ appliance.group.get().name }}{% else %}Public{% endif %}</td>
                       <td>{{ appliance.token|truncate(32, killwords=True) }}</td>
-                      <td><span class="glyphicon glyphicon-ok"></span></td>
+                      <td>{{ appliance.updated | appliance_update }}</td>
                       <td>
                         <button type="button" id="edit-{{appliance.key.id()}}" class="btn btn-inverse btn-xs" title="edit" href="#"><span class="glyphicon glyphicon-pencil"></span></button>
                         <button type="button" id="remove-{{appliance.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>

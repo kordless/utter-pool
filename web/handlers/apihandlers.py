@@ -90,10 +90,6 @@ class InstancesHandler(BaseHandler):
 			self.response.set_status(401)
 			return self.render_template('api/response.json', **params)	
 		
-		print "******************************************"
-		print "instance %s has a state of: %s" % (packet['instance']['name'], packet['instance']['state'])
-		print "******************************************"
-
 		# load the appliance
 		appliance = Appliance.get_by_token(apitoken)
 
@@ -109,40 +105,51 @@ class InstancesHandler(BaseHandler):
 			return self.render_template('api/response.json', **params)
 
 		# pull out the appliance's instance
-		appliance_instance = packet['instance']
-
-		if not appliance_instance:
+		try:
+			appliance_instance = packet['instance']
+		except:
 			params['response'] = "fail"
 			params['result'] = "JSON instance data not found."
 			self.response.set_status(404)
 			return self.render_template('api/response.json', **params)
 		
 		# grab the instance info
-		name = appliance_instance['name']
-		if instance_name != name:
-			# not valid
+		try:
+			name = appliance_instance['name']
+			# same name?
+			if instance_name != name:
+				raise
+		except:
 			params['response'] = "fail"
-			params['result'] = "JSON instance name doesn't match resource URI."
+			params['result'] = "JSON instance name needs to match resource URI."
 			self.response.set_status(401)
 			self.response.headers['Content-Type'] = 'application/json'
 			return self.render_template('api/response.json', **params)			
 
-		# grab the rest of appliance POST data
-		flavor = appliance_instance['flavor']
-		ask = appliance_instance['ask']
-		expires = datetime.fromtimestamp(appliance_instance['expires'])
-		address = appliance_instance['address'] # bitcoin address
+		try:
+			# grab the rest of appliance POST data
+			flavor = appliance_instance['flavor']
+			ask = appliance_instance['ask']
+			expires = datetime.fromtimestamp(appliance_instance['expires'])
+			address = appliance_instance['address'] # bitcoin address
+		except:
+			params['response'] = "fail"
+			params['result'] = "JSON instance data not found.  Flavor, ask, expires or address missing."
+			self.response.set_status(404)
+			return self.render_template('api/response.json', **params)
 
 		# look up the pool's version of this instance
 		instance = Instance.get_by_name_appliance(name, appliance.key)
 
-		# not having the instance sucks
+		# create a new instance for this appliance
 		if not instance:
-			params['response'] = "fail"
-			params['result'] = "Instance not found."
-			self.response.set_status(404)
-			self.response.headers['Content-Type'] = 'application/json'
-			return self.render_template('api/response.json', **params)	
+			instance = Instance()
+			instance.name = name
+			instance.flavor = flavor
+			instance.ask = ask
+			instance.address = address
+			instance.expires = expires
+			instance.wisp = Wisp.get_user_default(instance.owner)
 		
 		# grab the instance's wisp
 		if instance.wisp:

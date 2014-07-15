@@ -398,6 +398,8 @@ class Instance(ndb.Model):
 			instance.ask = appliance_instance['ask']
 			instance.put()
 
+		return instance
+		
 	@classmethod
 	def update(cls, appliance_instance, appliance):
 		pass

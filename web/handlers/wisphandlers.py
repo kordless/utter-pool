@@ -174,7 +174,7 @@ class WispDetailHandler(BaseHandler):
 		if wisp.dynamic_image_url:
 			self.form.image.data = "custom"
 		else:
-			self.form.image.data = wisp.image
+			self.form.image.data = str(wisp.image.id())
 
 		# check if the owner is this user
 		if wisp and wisp.owner == user_info.key:

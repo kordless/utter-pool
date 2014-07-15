@@ -113,7 +113,7 @@ class InstancesHandler(BaseHandler):
 			self.response.set_status(404)
 			return self.render_template('api/response.json', **params)
 		
-		# grab the instance info
+		# grab the instance name and check the url
 		try:
 			name = appliance_instance['name']
 			# same name?
@@ -126,9 +126,10 @@ class InstancesHandler(BaseHandler):
 			self.response.headers['Content-Type'] = 'application/json'
 			return self.render_template('api/response.json', **params)			
 
+		# grab the rest of the instance info
 		try:
 			# grab the rest of appliance POST data
-			flavor = appliance_instance['flavor']
+			flavor_name = appliance_instance['flavor']
 			ask = appliance_instance['ask']
 			expires = datetime.fromtimestamp(appliance_instance['expires'])
 			address = appliance_instance['address'] # bitcoin address
@@ -141,21 +142,17 @@ class InstancesHandler(BaseHandler):
 		# look up the pool's version of this instance
 		instance = Instance.get_by_name_appliance(name, appliance.key)
 
-		# create a new instance for this appliance
+		# create a new instance for this appliance because we've never seen it
 		if not instance:
-			instance = Instance()
-			instance.name = name
-			instance.flavor = flavor
-			instance.ask = ask
-			instance.address = address
-			instance.expires = expires
-			instance.wisp = Wisp.get_user_default(instance.owner)
-		
+			instance = Instance().push(appliance_instance, appliance)
+			instance.wisp = Wisp.get_user_default(appliance.owner)
+			instance.put()
+
 		# grab the instance's wisp
 		if instance.wisp:
-			wisp = Wisp.get_by_id(instance.wisp)
+			wisp = Wisp.get_by_id(instance.wisp.id())
 		else:
-			# try default wisp for appliance/instance owner
+			# we need a decent fallback for how to boot an image without a wisp
 			wisp = Wisp.get_user_default(instance.owner)
 
 		# get the value or return None if not present

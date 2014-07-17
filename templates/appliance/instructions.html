@@ -23,83 +23,73 @@
         <div class="col-md-12">
           <div class="section-header">
             <h2><small>Setting Up a New Appliance</small></h2>
-            <p>Creating a new appliance for your account is initiated by clicking on the <strong>Register API Token</strong> button in the <a href="https://www.github.com/stackmonkey/xovio-va">StackMonkey Virtual Appliance</a> interface.  You can familarize yourself with the process of launching and configuring a new appliance by watching the following video.</p>
-            <iframe class="install-video" src="//player.vimeo.com/video/91805503" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-            <p>Once you've installed the virtual appliance on your <a href="https://github.com/stackgeek/openstackgeek/grizzly/">OpenStack cluster</a>, you'll be able to click a button inside the virtual appliance UI to come back here and create a new appliance in your account.</p>
+            <p>Creating a new appliance for your account is initiated by clicking on the <strong>Register API Token</strong> button in the <a target="_blank" href="https://github.com/StackMonkey/utter-va#appliance-configuration">StackMonkey Virtual Appliance</a> interface. There's a video guide if you need help installing the appliance:</p>
+            <iframe class="install-video" src="//player.vimeo.com/video/100944207" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+            <p>Once you've installed the virtual appliance on your <a target="_blank" href="http://openstack.org">OpenStack cluster</a>, you'll be able to click a button inside the virtual appliance UI to come back here and create a new appliance in your account.</p>
             <div class="bs-callout bs-callout-warning">
               <h4>Technical Support</h4>
-              <p>Support is available for installing OpenStack if you plan on running the StackMonkey virtual appliance to monitize your compute resources.  You may contact us by <a href="{{ uri_for('about') }}#contact">web form</a>, using the <a href="https://groups.google.com/forum/#!forum/stackmonkey">mailing list</a>, or joining us in the <a href="http://webchat.freenode.net/?channels=stackmonkey">#stackmonkey channel on Freenode</a>.</p>
+              <p>Live technical support is available for installing both the appliance and OpenStack.  You may contact us by <a target="_blank" href="{{ uri_for('about') }}#contact">web form</a>, using the <a target="_blank" href="https://groups.google.com/forum/#!forum/stackmonkey">mailing list</a>, or hanging out in the <a target="_blank" href="https://gitter.im/StackMonkey/utter-va">StackMonkey Appliance</a> room on Gitter.</p>
             </div>
           </div>
           <div class="section-header steps">
             <h2><small>Step 1: Installing OpenStack</small></h2>
-            <p>The following links contain the OpenStack setup instructions you'll need:</p>
+            <p>If you don't have OpenStack installed, proceed with the following steps:</p>
             <ul>
-              <li><a href="https://ubuntu.com/download/desktop/">Download and Install Ubuntu Desktop</a></li>
-              <li><a href="http://www.stackgeek.com/guides/gettingstarted.html">Install OpenStack on Ubuntu 12.04 In 10 Minutes</a></li>
-              <li><a href="https://github.com/stackmonkey/">Configure IPv4 on OpenStack</a> and/or <a href="https://github.com/stackmonkey/">Configure IPv6 on OpenStack</a></li>
-            </ul>
-            <p>The following video steps you through installing OpenStack on a single compute rig:</p>
-            <iframe class="install-video" src="https://player.vimeo.com/video/87528023" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-            <p>Once you've finished installing OpenStack, you may continue to <strong>Step 2, Booting the Appliance</strong>.</p>
-          </div>
-          <div class="section-header steps">
-            <h2><small>Step 2: Install the Appliance</small></h2>
-            <p>Installing the appliance takes about 15 minutes. You'll start the appliance using one of the <a href="https://github.com/stackgeek/openstackgeek/">StackGeek OpenStack install scripts</a>.</p>
-            <p>Here are the basics of launching a new StackMonkey Virtual Appliance:</p>
-            <ul>
-              <li>SSH into to your OpenStack cluster controller and become root by doing a <strong>'sudo su'</strong>.</li>
-              <li>Change into the <strong>openstacksetup</strong> directory. This directory is installed in Step 1 above.</li>
-              <li>Run the <strong>openstack_stackmonkey_va.sh</strong> script.</li>
-              <li>Wait a bit, then log into the virtual appliances web interface.</li> 
+              <li><a target="_blank" href="http://www.ubuntu.com/download/desktop">Download and Install Ubuntu Desktop</a>.</li>
+              <li><a target="_blank" href="http://www.stackgeek.com/guides/gettingstarted.html">Install OpenStack Icehouse on Ubuntu 14.04</a>.</li>
+              <li>Configure IPv4 and/or IPv6 on OpenStack via the Icehouse guide.</li>
             </ul>
             <div class="bs-callout bs-callout-info">
               <h4>Watch the video!</h4>
-              <p>Follow along with the <a href="https://vimeo.com/91805503#t=2m52s" target="_blank">the video guide <strong>@2m52s</strong></a> for detailed information on launching the appliance.</p>
+              <p>The following video steps you through installing Icehouse, the latest version of OpenStack, on the Trusty version of Ubuntu:</p>
+              <iframe class="install-video" src="https://player.vimeo.com/video/97757352" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+            </div>
+            <p>Once you have an OpenStack cluster running, you may continue to <strong>Step 2, Booting the Appliance</strong>.</p>
+          </div>
+          <div class="section-header steps">
+            <h2><small>Step 2: Booting the Appliance</small></h2>
+            <p>Booting/installing the appliance takes about 15 minutes. You'll start the appliance using one of two different ways, depending on how you installed OpenStack:</p>
+            <ul>
+              <li>If you used the StackGeek scripts, follow the <a target="_blank" href="https://github.com/StackMonkey/utter-va#automated-install">Automated Install</a> instructions.</li>
+              <li>If you used another method, follow the <a target="_blank" href="https://github.com/StackMonkey/utter-va#manual-install">Manual Install</a> instructions.</li> 
+            </ul>
+            <div class="bs-callout bs-callout-info">
+              <h4>Watch the video!</h4>
+              <p>Follow along with the <a target="_blank" href="https://vimeo.com/100944207#t=1m46s" target="_blank">the video guide <strong>@1m46s</strong></a> for detailed information on booting the appliance.</p>
             </div>
             <p>Once you've finished launching the appliance, you may continue to <strong>Step 3, Setting Up the Virtual Appliance</strong>.</p>
           </div>
           <div class="section-header steps">
             <h2><small>Step 3: Setting Up the Virtual Appliance</small></h2>
-            <p>To set up the virtual appliance, you'll need to perform the following tasks:</p>
+            <p>Click on the links in the steps below to view the setup details for each of these tasks:</p>
             <ul>
-              <li>Log into the appliance's web UI and create an administrator account.</li>
-              <li>Register the <strong>Pool API Token</strong> by clicking on the register button.</li>
-              <li>Create, enable and enter your <a href="https://coinbase.com/signup?r=52a9c6bf937ab6453a00001e&utm_campaign=user-referral&src=referral-link">Coinbase</a> Client and Secret IDs.</li>
-              <li>Register and enter your <a href="https://ngrok.com/">Ngrok SSL Tunnel</a> token.</li>
-              <li>Set the geographical location of the OpenStack cluster.</li> 
+              <li><a target="_blank" href="https://github.com/StackMonkey/utter-va#accessing-the-appliance">Log into the appliance's web UI</a> and <a target="_blank" href="https://github.com/StackMonkey/utter-va#admin-account">create an administrator account</a>.</li>
+              <li><a target="_blank" href="https://github.com/StackMonkey/utter-va#pool-api-token">Register the Pool API Token</a> by clicking on the register button in the appliance.</li>
+              <li><a target="_blank" href="https://github.com/StackMonkey/utter-va#coinbase-tokens">Create, enable and enter your Coinbase Client and Secret IDs</a>.</li>
+              <li><a target="_blank" href="https://github.com/StackMonkey/utter-va#ngrok-token">Register and enter your Ngrok token</a> to start the SSL tunnel.</li>
+              <li><a target="_blank" href="https://github.com/StackMonkey/utter-va#service-location">Set the geographical location</a> of the OpenStack cluster.</li> 
             </ul>
-            <p>The following screen shot shows an appliance which has been correctly configured.</p>
-            <p><img src="/img/appliance.png"/></p>
             <div class="bs-callout bs-callout-info">
               <h4>Watch the video!</h4>
-              <p>Follow along with the <a href="https://vimeo.com/91805503#t=5m20s" target="_blank">the video guide <strong>@5m20s</strong></a> for detailed information on configuring the appliance.</p>
+              <p>Follow along with the <a target="_blank" href="https://vimeo.com/100944207#t=4m06s" target="_blank">the video guide <strong>@4m06s</strong></a> for detailed information on setting up the appliance.</p>
             </div>
           </div>
           <div class="section-header steps">
-            <h2><small>Step 4: Configure the OpenStack Connection</small></h2>
-            <p>To set up the appliance's OpenStack connection, you'll need to download a configuration file from the OpenStack interface:</p>
+            <h2><small>Step 4: Test Purchasing an Instance</small></h2>
+            <p>Once you get the appliance running, try test starting an instance with your Bitcoin wallet:</p>
             <ul>
-              <li>Log into your OpenStack cluster using the username/password output by the <strong>openstack_stackgeek_va.sh</strong> script.</li>
-              <li>In the OpenStack UI, click on the <strong>Access & Security</strong> tab to the left.</li>
-              <li>Click on the <strong>API Access</strong> tab at the top.</li>
-              <li>Click on the <strong>Download OpenStack RC File</strong> button at the top right.</li>
+              <li>Create a <a target="_blank" href="/wisps">Default Wisp</a> for your account.</li>
+              <li>Navigate to the <strong>Instances</strong> tab.</li>
+              <li>Click on the <strong>Payment</strong> button next to an instance you want to start.</li>
+              <li>Use a <a target="_blank" href="https://blockchain.info/wallet">Bitcoin wallet</a> to scan the QR code and send in a small amount of Bitcoin to the instance.</li>
             </ul>
-            <p><img class="img-thumbnail" src="/img/openstack_credentials.png"/></p>
-            <p>To set up the appliance's OpenStack connection, you'll need to download a configuration file from the OpenStack interface:</p>
-            <ul>
-              <li>Switch back to the appliance tab in your browser and click on the <strong>OpenStack</strong> tab to the left.</li>
-              <li>Click on the <strong>Select RC File</strong> button at the top, select the file you just downloaded, and then click on the <strong>Upload</strong> button.</li>
-              <li>Enter the password provided by the <strong>openstack_stackgeek_va.sh</strong> script and click on <strong>Save Configuration</strong>. 
-            </ul>
-            <p><img class="img-thumbnail" src="/img/openstack.png"/></p>
-            <div class="row">
-              <div class="col-md-8">
-                <pre>paste this shizzle</pre>
-              </div>
+            <div class="bs-callout bs-callout-info">
+              <h4>Watch the video!</h4>
+              <p>The following video demonstrates paying for an hour's worth of instance time.</p>
+              <p><a target="_blank" href="https://vimeo.com/100944207#t=8m42s"><img src="/img/instance_video.png"/></a></p>
             </div>
-            <button type="button" id="list-appliance-button" class="btn btn-success">Back to Appliances List</button>
           </div>
+          <button type="button" id="list-appliance-button" class="btn btn-success">Back to Appliances List</button>
         </div>
       </div>
     </div>

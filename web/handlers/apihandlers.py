@@ -145,7 +145,8 @@ class InstancesHandler(BaseHandler):
 		# create a new instance for this appliance because we've never seen it
 		if not instance:
 			instance = Instance().push(appliance_instance, appliance)
-			instance.wisp = Wisp.get_user_default(appliance.owner)
+			wisp = Wisp.get_user_default(appliance.owner)
+			instance.wisp = wisp.key
 			instance.put()
 
 		# grab the instance's wisp

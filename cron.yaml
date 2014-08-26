@@ -1,4 +1,8 @@
 cron:
-- description: hourly instance task
+- description: instance based tasks
   url: /tasks/instances/
   schedule: every 1 minutes
+
+- description: instancebids tasks
+  url: /tasks/instancebids/
+  schedule: every 5 minutes

@@ -113,6 +113,10 @@ class WispNewHandler(BaseHandler):
 		if Wisp.get_by_user_name(user_info.key, name):
 			self.add_message("A wisp with that name already exists in this account!", "error")
 			return self.redirect_to('account-wisps')		
+		
+		# check if we need to force default setting for first new wisp
+		if not Wisp.get_by_user(user_info.key):
+			default = True
 
 		# save the new wisp in our database            
 		wisp = Wisp(
@@ -122,7 +126,7 @@ class WispNewHandler(BaseHandler):
 			ssh_key = ssh_key,
 			dynamic_image_url = dynamic_image_url,
 			post_creation = post_creation,
-			callback_url = callback_url,
+			callback_url = callback_url
 		)
 		wisp.put()
 
@@ -171,7 +175,7 @@ class WispDetailHandler(BaseHandler):
 		# hack up the form a bit
 		if wisp.callback_url:
 			self.form.callback.data = "custom"
-		if wisp.dynamic_image_url:
+		elif wisp.dynamic_image_url:
 			self.form.image.data = "custom"
 		else:
 			self.form.image.data = str(wisp.image.id())

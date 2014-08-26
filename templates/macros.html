@@ -1,20 +1,25 @@
 <!-- creates a form input field -->
 {% macro input(form, name, label, size, type='text') -%}
-  <div class="{{size|safe}} {% if getattr(form,name).errors %} has-error{% endif %} form-padding">
+  <div class="{{size|safe}} {% if getattr(form,name).errors %} has-error{% endif %} form-padding" id="{{name}}-field">
     <label class="control-label" for="{{ name }}">{{ label|safe }}</label>
     {{ getattr(form,name)(type=type, **kwargs)|safe }}
   </div>
 {%- endmacro %}
 
 <!-- side menu widget -->
-{% macro side_menu(page) -%}
+{% macro side_menu(page, user_id) -%}
   <ul class="nav nav-pills nav-stacked">
+    {% if user_id %}
     <li{% if page=="status" %} class="active"{% endif %}><a href="{{ uri_for('account-status') }}">Status</a></li>
+    {% endif %}
+    <li{% if page=="launcher" %} class="active"{% endif %}><a href="{{ uri_for('lab-launcher') }}">Launcher</a></li>
     <li{% if page=="clouds" %} class="active"{% endif %}><a href="{{ uri_for('account-clouds') }}">Clouds</a></li>
+    {% if user_id %}
     <li{% if page=="wisps" %} class="active"{% endif %}><a href="{{ uri_for('account-wisps') }}">Wisps</a></li>
     <li{% if page=="appliances" %} class="active"{% endif %}><a href="{{ uri_for('account-appliances') }}">Appliances</a></li>
     <li{% if page=="groups" %} class="active"{% endif %}><a href="{{ uri_for('account-groups') }}">Groups</a></li>
     <li{% if page=="settings" %} class="active"{% endif %}><a href="{{ uri_for('account-settings') }}">Settings</a></li>
+    {% endif %}
   </ul>
 {%- endmacro %}
 
@@ -30,6 +35,36 @@
   </ul>
 {%- endmacro %}
 
+<!-- instance states side menu widget -->
+{% macro instance_state(state) %}
+  {% if state==0 %}
+    <span class="label label-danger btn-lg instance-state">Inactive</span>
+  {% endif %}
+  {% if state==1 %}
+    <span class="label label-warning btn-lg instance-state">Waiting on Payment</span>
+  {% endif %}
+  {% if state==2 %}
+    <span class="label label-info btn-lg instance-state">Payment Received</span>
+  {% endif %}
+  {% if state==3 %}
+    <span class="label label-success btn-lg instance-state">Starting</span>
+  {% endif %}
+  {% if state==4 %}
+    <span class="label label-success btn-lg instance-state">Running</span>
+  {% endif %}
+  {% if state==5 %}
+    <span class="label label-warning btn-lg instance-state">Suspended</span>
+  {% endif %}
+  {% if state==6 %}
+    <span class="label label-info btn-lg instance-state">Unsupended</span>
+  {% endif %}
+  {% if state==7 %}
+    <span class="label label-danger btn-lg instance-state">Decommissioned</span>
+  {% endif %}
+  {% if state==10 %}
+    <span class="label label-info btn-lg instance-state">Reserved</span>
+  {% endif %}
+{% endmacro %}
 
 <!-- twitter widget -->
 {% macro tweet_widget(data_url, data_text) -%}

@@ -16,3 +16,15 @@ Security on Stackmonkey will be done by the community, for the community. White 
 
 Infrastructure was meant to be open and transparent so people could enjoy paying for privacy. Help keep it that way by donating your time to the project.
 
+I'm not a crypto, but I can speak to it.
+
+The way I've been casting it is as follows.  There are three knobs to the cloud currently: storage, compute and network.  Blockchain 
+technologies essentially embody computed trust, in as much as the information on the blockchain is trusted to be a fair an accurate representation of a value store.  I like to think compute was scrunched into trust, sorta like compute scrunches data off the network into compressed storage.
+
+So now we have compute, storage, network and trust.  Think about privacy.  Privacy is 100% inverted trust - you know I don't know you because I can't read your storage, network or compute layers.  You pay for this privacy by paying for compute to encrypt the data.  The more you pay, the more secure you are (or as secure as one would hope for).  This usually involves buying your own hardware, for obvious reasons.
+
+There also exist use cases  that don't require trust.  Streaming Netflix videos.  Their data is already encrypted and simply dishes content up to a device that has already authenticated and secured the decryption keys for the content.  Netflix doesn't care if you have their data - people get their data all the time.  Perfect use case for untrusted compute.
+
+Now, divide the groups who provide the infrastructure services into two groups.  A group you trust and a group you don't trust.  Run things you can't secure on the group you trust's hardware.
+
+This is where homomorphic encryption comes in.  It allows me to run trusted compute jobs on untrusted hardware.  

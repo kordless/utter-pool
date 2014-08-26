@@ -83,12 +83,16 @@ def appliance_update(value):
 	appliance_time = int(value.strftime("%s"))
 	return utils.pretty_date(appliance_time)
 
+def epoch(value):
+	return int(value.strftime("%s"))
+
 def jinja2_factory(app):
 	j = jinja2.Jinja2(app)
 	j.environment.filters.update({
 		# Set filters.
 		'bleach': bleach_clean,
-		'appliance_update': appliance_update
+		'appliance_update': appliance_update,
+		'epoch': epoch
 	})
 	j.environment.globals.update({
 		# Set global variables.

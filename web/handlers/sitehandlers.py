@@ -17,6 +17,7 @@ from google.appengine.api import users
 import config
 import web.forms as forms
 import web.models.models as models
+
 from lib import utils, httpagentparser
 from web.basehandler import BaseHandler
 from web.basehandler import user_required
@@ -140,3 +141,4 @@ class FeaturesHandler(BaseHandler):
 	def get(self):
 		params = {}
 		return self.render_template('site/features.html', **params)
+

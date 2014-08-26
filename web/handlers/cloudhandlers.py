@@ -6,7 +6,7 @@ from google.appengine.api import channel
 
 import config
 import web.forms as forms
-from web.models.models import User, Cloud, Wisp
+from web.models.models import User, Cloud, Wisp, Instance
 from web.basehandler import BaseHandler
 from web.basehandler import user_required
 
@@ -20,13 +20,18 @@ class CloudHandler(BaseHandler):
 		# look up appliances
 		clouds = Cloud.get_by_user(user_info.key)
 
+		# instance counts
+		for cloud in clouds:
+			count = Instance.get_count_by_cloud(cloud.key)
+			cloud.instance_count = count
+
 		# setup channel to do page refresh
 		channel_token = user_info.key.urlsafe()
 		refresh_channel = channel.create_channel(channel_token)
 
 		# params build out
 		params = {
-			'clouds': clouds, 
+			'clouds': clouds,
 			'refresh_channel': refresh_channel,
 			'channel_token': channel_token 
 		}
@@ -84,13 +89,17 @@ class CloudConfigureHandler(BaseHandler):
 		if not cloud or cloud.owner != user_info.key:
 			return self.redirect_to('account-clouds')
 
+		# look up cloud's instances
+		instances = Instance.get_by_cloud(cloud.key)
+
 		# setup channel to do page refresh
 		channel_token = user_info.key.urlsafe()
 		refresh_channel = channel.create_channel(channel_token)
 
 		# params build out
 		params = {
-			'cloud': cloud, 
+			'cloud': cloud,
+			'instances': instances, 
 			'refresh_channel': refresh_channel,
 			'channel_token': channel_token 
 		}

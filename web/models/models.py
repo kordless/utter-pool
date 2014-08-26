@@ -4,8 +4,12 @@ import urllib
 import httplib2
 import simplejson
 import yaml
+import json
+import random
+import time
 
 from datetime import datetime
+from datetime import timedelta
 
 import config
 from webapp2_extras.appengine.auth.models import User
@@ -101,7 +105,7 @@ class GroupMembers(ndb.Model):
 
 	@classmethod
 	def get_by_token(cls, token):
-		return cls.query().filter(cls.token == token).get()
+		return cls.query().filter(cls.token == token).fetch()
 
 	@classmethod
 	def get_by_userid_groupid(cls, user, group):
@@ -174,6 +178,24 @@ class Appliance(ndb.Model):
 	@classmethod
 	def get_appliance_count_by_user_group(cls, user, group):
 		return cls.query().filter(cls.owner == user, cls.group == group).count()
+
+	@classmethod
+	def get_geopoints(cls):
+		appliances = cls.query().fetch()
+		
+		# geopoint array
+		geopoints = []
+
+		# loop through the appliances
+		for appliance in appliances:
+			geopoints.append({
+				"latitude": appliance.location.lat, 
+				"longitude": appliance.location.lon, 
+				"name": appliance.name,
+				"id": appliance.key.id()
+			})
+
+		return geopoints
 
 
 # image model
@@ -254,6 +276,14 @@ class Cloud(ndb.Model):
 		cloud = cloud_query.get()
 		return cloud
 
+	@classmethod
+	def create_default(cls, userkey, name="Default"):
+		cloud = Cloud()
+		cloud.name = name
+		cloud.description = "Auto generated default cloud."
+		cloud.owner = userkey
+		cloud.put()
+		return cloud
 
 # callback model
 class Callback(ndb.Model):
@@ -298,6 +328,23 @@ class Wisp(ndb.Model):
 		return wisp
 
 	@classmethod
+	def get_system_default(cls):
+		# try to get default
+		wisp_query = cls.query().filter(cls.owner == None, cls.default == True, cls.name == "System Default")
+		wisp = wisp_query.get()
+
+		# create it if we don't have it
+		if not wisp:
+			wisp = Wisp()
+			wisp.name = "System Default"
+			wisp.dynamic_image_url = "http://download.cirros-cloud.net/0.3.2/cirros-0.3.2-x86_64-disk.img"
+			wisp.default = True
+			wisp.put()
+
+		# return whatever we did
+		return wisp
+
+	@classmethod
 	def set_default(cls, wisp):
 		# find the owner of this wisp
 		owner = wisp.owner
@@ -317,27 +364,13 @@ class Wisp(ndb.Model):
 	
 		return wisp
 
-# instance bid model
-class InstanceBid(ndb.Model):
-	created = ndb.DateTimeProperty(auto_now_add=True)
-	updated = ndb.DateTimeProperty(auto_now=True)
-	cloud = ndb.KeyProperty(kind=Cloud)
-	flavor = ndb.KeyProperty(kind=Flavor)
-	bid = ndb.IntegerProperty()
-	group = ndb.KeyProperty(kind=Group)
-	wisp = ndb.KeyProperty(kind=Wisp)
-	location = ndb.GeoPtProperty()
-	radius = ndb.IntegerProperty()
-	need_ipv4_address = ndb.BooleanProperty()
-	need_ipv6_address = ndb.BooleanProperty()
-	status = ndb.IntegerProperty() # 0 - not filled, 1 - filled
-
 
 # instance model
 class Instance(ndb.Model):
 	created = ndb.DateTimeProperty(auto_now_add=True)
 	updated = ndb.DateTimeProperty(auto_now=True)
 	expires = ndb.DateTimeProperty()
+	started = ndb.DateTimeProperty()
 	name = ndb.StringProperty()
 	address = ndb.StringProperty() # bitcoin
 	owner = ndb.KeyProperty(kind=User)
@@ -350,12 +383,25 @@ class Instance(ndb.Model):
 	ipv4_address = ndb.StringProperty()
 	ipv6_address = ndb.StringProperty()
 	state = ndb.IntegerProperty()
+	reserved = ndb.BooleanProperty(default=False)
+	token = ndb.StringProperty()
+	console_output = ndb.TextProperty()
+
+	@classmethod
+	def get_all_offered(cls, seconds=900):
+		delta = datetime.now() - timedelta(seconds=seconds)
+		return cls.query().filter(cls.state == 1, cls.updated > delta).order().fetch()
 
 	@classmethod
 	def get_by_name_appliance(cls, name, appliance):
 		instance_query = cls.query().filter(cls.name == name, cls.appliance == appliance)
 		instance = instance_query.get()
 		return instance
+
+	@classmethod
+	def get_by_token(cls, token):
+		query = cls.query(cls.token == token).get()
+		return query
 
 	@classmethod
 	def get_by_name(cls, name):
@@ -369,8 +415,28 @@ class Instance(ndb.Model):
 		instances = instance_query.fetch()
 		return instances
 
+	@classmethod
+	def get_by_cloud(cls, cloud):
+		instance_query = cls.query().filter(cls.cloud == cloud)
+		instances = instance_query.fetch()
+		return instances
+
+	@classmethod
+	def get_count_by_cloud(cls, cloud):
+		instance_query = cls.query().filter(cls.cloud == cloud)
+		count = instance_query.count()
+		return count
+
+	# feteches instances older than delta many seconds
+	@classmethod
+	def get_older_than(cls, seconds):
+		delta = datetime.now() - timedelta(seconds=seconds)
+		instance_query = cls.query().filter(cls.updated < delta)
+		instances = instance_query.fetch()
+		return instances
+
 	# insert or update instance
-	# note that appliance is an object, not a key
+	# note that appliance is an object, not a dict
 	@classmethod
 	def push(cls, appliance_instance, appliance):
 		# check if we have it
@@ -380,7 +446,7 @@ class Instance(ndb.Model):
 			# lookup image and flavor info
 			image = Image().get_by_name(appliance_instance['image'])
 			flavor = Flavor().get_by_name(appliance_instance['flavor'])
-			
+
 			# create new entry
 			instance = Instance()
 			instance.name = appliance_instance['name']
@@ -403,6 +469,132 @@ class Instance(ndb.Model):
 	@classmethod
 	def update(cls, appliance_instance, appliance):
 		pass
+
+
+# instance bid model (instance reservation)
+class InstanceBid(ndb.Model):
+	created = ndb.DateTimeProperty(auto_now_add=True)
+	updated = ndb.DateTimeProperty(auto_now=True)
+	expires = ndb.DateTimeProperty()
+	name = ndb.StringProperty()
+	token = ndb.StringProperty()
+	instance = ndb.KeyProperty(kind=Instance)
+	cloud = ndb.KeyProperty(kind=Cloud)
+	flavor = ndb.KeyProperty(kind=Flavor)
+	bid = ndb.IntegerProperty()
+	group = ndb.KeyProperty(kind=Group)
+	wisp = ndb.KeyProperty(kind=Wisp)
+	callback_url = ndb.StringProperty()
+	appliances = ndb.JsonProperty()
+	need_ipv4_address = ndb.BooleanProperty()
+	need_ipv6_address = ndb.BooleanProperty()
+	remote_ip = ndb.StringProperty()
+	status = ndb.IntegerProperty() # 0 - not filled, 1 - filled
+
+	@classmethod
+	def get_by_token(cls, token):
+		query = cls.query(cls.token == token).get()
+		return query
+
+	@classmethod
+	def get_incomplete_by_ip(cls, remote_ip):
+		query = cls.query().filter(cls.remote_ip == remote_ip, cls.status != 1)
+		bid = query.get()
+
+		if bid:
+			return bid
+		else:
+			return False
+
+	@classmethod
+	def get_by_instance(cls, instance):
+		query = cls.query().filter(cls.instance == instance)
+		bid = query.get()
+
+		return bid
+
+	@classmethod
+	def get_expired(cls):
+		epoch_time = int(time.time())
+		expires = datetime.fromtimestamp(epoch_time)
+		query = cls.query().filter(cls.expires < expires)
+		bids = query.fetch()
+
+		return bids
+	
+	@classmethod
+	def reserve_instance_by_token(cls, token):
+		query = cls.query().filter(cls.token == token)
+		bid = query.get()
+
+		# get list of provider ids
+		appliance_ids = []
+		for appliance in bid.appliances:
+			appliance_ids.append(appliance['id'])
+
+		# check if we should use all providers, or a subset
+		if 1 in appliance_ids:
+			# randomly select the oldest non-reserved instance and reserve it
+			query = Instance.query().filter(
+				Instance.reserved != True, 
+				Instance.flavor == bid.flavor,
+				Instance.state == 1
+			).order(Instance.reserved, Instance.created)
+			
+			# grab an instance, return if none
+			instance = query.get()
+			if not instance:
+				return False
+		
+			# reserve the instance and link it to the bid
+			instance.reserved = True
+			instance.token = token
+			instance.put()
+		
+			# sleep for dev
+			if config.debug:
+				time.sleep(1)
+
+			bid.instance = instance.key
+			bid.put()
+
+			# sleep for dev
+			if config.debug:
+				time.sleep(1)
+		
+		else:
+			# grab a random appliance and then get an instance from it
+			appliance = Appliance.get_by_id(long(random.choice(appliance_ids)))
+
+			# randomly select the oldest non-reserved active instance by this appliance and reserve it
+			query = Instance.query().filter(
+				Instance.reserved != True,
+				Instance.flavor == bid.flavor,
+				Instance.appliance == appliance.key,
+				Instance.state == 1
+			).order(Instance.reserved, Instance.created)
+			
+			# grab an instance, return if none
+			instance = query.get()
+			if not instance:
+				return False
+
+			instance.reserved = True
+			instance.token = token
+			instance.put()
+
+			# sleep for dev
+			if config.debug:
+				time.sleep(1)
+
+			bid.instance = instance.key
+			bid.put()
+
+			# sleep for dev
+			if config.debug:
+				time.sleep(1)
+
+		return instance
 
 # blog posts and pages
 class Article(ndb.Model):

@@ -172,7 +172,6 @@ class ApplianceConfigureHandler(BaseHandler):
 		# add list of user's groups, if any
 		groups = GroupMembers.get_user_groups(user_info.key)
 		for group in groups:
-			print group.key.id()
 			self.form.group.choices.insert(0, (group.key.id(), group.name))
 
 		# public group

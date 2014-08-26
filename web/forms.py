@@ -87,6 +87,15 @@ class GroupMemberForm(BaseForm):
     email = fields.TextField('Email', [validators.Email(message=u'Invalid email address.'), validators.Required(), validators.Length(max=100)])
 
 
+class InstanceLauncherForm(BaseForm):
+    flavor = fields.SelectField('Flavor')
+    wisp = fields.SelectField('Wisp')
+    cloud = fields.SelectField('Cloud')
+    callback_url = fields.TextField('Callback URL')
+    require_ipv4 = fields.BooleanField('Require Public IPv4')
+    require_ipv6 = fields.BooleanField('Require Public IPv4')
+
+
 class FlavorForm(BaseForm):
     name = fields.TextField('Name', [validators.Required(), validators.Length(max=50)])
     description = fields.TextField('Description', [validators.Required(), validators.Length(max=100)])

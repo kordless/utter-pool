@@ -1,6 +1,6 @@
 from webapp2_extras.routes import RedirectRoute
 from web.handlers import sitehandlers, adminhandlers, userhandlers, apihandlers, bloghandlers, emailhandlers, taskhandlers
-from web.handlers import statushandlers, appliancehandlers, grouphandlers, cloudhandlers, wisphandlers
+from web.handlers import statushandlers, appliancehandlers, grouphandlers, cloudhandlers, wisphandlers, labhandlers
 
 secure_scheme = 'https'
 
@@ -8,6 +8,7 @@ _routes = [
 		# tasks
 		RedirectRoute('/tasks/sendinvite/', emailhandlers.SendEmailInviteHandler, name='tasks-sendinvite', strict_slash=True),
 		RedirectRoute('/tasks/instances/', taskhandlers.InstancesHandler, name='tasks-instances', strict_slash=True),
+		RedirectRoute('/tasks/instancebids/', taskhandlers.InstanceBidsHandler, name='tasks-instancebids', strict_slash=True),
 
 		# admin
 		RedirectRoute('/admin/', adminhandlers.AdminHandler, name='admin', strict_slash=True),
@@ -31,9 +32,15 @@ _routes = [
 		RedirectRoute('/login/tfa', userhandlers.TwoFactorLoginHandler, name='login-tfa', strict_slash=True),
 		RedirectRoute('/settings/', userhandlers.SettingsHandler, name='account-settings', strict_slash=True),
 		RedirectRoute('/settings/tfa', userhandlers.TwoFactorSettingsHandler, name='account-tfa', strict_slash=True),
-
+		
 		# status
 		RedirectRoute('/status/', statushandlers.StatusHandler, name='account-status', strict_slash=True),
+
+		# instances
+		RedirectRoute('/launcher/', labhandlers.LauncherHandler, name='lab-launcher', strict_slash=True),
+		RedirectRoute('/bids/', labhandlers.BidsHandler, name='lab-bids', strict_slash=True),
+		RedirectRoute('/bids/<token>/', labhandlers.BidDetailHandler, name='lab-bid-detail', strict_slash=True),
+		RedirectRoute('/instance/<token>/', labhandlers.InstanceDetailHandler, name='lab-instance-detail', strict_slash=True),
 
 		# clouds, bids and wisps
 		RedirectRoute('/clouds/', cloudhandlers.CloudHandler, name='account-clouds', strict_slash=True),
@@ -60,8 +67,12 @@ _routes = [
 		RedirectRoute('/api/v1/flavors/', apihandlers.FlavorsHandler, name='api-flavors', strict_slash=True),
 		RedirectRoute('/api/v1/instances/', apihandlers.InstancesHandler, name='api-instances', strict_slash=True),
 		RedirectRoute('/api/v1/broker/', apihandlers.BrokerHandler, name='api-broker', strict_slash=True),
-		RedirectRoute('/api/v1/instances/<instance_name>/', apihandlers.InstancesHandler, name='api-instance-details', strict_slash=True),
-
+		RedirectRoute('/api/v1/instances/', apihandlers.InstancesHandler, name='api-instances', strict_slash=True),
+		RedirectRoute('/api/v1/instances/<instance_name>/', apihandlers.InstanceDetailHandler, name='api-instance-details', strict_slash=True),
+		RedirectRoute('/api/v1/appliances/geopoints/', apihandlers.ApplianceGeoPoints, name='api-appliances-geopoints', strict_slash=True),
+		RedirectRoute('/api/v1/bids/', apihandlers.BidsHandler, name='api-bids', strict_slash=True),
+		RedirectRoute('/api/v1/bids/<token>/', apihandlers.BidsDetailHandler, name='api-bids-detail', strict_slash=True),
+		
 		# blog handlers
 		RedirectRoute('/blog/', bloghandlers.BlogHandler, name='blog', strict_slash=True),
 		RedirectRoute('/blog/feed/rss/', bloghandlers.RSSHandler, name='blog-rss', strict_slash=True),

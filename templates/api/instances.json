@@ -1,18 +1,24 @@
 { 
-  "response": "{{ response }}",
+  "response": "success",
   "result": {
-    "instance": {
-      "name": "{{ instance_name }}",{% if callback_url %}
-      "callback_url": "{{ callback_url }}"{% else %}
-      {% if dynamic_image_url %}"dynamic_image_url": "{{ dynamic_image_url }}",
-      {% else %}"image": "{{ image }}",{% endif %}
-      "ssh_key": [{% for line in ssh_key %}
-        "{{ line }}"{% if not loop.last %},{% endif %}{% endfor %}
-      ],
-      "post_creation": [{% for line in post_creation %}
-        "{{ line }}"{% if not loop.last %},{% endif %}{% endfor %}
-      ]{% endif %}
-    }
+    "remote_ip": "{{ remote_ip }}",
+    "instances": [{% for instance in instances %}
+      {
+        "created": "{{ instance.created }}",
+        "updated": "{{ instance.updated }}",
+        "name": "{{ instance.name }}",
+        "address": "{{ instance.address }}",
+        "vpus": {{ instance.flavor.get().vpus }},
+        "memory": {{ instance.flavor.get().memory }},
+        "disk": {{ instance.flavor.get().disk }},
+        "network": {{ instance.flavor.get().network }},
+        "ask": {{ instance.ask }},
+        "appliance": {
+          "name": "{{ instance.appliance.get().name }}",
+          "gravatar_url": "{{ instance.gravatar_url }}",
+          "location": [{{ instance.appliance.get().location }}]
+        } 
+      }{% if not loop.last %},{% endif %}{% endfor %}
+    ]
   }
 }
-

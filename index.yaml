@@ -71,6 +71,60 @@ indexes:
   - name: group
   - name: member
 
+- kind: Instance
+  properties:
+  - name: appliance
+  - name: flavor
+  - name: created
+
+- kind: Instance
+  properties:
+  - name: appliance
+  - name: flavor
+  - name: reserved
+  - name: created
+
+- kind: Instance
+  properties:
+  - name: appliance
+  - name: flavor
+  - name: state
+  - name: reserved
+  - name: created
+
+- kind: Instance
+  properties:
+  - name: flavor
+  - name: created
+
+- kind: Instance
+  properties:
+  - name: flavor
+  - name: reserved
+  - name: created
+
+- kind: Instance
+  properties:
+  - name: flavor
+  - name: state
+  - name: reserved
+  - name: created
+
+- kind: Instance
+  properties:
+  - name: state
+  - name: name
+
+- kind: Instance
+  properties:
+  - name: state
+  - name: updated
+
+- kind: InstanceBid
+  properties:
+  - name: remote_ip
+  - name: status
+
 - kind: Wisp
   properties:
   - name: owner

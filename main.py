@@ -23,7 +23,7 @@ THE SOFTWARE.
 """
 
 __author__ = 'Kord Campbell'
-__website__ = 'http://www.stackgeek.com/'
+__website__ = 'http://www.stackmonkey.com/'
 
 import os,sys
 
@@ -47,7 +47,7 @@ app.error_handlers[404] = handle_error
 
 # debug output
 if not app.debug:
-    app.error_handlers[500] = handle_error
+  app.error_handlers[500] = handle_error
 
 # add routes
 routes.add_routes(app)

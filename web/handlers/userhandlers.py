@@ -213,7 +213,7 @@ class TwoFactorSettingsHandler(BaseHandler):
 			user_info.put()
 		else:
 			# not authorized - javascript will handle adding a user message to the UI
-			params['response'] = "fail"
+			params['response'] = "error"
 			params['result'] = "two factor auth failed"
 			self.response.set_status(401)
 			self.response.headers['Content-Type'] = 'application/json'

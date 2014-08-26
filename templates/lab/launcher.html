@@ -1,0 +1,408 @@
+{% import "macros.html" as macros %}
+{% extends base_layout %}
+
+{% block title %}Instance Launcher :: Labs :: {% endblock %}
+
+{% block page_styles %}
+  <link href="/css/docs.css" rel="stylesheet">
+  <link href="/css/bootstrap-tagsinput.css" rel="stylesheet">
+  <link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.css' rel='stylesheet' />
+  <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css' rel='stylesheet' />
+  <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css' rel='stylesheet' />
+  <link href="/css/lab.css" rel="stylesheet">
+{% endblock %}
+
+{% block navbar %}
+  {% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<!-- hidden create reservation bid error modal -->
+<div id="error-modal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Instance Reservation Error</h4>
+      </div>
+      <div class="modal-body">
+        <p><span id="error-message"></span></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" id="error-open-button" class="btn btn-success">Open Instance Reservation</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end modal -->
+
+<!-- hidden spinner modal -->
+<div id="spinner-modal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Building Instance Reservation</h4>
+      </div>
+      <div class="modal-body">
+        {% if user_id %}
+        <div id="terra"></div>
+        {% else %}
+        <img src="/img/nyancoin.gif"/>
+        {% endif %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Please Wait</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end modal -->
+
+<div class="container content">
+  <div class="row">
+    <div class="col-md-2">
+    {{ macros.side_menu("launcher", user_id) }}
+    </div>
+    <div class="col-md-9">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="section-header">
+            <h2><small>Instance Launcher</small></h2>
+          </div>
+          <div class="section-header">
+            <div class="bs-callout bs-callout-info">
+              <h4>About the Instance Launcher</h4>
+              <p>The <strong>{% if not user_id %}Anonymous{% endif %} Instance Launcher™</strong> launches <strong>OpenStack Backed Instances</strong> after a <strong>Pool Appliance</strong> observes a payment to a <strong>Bitcoin Address</strong>.</p>
+              <p>Use the IP sliders to indicate whether <strong>Public IPv4 or IPv6 Addresses</strong> are needed for the instance. Use the flavor pulldown to pick an <strong>Instance Flavor</strong>{% if not user_id or not wisp%} and enter a valid URL to be used for the <strong>Instance Callback URL</strong>. The callback URL will be used by the <strong>Provider's Appliance</strong> to inject a JSON formatted <strong>Cloud-Init</strong> file into the instance after it receives a payment. Click on the <span class="glyphicon glyphicon-pencil"></span> icon to the right of the callback input box to see an <a href="https://gist.githubusercontent.com/kordless/7b496134997d233f2664/raw/a6e928a04c1984965d159c7c72922f3cf5b3af21/callback.json">example callback on Github</a>.{% else %}. Use the <strong>Cloud Wisp</strong> pulldown to select a wisp for booting the instance.{% endif %}</p>
+              {% if not wisp %}<p>A <strong>Cloud Wisp</strong> <a href="{{ uri_for('account-wisps-new') }}">may be created</a> instead of using the callback URL.</p>{% endif %}
+              <p>The map may be used to build a <strong>Provider Filter</strong> to choose a provider by location and/or name. The filter is used to select an instance from a given pool of providers.</p>
+            </div>
+          </div>
+          <form id="form_edit_profile" action="{{ url|safe }}" method="post" class="">
+            <div class="row">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" id="hidden-custom" name="custom" value="Custom">
+
+                <div class="col-xs-2 form-padding">
+                  <label class="control-label" for="default">Public IPv6</label>
+                  <div class="toggle-modern">
+                    <div id="require-public-ipv6" class="toggle"></div>
+                  </div>
+                </div>
+                <div class="col-xs-2 form-padding">
+                  <label class="control-label" for="default">Public IPv4</label>
+                  <div class="toggle-modern">
+                    <div id="require-public-ipv4" class="toggle"></div>
+                  </div>
+                </div>
+
+                {% if cloud and not wisp%}
+                {{ macros.input(form, "flavor", "Flavor", "col-xs-5", class="form-control pulldown") }}
+                {{ macros.input(form, "cloud", "Cloud", "col-xs-3", class="form-control pulldown") }}
+                {% else %}
+                {{ macros.input(form, "flavor", "Flavor", "col-xs-8", class="form-control pulldown") }}
+                {% endif %}
+
+                {% if user_id and wisp%}
+                {{ macros.input(form, "cloud", "Cloud", "col-xs-5 form-has-button", class="form-control pulldown") }}
+                {{ macros.input(form, "wisp", "Wisp", "col-xs-6 form-has-button", class="form-control pulldown") }}
+                <div class="col-xs-1 form-padding form-edit">
+                  <label class="control-label" for="wisp">&nbsp;</label>
+                  <div class="input-group">
+                    <button type="button" id="edit-wisp-button" class="btn btn-danger">Edit</button>
+                  </div>
+                </div>
+                {% else %}
+                <div class="col-xs-12 form-padding">
+                  <div class="row form-group" id="callback_url-field">
+                    <div class="col-md-12">
+                      {{ form.callback_url.label(class="control-label") }}
+                      <div class="input-group">
+                        {{ form.callback_url(id="callback_url", placeholder="https://gist.githubusercontent.com/kordless/7c59f33c0659d06948ce/raw/simpleboot.json", class="form-control") }}
+                        <span class="input-group-btn">
+                          <button id="callback-example-button" class="btn btn-default" type="button">
+                            <span title="Show callback example." class="glyphicon glyphicon-pencil"></span>
+                          </button>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+
+                <div class="col-md-12">
+                  <label for="servicelocation" class="control-label">Provider Filter</label>
+                  <div class="row">
+                    <div class="col-md-12 form-padding">
+                      <input type="text" id="location-filter-input" class="form-control"/>
+                    </div>
+                  </div>
+                  <div id='map'></div>
+                </div>
+                <div class="col-md-5 form-padding">
+                  <button type="button" id="reservation-button" title="Get them while they are hot." class="btn btn-danger">Create Instance Reservation</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div> 
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="/js/toggles.js"></script>
+<script type="text/javascript" src="/js/terra.js"></script>
+<script type="text/javascript" src="/js/bootstrap-tagsinput.js"></script>
+<script type="text/javascript" src="/js/typeahead.bundle.js"></script>
+<script type="text/javascript" src="/_ah/channel/jsapi"></script>
+<script type="text/javascript">
+  $().ready(function() {
+    // standard stuff
+    var csrf_token = "{{ csrf_token() }}";
+    var channel_token = "{{ channel_token }}";
+    var refresh_channel = "{{ refresh_channel }}";
+    
+    // for url parameter fetch
+    function getParameterByName(name) {
+      name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+      var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+          results = regex.exec(location.search);
+      return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+    // check for request for a given cloud and set pulldown
+    var cloud_id = getParameterByName('cloud_id');
+    if (cloud_id) {
+      $('#cloud').val(cloud_id);
+    }
+
+    // require public IP types sliders
+    $('#require-public-ipv4').toggles({
+      ontext:'ON',
+      offtext:'OFF',
+      on: $('#require-public-ipv4').hasClass('enabled')
+    });
+    $('#require-public-ipv6').toggles({
+      ontext:'ON',
+      offtext:'OFF',
+      on: $('#require-public-ipv6').hasClass('enabled')
+    });
+
+    // callback example
+    $("#callback-example-button").click(function() {
+      window.open("https://gist.github.com/kordless/7b496134997d233f2664#file-callback-json");
+    });
+
+    // edit wisp button
+    $("#edit-wisp-button").click(function() {
+      wisp_id = $('#wisp option:selected').val();
+      window.open("/wisps/"+wisp_id+"/");
+    });
+
+    // map
+    var themap = L.mapbox.map('map', 'kordless.gnm28jg1', {scrollWheelZoom: true}).setView([20, 10], 2);
+    
+    // fetch geopoints
+    geopoints = []
+    var ajax = $.getJSON( "{{ uri_for('api-appliances-geopoints') }}", function( data ) {
+      geopoints = data['result']['geopoints'];
+    });
+
+    // icon
+    var osicon = L.icon({
+      iconUrl: '/img/openstackicon.png',
+      iconSize: [16, 16]
+    });
+
+    // add the map markers
+    ajax.complete(function() {
+      // terra
+      var paTerrarium;
+
+      // new map markers
+      var markers = new L.MarkerClusterGroup();
+
+      // object for lookahead to use
+      geolooks = [{"id": 1, "name": "All Provieders", "lat": 0, "lng": 0}]
+
+      // loop through the providers
+      $.each(geopoints, function() {
+        geolooks.push(this);
+        var title = "<h4>"+this.name+"</h4><button type='button' id='"+this.id+"' class='btn btn-sm btn-success add-to-filter-button' data-name='"+escape(this.name)+"'>Add Location to Filter</button>";
+        var marker = L.marker(
+          new L.LatLng(
+            this.lat, 
+            this.lng
+          ), 
+          { icon: osicon }
+        );
+        // bind title and add marker to markers layer
+        marker.bindPopup(title);
+        markers.addLayer(marker);
+      });
+
+      // add the markers layer to the map
+      themap.addLayer(markers);
+
+      // zoom to clusters on click
+      markers.on('clusterclick', function (a) {
+        a.layer.zoomToBounds();
+      });
+
+      // leaflet being stupid with marker object
+      markers.on('click', function (a) {
+        themap.setView([a.layer._latlng.lat, a.layer._latlng.lng]);
+      });
+
+      // popup's button clicks 
+      themap.on('popupopen', function() {
+        $('.add-to-filter-button').click(function(e){
+          $('#location-filter-input').tagsinput('add', { id: e.target.id, name: unescape($(e.target).data('name')) })
+          $('#location-filter-input').tagsinput('remove', { id: 1, name: "All Providers"});
+        });
+      });
+
+      // lookaheads
+      var providers = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        local: geolooks
+      });
+      providers.initialize();
+
+      // tag input box setup
+      var elt = $('#location-filter-input');
+      elt.tagsinput({
+        itemValue: 'id',
+        itemText: 'name',
+        typeaheadjs: {
+          name: 'providers',
+          displayKey: 'name',
+          source: providers.ttAdapter()
+        }
+      });
+      elt.tagsinput('add', { "id": 1 , "name": "All Providers"});
+    });
+
+    $('#location-filter-input').on('itemRemoved', function(event) {
+      if ($('#location-filter-input').tagsinput('items').length == 0) {
+        $('#location-filter-input').tagsinput('add', { "id": 1 , "name": "All Providers"});
+      }
+    });
+
+    // reservation button
+    $('#reservation-button').click(function() {
+      var providers = $('#location-filter-input').tagsinput('items');
+      var flavor_id = $("#flavor").val();
+      var post_data = { 
+        "flavor_id": flavor_id,
+        "requires_ipv4": $('#require-public-ipv4').children('.active').length,
+        "requires_ipv6": $('#require-public-ipv6').children('.active').length,
+        "providers": providers
+      };
+      var go_post = false;
+      var callback_url = $('#callback_url').val();
+      var wisp_id = $('#wisp').val();
+      var cloud_id = $('#cloud').val();
+
+      // handle various callback url/wisp configurations
+      if (callback_url != undefined) {
+        if (callback_url == "") {
+          alertify.error("You need a valid callback URL to create a new instance reservation.");
+          $('#callback_url-field').addClass('has-error');
+        } else {
+          post_data['callback_url'] = callback_url;
+          go_post = true;
+        }
+      } else {
+        post_data['wisp_id'] = wisp_id;
+        go_post = true;
+      }
+
+      // handle cloud info
+      if (cloud_id != undefined) {
+        post_data['cloud_id'] = cloud_id;
+      }
+
+      // if we are a go to post, post data
+      if (go_post == true) {
+        // show modal
+        $('#spinner-modal').modal();
+        
+        {% if user_id %}
+        // show terrarium
+        paTerrarium = new terra.Terrarium(57, 35);
+        terra.creatureFactory.register({type: 'plant', color: [0, 120, 0], size: 10, initialEnergy: 5, maxEnergy: 20, wait: function() {this.energy += 1;}, move: false, reproduceLv: 0.65});
+        terra.creatureFactory.register({type: 'brute', color: [0, 255, 255], maxEnergy: 50, initialEnergy: 10, size: 20 });
+        terra.creatureFactory.register({type: 'bully', color: [241, 196, 15], initialEnergy: 20, reproduceLv: 0.6, sustainability: 3 });
+        paTerrarium.populate([['plant', 50], ['brute', 5], ['bully', 5]]);
+        paTerrarium.animate();
+        {% endif %}
+
+        // submit data to API
+        $.ajax({
+          type: "POST",
+          url: "{{ uri_for('api-bids') }}",
+          data: JSON.stringify(post_data),
+          dataType: "json",
+          processData: false
+        }).done(function(data) {
+          // all is good, go to the bid
+          window.location = "{{ uri_for('lab-bids') }}" + data.result.bid.token + "/";
+        }).fail(function(data) {
+          // oh noes, grab the response
+          response = jQuery.parseJSON(data.responseText);
+          
+          if (response.result.bid) {
+            // bid in progress, go to it
+            alertify.error("An instance bid already exists for this IP address.");
+            setTimeout(function() {
+              window.location = "{{ uri_for('lab-bids') }}" + response.result.bid.token + "/";
+            }, 3000);
+          } else {
+            // hide the spinner
+            $('#spinner-modal').modal('hide');
+            
+            // delete the terra canvas
+            $('#terra > canvas').remove();
+
+            // show the error
+            alertify.error(response.result.message);
+
+            // if it mentioned 'callback' highlight the callback URL
+            if (response.result.message.indexOf("callback") > -1) {
+              $('#callback_url-field').addClass('has-error');     
+            }
+          }
+        });
+      }
+    });
+
+    // overload the login button
+    $('#nav-login').off()
+    $('#nav-login').on('click', function(e) { 
+      window.location = "/login/?next={{ uri_for('lab-launcher') }}" 
+    });
+    
+    // listen to our refresh channel for page reload
+    onMessage = function() {
+      window.location.reload();
+    };
+    channel = new goog.appengine.Channel(refresh_channel);
+    socket = channel.open();
+    socket.onmessage = onMessage;
+  });
+</script>
+
+{% endblock %}
+
+{% block extras %}
+  <script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.js'></script>
+  <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js'></script>
+{% endblock %}
+

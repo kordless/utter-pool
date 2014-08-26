@@ -17,7 +17,7 @@
 <div class="container content">
   <div class="row">
     <div class="col-md-2">
-    {{ macros.side_menu("appliances") }}
+    {{ macros.side_menu("appliances", user_id) }}
     </div>
     <div class="col-md-9">
       <div class="row">
@@ -31,7 +31,8 @@
             </div>
             <div class="row">
             	<div class="col-md-12">
-            		{{ appliance.updated }} {{ appliance.dynamicimages }}
+            		{{ appliance.updated }}
+                {{ appliance.dynamicimages }}
             		{% for instance in instances %}
             		{{ instance.name }}
             		{% endfor %}
@@ -57,8 +58,13 @@
     var refresh_channel = "{{ refresh_channel }}";
 
     // the map
-    var map = L.mapbox.map('map', 'kordless.gnm28jg1').setView([{{ appliance.location }}], 12);
+    var map = L.mapbox.map('map', 'kordless.gnm28jg1', { zoomControl: false }).setView([{{ appliance.location }}], 12);
     var marker = L.marker([{{ appliance.location }}]).addTo(map);
+    // Disable drag and zoom handlers.
+    map.dragging.disable();
+    map.touchZoom.disable();
+    map.doubleClickZoom.disable();
+    map.scrollWheelZoom.disable();
 
     // listen to our refresh channel for page reload
     onMessage = function() {

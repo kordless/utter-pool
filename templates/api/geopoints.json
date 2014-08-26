@@ -1,0 +1,7 @@
+{"response": "success",
+  "result": {
+    "geopoints":[{% for geopoint in geopoints %}
+			{ "id": {{geopoint.id}}, "name": "{{geopoint.name}}", "lat": {{geopoint.latitude}}, "lng": {{geopoint.longitude}} }
+		{% if not loop.last %},{% endif %}{% endfor %}]
+	}
+}

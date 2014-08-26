@@ -6,6 +6,9 @@
     <link href="/css/index.css" rel="stylesheet">
     <link href="/css/font-awesome.css" rel="stylesheet">
     <link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.css' rel='stylesheet' />
+    <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css' rel='stylesheet' />
+    <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css' rel='stylesheet' />
+
 {% endblock %}
 
 {% block navbar %}
@@ -19,16 +22,18 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="myModalLabel">Not Launched</h4>
+          <h4 class="modal-title" id="myModalLabel">This is an Experimental Feature</h4>
         </div>
         <div class="modal-body">
-          <p>StackMonkey a work in progress and pushes are done daily.  Follow <a href="https://twitter.com/stackape">@stakeape</a> on Twitter for updates and keep checking back on the progress!</p>
+          <p>Launching an instance is currently an <strong>experimental feature and may be subject to periodic outages</strong> while this site is under active development.</p>
+          <p><strong>An account is not required to start an instance</strong>. Given the pseudo anonymous nature of Bitcoin and the way the <a href="https://github.com/StackMonkey/utter-pool/blob/master/whitepaper.md#distributed-compute-exchange-whitepaper">the framework has been architected</a>, it should be virtually impossible to know who is starting instances on the network. </p>
+          <p>Please understand instances starts are provided on an as-is basis by this pool and its providers. There will be <strong>no refunds</strong> for failed launches.</p>
+          <p>Clicking on <strong>I understand</strong> indicates an agreement to these vague explanations/terms.</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" id="cant-wait-button" class="btn btn-success">I can't wait!</button>
+          <button type="submit" id="agree-button" class="btn btn-success">I understand.</button>
         </div>
-        </form>
       </div>
     </div>
   </div>
@@ -37,8 +42,8 @@
   <div class="splash-container">
     <h1>Decentralized Cloud Servers</h1>
     <div>
-      <button id="launch-cloud-button" class="btn btn-lg btn-success">Launch a Cloud with <span id="bitcoin" class="fa fa-bitcoin"></span>itcoin</button>
-      <button id="learn-more-button" class="btn btn-lg btn-warning">Learn More</button>
+      <button id="launch-cloud-button" class="btn btn-lg btn-success">Launch an Instance with <span id="bitcoin" class="fa fa-bitcoin"></span>itcoin</button>
+      <button id="survey-home-button" class="btn btn-lg btn-warning">Take the Stupid Cloud Survey™</button>
     </div>
     <div class="splash-instructions">
       Providers, <a href="{{ uri_for('login') }}">preregister</a> with your Google account.
@@ -119,22 +124,67 @@
 
 {% block javascript %}
   <script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.js'></script>
+  <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js'></script>
+  <script type='text/javascript' src='/js/jquery.cookie.js'></script>
   <script type="text/javascript">
     $().ready(function() {
       // buttons
-      $('#launch-cloud-button').on('click', function(e) { 
-        $('#not-launched-modal').modal(); 
+      $('#launch-cloud-button').on('click', function(e) {
+        var cookiebutter = $.cookie("launcher-agreement");
+        if (cookiebutter == "agree") {
+          window.location = "{{ uri_for('lab-launcher') }}"; 
+        } else {
+          $('#not-launched-modal').modal(); 
+        }
       });
-      $('#learn-more-button').on('click', function(e) { 
-        $('#not-launched-modal').modal(); 
+      $('#agree-button').on('click', function(e) { 
+        $.cookie("launcher-agreement", "agree", { expires : 1 });
+        window.location = "{{ uri_for('lab-launcher') }}"; 
+      });
+      $('#survey-home-button').on('click', function(e) { 
+        window.location = "https://www.surveymonkey.com/s/HHWTZG9"; 
       });
       $('#cant-wait-button').on('click', function(e) { 
-        $('#not-launched-modal').modal('hide'); 
+        $('#not-launched-modal').modal('hide');
       });
 
-      // map + map update
+      // map
       var themap = L.mapbox.map('map', 'kordless.gnm28jg1', {scrollWheelZoom: false, zoomControl: false}).setView([20, 20], 3);
-      setInterval(function(){themap.panBy([-1, 0]);},3000);
+      
+      // fetch geopoints
+      geopoints = []
+      var ajax = $.getJSON( "{{ uri_for('api-appliances-geopoints') }}", function( data ) {
+        geopoints = data['result']['geopoints'];
+      });
+
+      // icon
+      var osicon = L.icon({
+        iconUrl: '/img/openstackicon.png',
+        iconSize: [16, 16]
+      });
+
+      // add the map markers
+      ajax.complete(function() {
+        var markers = new L.MarkerClusterGroup();
+
+        $.each(geopoints, function() {
+          var marker = L.marker(
+            new L.LatLng(
+              this.lat, 
+              this.lng
+            ), 
+            { icon: osicon }
+          );
+          markers.addLayer(marker);
+        });
+
+        themap.addLayer(markers);
+      });
+
+      // scroll the map a little
+      setInterval(function(){
+        themap.panBy([-1, 0]);
+      },30000);
     })
   </script>
 {% endblock %}

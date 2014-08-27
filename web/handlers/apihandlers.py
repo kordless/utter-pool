@@ -21,7 +21,9 @@ from webapp2_extras.appengine.auth.models import Unique
 import config
 from lib.utils import generate_token
 from web.basehandler import BaseHandler
-from web.models.models import Appliance, Wisp, Cloud, Instance, InstanceBid, Image, Flavor, LogTracking
+
+# note User is not used except to send to channel
+from web.models.models import User, Appliance, Wisp, Cloud, Instance, InstanceBid, Image, Flavor, LogTracking
 
 # easy button for error response
 def error_response(handler, message, code, params):
@@ -466,6 +468,11 @@ class InstanceDetailHandler(BaseHandler):
 				"state": instance.state,
 			}
 			channel.send_message(instance.token, json.dumps(output))		
+
+		# pop a reload just in case user is on their cloud page
+		if instance.owner:
+			user_info = User.get_by_id(long(instance.owner.id()))
+			channel.send_message(user_info.key.urlsafe(), "reload")
 
 		############################
 		# 6. build response packet #

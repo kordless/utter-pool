@@ -40,11 +40,12 @@ _routes = [
 		RedirectRoute('/launcher/', labhandlers.LauncherHandler, name='lab-launcher', strict_slash=True),
 		RedirectRoute('/bids/', labhandlers.BidsHandler, name='lab-bids', strict_slash=True),
 		RedirectRoute('/bids/<token>/', labhandlers.BidDetailHandler, name='lab-bid-detail', strict_slash=True),
-		RedirectRoute('/instance/<token>/', labhandlers.InstanceDetailHandler, name='lab-instance-detail', strict_slash=True),
+		RedirectRoute('/instances/<token>/', labhandlers.InstanceDetailHandler, name='lab-instance-detail', strict_slash=True),
 
 		# clouds, bids and wisps
 		RedirectRoute('/clouds/', cloudhandlers.CloudHandler, name='account-clouds', strict_slash=True),
 		RedirectRoute('/clouds/<cloud_id>/', cloudhandlers.CloudConfigureHandler, name='account-clouds-configure', strict_slash=True),
+		RedirectRoute('/clouds/<cloud_id>/instances/<instance_id>/', cloudhandlers.CloudRemoveInstanceHandler, name='clouds-remove-instance', strict_slash=True),
 		RedirectRoute('/wisps/', wisphandlers.WispHandler, name='account-wisps', strict_slash=True),
 		RedirectRoute('/wisps/new/', wisphandlers.WispNewHandler, name='account-wisps-new', strict_slash=True),
 		RedirectRoute('/wisps/<wisp_id>/', wisphandlers.WispDetailHandler, name='account-wisps-detail', strict_slash=True),		

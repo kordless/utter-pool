@@ -93,14 +93,14 @@
                       {% if instance.cloud %}
                       <tr>
                         <td><strong>Cloud</strong></td>
-                        <td><a href="">{{ instance.cloud.get().name }}</a></td>
+                        <td><a href="{{ uri_for('account-clouds-configure', cloud_id=instance.cloud.get().key.id()) }}">{{ instance.cloud.get().name }}</a></td>
                       </tr>
                       {% endif %}
 
                       {% if instance.wisp %}
                         <tr>
                           <td><strong>Wisp</strong></td>
-                          <td><a href="">{{ instance.wisp.get().name }}</a></td>
+                          <td><a href="{{ uri_for('account-wisps-detail', wisp_id=instance.wisp.get().key.id()) }}">{{ instance.wisp.get().name }}</a></td>
                         </tr>
                         {% if instance.wisp.get().dynamic_image_url %}
                         <tr>
@@ -117,7 +117,7 @@
                         {% if instance.wisp.get().image %}
                         <tr>
                           <td><strong>Image</strong></td>
-                          <td><a href="">{{ instance.wisp.get().image.get().name }}</a></td>
+                          <td><a href="{{ instance.wisp.get().image.get().url }}">{{ instance.wisp.get().image.get().name }}</a></td>
                         </tr>
                         {% endif %}
                         {% if instance.wisp.get().ssh_key %}

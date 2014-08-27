@@ -75,6 +75,34 @@ class CloudHandler(BaseHandler):
 	def form(self):
 		return forms.CloudForm(self)
 
+
+# provide editing for cloud object		
+class CloudRemoveInstanceHandler(BaseHandler):
+	@user_required
+	def delete(self, cloud_id = None, instance_id = None):
+		# hangout for a second
+		time.sleep(1)
+
+		# look up the instance
+		instance = Instance.get_by_id(long(instance_id))
+
+		if instance:
+			cloud = instance.cloud
+			if long(cloud.id()) == long(cloud_id):
+				instance.cloud = None
+				instance.put()
+			else:
+				self.add_message("Clouds don't match.", "error")
+		else:
+			self.add_message("Instance not found!", "error")
+
+		# use the channel to tell the browser we are done and reload
+		channel_token = self.request.get('channel_token')
+		channel.send_message(channel_token, 'reload')
+
+		return
+
+
 # provide editing for cloud object		
 class CloudConfigureHandler(BaseHandler):
 	@user_required
@@ -147,8 +175,15 @@ class CloudConfigureHandler(BaseHandler):
 		# pull the entry from the db
 		cloud = Cloud.get_by_id(long(cloud_id))
 
+		# check the number of instances
+		count = Instance.get_count_by_cloud(cloud.key)
+
+		# deny if it has instances
+		if count > 0:
+			self.add_message('You may not delete a cloud with instances!', 'info')
+
 		# if we found it and own it, delete
-		if cloud and cloud.owner == user_info.key:
+		elif cloud and cloud.owner == user_info.key:
 			cloud.key.delete()
 			self.add_message('Cloud successfully deleted!', 'success')
 		else:
@@ -165,3 +200,5 @@ class CloudConfigureHandler(BaseHandler):
 	@webapp2.cached_property
 	def form(self):
 		return forms.CloudForm(self)
+
+

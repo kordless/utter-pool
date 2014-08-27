@@ -196,7 +196,7 @@
     };
 
     // map
-    var location = [{{ bid.instance.get().appliance.get().location }}];
+    var location = [{{ instance.appliance.get().location }}];
     var themap = L.mapbox.map('instance-map', 'kordless.gnm28jg1', {scrollWheelZoom: true}).setView(location, 8);
     var marker = L.marker(location).addTo(themap);
     

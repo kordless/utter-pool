@@ -509,10 +509,10 @@ class InstanceDetailHandler(BaseHandler):
 			#
 			if callback_url:
 				try:
-					result = urlfetch.fetch(instancebid.callback_url, deadline=5)
-				except:
-					print callback_url
+					result = urlfetch.fetch(callback_url, deadline=5)
+				except Exception as ex:
 					logging.error("Error fetching callback URL content.")
+					instance.console_output = "Error fetching callback _url=(%s)'s' content. %s" % (cex
 					return error_response(self, "Error fetching callback URL content.", 401, params)
 
 				############################################

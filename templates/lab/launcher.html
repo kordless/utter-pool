@@ -352,8 +352,10 @@
           dataType: "json",
           processData: false
         }).done(function(data) {
-          // all is good, go to the bid
-          window.location = "{{ uri_for('lab-bids') }}" + data.result.bid.token + "/";
+          // all is good, go to the bid after we let the system crank for 5 seconds
+          setTimeout(function() {
+            window.location = "{{ uri_for('lab-bids') }}" + data.result.bid.token + "/";
+          }, 5000);
         }).fail(function(data) {
           // oh noes, grab the response
           response = jQuery.parseJSON(data.responseText);

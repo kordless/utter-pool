@@ -32,7 +32,7 @@
               <div class="{% if instance.state < 7 %}col-md-4{% else %}col-md-6{% endif %}">
                 <div class="text-center"><h3><small>Instance Timer</small></h3></div>
                 <div class="text-center">
-                  <input id="timer" data-state="{{ instance.state }}" data-expires="{{ instance.expires|epoch }}" data-updated="{{ instance.updated|epoch }}" data-step="1" data-readOnly=true data-min="0" value="0" data-max="300" data-width="230" data-height="230">
+                  <input id="timer" data-state="{{ instance.state }}" data-expires="{{ instance.expires|epoch }}" data-updated="{{ instance.updated|epoch }}" data-step="1" data-readOnly=true data-min="0" value="0" data-max="{{ instance.data_max }}" data-width="230" data-height="230">
                 </div>
                 <div class="text-center timer-state">
                   <p>{{ macros.instance_state(instance.state) }}</p>
@@ -84,6 +84,12 @@
                   <div class="col-md-6">
                     <h3><small>Instance Resources</small></h3>
                     <table class="table table-striped table-responsive">
+                      {% if instance.callback_url %}
+                      <tr>
+                        <td><strong>Callback URL</strong></td>
+                        <td><a href="{{ instance.callback_url }}">{{ instance.callback_url|truncate(32, killwords=True) }}</a></td>
+                      </tr>
+                      {% endif %}                      
                       {% if instance.cloud %}
                       <tr>
                         <td><strong>Cloud</strong></td>
@@ -154,7 +160,7 @@
                 </div>
               
                 <div class="tab-pane" id="console">
-                  <pre id="console">{{ instance.console_output }}</pre>
+                  <pre id="console">{% if instance.console_output %}{{ instance.console_output }}{% else %}Waiting on console log...{% endif %}</pre>
                 </div>
               
               </div>
@@ -165,7 +171,9 @@
       </div>
       <div class="row button-padding">
         <div class="col-md-12">
+          {% if instance.cloud %}
           <button id="back-to-cloud" class="btn btn-info"><span class="glyphicon glyphicon-arrow-left"></span> Back to {{ instance.cloud.get().name }}</button>
+          {% endif %}
           <button id="open-launcher" class="btn btn-success">Add New Instance</button>
         </div>
       </div>
@@ -182,13 +190,7 @@
     var channel_token = "{{ channel_token }}";
     var refresh_channel = "{{ refresh_channel }}";
 
-    {% if not user_id %}
-    // handle navigating away from page
-    window.onbeforeunload = function() {
-      return "Please bookmark this page to preserve your administrative access to the instance.";
-    }
-    {% endif %}
-
+    {% if instance.cloud %}
     // add new instance button
     $('#open-launcher').click(function() {
       window.location = "{{ uri_for('lab-launcher') }}?cloud_id={{ instance.cloud.get().key.id() }}";
@@ -198,6 +200,11 @@
     $('#back-to-cloud').click( function() {
       window.location = "{{ uri_for('account-clouds-configure', cloud_id=instance.cloud.get().key.id()) }}";
     });
+    {% else %}
+    $('#open-launcher').click(function() {
+      window.location = "{{ uri_for('lab-launcher') }}";
+    });
+    {% endif %}
 
     // timer knob
     $('#timer').knob();

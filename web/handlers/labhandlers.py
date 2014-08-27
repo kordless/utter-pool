@@ -75,10 +75,8 @@ class InstanceDetailHandler(BaseHandler):
 	def get(self, token = None):
 		instance = Instance.get_by_token(token)
 
-		# hack time to use epoch
-		instance.expires_temp = instance.expires.strftime('%s')
-		instance.created_temp = instance.created.strftime('%s')
-		instance.updated_temp = instance.updated.strftime('%s')
+		# hack in time max for timer
+		instance.data_max = int(float(instance.expires.strftime('%s')) - float(instance.started.strftime('%s')))
 
 		# setup channel to do page refresh
 		channel_token = token

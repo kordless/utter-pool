@@ -379,6 +379,7 @@ class Instance(ndb.Model):
 	flavor = ndb.KeyProperty(kind=Flavor)
 	ask = ndb.IntegerProperty()
 	wisp = ndb.KeyProperty(kind=Wisp)
+	callback_url = ndb.StringProperty()
 	ipv4_private_address = ndb.StringProperty()
 	ipv4_address = ndb.StringProperty()
 	ipv6_address = ndb.StringProperty()

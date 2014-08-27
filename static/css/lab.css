@@ -4,6 +4,16 @@ input.ip, input.ip:focus {
   border: 0px;
   width: 100%;
   outline: 0;
+  background-color: inherit;
+}
+pre {
+  height: auto;
+  max-height: 900px;
+  overflow: auto;
+  background-color: #F9F9F9;
+}
+.nav-tabs {
+  background-color: #F9F9F9;
 }
 #spinner {
   height: 200px;
@@ -92,6 +102,7 @@ h1 small, h2 small, h3 small {
 }
 #address {
   margin-top: 10px;
+  font-size: 12px;
 }
 .instance-detail-row {
   padding-bottom: 30px;

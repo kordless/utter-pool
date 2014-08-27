@@ -476,8 +476,12 @@ class InstanceDetailHandler(BaseHandler):
 		if instancebid:
 			# load up callback URL
 			if instancebid.callback_url > "":
+				# load for later + stuff it in instance for page reference purposes
 				callback_url = instancebid.callback_url
+				instance.callback_url = instancebid.callback_url
+				instance.put()
 			else:
+				# using a wisp, so we don't need it for displaying
 				callback_url = instancebid.wisp.get().callback_url
 
 			"""
@@ -512,7 +516,9 @@ class InstanceDetailHandler(BaseHandler):
 					result = urlfetch.fetch(callback_url, deadline=5)
 				except Exception as ex:
 					logging.error("Error fetching callback URL content.")
-					instance.console_output = "Error fetching callback _url=(%s)'s' content. %s" % (cex
+					instance.console_output = "Error fetching callback url=(%s)'s' content. %s" % (callback_url, ex)
+					instance.put()
+					channel.send_message(instance.token, "reload")
 					return error_response(self, "Error fetching callback URL content.", 401, params)
 
 				############################################
@@ -523,7 +529,8 @@ class InstanceDetailHandler(BaseHandler):
 				# a callback_url in the data, the appliance will follow the URL and will not call this API 
 				# again during the life of the instance.
 				self.response.headers['Content-Type'] = 'application/json'
-				self.response.write(json.dumps(json.loads(result.content), sort_keys=True, indent=2))				
+				self.response.write(json.dumps(json.loads(result.content), sort_keys=True, indent=2))
+				return	
 			else:
 				# assign the instance the registered user's bid wisp
 				instance.wisp = instancebid.wisp

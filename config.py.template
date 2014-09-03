@@ -90,3 +90,5 @@ base_layout = 'base.html'
 
 # debug flag
 debug = os.environ['SERVER_SOFTWARE'].startswith('Dev')
+
+enable_federated_login = ENABLE_FEDERATED_LOGIN

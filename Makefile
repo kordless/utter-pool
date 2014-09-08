@@ -9,7 +9,7 @@ APP=$(shell grep 'application:' app.yaml | sed -e 's/^application:\s*//g')
 BRANCH=master
 
 serve:
-	python /usr/local/bin/dev_appserver.py --port=$(PORT) --admin_host=0.0.0.0 --admin_port=$(ADMIN_PORT) ./
+	python /usr/local/bin/dev_appserver.py --port=$(PORT) --admin_host=0.0.0.0 --admin_port=$(ADMIN_PORT) --datastore_path=/tmp/utterio/ ./
 
 install:
 	./install.sh $(ADMIN_PORT)

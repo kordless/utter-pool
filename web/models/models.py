@@ -242,6 +242,10 @@ class Flavor(ndb.Model):
 		return cls.query().filter().order(-cls.rate).fetch()
 
 	@classmethod
+	def get_all_active(cls):
+		return cls.query().filter(cls.active == True).order(-cls.rate).fetch()
+
+	@classmethod
 	def get_by_name(cls, name):
 		flavor_query = cls.query().filter(cls.name == name)
 		flavor = flavor_query.get()
@@ -486,6 +490,7 @@ class InstanceBid(ndb.Model):
 	group = ndb.KeyProperty(kind=Group)
 	wisp = ndb.KeyProperty(kind=Wisp)
 	callback_url = ndb.StringProperty()
+	address = ndb.StringProperty()
 	appliances = ndb.JsonProperty()
 	need_ipv4_address = ndb.BooleanProperty()
 	need_ipv6_address = ndb.BooleanProperty()

@@ -43,6 +43,12 @@ indexes:
   - name: created
     direction: desc
 
+- kind: Flavor
+  properties:
+  - name: active
+  - name: rate
+    direction: desc
+
 - kind: Group
   properties:
   - name: owner

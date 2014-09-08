@@ -16,6 +16,8 @@
         "id": "{{ instancebid.wisp.get().key.id() }}"
       },{% endif %}{% if instancebid.callback_url %}
       "callback_url": "{{ instancebid.callback_url }}",{% endif %}
+      "address": "{{ instancebid.address }}",
+      "ask": "{{ instancebid.ask }}",
       "token": "{{ instancebid.token }}"
     }
   } 

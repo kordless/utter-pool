@@ -94,14 +94,21 @@ class BidsHandler(BaseHandler):
 		# request basics
 		ip = self.request.remote_addr
 
-		# response
+		# response, type, cross posting
 		params = {}
 		self.response.headers['Content-Type'] = "application/json"
+		self.response.headers['Access-Control-Allow-Origin'] = '*'
 
 		# check if this IP has any other bids open
 		instancebid = InstanceBid.get_incomplete_by_ip(ip)
 
 		if instancebid:
+			# load the payment address
+			if instancebid.instance:
+				instancebid.address = instancebid.instance.get().address
+			else:
+				instancebid.address = ""
+
 			# IP has a unmatched bid, so deny creating new one
 			params['response'] = "error"
 			params['message'] = "The calling IP address already has an instance reservation in progress."
@@ -231,13 +238,26 @@ class BidsHandler(BaseHandler):
 		# reserve the instance
 		if InstanceBid.reserve_instance_by_token(instancebid.token):
 
+			# get the address, if you got an instance
+			if instancebid.instance:
+				address = instancebid.instance.get().address
+				ask = instancebid.instance.get().ask
+			else:
+				address = ""
+				ask = 0
+
+			# hack address and ask into instancebid object for template (not stored)
+			instancebid.address = address
+			instancebid.ask = ask
+
 			# build out the response
 			params['response'] = "success"
 			params['message'] = "A new instance bid has been created."	
 			params['instancebid'] = instancebid
 
-			# return response
+			# return response and include cross site POST headers
 			self.response.set_status(201)
+
 			return self.render_template('api/bid.json', **params)
 
 		else:
@@ -247,6 +267,12 @@ class BidsHandler(BaseHandler):
 
 	def get(self):
 		return self.post()
+
+	def options(self):
+		self.response.headers['Access-Control-Allow-Origin'] = '*'
+		self.response.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept'
+		self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET'
+		return
 
 
 # bids detail
@@ -537,6 +563,10 @@ class InstanceDetailHandler(BaseHandler):
 				# again during the life of the instance.
 				self.response.headers['Content-Type'] = 'application/json'
 				self.response.write(json.dumps(json.loads(result.content), sort_keys=True, indent=2))
+
+				# delete the instance reservation
+				instancebid.key.delete()
+				
 				return	
 			else:
 				# assign the instance the registered user's bid wisp
@@ -545,8 +575,8 @@ class InstanceDetailHandler(BaseHandler):
 				instance.cloud = instancebid.cloud
 				instance.put()
 
-			# delete the instance reservation
-			instancebid.key.delete()
+				# delete the instance reservation
+				instancebid.key.delete()
 
 			"""
 			END CODE CALLOUT

@@ -142,5 +142,22 @@ else
 fi
 
 echo;
+
+# enable_federated_login
+read -p "Should federated login be enabled for this pool (Y/n): " enable_federated_login
+if [[ "${enable_federated_login/n/N}" == "N" ]]
+then
+  enable_federated_login="False"
+else
+  enable_federated_login="True"
+fi
+
+if [[ $OSTYPE == 'linux-gnu' ]]; then
+  sed -i 's/ENABLE_FEDERATED_LOGIN/'$enable_federated_login'/g' config.py
+else
+  sed -i '' 's/ENABLE_FEDERATED_LOGIN/'$enable_federated_login'/g' config.py
+fi
+echo;
+
 # app id setup for appengine
 echo "Remember, your app needs to support federated logins on AppEngine!"

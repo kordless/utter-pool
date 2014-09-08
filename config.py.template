@@ -21,7 +21,7 @@ contact_recipient = "CONTACT_EMAIL"
 twitter_handle = "stackape"
 twitter_widget_id = "TWITTER_WIDGET_ID"
 linkedin_handle = "stackmonkey"
-google_plus_handle = "u/2/b/106322343194677430872/106322343194677430872/posts"
+google_plus_handle = "GOOGLE_PLUS_HANDLE"
 disqus_shortname = "stackmonkey"
 
 # blog URL
@@ -90,3 +90,5 @@ base_layout = 'base.html'
 
 # debug flag
 debug = os.environ['SERVER_SOFTWARE'].startswith('Dev')
+
+enable_federated_login = ENABLE_FEDERATED_LOGIN

@@ -148,7 +148,7 @@
                         </tr>
                         <tr>
                           <td><strong>Network</strong></td>
-                          <td colspan="2">{{ instance.flavor.get().network }}Mb/sec</td>
+                          <td colspan="2">{% if instance.flavor.get().network < 0 %}Unlimited{% else %}{{ instance.flavor.get().network }} Mb/sec{% endif %}</td>
                         </tr>
                         <tr>
                           <td><strong>Ask</strong></td>

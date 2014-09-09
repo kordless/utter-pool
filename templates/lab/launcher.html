@@ -359,13 +359,14 @@
         }).fail(function(data) {
           // oh noes, grab the response
           response = jQuery.parseJSON(data.responseText);
-          
+          console.log(response);
           if (response.result.bid) {
             // bid in progress, go to it
             alertify.error("An instance bid already exists for this IP address.");
             setTimeout(function() {
+              console.log("redirecting");
               window.location = "{{ uri_for('lab-bids') }}" + response.result.bid.token + "/";
-            }, 3000);
+            }, 2000);
           } else {
             // hide the spinner
             $('#spinner-modal').modal('hide');

@@ -107,14 +107,16 @@ class BidsHandler(BaseHandler):
 			if instancebid.instance:
 				instancebid.address = instancebid.instance.get().address
 			else:
-				instancebid.address = ""
+				# we should have an instance assosciated, so bail on this one
+				instancebid.key.delete()
+				return error_response(self, "Deleting bid because no instance was associated.", 403, params)
 
 			# IP has a unmatched bid, so deny creating new one
 			params['response'] = "error"
 			params['message'] = "The calling IP address already has an instance reservation in progress."
 			params['instancebid'] = instancebid
 			self.response.set_status(403)
-			return self.render_template('api/bid.json', **params)		
+			return self.render_template('api/bid.json', **params)	
 
 		# load POSTed JSON
 		try:
@@ -236,34 +238,31 @@ class BidsHandler(BaseHandler):
 			time.sleep(2)
 
 		# reserve the instance
-		if InstanceBid.reserve_instance_by_token(instancebid.token):
+		InstanceBid.reserve_instance_by_token(instancebid.token)
 
-			# get the address, if you got an instance
-			if instancebid.instance:
-				address = instancebid.instance.get().address
-				ask = instancebid.instance.get().ask
-			else:
-				address = ""
-				ask = 0
-
-			# hack address and ask into instancebid object for template (not stored)
-			instancebid.address = address
-			instancebid.ask = ask
-
-			# build out the response
-			params['response'] = "success"
-			params['message'] = "A new instance bid has been created."	
-			params['instancebid'] = instancebid
-
-			# return response and include cross site POST headers
-			self.response.set_status(201)
-
-			return self.render_template('api/bid.json', **params)
-
+		# get the address, if you got an instance
+		if instancebid.instance:
+			address = instancebid.instance.get().address
+			ask = instancebid.instance.get().ask
 		else:
-			# no instance was found
+			# no instance was reserved
 			instancebid.key.delete()
-			return error_response(self, "No valid instances were found.  Try again in a few minutes.", 403, params)
+			return error_response(self, "No valid instances were returned.", 403, params)
+			
+		# hack address and ask into instancebid object for template (not stored)
+		instancebid.address = address
+		instancebid.ask = ask
+
+		# build out the response
+		params['response'] = "success"
+		params['message'] = "A new instance bid has been created."	
+		params['instancebid'] = instancebid
+
+		# return response and include cross site POST headers
+		self.response.set_status(201)
+
+		return self.render_template('api/bid.json', **params)
+
 
 	def get(self):
 		return self.post()
@@ -271,7 +270,7 @@ class BidsHandler(BaseHandler):
 	def options(self):
 		self.response.headers['Access-Control-Allow-Origin'] = '*'
 		self.response.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept'
-		self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET'
+		self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
 		return
 
 

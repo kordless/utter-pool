@@ -106,6 +106,14 @@ indexes:
 - kind: Instance
   properties:
   - name: flavor
+  - name: group
+  - name: state
+  - name: reserved
+  - name: created
+
+- kind: Instance
+  properties:
+  - name: flavor
   - name: reserved
   - name: created
 

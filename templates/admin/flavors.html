@@ -50,7 +50,7 @@
             {{ macros.input(form, "memory", "Memory (MB)", "col-xs-6", placeholder="512", class="form-control required") }} 
             {{ macros.input(form, "vpus", "VPUs", "col-xs-6", placeholder="1", class="form-control required") }}
             {{ macros.input(form, "disk", "Disk (GB)", "col-xs-6", placeholder="20", class="form-control required") }}
-            {{ macros.input(form, "network", "Network (Mbits/sec)", "col-xs-6", placeholder="1", class="form-control required") }}
+            {{ macros.input(form, "network", "Network (Mbits/sec)", "col-xs-6", placeholder="-1 for unlimited", class="form-control required") }}
             {{ macros.input(form, "rate", "Starting Rate in μBTC/Hour", "col-xs-6", placeholder="10", class="form-control required") }}
           </div>
         </div>
@@ -98,7 +98,7 @@
                       <td>{{ flavor.vpus }} Core{% if flavor.vpus > 1 %}s{% endif %}</td>
                       <td>{{ flavor.memory }}MB</td>
                       <td>{{ flavor.disk }}GB</td>
-                      <td>{{ flavor.network }}Mb/sec</td>
+                      <td>{% if flavor.network < 0 %}Unlimited{% else %}{{ flavor.network }} Mb/sec{% endif %}</td>
                       <td>{{ flavor.rate }} μBTC/Hour</td>
                       <td>
                         <div class="toggle-modern">

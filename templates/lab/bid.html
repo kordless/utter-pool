@@ -43,7 +43,7 @@
               <div class="col-md-4">
                 <div class="text-center"><h3><small>Instance Location</small></h3></div>
                 <div class="text-center" id="instance-map"></div>
-                <div class="text-center" id="provider"><a href="#" target="_blank">Moraga OpenStack</a></div>
+                <div class="text-center" id="provider">{{ instance.appliance.get().name }}</div>
               </div>
             </div>
             <div class="row">
@@ -65,7 +65,7 @@
                     </tr>
                     <tr>
                       <td><strong>Network</strong></td>
-                      <td colspan="2">{{ bid.flavor.get().network }}Mb/sec</td>
+                      <td colspan="2">{% if bid.flavor.get().network < 0 %}Unlimited{% else %}{{ bid.flavor.get().network }} Mb/sec{% endif %}</td>
                     </tr>
                     <tr>
                       <td><strong>Ask</strong></td>

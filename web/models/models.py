@@ -181,7 +181,8 @@ class Appliance(ndb.Model):
 
 	@classmethod
 	def get_geopoints(cls):
-		appliances = cls.query().fetch()
+		# fetch public appliances
+		appliances = cls.query().filter(cls.group == None).fetch()
 		
 		# geopoint array
 		geopoints = []
@@ -379,6 +380,7 @@ class Instance(ndb.Model):
 	address = ndb.StringProperty() # bitcoin
 	owner = ndb.KeyProperty(kind=User)
 	appliance = ndb.KeyProperty(kind=Appliance)
+	group = ndb.KeyProperty(kind=Group)
 	cloud = ndb.KeyProperty(kind=Cloud)
 	flavor = ndb.KeyProperty(kind=Flavor)
 	ask = ndb.IntegerProperty()
@@ -462,6 +464,7 @@ class Instance(ndb.Model):
 			instance.flavor = flavor.key
 			instance.image = image.key
 			instance.appliance = appliance.key
+			instance.group = appliance.group
 			instance.owner = appliance.owner
 			instance.put()
 		else:
@@ -544,12 +547,16 @@ class InstanceBid(ndb.Model):
 			query = Instance.query().filter(
 				Instance.reserved != True, 
 				Instance.flavor == bid.flavor,
-				Instance.state == 1
+				Instance.state == 1,
+				Instance.group == None
 			).order(Instance.reserved, Instance.created)
 			
-			# grab an instance, return if none
+			# grab an instance
 			instance = query.get()
+			
+			# return if we didn't find one
 			if not instance:
+				logging.info("Search returned no results for instance reservation.")
 				return False
 		
 			# reserve the instance and link it to the bid

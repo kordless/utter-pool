@@ -275,13 +275,46 @@ class BidsHandler(BaseHandler):
 
 
 # bids detail
-# http://0.0.0.0/api/v1/bids/smr-xxxxxxxx/
+# http://0.0.0.0/api/v1/bids/xxxxxxxx/
 class BidsDetailHandler(BaseHandler):
 	# disable csrf check in basehandler
 	csrf_exempt = True
 
 	def get(self, token=None):
-		return
+		params = {}
+
+		# look for instance bid first
+		bid = InstanceBid.get_by_token(token)
+
+		if bid:
+			# build out the response
+			params['response'] = "success"
+			params['message'] = "Reservation found by token."	
+			params['instancebid'] = bid
+
+			# return response
+			self.response.set_status(201)
+			return self.render_template('api/bid.json', **params)
+
+		else:
+			# look for instance
+			instance = Instance.get_by_token(token)
+			
+			if instance:
+				# build out the response
+				params['response'] = "success"
+				params['message'] = "Instance found by token."	
+				params['instance'] = instance
+
+				# return response
+				self.response.set_status(201)
+				return self.render_template('api/instancedetail.json', **params)
+			
+			else:
+				# build out the error response
+				params['response'] = "error"
+				params['message'] = "No resources found by token."
+				return self.render_template('api/response.json', **params)
 
 	def delete(self, token=None):
 		bid = InstanceBid.get_by_token(token)

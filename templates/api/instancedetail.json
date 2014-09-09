@@ -1,0 +1,25 @@
+{ 
+  "response": "{{ response }}", 
+  "result": { 
+    "message": "{{ message }}",
+    "instance":
+      {
+        "created": "{{ instance.created }}",
+        "updated": "{{ instance.updated }}",
+        "name": "{{ instance.name }}",
+        "ipv4_private_address": "{{ instance.ipv4_private_address }}",
+        "ipv4_address": "{{ instance.ipv4_address }}",
+        "ipv6_address": "{{ instance.ipv6_address }}",
+        "address": "{{ instance.address }}",
+        "vpus": {{ instance.flavor.get().vpus }},
+        "memory": {{ instance.flavor.get().memory }},
+        "disk": {{ instance.flavor.get().disk }},
+        "network": {{ instance.flavor.get().network }},
+        "ask": {{ instance.ask }},
+        "appliance": {
+          "name": "{{ instance.appliance.get().name }}",
+          "location": [{{ instance.appliance.get().location }}]
+        } 
+      }
+  }
+}

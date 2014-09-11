@@ -802,8 +802,8 @@ class FlavorsHandler(BaseHandler):
 	def post(self, action="list"):
 		return self.actions[action]()
 
-	def get(self):
-		return self.post()
+	def get(self, *args, **kwargs):
+		return self.post(*args, **kwargs)
 
 
 # used to log whatever we want to track

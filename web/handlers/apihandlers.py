@@ -774,7 +774,19 @@ class FlavorsHandler(BaseHandler):
 	# disable csrf check in basehandler
 	csrf_exempt = True
 
-	def post(self):
+	def __init__(self):
+		actions['create'] = self.do_create
+		actions['update'] = self.do_update
+		actions['delete'] = self.do_delete
+		actions['list'] = self.do_list
+
+	def do_create(self):
+	 pass
+	def do_update(self):
+	 pass
+	def do_delete(self):
+	 pass
+	def do_list(self):
 		# get current flavors
 		flavors = Flavor().get_all()
 		
@@ -786,6 +798,9 @@ class FlavorsHandler(BaseHandler):
 		# return images via template
 		self.response.headers['Content-Type'] = 'application/json'
 		return self.render_template('api/flavors.json', **params)
+
+	def post(self, action="list"):
+		return self.actions[action]()
 
 	def get(self):
 		return self.post()

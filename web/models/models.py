@@ -232,11 +232,13 @@ class Flavor(ndb.Model):
 	vpus = ndb.IntegerProperty()
 	memory = ndb.IntegerProperty()
 	disk = ndb.IntegerProperty()
-	network = ndb.IntegerProperty()
+	network_up = ndb.IntegerProperty()
+	network_down = ndb.IntegerProperty()
 	rate = ndb.IntegerProperty() # current market rate
 	hot = ndb.IntegerProperty() # number hot
 	launches = ndb.IntegerProperty() # number of launches
 	active = ndb.BooleanProperty(default=False)
+	source = ndb.IntegerProperty()
 
 	@classmethod
 	def get_all(cls):

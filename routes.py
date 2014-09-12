@@ -65,7 +65,7 @@ _routes = [
 		RedirectRoute('/api/v1/authorization/', apihandlers.TokenValidate, name='api-token-validate', strict_slash=True),
 		RedirectRoute('/api/v1/track/', apihandlers.TrackingPingHandler, name='api-track', strict_slash=True),
 		RedirectRoute('/api/v1/images/', apihandlers.ImagesHandler, name='api-images', strict_slash=True),
-		RedirectRoute('/api/v1/flavors/<action>', apihandlers.FlavorsHandler, name='api-flavors', strict_slash=True),
+		RedirectRoute('/api/v1/flavors/<action:.*>', apihandlers.FlavorsHandler, name='api-flavors', strict_slash=False),
 		RedirectRoute('/api/v1/instances/', apihandlers.InstancesHandler, name='api-instances', strict_slash=True),
 		RedirectRoute('/api/v1/broker/', apihandlers.BrokerHandler, name='api-broker', strict_slash=True),
 		RedirectRoute('/api/v1/instances/', apihandlers.InstancesHandler, name='api-instances', strict_slash=True),

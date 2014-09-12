@@ -773,19 +773,42 @@ class ImagesHandler(BaseHandler):
 class FlavorsHandler(BaseHandler):
 	# disable csrf check in basehandler
 	csrf_exempt = True
+	actions = {}
 
-	def __init__(self):
-		actions['create'] = self.do_create
-		actions['update'] = self.do_update
-		actions['delete'] = self.do_delete
-		actions['list'] = self.do_list
+	def __init__(self, *args, **kwargs):
+		super(FlavorsHandler, self).__init__(*args, **kwargs)
+		self.actions['create'] = self.do_create
+		self.actions['update'] = self.do_update
+		self.actions['delete'] = self.do_delete
+		self.actions['list'] = self.do_list
+
+	def _update_flavor(self, flavor, data):
+		for (k, value) in data.items():
+			if not hasattr(flavor, k):
+				raise Exception("invalid attribute of flavor '{attr}'.".format(k))
+			setattr(flavor, k, value)
 
 	def do_create(self):
-	 pass
+		post_data = json.loads(self.request.body)
+		appliance_data = post_data.pop('appliance')
+		try:
+			appliance = Appliance.get_by_token(appliance_data['apitoken'])
+		except Exception:
+			return error_response(self, "Failure in parsing request JSON.", 403, params)
+
+		ask_price = post_data.pop('ask')
+
+		flavor = Flavor(**post_data)
+		flavor.appliance.append(appliance.key)
+		flavor.put()
+		return {'response': 'success'}
+
 	def do_update(self):
-	 pass
+		pass
+
 	def do_delete(self):
-	 pass
+		pass
+
 	def do_list(self):
 		# get current flavors
 		flavors = Flavor().get_all()
@@ -794,16 +817,20 @@ class FlavorsHandler(BaseHandler):
 		params = {
 			'flavors': flavors
 		}
-
-		# return images via template
-		self.response.headers['Content-Type'] = 'application/json'
-		return self.render_template('api/flavors.json', **params)
-
-	def post(self, action="list"):
-		return self.actions[action]()
+		return params
 
 	def get(self, *args, **kwargs):
 		return self.post(*args, **kwargs)
+
+	def post(self, *args, **kwargs):
+		# no action specified, list by default
+		if not kwargs['action']:
+			action = "list"
+		else:
+		 action = kwargs['action']
+		params = self.actions[action]()
+		self.response.headers['Content-Type'] = 'application/json'
+		return self.render_template('api/flavors/' + action + '.json', **params)
 
 
 # used to log whatever we want to track

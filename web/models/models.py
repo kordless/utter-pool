@@ -239,6 +239,25 @@ class Flavor(ndb.Model):
 	launches = ndb.IntegerProperty() # number of launches
 	active = ndb.BooleanProperty(default=False)
 	source = ndb.IntegerProperty()
+	appliance = ndb.KeyProperty(kind=Appliance, repeated=True)
+
+	def put(self, *args, **kwargs):
+		comparison_criteria = [
+			'vpus',
+			'memory',
+			'disk',
+			'network_up',
+			'network_down']
+
+		qry = self.query()
+		for crit in comparison_criteria:
+			qry = qry.filter(getattr(self.__class__, crit) == getattr(self, crit))
+		flavors = qry.fetch()
+
+		if flavors and len(flavors) > 0:
+			self = flavors[0]
+		else:
+			super(Flavor, self).put(*args, **kwargs)
 
 	@classmethod
 	def get_all(cls):

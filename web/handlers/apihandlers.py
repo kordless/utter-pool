@@ -768,7 +768,6 @@ class ImagesHandler(BaseHandler):
 		return self.post()
 
 
-# flavors list
 # http://0.0.0.0/api/v1/flavors/ GET or POST
 class FlavorsHandler(BaseHandler):
 	# disable csrf check in basehandler
@@ -776,7 +775,11 @@ class FlavorsHandler(BaseHandler):
 
 	def do_create(self, appliance, data):
 		ask_price = data.pop('ask')
-		Flavor.push_create(appliance_key=appliance.key, **data)
+		# source=1 means the flavor originated from an appliance
+		Flavor.push_create(
+			appliance_key=appliance.key,
+			source=1,
+			**data)
 		return {'response': 'success'}
 
 	def do_update(self, appliance, data):

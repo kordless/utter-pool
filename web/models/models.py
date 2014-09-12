@@ -238,7 +238,10 @@ class Flavor(ndb.Model):
 	hot = ndb.IntegerProperty() # number hot
 	launches = ndb.IntegerProperty() # number of launches
 	active = ndb.BooleanProperty(default=False)
-	source = ndb.IntegerProperty()
+	# specifies where the flavor originated from
+	# 0 - originated from pool
+	# 1 - originated from an appliance
+	source = ndb.IntegerProperty(default=0)
 	appliances = ndb.KeyProperty(kind=Appliance, repeated=True)
 
 	# criteria based on which we decide if another flavor is same or not

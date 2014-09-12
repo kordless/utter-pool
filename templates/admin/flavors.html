@@ -89,6 +89,7 @@
                       <th>Network Down/Up</th>
                       <th>Rate</th>
                       <th>Serving</th>
+											<th>Origin</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -106,6 +107,7 @@
                           <div id="flavor-{{ flavor.key.id() }}" class="toggle{% if flavor.active %} enabled{% endif %}"></div>
                         </div>
                       </td>
+											<td>{% if flavor.source == 0 %}Pool{% else %}Appliance{% endif %}</td>
                       <td>
                         <button type="button" id="remove-{{flavor.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
                       </td>

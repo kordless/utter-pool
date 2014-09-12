@@ -773,19 +773,9 @@ class ImagesHandler(BaseHandler):
 class FlavorsHandler(BaseHandler):
 	# disable csrf check in basehandler
 	csrf_exempt = True
-	actions = {}
-
-	def __init__(self, *args, **kwargs):
-		super(FlavorsHandler, self).__init__(*args, **kwargs)
-		self.actions['create'] = self.do_create
-		self.actions['update'] = self.do_update
-		self.actions['delete'] = self.do_delete
-		self.actions['list'] = self.do_list
 
 	def do_create(self, appliance, data):
-
 		ask_price = data.pop('ask')
-
 		Flavor.push_create(appliance_key=appliance.key, **data)
 		return {'response': 'success'}
 
@@ -816,7 +806,7 @@ class FlavorsHandler(BaseHandler):
 		if not kwargs['action']:
 			action = "list"
 		else:
-		 action = kwargs['action']
+			action = kwargs['action']
 
 		# extract data from body
 		try:
@@ -829,8 +819,12 @@ class FlavorsHandler(BaseHandler):
 		if not appliance:
 			return error_response(self, "Appliance is not registered.", 403, {})
 		else:
+			# if invalid action has been specified
+			if not hasattr(self, 'do_' + action):
+				return error_response(self, "Unkown action: {action}".format(
+					action=action), 403, {})
 			# dispatch to action handler
-			response = self.actions[action](appliance, post_data)
+			response = getattr(self, 'do_' + action)(appliance, post_data)
 
 		self.response.headers['Content-Type'] = 'application/json'
 		return self.render_template('api/flavors/' + action + '.json', **response)

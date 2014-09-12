@@ -782,34 +782,21 @@ class FlavorsHandler(BaseHandler):
 		self.actions['delete'] = self.do_delete
 		self.actions['list'] = self.do_list
 
-	def _update_flavor(self, flavor, data):
-		for (k, value) in data.items():
-			if not hasattr(flavor, k):
-				raise Exception("invalid attribute of flavor '{attr}'.".format(k))
-			setattr(flavor, k, value)
+	def do_create(self, appliance, data):
 
-	def do_create(self):
-		post_data = json.loads(self.request.body)
-		appliance_data = post_data.pop('appliance')
-		try:
-			appliance = Appliance.get_by_token(appliance_data['apitoken'])
-		except Exception:
-			return error_response(self, "Failure in parsing request JSON.", 403, params)
+		ask_price = data.pop('ask')
 
-		ask_price = post_data.pop('ask')
-
-		flavor = Flavor(**post_data)
-		flavor.appliance.append(appliance.key)
-		flavor.put()
+		Flavor.push_create(appliance_key=appliance.key, **data)
 		return {'response': 'success'}
 
-	def do_update(self):
+	def do_update(self, appliance, data):
 		pass
 
-	def do_delete(self):
-		pass
+	def do_delete(self, appliance, data):
+		Flavor.pop_delete(appliance_key=appliance.key, **data)
+		return {'response': 'success'}
 
-	def do_list(self):
+	def do_list(self, appliance, data):
 		# get current flavors
 		flavors = Flavor().get_all()
 		
@@ -823,14 +810,30 @@ class FlavorsHandler(BaseHandler):
 		return self.post(*args, **kwargs)
 
 	def post(self, *args, **kwargs):
+		response = {'response': 'success'}
+
 		# no action specified, list by default
 		if not kwargs['action']:
 			action = "list"
 		else:
 		 action = kwargs['action']
-		params = self.actions[action]()
+
+		# extract data from body
+		try:
+			post_data = json.loads(self.request.body)
+		except Exception:
+			return error_response(self, "Failure in parsing request JSON.", 403, {})
+
+		# attempt to get appliance, or otherwise error
+		appliance = Appliance.get_by_token(post_data.pop('appliance')['apitoken'])
+		if not appliance:
+			return error_response(self, "Appliance is not registered.", 403, {})
+		else:
+			# dispatch to action handler
+			response = self.actions[action](appliance, post_data)
+
 		self.response.headers['Content-Type'] = 'application/json'
-		return self.render_template('api/flavors/' + action + '.json', **params)
+		return self.render_template('api/flavors/' + action + '.json', **response)
 
 
 # used to log whatever we want to track

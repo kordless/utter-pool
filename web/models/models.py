@@ -239,25 +239,50 @@ class Flavor(ndb.Model):
 	launches = ndb.IntegerProperty() # number of launches
 	active = ndb.BooleanProperty(default=False)
 	source = ndb.IntegerProperty()
-	appliance = ndb.KeyProperty(kind=Appliance, repeated=True)
+	appliances = ndb.KeyProperty(kind=Appliance, repeated=True)
 
-	def put(self, *args, **kwargs):
-		comparison_criteria = [
-			'vpus',
-			'memory',
-			'disk',
-			'network_up',
-			'network_down']
+	# criteria based on which we decide if another flavor is same or not
+	comparison_criteria = [
+		'vpus',
+		'memory',
+		'disk',
+		'network_up',
+		'network_down']
 
-		qry = self.query()
-		for crit in comparison_criteria:
-			qry = qry.filter(getattr(self.__class__, crit) == getattr(self, crit))
-		flavors = qry.fetch()
+	# see if another flavor that's equal already exists
+	@classmethod
+	def find_match(cls, *args, **kwargs):
+		qry = cls.query()
+		for crit in cls.comparison_criteria:
+			qry = qry.filter(getattr(cls, crit) == kwargs[crit])
+		return qry.get()
 
-		if flavors and len(flavors) > 0:
-			self = flavors[0]
+	# add an appliance to the list of appliances that support a flavor
+	# if the flavor doesn't exist yet, create it and append appliance
+	@classmethod
+	def push_create(cls, *args, **kwargs):
+		appliance_key = kwargs.pop("appliance_key")
+		flavor = cls.find_match(**kwargs)
+		if not flavor:
+			flavor = Flavor(**kwargs)
+		if appliance_key not in flavor.appliances:
+			flavor.appliances.append(appliance_key)
+		flavor.put()
+
+	# delete appliance from list of appliances that have a flavor
+	# if this appliance is the only one in the list, delete the flavor
+	@classmethod
+	def pop_delete(cls, *args, **kwargs):
+		appliance_key = kwargs.pop("appliance_key")
+		flavor = cls.find_match(**kwargs)
+		if not flavor:
+			return
+		if len(flavor.appliances) > 1:
+			if appliance_key in flavor.appliances:
+				flavor.appliances.remove(appliance_key)
+				flavor.put()
 		else:
-			super(Flavor, self).put(*args, **kwargs)
+			flavor.key.delete()
 
 	@classmethod
 	def get_all(cls):

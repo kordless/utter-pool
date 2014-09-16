@@ -25,6 +25,8 @@ from web.basehandler import BaseHandler
 # note User is not used except to send to channel
 from web.models.models import User, Appliance, Wisp, Cloud, Instance, InstanceBid, Image, Flavor, LogTracking
 
+from utter_apiobjects import schemes
+
 # easy button for error response
 def error_response(handler, message, code, params):
 	params['response'] = "error"
@@ -397,6 +399,23 @@ class InstanceDetailHandler(BaseHandler):
 
 		# request basics
 		ip = self.request.remote_addr
+
+		try:
+			schema = schemes['InstanceSchema']().from_json(self.request.body)
+			if not Appliance.authenticate(schema.appliance.apitoken.as_dict()):
+				logging.error("%s is using an invalid token(%s)." % (
+					ip, schema.appliance.apitoken.as_dict()))
+				return error_response(self, "Token is not valid.", 401, params)
+			instance = Instance.get_by_name_appliance(
+				schema.name.as_dict(), Appliance.get_by_token(schema.appliance.apitoken.as_dict()).key)
+			if not instance:
+				instance = Instance()
+			import pdb
+			pdb.set_trace()
+			schema.fill_object_from_schema(instance)
+
+		except Exception:
+			print("error")
 
 		##############################################
 		# 1. parse instance JSON data from appliance #

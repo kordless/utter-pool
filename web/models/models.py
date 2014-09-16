@@ -16,6 +16,7 @@ from webapp2_extras.appengine.auth.models import User
 from google.appengine.ext import ndb
 
 from lib.utils import generate_token
+from utter_apiobjects import schemes
 
 
 # user model - extends webapp2 User model
@@ -198,6 +199,12 @@ class Appliance(ndb.Model):
 
 		return geopoints
 
+	@classmethod
+	def authenticate(cls, apitoken):
+		if cls.get_by_token(apitoken) == None:
+			return False
+		return True
+
 
 # image model
 class Image(ndb.Model):
@@ -260,32 +267,15 @@ class Flavor(ndb.Model):
 			qry = qry.filter(getattr(cls, crit) == kwargs[crit])
 		return qry.get()
 
-	# add an appliance to the list of appliances that support a flavor
-	# if the flavor doesn't exist yet, create it and append appliance
 	@classmethod
-	def push_create(cls, *args, **kwargs):
-		appliance_key = kwargs.pop("appliance_key")
+	def get_by_merge(cls, *args, **kwargs):
 		flavor = cls.find_match(**kwargs)
 		if not flavor:
 			flavor = Flavor(**kwargs)
-		if appliance_key not in flavor.appliances:
-			flavor.appliances.append(appliance_key)
+		for key in kwargs.keys():
+			setattr(flavor, key, kwargs[key])
 		flavor.put()
-
-	# delete appliance from list of appliances that have a flavor
-	# if this appliance is the only one in the list, delete the flavor
-	@classmethod
-	def pop_delete(cls, *args, **kwargs):
-		appliance_key = kwargs.pop("appliance_key")
-		flavor = cls.find_match(**kwargs)
-		if not flavor:
-			return
-		if len(flavor.appliances) > 1:
-			if appliance_key in flavor.appliances:
-				flavor.appliances.remove(appliance_key)
-				flavor.put()
-		else:
-			flavor.key.delete()
+		return flavor
 
 	@classmethod
 	def get_all(cls):
@@ -443,6 +433,30 @@ class Instance(ndb.Model):
 	token = ndb.StringProperty()
 	console_output = ndb.TextProperty()
 
+	# handle setting of complex properties, each in their correct way
+	def __setattr__(self, key, val):
+		complex_properties = {
+			'flavor': 'Flavor.get_by_merge(**val).key',
+			'image': 'Image.get_by_name(val["name"]).key',
+			'appliance': 'Appliance.get_by_token(val["apitoken"]).key',
+			'ip_addresses': 'self.update_ip_addresses(val)',
+		}
+		if key not in complex_properties.keys():
+			super(Instance, self).__setattr__(key, val)
+		else:
+			super(Instance, self).__setattr__(key, eval(complex_properties[key]))
+
+	def update_ip_addresses(self, val):
+		self.ipv4_pri_adr = filter(
+			lambda x: x['version'] == 4 and x['scope'] == 'private',
+			val)
+		self.ipv4_pub_adr = filter(
+			lambda x: x['version'] == 4 and x['scope'] == 'public',
+			val)
+		self.ipv6_pub_adr = filter(
+			lambda x: x['version'] == 6 and x['scope'] == 'public',
+			val)
+
 	@classmethod
 	def get_all_offered(cls, seconds=900):
 		delta = datetime.now() - timedelta(seconds=seconds)
@@ -522,10 +536,42 @@ class Instance(ndb.Model):
 			instance.put()
 
 		return instance
-		
+
 	@classmethod
-	def update(cls, appliance_instance, appliance):
-		pass
+	def update_create_from_json(cls, json):
+		try:
+			data = schemes['InstanceSchema'].from_json(json).as_dict()
+		except Exception:
+			raise Exception('Invalid json string.')
+		if not Appliance.authenticate(data['appliance']):
+			raise Exception('Cannot authenticate this appliance.')
+		appliance = Appliance.get_by_token(data['appliance']['apitoken'])
+		instance = cls.get_by_name(data['name'])
+		ipv4_pri_adr = filter(
+			lambda x: x['version'] == 4 and x['scope'] == 'private',
+			data['ip_addresses'])
+		ipv4_pub_adr = filter(
+			lambda x: x['version'] == 4 and x['scope'] == 'public',
+			data['ip_addresses'])
+		ipv6_pub_adr = filter(
+			lambda x: x['version'] == 6 and x['scope'] == 'public',
+			data['ip_addresses'])
+		if not instance:
+			instance = cls()
+		instance.name = data['name']
+		instance.state = data['state']
+		instance.address = data['address']
+		instance.expires = data['expires']
+		instance.ask = data['flavor']['ask']
+		instance.ipv4_private_address = ipv4_pri_adr[0] if len(ipv4_pri_adr) > 0 else None
+		instance.ipv4_address = ipv4_pub_adr[0] if len(ipv4_pub_adr) > 0 else None
+		instance.ipv6_address = ipv6_pub_adr[0] if len(ipv6_pub_adr) > 0 else None
+		instance.appliance = appliance.key
+		instance.group = appliance.group
+		instance.owner = appliance.owner
+		instance.image = Image().get_by_name(data['image']).key
+		instance.flavor = Flavor().get_by_merge(appliance_instance['flavor']).key
+		instance.put()
 
 
 # instance bid model (instance reservation)

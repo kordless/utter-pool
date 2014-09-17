@@ -522,42 +522,6 @@ class Instance(ndb.Model):
 
 		return instance
 
-	@classmethod
-	def update_create_from_json(cls, json):
-		try:
-			data = schemes['InstanceSchema'].from_json(json).as_dict()
-		except Exception:
-			raise Exception('Invalid json string.')
-		if not Appliance.authenticate(data['appliance']):
-			raise Exception('Cannot authenticate this appliance.')
-		appliance = Appliance.get_by_token(data['appliance']['apitoken'])
-		instance = cls.get_by_name(data['name'])
-		ipv4_pri_adr = filter(
-			lambda x: x['version'] == 4 and x['scope'] == 'private',
-			data['ip_addresses'])
-		ipv4_pub_adr = filter(
-			lambda x: x['version'] == 4 and x['scope'] == 'public',
-			data['ip_addresses'])
-		ipv6_pub_adr = filter(
-			lambda x: x['version'] == 6 and x['scope'] == 'public',
-			data['ip_addresses'])
-		if not instance:
-			instance = cls()
-		instance.name = data['name']
-		instance.state = data['state']
-		instance.address = data['address']
-		instance.expires = data['expires']
-		instance.ask = data['flavor']['ask']
-		instance.ipv4_private_address = ipv4_pri_adr[0] if len(ipv4_pri_adr) > 0 else None
-		instance.ipv4_address = ipv4_pub_adr[0] if len(ipv4_pub_adr) > 0 else None
-		instance.ipv6_address = ipv6_pub_adr[0] if len(ipv6_pub_adr) > 0 else None
-		instance.appliance = appliance.key
-		instance.group = appliance.group
-		instance.owner = appliance.owner
-		instance.image = Image().get_by_name(data['image']).key
-		instance.flavor = Flavor().get_by_merge(appliance_instance['flavor']).key
-		instance.put()
-
 
 # instance bid model (instance reservation)
 class InstanceBid(ndb.Model):

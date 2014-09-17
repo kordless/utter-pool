@@ -420,29 +420,12 @@ class InstanceDetailHandler(BaseHandler):
 
 			# update instance with values from post
 			schema.fill_object_from_schema(
-			# wrap instance into api shim in order to translate values from api to model
+				# wrap instance into api shim in order to translate values from structure
+				# of api to structure of model. I hope at some point in the future the two
+				# models are similar enough so we can entirely drop this shim
 				InstanceApiShim(instance))
 		except Exception:
 			print("Error in creating instance from schema.")
-
-		#########################################################
-		# 4. update local instance with appliance instance data #
-		#########################################################
-
-		# update start time if instance state changed from being 1 to anything else
-		if instance.state == 1 and state > 1:
-			instance.started = datetime.utcnow()
-		# load state and ips into local instance
-		instance.state = state
-		
-
-		# load console output into local instance
-		h = HTMLParser()
-		console = ""
-		for line in console_output:
-			console += "%s\n" % h.unescape(line)
-
-		instance.console_output = console
 
 		# update local instance
 		instance.put()

@@ -201,7 +201,8 @@ class Appliance(ndb.Model):
 
 	@classmethod
 	def authenticate(cls, apitoken):
-		if cls.get_by_token(apitoken) == None:
+		appliance = cls.get_by_token(apitoken)
+		if not (appliance and appliance.activated):
 			return False
 		return True
 
@@ -432,30 +433,6 @@ class Instance(ndb.Model):
 	reserved = ndb.BooleanProperty(default=False)
 	token = ndb.StringProperty()
 	console_output = ndb.TextProperty()
-
-	# handle setting of complex properties, each in their correct way
-	def __setattr__(self, key, val):
-		complex_properties = {
-			'flavor': 'Flavor.get_by_merge(**val).key',
-			'image': 'Image.get_by_name(val["name"]).key',
-			'appliance': 'Appliance.get_by_token(val["apitoken"]).key',
-			'ip_addresses': 'self.update_ip_addresses(val)',
-		}
-		if key not in complex_properties.keys():
-			super(Instance, self).__setattr__(key, val)
-		else:
-			super(Instance, self).__setattr__(key, eval(complex_properties[key]))
-
-	def update_ip_addresses(self, val):
-		self.ipv4_pri_adr = filter(
-			lambda x: x['version'] == 4 and x['scope'] == 'private',
-			val)
-		self.ipv4_pub_adr = filter(
-			lambda x: x['version'] == 4 and x['scope'] == 'public',
-			val)
-		self.ipv6_pub_adr = filter(
-			lambda x: x['version'] == 6 and x['scope'] == 'public',
-			val)
 
 	@classmethod
 	def get_all_offered(cls, seconds=900):

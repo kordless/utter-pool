@@ -402,79 +402,29 @@ class InstanceDetailHandler(BaseHandler):
 
 		try:
 			schema = schemes['InstanceSchema']().from_json(self.request.body)
+
+			# try to authenticate appliance
 			if not Appliance.authenticate(schema.appliance.apitoken.as_dict()):
-				logging.error("%s is using an invalid token(%s)." % (
-					ip, schema.appliance.apitoken.as_dict()))
+				logging.error("%s is using an invalid token(%s) or appliance deactivated."
+					% (ip, schema.appliance.apitoken.as_dict()))
 				return error_response(self, "Token is not valid.", 401, params)
+
+			appliance = Appliance.get_by_token(schema.appliance.apitoken.as_dict())
 			instance = Instance.get_by_name_appliance(
-				schema.name.as_dict(), Appliance.get_by_token(schema.appliance.apitoken.as_dict()).key)
+				schema.name.as_dict(), appliance.key)
 			if not instance:
-				instance = Instance()
-			import pdb
-			pdb.set_trace()
+				wisp = Wisp.get_user_default(appliance.owner)
+				if not wisp:
+					wisp = Wisp.get_system_default()
+				instance = Instance(wisp=wisp.key)
+
+			# wrap instance into api shim in order to translate values from api to model
+			instance = InstanceApiShim(instance)
+
+			# update instance with values from post
 			schema.fill_object_from_schema(instance)
-
 		except Exception:
-			print("error")
-
-		##############################################
-		# 1. parse instance JSON data from appliance #
-		##############################################
-		
-		try:
-			packet = json.loads(self.request.body)
-			apitoken = packet['appliance']['apitoken']
-		except:
-			logging.error("%s submitted an invalid JSON instance object." % ip)
-			return error_response(self, "A valid JSON object could not be loaded from the request.", 401, params)
-
-		#####################################
-		# 2. authenticate and validate JSON #
-		#####################################
-
-		# check the appliance
-		appliance = Appliance.get_by_token(apitoken)
-		if not appliance:
-			logging.error("%s is using an invalid token(%s)." % (ip, apitoken))
-			return error_response(self, "Token is not valid.", 401, params)
-
-		if appliance.activated == False:
-			# appliance not activated
-			logging.error("%s is running a disabled appliance." % ip)
-			return error_response(self, "This appliance has been disabled by pool controller.", 409, params)
-
-		# pull out the appliance's instance
-		try:
-			appliance_instance = packet['instance']
-		except:
-			logging.error("%s sent data without instance key." % ip)
-			return error_response(self, "Instance data not found.", 404, params)
-		
-		# grab the instance name and check the url
-		try:
-			name = appliance_instance['name']
-			# same name?
-			if instance_name != name:
-				raise Exception
-		except:
-			logging.error("%s submitted mismatched instance data." % ip)
-			return error_response(self, "Submitted instance name needs to match resource URI.", 401, params)
-
-		# grab the rest of the instance info
-		try:
-			# grab the rest of appliance POST data
-			flavor_name = appliance_instance['flavor']
-			ask = appliance_instance['ask']
-			expires = datetime.fromtimestamp(appliance_instance['expires'])
-			address = appliance_instance['address'] # bitcoin address
-			state = appliance_instance['state']
-			ipv4_address = appliance_instance['ipv4_address']
-			ipv6_address = appliance_instance['ipv6_address']
-			ipv4_private_address = appliance_instance['ipv4_private_address']
-			console_output = appliance_instance['console_output']
-		except:
-			logging.error("%s submitted data without required keys." % ip)
-			return error_response(self, "Flavor, ask, expires, address, state, ip addresses and console output must be included in POST data.", 401, params)
+			print("Error in creating instance from schema.")
 
 		####################################
 		# 3. locate or create new instance #

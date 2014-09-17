@@ -1,0 +1,45 @@
+from web.models.models import Instance
+
+
+# translate the structure that comes from the API into the local instance model
+class InstanceApiShim(object):
+
+	def __init__(self, instance):
+		self.instance = instance
+
+	# handle setting of complex properties, each in their correct way
+	def __setattr__(self, key, val):
+		complex_properties = {
+			'flavor': '[("flavor", Flavor.get_by_merge(**val).key),]',
+			'image': '[("image", Image.get_by_name(val["name"]).key),]',
+			'appliance': '[("appliance", Appliance.get_by_token(val["apitoken"]).key),]',
+			'ip_addresses': 'self.prepare_ip_addresses(val)',
+			'console_output': 'self.prepare_console_output(val)',
+			'expires': '[("expires", datetime.fromtimestamp(long(val))),]',
+		}
+		if key not in complex_properties.keys():
+			setattr(self.instance, key, val)
+		else:
+			for (k, v) in eval(complex_properties[key]):
+				setattr(self.instance, k, v)
+
+	def prepare_console_output(self, console_lines):
+		return [('console_output', '\n'.join(console_lines)),]
+
+	# change the more flexible structure from the API scheme into the local model
+	def prepare_ip_addresses(self, addresses):
+		processed = []
+		for address in addresses:
+			if address['version'] == 4 and address['scope'] == 'private':
+				processed.append(('ipv4_private_address', address['address']))
+			if address['version'] == 6 and address['scope'] == 'private':
+				processed.append(('ipv6_address', address['address']))
+			if address['version'] == 4 and address['scope'] == 'public':
+				processed.append(('ipv4_address', address['address']))
+		return processed
+
+	def get_instance(self):
+		return self.instance
+
+	def put(self):
+		self.instance.put()

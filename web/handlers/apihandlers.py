@@ -418,41 +418,12 @@ class InstanceDetailHandler(BaseHandler):
 					wisp = Wisp.get_system_default()
 				instance = Instance(wisp=wisp.key)
 
-			# wrap instance into api shim in order to translate values from api to model
-			instance = InstanceApiShim(instance)
-
 			# update instance with values from post
-			schema.fill_object_from_schema(instance)
+			schema.fill_object_from_schema(
+			# wrap instance into api shim in order to translate values from api to model
+				InstanceApiShim(instance))
 		except Exception:
 			print("Error in creating instance from schema.")
-
-		####################################
-		# 3. locate or create new instance #
-		####################################
-		
-		# look up the pool's version of this instance
-		instance = Instance.get_by_name_appliance(name, appliance.key)
-
-		# create a new instance for this appliance because we've never seen it
-		if not instance:
-			instance = Instance().push(appliance_instance, appliance)
-			instance.address = address
-			instance.ask = ask
-			# add wisp to new instance
-			wisp = Wisp.get_user_default(appliance.owner)
-			if wisp:
-				instance.wisp = wisp.key
-			else:
-				wisp = Wisp.get_system_default()
-				instance.wisp = wisp.key
-
-			# add flavor to new instance, or return error
-			flavor = Flavor.get_by_name(flavor_name)
-			if flavor:
-				instance.flavor = flavor.key
-			else:
-				logging.error("%s submitted an unknown flavor." % ip)
-				return error_response(self, "Flavor name not found.", 401, params)
 
 		#########################################################
 		# 4. update local instance with appliance instance data #
@@ -463,10 +434,6 @@ class InstanceDetailHandler(BaseHandler):
 			instance.started = datetime.utcnow()
 		# load state and ips into local instance
 		instance.state = state
-		instance.expires = expires
-		instance.ipv4_private_address = ipv4_private_address
-		instance.ipv4_address = ipv4_address
-		instance.ipv6_address = ipv6_address
 		
 
 		# load console output into local instance

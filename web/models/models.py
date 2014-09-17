@@ -434,6 +434,14 @@ class Instance(ndb.Model):
 	token = ndb.StringProperty()
 	console_output = ndb.TextProperty()
 
+	def __setattr__(self, k, v):
+		if k == "state" and self.state == 1 and v > 1:
+				self.set_started_datetime()
+		super(Instance, self).__setattr__(k, v)
+
+	def set_started_datetime(self):
+		self.started = datetime.utcnow()
+
 	@classmethod
 	def get_all_offered(cls, seconds=900):
 		delta = datetime.now() - timedelta(seconds=seconds)

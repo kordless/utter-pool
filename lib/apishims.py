@@ -1,4 +1,6 @@
 from web.models.models import Instance
+from web.models.models import Image
+from web.models.models import Flavor
 
 
 # translate the structure that comes from the API into the local instance model
@@ -10,7 +12,7 @@ class InstanceApiShim(object):
 	# handle setting of complex properties, each in their correct way
 	def __setattr__(self, key, val):
 		complex_properties = {
-			'flavor': '[("flavor", Flavor.get_by_merge(**val).key),]',
+			'flavor': 'self.prepare_flavor(val)',
 			'image': '[("image", Image.get_by_name(val["name"]).key),]',
 			'appliance': '[("appliance", Appliance.get_by_token(val["apitoken"]).key),]',
 			'ip_addresses': 'self.prepare_ip_addresses(val)',
@@ -22,6 +24,13 @@ class InstanceApiShim(object):
 		else:
 			for (k, v) in eval(complex_properties[key]):
 				setattr(self.instance, k, v)
+
+	# get flavor by merging specs and copy flavor asking price to instance.ask
+	def prepare_flavor(self, flavor):
+		flavor = Flavor.get_by_merge(**flavor)
+		return [
+			('flavor', flavor.key),
+			('ask', flavor.ask),]
 
 	def prepare_console_output(self, console_lines):
 		return [('console_output', '\n'.join(console_lines)),]

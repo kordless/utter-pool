@@ -20,6 +20,7 @@ from webapp2_extras.appengine.auth.models import Unique
 # local application/library specific imports
 import config
 from lib.utils import generate_token
+from lib.apishims import InstanceApiShim
 from web.basehandler import BaseHandler
 
 # note User is not used except to send to channel
@@ -409,9 +410,12 @@ class InstanceDetailHandler(BaseHandler):
 					% (ip, schema.appliance.apitoken.as_dict()))
 				return error_response(self, "Token is not valid.", 401, params)
 
+			# fetch appliance and instance
 			appliance = Appliance.get_by_token(schema.appliance.apitoken.as_dict())
 			instance = Instance.get_by_name_appliance(
 				schema.name.as_dict(), appliance.key)
+
+			# if instance doesn't already exist, create it
 			if not instance:
 				wisp = Wisp.get_user_default(appliance.owner)
 				if not wisp:
@@ -425,7 +429,7 @@ class InstanceDetailHandler(BaseHandler):
 				# models are similar enough so we can entirely drop this shim
 				InstanceApiShim(instance))
 		except Exception:
-			print("Error in creating instance from schema.")
+			print("Error in creating or updating instance from post data.")
 
 		# update local instance
 		instance.put()
@@ -572,7 +576,7 @@ class InstanceDetailHandler(BaseHandler):
 		# load the instance info back into the response
 		params = {
 			'response': "success",
-			'instance_name': name,
+			'instance_name': instance.name,
 			'image': image,
 			'dynamic_image_url': dynamic_image_url,
 			'callback_url': callback_url,

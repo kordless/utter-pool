@@ -1,4 +1,7 @@
+from datetime import datetime
+
 from web.models.models import Instance
+from web.models.models import Appliance
 from web.models.models import Image
 from web.models.models import Flavor
 
@@ -14,16 +17,26 @@ class InstanceApiShim(object):
 		complex_properties = {
 			'flavor': 'self.prepare_flavor(val)',
 			'image': '[("image", Image.get_by_name(val["name"]).key),]',
-			'appliance': '[("appliance", Appliance.get_by_token(val["apitoken"]).key),]',
+			'appliance': 'self.prepare_appliance(val)',
 			'ip_addresses': 'self.prepare_ip_addresses(val)',
 			'console_output': 'self.prepare_console_output(val)',
 			'expires': '[("expires", datetime.fromtimestamp(long(val))),]',
 		}
-		if key not in complex_properties.keys():
+		if key == "instance":
+			super(InstanceApiShim, self).__setattr__(key, val)
+		elif key not in complex_properties.keys():
 			setattr(self.instance, key, val)
 		else:
 			for (k, v) in eval(complex_properties[key]):
 				setattr(self.instance, k, v)
+
+	# extract data that we need from the appliance to copy it to instance
+	def prepare_appliance(self,val):
+		appliance = Appliance.get_by_token(val['apitoken'])
+		return [
+			('appliance', appliance.key),
+			('owner', appliance.owner),
+			('group', appliance.group),]
 
 	# get flavor by merging specs and copy flavor asking price to instance.ask
 	def prepare_flavor(self, flavor):

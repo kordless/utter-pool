@@ -402,18 +402,20 @@ class InstanceDetailHandler(BaseHandler):
 		ip = self.request.remote_addr
 
 		try:
-			schema = schemes['InstanceSchema']().from_json(self.request.body)
+			body = json.loads(self.request.body)
+			instance_schema = schemes['InstanceSchema'](**body['instance'])
+			appliance_schema = schemes['ApplianceSchema'](**body['appliance'])
 
 			# try to authenticate appliance
-			if not Appliance.authenticate(schema.appliance.apitoken.as_dict()):
+			if not Appliance.authenticate(appliance_schema.apitoken.as_dict()):
 				logging.error("%s is using an invalid token(%s) or appliance deactivated."
-					% (ip, schema.appliance.apitoken.as_dict()))
+					% (ip, appliance_schema.apitoken.as_dict()))
 				return error_response(self, "Token is not valid.", 401, params)
 
 			# fetch appliance and instance
-			appliance = Appliance.get_by_token(schema.appliance.apitoken.as_dict())
+			appliance = Appliance.get_by_token(appliance_schema.apitoken.as_dict())
 			instance = Instance.get_by_name_appliance(
-				schema.name.as_dict(), appliance.key)
+				instance_schema.name.as_dict(), appliance.key)
 
 			# if instance doesn't already exist, create it
 			if not instance:
@@ -423,7 +425,7 @@ class InstanceDetailHandler(BaseHandler):
 				instance = Instance(wisp=wisp.key)
 
 			# update instance with values from post
-			schema.fill_object_from_schema(
+			instance_schema.fill_object_from_schema(
 				# wrap instance into api shim in order to translate values from structure
 				# of api to structure of model. I hope at some point in the future the two
 				# models are similar enough so we can entirely drop this shim

@@ -268,9 +268,13 @@ class Flavor(ndb.Model):
 			qry = qry.filter(getattr(cls, crit) == kwargs[crit])
 		return qry.get()
 
+	# used to retreive a flavor by merging it's specs. if the searched specs
+	# don't exist yet, it creates a new auto-generated merge-flavor.
 	@classmethod
 	def get_by_merge(cls, *args, **kwargs):
 		criteria = dict((x, kwargs[x]) for x in cls.comparison_criteria)
+
+		# search for flavor that matches the criteria from cls.comparison_criteria
 		flavor = cls.find_match(**criteria)
 		if not flavor:
 			flavor = Flavor(
@@ -280,9 +284,9 @@ class Flavor(ndb.Model):
 				launches=0,
 				rate=kwargs['ask'] # initial rate at first launch
 			)
-		for key in criteria.keys():
-			setattr(flavor, key, criteria[key])
-		flavor.put()
+			for key in criteria.keys():
+				setattr(flavor, key, criteria[key])
+			flavor.put()
 		return flavor
 
 	@classmethod

@@ -692,28 +692,13 @@ class ImagesHandler(BaseHandler):
 		return self.post()
 
 
+# flavors list
 # http://0.0.0.0/api/v1/flavors/ GET or POST
 class FlavorsHandler(BaseHandler):
 	# disable csrf check in basehandler
 	csrf_exempt = True
 
-	def do_create(self, appliance, data):
-		ask_price = data.pop('ask')
-		# source=1 means the flavor originated from an appliance
-		Flavor.push_create(
-			appliance_key=appliance.key,
-			source=1,
-			**data)
-		return {'response': 'success'}
-
-	def do_update(self, appliance, data):
-		pass
-
-	def do_delete(self, appliance, data):
-		Flavor.pop_delete(appliance_key=appliance.key, **data)
-		return {'response': 'success'}
-
-	def do_list(self, appliance, data):
+	def post(self):
 		# get current flavors
 		flavors = Flavor().get_all()
 		
@@ -721,40 +706,13 @@ class FlavorsHandler(BaseHandler):
 		params = {
 			'flavors': flavors
 		}
-		return params
 
-	def get(self, *args, **kwargs):
-		return self.post(*args, **kwargs)
-
-	def post(self, *args, **kwargs):
-		response = {'response': 'success'}
-
-		# no action specified, list by default
-		if not kwargs['action']:
-			action = "list"
-		else:
-			action = kwargs['action']
-
-		# extract data from body
-		try:
-			post_data = json.loads(self.request.body)
-		except Exception:
-			return error_response(self, "Failure in parsing request JSON.", 403, {})
-
-		# attempt to get appliance, or otherwise error
-		appliance = Appliance.get_by_token(post_data.pop('appliance')['apitoken'])
-		if not appliance:
-			return error_response(self, "Appliance is not registered.", 403, {})
-		else:
-			# if invalid action has been specified
-			if not hasattr(self, 'do_' + action):
-				return error_response(self, "Unkown action: {action}".format(
-					action=action), 403, {})
-			# dispatch to action handler
-			response = getattr(self, 'do_' + action)(appliance, post_data)
-
+		# return images via template
 		self.response.headers['Content-Type'] = 'application/json'
-		return self.render_template('api/flavors/' + action + '.json', **response)
+		return self.render_template('api/flavors.json', **params)
+
+	def get(self):
+		return self.post()
 
 
 # used to log whatever we want to track

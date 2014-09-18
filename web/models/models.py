@@ -273,7 +273,13 @@ class Flavor(ndb.Model):
 		criteria = dict((x, kwargs[x]) for x in cls.comparison_criteria)
 		flavor = cls.find_match(**criteria)
 		if not flavor:
-			flavor = Flavor()
+			flavor = Flavor(
+				name="auto created by merge",
+				source=1, # from appliance
+				hot=2, # because we feel like 2 is a good number
+				launches=0,
+				rate=kwargs['ask'] # initial rate at first launch
+			)
 		for key in criteria.keys():
 			setattr(flavor, key, criteria[key])
 		flavor.put()

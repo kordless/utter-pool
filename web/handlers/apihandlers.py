@@ -428,8 +428,9 @@ class InstanceDetailHandler(BaseHandler):
 				# of api to structure of model. I hope at some point in the future the two
 				# models are similar enough so we can entirely drop this shim
 				InstanceApiShim(instance))
-		except Exception:
-			print("Error in creating or updating instance from post data.")
+		except Exception as e:
+			print("Error in creating or updating instance from post data, "
+						"with message {0}".format(str(e)))
 
 		# update local instance
 		instance.put()

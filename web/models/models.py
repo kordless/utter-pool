@@ -270,11 +270,12 @@ class Flavor(ndb.Model):
 
 	@classmethod
 	def get_by_merge(cls, *args, **kwargs):
-		flavor = cls.find_match(**kwargs)
+		criteria = dict((x, kwargs[x]) for x in cls.comparison_criteria)
+		flavor = cls.find_match(**criteria)
 		if not flavor:
-			flavor = Flavor(**kwargs)
-		for key in kwargs.keys():
-			setattr(flavor, key, kwargs[key])
+			flavor = Flavor()
+		for key in criteria.keys():
+			setattr(flavor, key, criteria[key])
 		flavor.put()
 		return flavor
 

@@ -39,11 +39,11 @@ class InstanceApiShim(object):
 			('group', appliance.group),]
 
 	# get flavor by merging specs and copy flavor asking price to instance.ask
-	def prepare_flavor(self, flavor):
-		flavor = Flavor.get_by_merge(**flavor)
+	def prepare_flavor(self, flavor_specs):
+		flavor = Flavor.get_by_merge(**flavor_specs)
 		return [
 			('flavor', flavor.key),
-			('ask', flavor.ask),]
+			('ask', flavor_specs['ask']),]
 
 	def prepare_console_output(self, console_lines):
 		return [('console_output', '\n'.join(console_lines)),]

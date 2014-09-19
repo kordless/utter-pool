@@ -17,6 +17,7 @@ from google.appengine.ext import ndb
 
 from lib.utils import generate_token
 from utter_apiobjects import schemes
+from utter_apiobjects.model_mixin import ModelSchemaMixin
 
 
 # user model - extends webapp2 User model
@@ -232,7 +233,7 @@ class Image(ndb.Model):
 
 
 # flavor model
-class Flavor(ndb.Model):
+class Flavor(ndb.Model, ModelSchemaMixin):
 	name = ndb.StringProperty()
 	description = ndb.StringProperty()
 	created = ndb.DateTimeProperty(auto_now_add=True)
@@ -260,6 +261,15 @@ class Flavor(ndb.Model):
 		'disk',
 		'network_up',
 		'network_down']
+
+	object_schema = schemes['FlavorSchema']
+	object_list_schema = schemes['FlavorListSchema']
+
+	@property
+	def flags(self):
+		if self.active:
+			return 1
+		return 8
 
 	# see if another flavor that's equal already exists
 	@classmethod

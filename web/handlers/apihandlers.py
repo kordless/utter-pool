@@ -700,21 +700,21 @@ class FlavorsHandler(BaseHandler):
 	# disable csrf check in basehandler
 	csrf_exempt = True
 
-	def post(self):
-		# get current flavors
-		flavors = Flavor().get_all()
-		
-		# build parameter list
-		params = {
-			'flavors': flavors
-		}
-
-		# return images via template
+	def post(self, action):
 		self.response.headers['Content-Type'] = 'application/json'
-		return self.render_template('api/flavors.json', **params)
+		self.response.set_status(200)
 
-	def get(self):
-		return self.post()
+		# write dictionary as json string
+		self.response.out.write(json.dumps(
+
+				# retrieve flavors as schema and convert schema to dict
+				Flavor.as_schema_list(
+
+					# pass get_all method as query object
+					Flavor.get_all).as_dict()))
+
+	def get(self, action):
+		return self.post(action)
 
 
 # used to log whatever we want to track

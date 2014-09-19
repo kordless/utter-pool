@@ -249,6 +249,7 @@ class Flavor(ndb.Model):
 	# specifies where the flavor originated from
 	# 0 - originated from pool
 	# 1 - originated from an appliance
+	# 2 - merge generated in pool
 	source = ndb.IntegerProperty(default=0)
 	appliances = ndb.KeyProperty(kind=Appliance, repeated=True)
 
@@ -279,9 +280,10 @@ class Flavor(ndb.Model):
 		if not flavor:
 			flavor = Flavor(
 				name="auto created by merge",
-				source=1, # from appliance
+				source=2, # merge generated in pool
 				hot=2, # because we feel like 2 is a good number
 				launches=0,
+				active=True,
 				rate=kwargs['ask'] # initial rate at first launch
 			)
 			for key in criteria.keys():

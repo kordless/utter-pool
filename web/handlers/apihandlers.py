@@ -27,6 +27,7 @@ from web.basehandler import BaseHandler
 from web.models.models import User, Appliance, Wisp, Cloud, Instance, InstanceBid, Image, Flavor, LogTracking
 
 from utter_apiobjects import schemes
+from utter_apiobjects.helpers import ApiSchemaHelper
 
 # easy button for error response
 def error_response(handler, message, code, params):
@@ -425,7 +426,8 @@ class InstanceDetailHandler(BaseHandler):
 				instance = Instance(wisp=wisp.key)
 
 			# update instance with values from post
-			instance_schema.fill_object_from_schema(
+			ApiSchemaHelper.fill_object_from_schema(
+				instance_schema,
 				# wrap instance into api shim in order to translate values from structure
 				# of api to structure of model. I hope at some point in the future the two
 				# models are similar enough so we can entirely drop this shim

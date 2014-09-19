@@ -703,13 +703,10 @@ class FlavorsHandler(BaseHandler):
 	def post(self, action):
 		self.response.headers['Content-Type'] = 'application/json'
 		self.response.set_status(200)
-
 		# write dictionary as json string
 		self.response.out.write(json.dumps(
-
 				# retrieve flavors as schema and convert schema to dict
 				Flavor.as_schema_list(
-
 					# pass get_all method as query object
 					Flavor.get_all).as_dict()))
 

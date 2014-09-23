@@ -299,7 +299,7 @@ class Flavor(ndb.Model, ModelSchemaMixin):
 				hot=2, # because we feel like 2 is a good number
 				launches=0,
 				active=True,
-				rate=kwargs['ask'] # initial rate at first launch
+				rate=0 # it's a manual number for now
 			)
 			for key in criteria.keys():
 				setattr(flavor, key, criteria[key])

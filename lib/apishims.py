@@ -32,7 +32,7 @@ class InstanceApiShim(object):
 
 	# extract data that we need from the appliance to copy it to instance
 	def prepare_appliance(self,val):
-		appliance = Appliance.get_by_token(val['apitoken'])
+		appliance = Appliance.get_by_token(val.apitoken.as_dict())
 		return [
 			('appliance', appliance.key),
 			('owner', appliance.owner),
@@ -52,12 +52,12 @@ class InstanceApiShim(object):
 	def prepare_ip_addresses(self, addresses):
 		processed = []
 		for address in addresses:
-			if address['version'] == 4 and address['scope'] == 'private':
-				processed.append(('ipv4_private_address', address['address']))
-			if address['version'] == 6 and address['scope'] == 'private':
-				processed.append(('ipv6_address', address['address']))
-			if address['version'] == 4 and address['scope'] == 'public':
-				processed.append(('ipv4_address', address['address']))
+			if address.version.as_dict() == 4 and address.scope.as_dict() == 'private':
+				processed.append(('ipv4_private_address', address.address.as_dict()))
+			if address.version.as_dict() == 6 and address.scope.as_dict() == 'private':
+				processed.append(('ipv6_address', address.address.as_dict()))
+			if address.version.as_dict() == 4 and address.scope.as_dict() == 'public':
+				processed.append(('ipv4_address', address.address.as_dict()))
 		return processed
 
 	def get_instance(self):

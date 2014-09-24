@@ -26,8 +26,8 @@ from web.basehandler import BaseHandler
 # note User is not used except to send to channel
 from web.models.models import User, Appliance, Wisp, Cloud, Instance, InstanceBid, Image, Flavor, LogTracking
 
-from utter_apiobjects import schemes
-from utter_apiobjects.helpers import ApiSchemaHelper
+from utter_libs.schemas import schemas
+from utter_libs.schemas.helpers import ApiSchemaHelper
 
 # easy button for error response
 def error_response(handler, message, code, params):
@@ -404,8 +404,8 @@ class InstanceDetailHandler(BaseHandler):
 
 		try:
 			body = json.loads(self.request.body)
-			instance_schema = schemes['InstanceSchema'](**body['instance'])
-			appliance_schema = schemes['ApplianceSchema'](**body['appliance'])
+			instance_schema = schemas['InstanceSchema'](**body['instance'])
+			appliance_schema = schemas['ApplianceSchema'](**body['appliance'])
 
 			# try to authenticate appliance
 			if not Appliance.authenticate(appliance_schema.apitoken.as_dict()):

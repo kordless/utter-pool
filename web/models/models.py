@@ -16,8 +16,8 @@ from webapp2_extras.appengine.auth.models import User
 from google.appengine.ext import ndb
 
 from lib.utils import generate_token
-from utter_apiobjects import schemes
-from utter_apiobjects.model_mixin import ModelSchemaMixin
+from utter_libs.schemas import schemas
+from utter_libs.schemas.model_mixin import ModelSchemaMixin
 
 
 # user model - extends webapp2 User model
@@ -262,8 +262,8 @@ class Flavor(ndb.Model, ModelSchemaMixin):
 		'network_up',
 		'network_down']
 
-	object_schema = schemes['FlavorSchema']
-	object_list_schema = schemes['FlavorListSchema']
+	object_schema = schemas['FlavorSchema']
+	object_list_schema = schemas['FlavorListSchema']
 
 	@property
 	def flags(self):

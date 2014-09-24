@@ -425,13 +425,16 @@ class InstanceDetailHandler(BaseHandler):
 					wisp = Wisp.get_system_default()
 				instance = Instance(wisp=wisp.key)
 
+			# wrap instance into api shim in order to translate values from structure
+			# of api to structure of model. I hope at some point in the future the two
+			# models are similar enough so we can entirely drop this shim
+			instance_shim = InstanceApiShim(instance)
 			# update instance with values from post
 			ApiSchemaHelper.fill_object_from_schema(
-				instance_schema,
-				# wrap instance into api shim in order to translate values from structure
-				# of api to structure of model. I hope at some point in the future the two
-				# models are similar enough so we can entirely drop this shim
-				InstanceApiShim(instance))
+				instance_schema, instance_shim)
+
+			# associate instance with it's appliance
+			instance_shim.appliance = appliance
 		except Exception as e:
 			print("Error in creating or updating instance from post data, "
 						"with message {0}".format(str(e)))

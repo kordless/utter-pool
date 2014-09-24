@@ -31,8 +31,8 @@ class InstanceApiShim(object):
 				setattr(self.instance, k, v)
 
 	# extract data that we need from the appliance to copy it to instance
-	def prepare_appliance(self,val):
-		appliance = Appliance.get_by_token(val.apitoken.as_dict())
+	def prepare_appliance(self, val):
+		appliance = Appliance.get_by_token(val.token)
 		return [
 			('appliance', appliance.key),
 			('owner', appliance.owner),

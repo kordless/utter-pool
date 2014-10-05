@@ -26,7 +26,6 @@ from web.basehandler import BaseHandler
 # note User is not used except to send to channel
 from web.models.models import User, Appliance, Wisp, Cloud, Instance, InstanceBid, Image, Flavor, LogTracking
 
-# utter schemas
 from utter_libs.schemas import schemas
 from utter_libs.schemas.helpers import ApiSchemaHelper
 
@@ -426,7 +425,7 @@ class InstanceDetailHandler(BaseHandler):
 			# of api to structure of model. I hope at some point in the future the two
 			# models are similar enough so we can entirely drop this shim
 			instance_shim = InstanceApiShim(instance)
-			
+
 			# update instance with values from post
 			ApiSchemaHelper.fill_object_from_schema(
 				instance_schema, instance_shim)
@@ -581,7 +580,7 @@ class InstanceDetailHandler(BaseHandler):
 		# load the instance info back into the response
 		params = {
 			'response': "success",
-			'instance_name': name,
+			'instance_name': instance.name,
 			'image': image,
 			'dynamic_image_url': dynamic_image_url,
 			'callback_url': callback_url,

@@ -102,7 +102,8 @@ class FlavorForm(BaseForm):
     vpus = fields.IntegerField('VPUs', [validators.Required()])
     memory = fields.IntegerField('Memory (MB)', [validators.Required()])
     disk = fields.IntegerField('Disk (GB)', [validators.Required()])
-    network = fields.IntegerField('Network (Mbits/sec)', [validators.Required()])
+    network_down = fields.IntegerField('Network Down (Mbits/sec)', [validators.Required()])
+    network_up = fields.IntegerField('Network Up (Mbits/sec)', [validators.Required()])
     rate = fields.IntegerField('Starting Rate', [validators.Required()])
 
 

@@ -71,7 +71,8 @@ class FlavorsListHandler(BaseHandler):
 		vpus = self.form.vpus.data
 		memory = self.form.memory.data
 		disk = self.form.disk.data
-		network = self.form.network.data
+		network_down = self.form.network_down.data
+		network_up = self.form.network_up.data
 		rate = self.form.rate.data
 
 		# save the flavor in our database
@@ -81,7 +82,8 @@ class FlavorsListHandler(BaseHandler):
 			vpus = vpus,
 			memory = memory,
 			disk = disk,
-			network = network,
+			network_down = network_down,
+			network_up = network_up,
 			rate = rate, # current market rate
 			launches = 0, # number of total launches
 			hot = 2 # suggest minimum two instance addresses hot

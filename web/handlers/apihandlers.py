@@ -106,12 +106,12 @@ class BidsHandler(BaseHandler):
 			# load the payment address
 			if instancebid.instance:
 				instancebid.address = instancebid.instance.get().address
+				instancebid.ask = instancebid.instance.get().ask
 			else:
 				# we should have an instance assosciated, so bail on this one
 				instancebid.key.delete()
 				return error_response(self, "Deleting bid because no instance was associated.", 403, params)
 
-			# IP has a unmatched bid, so deny creating new one
 			params['response'] = "error"
 			params['message'] = "The calling IP address already has an instance reservation in progress."
 			params['instancebid'] = instancebid
@@ -281,7 +281,10 @@ class BidsDetailHandler(BaseHandler):
 	csrf_exempt = True
 
 	def get(self, token=None):
+		# response, type, cross posting
 		params = {}
+		self.response.headers['Content-Type'] = "application/json"
+		self.response.headers['Access-Control-Allow-Origin'] = '*'
 
 		# look for instance bid first
 		bid = InstanceBid.get_by_token(token)
@@ -314,6 +317,7 @@ class BidsDetailHandler(BaseHandler):
 				# build out the error response
 				params['response'] = "error"
 				params['message'] = "No resources found by token."
+
 				return self.render_template('api/response.json', **params)
 
 	def delete(self, token=None):
@@ -335,6 +339,11 @@ class BidsDetailHandler(BaseHandler):
 
 		return
 
+	def options(self):
+		self.response.headers['Access-Control-Allow-Origin'] = '*'
+		self.response.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept'
+		self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
+		return
 
 # list of all available instances for sale
 # http://0.0.0.0/api/v1/instances/
@@ -492,6 +501,7 @@ class InstanceDetailHandler(BaseHandler):
 		# update start time if instance state changed from being 1 to anything else
 		if instance.state == 1 and state > 1:
 			instance.started = datetime.utcnow()
+
 		# load state and ips into local instance
 		instance.state = state
 		instance.expires = expires
@@ -532,83 +542,91 @@ class InstanceDetailHandler(BaseHandler):
 			user_info = User.get_by_id(long(instance.owner.id()))
 			channel.send_message(user_info.key.urlsafe(), "reload")
 
-		############################
-		# 6. build response packet #
-		############################
+		##############################
+		# 6. convert bid to instance #
+		##############################
 		
 		# check if there is an instance bid reservation on this instance
 		instancebid = InstanceBid.get_by_instance(instance.key)
 		if instancebid:
-			# load up callback URL
+			# check for a bid callback_url (entered in the callback field on the launcher)
 			if instancebid.callback_url > "":
-				# load for later + stuff it in instance for page reference purposes
-				callback_url = instancebid.callback_url
+				# put the callback into the instance
 				instance.callback_url = instancebid.callback_url
-				instance.put()
 			else:
-				# using a wisp, so we don't need it for displaying
+				# assuming we have a wisp, try to get the wisp's callback URL
+				# maybe add a check to see if we have a wisp here...
 				callback_url = instancebid.wisp.get().callback_url
+			
+				# if the wisp has an empty callback URL, populate the instance with the wisp's bid details
+				if callback_url == "" or callback_url == None:
+					instance.wisp = instancebid.wisp
+					instance.owner = instancebid.wisp.get().owner
+					instance.cloud = instancebid.cloud
+				else:
+					# we have a custom callback in the wisp itself, so move to instance
+					instance.callback_url = callback_url
 
-			"""
-			BEGIN CODE CALLOUT
-			"""
-			# August 24, 2014
-			#
-			# The following code retrieves content from a remote server and proxies it to 
-			# an appliance for starting an instance. It is at this point an anonymous user's
-			# callback pattern is most venerable to being monitored and manipulated by a 
-			# government agency.
-			# 
-			# The author of this software issues a warrant canary tweet to @stackape which 
-			# should appear on the 1st of each month indicating the absence of a gag order
-			# having been issued to StackMonkey, Utter.io, or Kord Campbell.
-			#
-			# Please monitor the code block between BEGIN CODE CALLOUT and END CODE CALLOUT 
-			# if the canary tweet does not appear on schedule. Please monitor any callback
-			# file's retrieval patterns if the canary tweet does not appear on schedule.
-			# Please report any findings to the community sections of the project/site.
-			#
-			# Remember, the code is Open Source. Use that fact to the community's advantage.
-			# 
-			# The warrant canary will likely be your only indication a change has possibly
-			# taken place to the system.  These changes may or may not enable a government 
-			# agency to intercept and monitor instances using a custom callback.
-			#
-			# Kord Campbell
-			#
-			if callback_url:
-				try:
-					result = urlfetch.fetch(callback_url, deadline=5)
-				except Exception as ex:
-					logging.error("Error fetching callback URL content.")
-					instance.console_output = "Error fetching callback url=(%s)'s' content. %s" % (callback_url, ex)
-					instance.put()
-					channel.send_message(instance.token, "reload")
-					return error_response(self, "Error fetching callback URL content.", 401, params)
+			# update the instance
+			instance.put()
 
-				############################################
-				# 7a. proxy callback URL JSON to appliance #
-				############################################
-		
-				# return content retrieved from callback URL if the JSON returned by this method includes
-				# a callback_url in the data, the appliance will follow the URL and will not call this API 
-				# again during the life of the instance.
-				self.response.headers['Content-Type'] = 'application/json'
-				self.response.write(json.dumps(json.loads(result.content), sort_keys=True, indent=2))
+			# delete the instance reservation
+			instancebid.key.delete()
 
-				# delete the instance reservation
-				instancebid.key.delete()
-				
-				return	
-			else:
-				# assign the instance the registered user's bid wisp
-				instance.wisp = instancebid.wisp
-				instance.owner = instancebid.wisp.get().owner
-				instance.cloud = instancebid.cloud
+
+		#############################
+		# 7a. proxy custom callback #
+		#############################
+
+		"""
+		BEGIN CODE CALLOUT
+		"""
+		# August 24, 2014
+		#
+		# The following code retrieves content from a remote server and proxies it to 
+		# an appliance for starting an instance. It is at this point an anonymous user's
+		# callback pattern is most venerable to being monitored and manipulated by a 
+		# government agency.
+		# 
+		# The author of this software issues a warrant canary tweet to @stackape which 
+		# should appear on the 1st of each month indicating the absence of a gag order
+		# having been issued to StackMonkey, Utter.io, or Kord Campbell.
+		#
+		# Please monitor the code block between BEGIN CODE CALLOUT and END CODE CALLOUT 
+		# if the canary tweet does not appear on schedule. Please monitor any callback
+		# file's retrieval patterns if the canary tweet does not appear on schedule.
+		# Please report any findings to the community sections of the project/site.
+		#
+		# Remember, the code is Open Source. Use that fact to the community's advantage.
+		# 
+		# The warrant canary will likely be your only indication a change has possibly
+		# taken place to the system.  These changes may or may not enable a government 
+		# agency to intercept and monitor instances using a custom URL callback.
+		#
+		# Kord Campbell
+		#
+		if instance.callback_url:
+			try:
+				result = urlfetch.fetch(instance.callback_url, deadline=5)
+			except Exception as ex:
+				logging.error("Error fetching callback URL content.")
+				instance.console_output = "Error fetching callback url=(%s)'s' content. %s" % (instance.callback_url, ex)
 				instance.put()
+				channel.send_message(instance.token, "reload")
+				return error_response(self, "Error fetching callback URL content.", 401, params)
 
-				# delete the instance reservation
-				instancebid.key.delete()
+			############################################
+			# 7a. proxy callback URL JSON to appliance #
+			############################################
+	
+			# return content retrieved from callback URL if the JSON returned by this method includes
+			# a callback_url in the data, the appliance will follow the URL and will not call this API 
+			# again during the life of the instance.
+			self.response.headers['Content-Type'] = 'application/json'
+			self.response.write(json.dumps(json.loads(result.content), sort_keys=True, indent=2))
+			
+			# return from here			
+			return
 
 			"""
 			END CODE CALLOUT
@@ -616,7 +634,7 @@ class InstanceDetailHandler(BaseHandler):
 
 		# at this point we have one of two scenarios:
 		# 1. an external instance start (registered user with appliance, sans instancebid)
-		# 2. registered user using a wisp WITHOUT a callback_url (with instancebid)
+		# 2. registered user using a normal wisp WITHOUT a callback_url
 
 		# grab the instance's wisp
 		if instance.wisp:

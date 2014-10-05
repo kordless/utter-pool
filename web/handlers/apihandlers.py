@@ -20,10 +20,14 @@ from webapp2_extras.appengine.auth.models import Unique
 # local application/library specific imports
 import config
 from lib.utils import generate_token
+from lib.apishims import InstanceApiShim
 from web.basehandler import BaseHandler
 
 # note User is not used except to send to channel
 from web.models.models import User, Appliance, Wisp, Cloud, Instance, InstanceBid, Image, Flavor, LogTracking
+
+from utter_libs.schemas import schemas
+from utter_libs.schemas.helpers import ApiSchemaHelper
 
 # easy button for error response
 def error_response(handler, message, code, params):
@@ -398,115 +402,42 @@ class InstanceDetailHandler(BaseHandler):
 		# request basics
 		ip = self.request.remote_addr
 
-		##############################################
-		# 1. parse instance JSON data from appliance #
-		##############################################
-		
 		try:
-			packet = json.loads(self.request.body)
-			apitoken = packet['appliance']['apitoken']
-		except:
-			logging.error("%s submitted an invalid JSON instance object." % ip)
-			return error_response(self, "A valid JSON object could not be loaded from the request.", 401, params)
+			body = json.loads(self.request.body)
+			instance_schema = schemas['InstanceSchema'](**body['instance'])
+			appliance_schema = schemas['ApplianceSchema'](**body['appliance'])
 
-		#####################################
-		# 2. authenticate and validate JSON #
-		#####################################
+			# try to authenticate appliance
+			if not Appliance.authenticate(appliance_schema.apitoken.as_dict()):
+				logging.error("%s is using an invalid token(%s) or appliance deactivated."
+					% (ip, appliance_schema.apitoken.as_dict()))
+				return error_response(self, "Token is not valid.", 401, params)
 
-		# check the appliance
-		appliance = Appliance.get_by_token(apitoken)
-		if not appliance:
-			logging.error("%s is using an invalid token(%s)." % (ip, apitoken))
-			return error_response(self, "Token is not valid.", 401, params)
+			# fetch appliance and instance
+			appliance = Appliance.get_by_token(appliance_schema.apitoken.as_dict())
+			instance = Instance.get_by_name_appliance(
+				instance_schema.name.as_dict(), appliance.key)
 
-		if appliance.activated == False:
-			# appliance not activated
-			logging.error("%s is running a disabled appliance." % ip)
-			return error_response(self, "This appliance has been disabled by pool controller.", 409, params)
+			# if instance doesn't already exist, create it
+			if not instance:
+				wisp = Wisp.get_user_default(appliance.owner)
+				if not wisp:
+					wisp = Wisp.get_system_default()
+				instance = Instance(wisp=wisp.key)
 
-		# pull out the appliance's instance
-		try:
-			appliance_instance = packet['instance']
-		except:
-			logging.error("%s sent data without instance key." % ip)
-			return error_response(self, "Instance data not found.", 404, params)
-		
-		# grab the instance name and check the url
-		try:
-			name = appliance_instance['name']
-			# same name?
-			if instance_name != name:
-				raise Exception
-		except:
-			logging.error("%s submitted mismatched instance data." % ip)
-			return error_response(self, "Submitted instance name needs to match resource URI.", 401, params)
+			# wrap instance into api shim in order to translate values from structure
+			# of api to structure of model. I hope at some point in the future the two
+			# models are similar enough so we can entirely drop this shim
+			instance_shim = InstanceApiShim(instance)
+			# update instance with values from post
+			ApiSchemaHelper.fill_object_from_schema(
+				instance_schema, instance_shim)
 
-		# grab the rest of the instance info
-		try:
-			# grab the rest of appliance POST data
-			flavor_name = appliance_instance['flavor']
-			ask = appliance_instance['ask']
-			expires = datetime.fromtimestamp(appliance_instance['expires'])
-			address = appliance_instance['address'] # bitcoin address
-			state = appliance_instance['state']
-			ipv4_address = appliance_instance['ipv4_address']
-			ipv6_address = appliance_instance['ipv6_address']
-			ipv4_private_address = appliance_instance['ipv4_private_address']
-			console_output = appliance_instance['console_output']
-		except:
-			logging.error("%s submitted data without required keys." % ip)
-			return error_response(self, "Flavor, ask, expires, address, state, ip addresses and console output must be included in POST data.", 401, params)
-
-		####################################
-		# 3. locate or create new instance #
-		####################################
-		
-		# look up the pool's version of this instance
-		instance = Instance.get_by_name_appliance(name, appliance.key)
-
-		# create a new instance for this appliance because we've never seen it
-		if not instance:
-			instance = Instance().push(appliance_instance, appliance)
-			instance.address = address
-			instance.ask = ask
-			# add wisp to new instance
-			wisp = Wisp.get_user_default(appliance.owner)
-			if wisp:
-				instance.wisp = wisp.key
-			else:
-				wisp = Wisp.get_system_default()
-				instance.wisp = wisp.key
-
-			# add flavor to new instance, or return error
-			flavor = Flavor.get_by_name(flavor_name)
-			if flavor:
-				instance.flavor = flavor.key
-			else:
-				logging.error("%s submitted an unknown flavor." % ip)
-				return error_response(self, "Flavor name not found.", 401, params)
-
-		#########################################################
-		# 4. update local instance with appliance instance data #
-		#########################################################
-
-		# update start time if instance state changed from being 1 to anything else
-		if instance.state == 1 and state > 1:
-			instance.started = datetime.utcnow()
-		# load state and ips into local instance
-		instance.state = state
-		instance.expires = expires
-		instance.ipv4_private_address = ipv4_private_address
-		instance.ipv4_address = ipv4_address
-		instance.ipv6_address = ipv6_address
-		
-
-		# load console output into local instance
-		h = HTMLParser()
-		console = ""
-		for line in console_output:
-			console += "%s\n" % h.unescape(line)
-
-		instance.console_output = console
+			# associate instance with it's appliance
+			instance_shim.appliance = appliance
+		except Exception as e:
+			print("Error in creating or updating instance from post data, "
+						"with message {0}".format(str(e)))
 
 		# update local instance
 		instance.put()
@@ -653,7 +584,7 @@ class InstanceDetailHandler(BaseHandler):
 		# load the instance info back into the response
 		params = {
 			'response': "success",
-			'instance_name': name,
+			'instance_name': instance.name,
 			'image': image,
 			'dynamic_image_url': dynamic_image_url,
 			'callback_url': callback_url,
@@ -774,21 +705,18 @@ class FlavorsHandler(BaseHandler):
 	# disable csrf check in basehandler
 	csrf_exempt = True
 
-	def post(self):
-		# get current flavors
-		flavors = Flavor().get_all()
-		
-		# build parameter list
-		params = {
-			'flavors': flavors
-		}
-
-		# return images via template
+	def post(self, action):
 		self.response.headers['Content-Type'] = 'application/json'
-		return self.render_template('api/flavors.json', **params)
+		self.response.set_status(200)
+		# write dictionary as json string
+		self.response.out.write(json.dumps(
+				# retrieve flavors as schema and convert schema to dict
+				Flavor.as_schema_list(
+					# pass get_all method as query object
+					Flavor.get_all).as_dict()))
 
-	def get(self):
-		return self.post()
+	def get(self, action):
+		return self.post(action)
 
 
 # used to log whatever we want to track

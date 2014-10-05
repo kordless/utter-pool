@@ -1,6 +1,6 @@
 {"response": "success",
   "result": {
-    "flavors": [{% for flavor in flavors %}
+    "flavors": [{% for flavor in items %}
       { 
         "id": "{{ flavor.key.id() }}",
         "name": "{{ flavor.name }}",
@@ -8,11 +8,12 @@
         "vpus": {{ flavor.vpus }},
         "disk": {{ flavor.disk }},
         "memory": {{ flavor.memory }},
-        "network": {{ flavor.network }},
+        "network_down": {{ flavor.network_down }},
+        "network_up": {{ flavor.network_up }},
         "rate": {{ flavor.rate }},
         "hot": {{ flavor.hot }},
         "launches": {{ flavor.launches }},
-        "flags": {% if flavor.active == False %}8{% else %}1{% endif %}
+        "flags": {{ flavor.flags }},
       }{% if not loop.last %},{% endif %}{% endfor %}
     ]
   }

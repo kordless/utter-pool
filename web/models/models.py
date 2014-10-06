@@ -448,11 +448,11 @@ class Wisp(ndb.Model):
 
 
 # instance model
-class Instance(ndb.Model):
-	created = ndb.DateTimeProperty(auto_now_add=True)
-	updated = ndb.DateTimeProperty(auto_now=True)
-	expires = ndb.DateTimeProperty()
-	started = ndb.DateTimeProperty()
+class Instance(ndb.Model, ModelSchemaMixin):
+	created = ndb.IntegerProperty()
+	updated = ndb.IntegerProperty()
+	expires = ndb.IntegerProperty()
+	started = ndb.IntegerProperty()
 	name = ndb.StringProperty()
 	address = ndb.StringProperty() # bitcoin
 	owner = ndb.KeyProperty(kind=User)
@@ -470,6 +470,8 @@ class Instance(ndb.Model):
 	reserved = ndb.BooleanProperty(default=False)
 	token = ndb.StringProperty()
 	console_output = ndb.TextProperty()
+
+	object_schema = schemas['InstanceSchema']
 
 	def __setattr__(self, k, v):
 		if k == "state" and self.state == 1 and v > 1:

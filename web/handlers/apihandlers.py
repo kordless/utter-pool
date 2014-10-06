@@ -433,8 +433,8 @@ class InstanceDetailHandler(BaseHandler):
 			# associate instance with it's appliance
 			instance_shim.appliance = appliance
 		except Exception as e:
-			print("Error in creating or updating instance from post data, "
-						"with message {0}".format(str(e)))
+			return error_response(self, 'Error in creating or updating instance from '
+														'post data, with message {0}'.format(str(e)), 500, {})
 
 		# update local instance
 		instance.put()

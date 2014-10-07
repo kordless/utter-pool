@@ -466,6 +466,8 @@ class Instance(ndb.Model, ModelSchemaMixin):
 	ipv4_private_address = ndb.StringProperty()
 	ipv4_address = ndb.StringProperty()
 	ipv6_address = ndb.StringProperty()
+	image_url = ndb.StringProperty()
+	image_name = ndb.StringProperty()
 	state = ndb.IntegerProperty()
 	reserved = ndb.BooleanProperty(default=False)
 	token = ndb.StringProperty()

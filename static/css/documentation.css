@@ -1,0 +1,16 @@
+html, body {
+	padding-top: 25px;
+}
+h1 {
+	padding-top: 10px;
+}
+.inverse {
+	background-color: #252525;
+	color: #fff;
+	padding-left: 20px;
+	padding-bottom: 30px;
+}
+
+.bs-docs-sidebar {
+	margin-top: 200px;
+}

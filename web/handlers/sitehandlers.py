@@ -125,6 +125,12 @@ class AboutHandler(BaseHandler):
 		return forms.AboutForm(self)
 
 
+class DocsHandler(BaseHandler):
+	def get(self):
+		params = {}
+		return self.render_template('site/docs.html', **params)
+
+
 class HomeRequestHandler(BaseHandler):
 	def get(self):
 		params = {}

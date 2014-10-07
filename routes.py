@@ -24,6 +24,7 @@ _routes = [
 		RedirectRoute('/about/', sitehandlers.AboutHandler, name='about', strict_slash=True),
 		RedirectRoute('/pricing/', sitehandlers.PricingHandler, name='pricing', strict_slash=True),
 		RedirectRoute('/features/', sitehandlers.FeaturesHandler, name='features', strict_slash=True),
+		RedirectRoute('/docs/', sitehandlers.DocsHandler, name='docs', strict_slash=True),
 
 		# users
 		RedirectRoute('/login/', userhandlers.LoginHandler, name='login', strict_slash=True),

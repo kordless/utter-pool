@@ -3,9 +3,8 @@
 
 {% block page_styles %}
     <!-- Home Page -->
-    <link href="/css/documentation.css" rel="stylesheet">
-    <link href="http://getbootstrap.com/assets/css/docs.min.css" rel="stylesheet">
-    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/docs.css" rel="stylesheet">
+    <link href="/css/documentation.css" rel="stylesheet"> 
     <link href="/css/font-awesome.css" rel="stylesheet">
 
 {% endblock %}
@@ -23,124 +22,90 @@
     </div>
   </div>
 </div>
-<div class="container">
+<div id="docs" class="container">
 	<div class="row">
-		<div data-spy="scroll" data-target=".bs-docs-sidebar" class="col-md-9">
-			<h2 id="overview">Overview</h2>
-			<p>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam mollis at felis sed auctor. Maecenas auctor nunc at ante iaculis, quis venenatis urna egestas. Etiam tincidunt nibh ipsum, sed pharetra mauris ullamcorper eget. Quisque velit odio, hendrerit sed libero eget, convallis feugiat quam. Etiam consectetur lectus in nibh auctor, id semper arcu commodo. Quisque placerat ligula purus, eget scelerisque nulla gravida vitae. Maecenas facilisis tortor eget massa pellentesque aliquam.
-			</p>
-			<p>
-				Mauris vehicula mattis ligula. Ut mollis malesuada auctor. Nullam bibendum tellus elementum neque faucibus pulvinar. Quisque dapibus malesuada ligula. Vestibulum elementum egestas mauris, in maximus mauris luctus id. Sed a dolor dui. Praesent elementum enim tortor, ultricies elementum quam feugiat at. Aliquam sed lacinia felis. Nullam vestibulum purus justo, a mattis purus semper nec. Fusce aliquam ipsum erat, quis euismod lorem vestibulum ut. Pellentesque fringilla aliquam diam, non sollicitudin ligula cursus in. Donec eu tempor urna. Duis nec nibh id elit varius volutpat.
-			</p>
-			<p>
-				Curabitur a justo eu magna maximus consequat. Praesent felis nibh, maximus posuere mauris blandit, vehicula cursus libero. Ut interdum pretium augue, ut dapibus lorem pharetra et. Proin maximus massa eget nunc auctor suscipit. Quisque et viverra eros, ac pretium odio. Ut in massa in sem dignissim iaculis at non tellus. Proin posuere, sapien at pulvinar iaculis, lectus nulla viverra ipsum, et suscipit nunc ante lobortis risus. Duis dignissim euismod enim at vehicula. Mauris finibus ex sit amet erat rhoncus consectetur non efficitur odio.
-			</p>
-			<p>
-				Quisque venenatis sit amet dui at maximus. Quisque in massa ut ante finibus cursus nec condimentum urna. Praesent ut felis porta, porttitor felis eu, condimentum leo. Fusce iaculis, elit non ullamcorper sagittis, neque enim pellentesque orci, in ultrices urna sapien sed ipsum. Donec tincidunt, felis eu auctor interdum, eros massa condimentum leo, id bibendum leo dolor at odio. Proin lectus nulla, tristique vitae felis quis, facilisis elementum mauris. Nam sodales hendrerit felis. Nam lobortis libero et facilisis dapibus. Cras convallis ut felis eget tempor. Suspendisse facilisis, enim vitae feugiat fringilla, lectus lectus semper tellus, vitae vehicula velit tellus at dui. In placerat venenatis nibh, quis vestibulum elit. Morbi porta nibh urna, et molestie augue venenatis et.
-			</p>
-			<p>
-				Nullam nec mi interdum, venenatis neque tincidunt, faucibus nisl. Nullam placerat, ex et iaculis viverra, mi odio dapibus sem, ac imperdiet odio est eu ipsum. Vivamus sit amet ullamcorper lectus. Phasellus imperdiet imperdiet aliquam. Quisque mattis bibendum semper. Suspendisse feugiat neque dui, id tempor erat semper sit amet. Vestibulum finibus aliquam suscipit. Nulla vel lorem non nibh tristique feugiat. Etiam fringilla enim libero, in commodo velit lacinia sed.
-			</p>
-			<h2 id="stuff">Stuff</h2>
-			<p>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam mollis at felis sed auctor. Maecenas auctor nunc at ante iaculis, quis venenatis urna egestas. Etiam tincidunt nibh ipsum, sed pharetra mauris ullamcorper eget. Quisque velit odio, hendrerit sed libero eget, convallis feugiat quam. Etiam consectetur lectus in nibh auctor, id semper arcu commodo. Quisque placerat ligula purus, eget scelerisque nulla gravida vitae. Maecenas facilisis tortor eget massa pellentesque aliquam.
-			</p>
-			<p>
-				Mauris vehicula mattis ligula. Ut mollis malesuada auctor. Nullam bibendum tellus elementum neque faucibus pulvinar. Quisque dapibus malesuada ligula. Vestibulum elementum egestas mauris, in maximus mauris luctus id. Sed a dolor dui. Praesent elementum enim tortor, ultricies elementum quam feugiat at. Aliquam sed lacinia felis. Nullam vestibulum purus justo, a mattis purus semper nec. Fusce aliquam ipsum erat, quis euismod lorem vestibulum ut. Pellentesque fringilla aliquam diam, non sollicitudin ligula cursus in. Donec eu tempor urna. Duis nec nibh id elit varius volutpat.
-			</p>
-			<p>
-				Curabitur a justo eu magna maximus consequat. Praesent felis nibh, maximus posuere mauris blandit, vehicula cursus libero. Ut interdum pretium augue, ut dapibus lorem pharetra et. Proin maximus massa eget nunc auctor suscipit. Quisque et viverra eros, ac pretium odio. Ut in massa in sem dignissim iaculis at non tellus. Proin posuere, sapien at pulvinar iaculis, lectus nulla viverra ipsum, et suscipit nunc ante lobortis risus. Duis dignissim euismod enim at vehicula. Mauris finibus ex sit amet erat rhoncus consectetur non efficitur odio.
-			</p>
-			<p>
-				Quisque venenatis sit amet dui at maximus. Quisque in massa ut ante finibus cursus nec condimentum urna. Praesent ut felis porta, porttitor felis eu, condimentum leo. Fusce iaculis, elit non ullamcorper sagittis, neque enim pellentesque orci, in ultrices urna sapien sed ipsum. Donec tincidunt, felis eu auctor interdum, eros massa condimentum leo, id bibendum leo dolor at odio. Proin lectus nulla, tristique vitae felis quis, facilisis elementum mauris. Nam sodales hendrerit felis. Nam lobortis libero et facilisis dapibus. Cras convallis ut felis eget tempor. Suspendisse facilisis, enim vitae feugiat fringilla, lectus lectus semper tellus, vitae vehicula velit tellus at dui. In placerat venenatis nibh, quis vestibulum elit. Morbi porta nibh urna, et molestie augue venenatis et.
-			</p>
-			<p>
-				Nullam nec mi interdum, venenatis neque tincidunt, faucibus nisl. Nullam placerat, ex et iaculis viverra, mi odio dapibus sem, ac imperdiet odio est eu ipsum. Vivamus sit amet ullamcorper lectus. Phasellus imperdiet imperdiet aliquam. Quisque mattis bibendum semper. Suspendisse feugiat neque dui, id tempor erat semper sit amet. Vestibulum finibus aliquam suscipit. Nulla vel lorem non nibh tristique feugiat. Etiam fringilla enim libero, in commodo velit lacinia sed.
-			</p>
-			<h2 id="more">More</h2>
-			<p>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam mollis at felis sed auctor. Maecenas auctor nunc at ante iaculis, quis venenatis urna egestas. Etiam tincidunt nibh ipsum, sed pharetra mauris ullamcorper eget. Quisque velit odio, hendrerit sed libero eget, convallis feugiat quam. Etiam consectetur lectus in nibh auctor, id semper arcu commodo. Quisque placerat ligula purus, eget scelerisque nulla gravida vitae. Maecenas facilisis tortor eget massa pellentesque aliquam.
-			</p>
-			<p>
-				Mauris vehicula mattis ligula. Ut mollis malesuada auctor. Nullam bibendum tellus elementum neque faucibus pulvinar. Quisque dapibus malesuada ligula. Vestibulum elementum egestas mauris, in maximus mauris luctus id. Sed a dolor dui. Praesent elementum enim tortor, ultricies elementum quam feugiat at. Aliquam sed lacinia felis. Nullam vestibulum purus justo, a mattis purus semper nec. Fusce aliquam ipsum erat, quis euismod lorem vestibulum ut. Pellentesque fringilla aliquam diam, non sollicitudin ligula cursus in. Donec eu tempor urna. Duis nec nibh id elit varius volutpat.
-			</p>
-			<p>
-				Curabitur a justo eu magna maximus consequat. Praesent felis nibh, maximus posuere mauris blandit, vehicula cursus libero. Ut interdum pretium augue, ut dapibus lorem pharetra et. Proin maximus massa eget nunc auctor suscipit. Quisque et viverra eros, ac pretium odio. Ut in massa in sem dignissim iaculis at non tellus. Proin posuere, sapien at pulvinar iaculis, lectus nulla viverra ipsum, et suscipit nunc ante lobortis risus. Duis dignissim euismod enim at vehicula. Mauris finibus ex sit amet erat rhoncus consectetur non efficitur odio.
-			</p>
-			<p>
-				Quisque venenatis sit amet dui at maximus. Quisque in massa ut ante finibus cursus nec condimentum urna. Praesent ut felis porta, porttitor felis eu, condimentum leo. Fusce iaculis, elit non ullamcorper sagittis, neque enim pellentesque orci, in ultrices urna sapien sed ipsum. Donec tincidunt, felis eu auctor interdum, eros massa condimentum leo, id bibendum leo dolor at odio. Proin lectus nulla, tristique vitae felis quis, facilisis elementum mauris. Nam sodales hendrerit felis. Nam lobortis libero et facilisis dapibus. Cras convallis ut felis eget tempor. Suspendisse facilisis, enim vitae feugiat fringilla, lectus lectus semper tellus, vitae vehicula velit tellus at dui. In placerat venenatis nibh, quis vestibulum elit. Morbi porta nibh urna, et molestie augue venenatis et.
-			</p>
-			<p>
-				Nullam nec mi interdum, venenatis neque tincidunt, faucibus nisl. Nullam placerat, ex et iaculis viverra, mi odio dapibus sem, ac imperdiet odio est eu ipsum. Vivamus sit amet ullamcorper lectus. Phasellus imperdiet imperdiet aliquam. Quisque mattis bibendum semper. Suspendisse feugiat neque dui, id tempor erat semper sit amet. Vestibulum finibus aliquam suscipit. Nulla vel lorem non nibh tristique feugiat. Etiam fringilla enim libero, in commodo velit lacinia sed.
-			</p>
-			<h2 id="things">Things</h2>
-			<p>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam mollis at felis sed auctor. Maecenas auctor nunc at ante iaculis, quis venenatis urna egestas. Etiam tincidunt nibh ipsum, sed pharetra mauris ullamcorper eget. Quisque velit odio, hendrerit sed libero eget, convallis feugiat quam. Etiam consectetur lectus in nibh auctor, id semper arcu commodo. Quisque placerat ligula purus, eget scelerisque nulla gravida vitae. Maecenas facilisis tortor eget massa pellentesque aliquam.
-			</p>
-			<p>
-				Mauris vehicula mattis ligula. Ut mollis malesuada auctor. Nullam bibendum tellus elementum neque faucibus pulvinar. Quisque dapibus malesuada ligula. Vestibulum elementum egestas mauris, in maximus mauris luctus id. Sed a dolor dui. Praesent elementum enim tortor, ultricies elementum quam feugiat at. Aliquam sed lacinia felis. Nullam vestibulum purus justo, a mattis purus semper nec. Fusce aliquam ipsum erat, quis euismod lorem vestibulum ut. Pellentesque fringilla aliquam diam, non sollicitudin ligula cursus in. Donec eu tempor urna. Duis nec nibh id elit varius volutpat.
-			</p>
-			<p>
-				Curabitur a justo eu magna maximus consequat. Praesent felis nibh, maximus posuere mauris blandit, vehicula cursus libero. Ut interdum pretium augue, ut dapibus lorem pharetra et. Proin maximus massa eget nunc auctor suscipit. Quisque et viverra eros, ac pretium odio. Ut in massa in sem dignissim iaculis at non tellus. Proin posuere, sapien at pulvinar iaculis, lectus nulla viverra ipsum, et suscipit nunc ante lobortis risus. Duis dignissim euismod enim at vehicula. Mauris finibus ex sit amet erat rhoncus consectetur non efficitur odio.
-			</p>
-			<p>
-				Quisque venenatis sit amet dui at maximus. Quisque in massa ut ante finibus cursus nec condimentum urna. Praesent ut felis porta, porttitor felis eu, condimentum leo. Fusce iaculis, elit non ullamcorper sagittis, neque enim pellentesque orci, in ultrices urna sapien sed ipsum. Donec tincidunt, felis eu auctor interdum, eros massa condimentum leo, id bibendum leo dolor at odio. Proin lectus nulla, tristique vitae felis quis, facilisis elementum mauris. Nam sodales hendrerit felis. Nam lobortis libero et facilisis dapibus. Cras convallis ut felis eget tempor. Suspendisse facilisis, enim vitae feugiat fringilla, lectus lectus semper tellus, vitae vehicula velit tellus at dui. In placerat venenatis nibh, quis vestibulum elit. Morbi porta nibh urna, et molestie augue venenatis et.
-			</p>
-			<p>
-				Nullam nec mi interdum, venenatis neque tincidunt, faucibus nisl. Nullam placerat, ex et iaculis viverra, mi odio dapibus sem, ac imperdiet odio est eu ipsum. Vivamus sit amet ullamcorper lectus. Phasellus imperdiet imperdiet aliquam. Quisque mattis bibendum semper. Suspendisse feugiat neque dui, id tempor erat semper sit amet. Vestibulum finibus aliquam suscipit. Nulla vel lorem non nibh tristique feugiat. Etiam fringilla enim libero, in commodo velit lacinia sed.
-			</p>
-			<h2 id="stuff">APIs</h2>
-			<p>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam mollis at felis sed auctor. Maecenas auctor nunc at ante iaculis, quis venenatis urna egestas. Etiam tincidunt nibh ipsum, sed pharetra mauris ullamcorper eget. Quisque velit odio, hendrerit sed libero eget, convallis feugiat quam. Etiam consectetur lectus in nibh auctor, id semper arcu commodo. Quisque placerat ligula purus, eget scelerisque nulla gravida vitae. Maecenas facilisis tortor eget massa pellentesque aliquam.
-			</p>
-			<h2 id="examples">Examples</h2>
-			<p>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam mollis at felis sed auctor. Maecenas auctor nunc at ante iaculis, quis venenatis urna egestas. Etiam tincidunt nibh ipsum, sed pharetra mauris ullamcorper eget. Quisque velit odio, hendrerit sed libero eget, convallis feugiat quam. Etiam consectetur lectus in nibh auctor, id semper arcu commodo. Quisque placerat ligula purus, eget scelerisque nulla gravida vitae. Maecenas facilisis tortor eget massa pellentesque aliquam.
-			</p>
-			<p>
-				Mauris vehicula mattis ligula. Ut mollis malesuada auctor. Nullam bibendum tellus elementum neque faucibus pulvinar. Quisque dapibus malesuada ligula. Vestibulum elementum egestas mauris, in maximus mauris luctus id. Sed a dolor dui. Praesent elementum enim tortor, ultricies elementum quam feugiat at. Aliquam sed lacinia felis. Nullam vestibulum purus justo, a mattis purus semper nec. Fusce aliquam ipsum erat, quis euismod lorem vestibulum ut. Pellentesque fringilla aliquam diam, non sollicitudin ligula cursus in. Donec eu tempor urna. Duis nec nibh id elit varius volutpat.
-			</p>
-			<p>
-				Curabitur a justo eu magna maximus consequat. Praesent felis nibh, maximus posuere mauris blandit, vehicula cursus libero. Ut interdum pretium augue, ut dapibus lorem pharetra et. Proin maximus massa eget nunc auctor suscipit. Quisque et viverra eros, ac pretium odio. Ut in massa in sem dignissim iaculis at non tellus. Proin posuere, sapien at pulvinar iaculis, lectus nulla viverra ipsum, et suscipit nunc ante lobortis risus. Duis dignissim euismod enim at vehicula. Mauris finibus ex sit amet erat rhoncus consectetur non efficitur odio.
-			</p>
-			<p>
-				Quisque venenatis sit amet dui at maximus. Quisque in massa ut ante finibus cursus nec condimentum urna. Praesent ut felis porta, porttitor felis eu, condimentum leo. Fusce iaculis, elit non ullamcorper sagittis, neque enim pellentesque orci, in ultrices urna sapien sed ipsum. Donec tincidunt, felis eu auctor interdum, eros massa condimentum leo, id bibendum leo dolor at odio. Proin lectus nulla, tristique vitae felis quis, facilisis elementum mauris. Nam sodales hendrerit felis. Nam lobortis libero et facilisis dapibus. Cras convallis ut felis eget tempor. Suspendisse facilisis, enim vitae feugiat fringilla, lectus lectus semper tellus, vitae vehicula velit tellus at dui. In placerat venenatis nibh, quis vestibulum elit. Morbi porta nibh urna, et molestie augue venenatis et.
-			</p>
-			<p>
-				Nullam nec mi interdum, venenatis neque tincidunt, faucibus nisl. Nullam placerat, ex et iaculis viverra, mi odio dapibus sem, ac imperdiet odio est eu ipsum. Vivamus sit amet ullamcorper lectus. Phasellus imperdiet imperdiet aliquam. Quisque mattis bibendum semper. Suspendisse feugiat neque dui, id tempor erat semper sit amet. Vestibulum finibus aliquam suscipit. Nulla vel lorem non nibh tristique feugiat. Etiam fringilla enim libero, in commodo velit lacinia sed.
-			</p>
-			<h2 id="auth">Auth</h2>
-			<p>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam mollis at felis sed auctor. Maecenas auctor nunc at ante iaculis, quis venenatis urna egestas. Etiam tincidunt nibh ipsum, sed pharetra mauris ullamcorper eget. Quisque velit odio, hendrerit sed libero eget, convallis feugiat quam. Etiam consectetur lectus in nibh auctor, id semper arcu commodo. Quisque placerat ligula purus, eget scelerisque nulla gravida vitae. Maecenas facilisis tortor eget massa pellentesque aliquam.
-			</p>
-		</div>
-		<div class="col-md-3">
-			<div class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" role="complementary">
-				<ul class="nav bs-docs-sidenav">
-					<li>
-						<a href="#overview">Overview</a>
-						<ul class="nav">
-							<li><a href="#stuff">Stuff</a></li>
-							<li><a href="#more">More</a></li>
-						</ul>
-					</li>
-					<li><a href="#things">Things</a></li>
-					<li>
-						<a href="#apis">APIs</a>
-						<ul class="nav">
-							<li><a href="#examples">Examples</a></li>
-							<li><a href="#auth">Auth</a></li>
-						</ul>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</div>
+    <!--Main Content -->
+    <div class="col-xs-9">
+      <section id="GroupA" class="group">
+        <h3>Group A</h3>
+        <p>Pellentesque nec vulputate erat. Donec massa nisl, feugiat ut rutrum in, vulputate in mi. Nunc sed ligula feugiat, viverra massa ac, scelerisque est. Etiam ut nisi eu nibh lobortis volutpat. Duis viverra risus vitae magna mollis gravida. Donec eu viverra magna. Vivamus ornare tristique quam at maximus. Suspendisse potenti. Praesent elementum vestibulum ligula non sodales. Phasellus eleifend risus non hendrerit malesuada. Aliquam eros nibh, posuere in justo</p>
+
+        <div id="GroupASub1" class="subgroup">
+          <h4>Group A Sub 1</h4>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin non massa ac ligula pellentesque facilisis. Duis nec pretium nunc. Pellentesque feugiat, tortor et efficitur placerat, nisl felis imperdiet erat, vitae lacinia urna ligula vel ex. Duis tellus velit, aliquet nec luctus at, maximus id elit. Praesent luctus eu elit et porta. Nunc posuere commodo volutpat. Nam convallis, nulla sed eleifend fermentum, ipsum ligula eleifend libero, quis posuere ligula lectus eget ipsum. Donec ultricies, quam eget blandit fermentum, leo purus maximus libero, a scelerisque elit turpis vel nibh. Duis vel venenatis libero. Nam id dictum neque. Donec tellus turpis, dictum nec posuere at, vulputate a est. Phasellus enim metus, viverra sed leo tempor, accumsan vestibulum turpis. Vivamus in lobortis purus, eget convallis mi.</p>
+          <p>Pellentesque nec vulputate erat. Donec massa nisl, feugiat ut rutrum in, vulputate in mi. Nunc sed ligula feugiat, viverra massa ac, scelerisque est. Etiam ut nisi eu nibh lobortis volutpat. Duis viverra risus vitae magna mollis gravida. Donec eu viverra magna. Vivamus ornare tristique quam at maximus. Suspendisse potenti. Praesent elementum vestibulum ligula non sodales. Phasellus eleifend risus non hendrerit malesuada. Aliquam eros nibh, posuere in justo</p>
+        </div>
+        <div id="GroupASub2" class="subgroup">
+          <h4>Group A Sub 2</h4>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin non massa ac ligula pellentesque facilisis. Duis nec pretium nunc. Pellentesque feugiat, tortor et efficitur placerat, nisl felis imperdiet erat, vitae lacinia urna ligula vel ex. Duis tellus velit, aliquet nec luctus at, maximus id elit. Praesent luctus eu elit et porta. Nunc posuere commodo volutpat. Nam convallis, nulla sed eleifend fermentum, ipsum ligula eleifend libero, quis posuere ligula lectus eget ipsum. Donec ultricies, quam eget blandit fermentum, leo purus maximus libero, a scelerisque elit turpis vel nibh. Duis vel venenatis libero. Nam id dictum neque. Donec tellus turpis, dictum nec posuere at, vulputate a est. Phasellus enim metus, viverra sed leo tempor, accumsan vestibulum turpis. Vivamus in lobortis purus, eget convallis mi.</p>
+          <p>Pellentesque nec vulputate erat. Donec massa nisl, feugiat ut rutrum in, vulputate in mi. Nunc sed ligula feugiat, viverra massa ac, scelerisque est. Etiam ut nisi eu nibh lobortis volutpat. Duis viverra risus vitae magna mollis gravida. Donec eu viverra magna. Vivamus ornare tristique quam at maximus. Suspendisse potenti. Praesent elementum vestibulum ligula non sodales. Phasellus eleifend risus non hendrerit malesuada. Aliquam eros nibh, posuere in justo</p>
+        </div>
+      </section>
+      <section id="GroupB" class="group">
+        <h3>Group B</h3>
+          <div id="GroupBSub1" class="subgroup">
+            <h4>Group B Sub 1</h4>
+	          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin non massa ac ligula pellentesque facilisis. Duis nec pretium nunc. Pellentesque feugiat, tortor et efficitur placerat, nisl felis imperdiet erat, vitae lacinia urna ligula vel ex. Duis tellus velit, aliquet nec luctus at, maximus id elit. Praesent luctus eu elit et porta. Nunc posuere commodo volutpat. Nam convallis, nulla sed eleifend fermentum, ipsum ligula eleifend libero, quis posuere ligula lectus eget ipsum. Donec ultricies, quam eget blandit fermentum, leo purus maximus libero, a scelerisque elit turpis vel nibh. Duis vel venenatis libero. Nam id dictum neque. Donec tellus turpis, dictum nec posuere at, vulputate a est. Phasellus enim metus, viverra sed leo tempor, accumsan vestibulum turpis. Vivamus in lobortis purus, eget convallis mi.</p>
+          </div>
+          <div id="GroupBSub2" class="subgroup">
+            <h4>Group B Sub 2</h4>
+            <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          </div>
+      </section>
+      <section id="GroupC" class="group">
+        <h3>Group C</h3>
+        	<p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          <div id="GroupCSub1" class="subgroup">
+            <h4>Group C Sub 1</h4>
+          	<p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          </div>
+          <div id="GroupCSub2" class="subgroup">
+            <h4>Group C Sub 2</h4>
+            <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          </div>
+      </section>    
+    </div>
+
+    <!--Nav Bar -->
+    <nav class="col-xs-3 bs-docs-sidebar">
+      <ul id="sidebar" class="nav nav-stacked" data-spy="affix" data-offset-top="120">
+        <li>
+		      <a href="#GroupA">Group A</a>
+		      <ul class="nav nav-stacked">
+	          <li><a href="#GroupASub1">Sub-Group 1</a></li>
+	          <li><a href="#GroupASub2">Sub-Group 2</a></li>
+		      </ul>
+        </li>
+        <li>
+          <a href="#GroupB">Group B</a>
+          <ul class="nav nav-stacked">
+            <li><a href="#GroupBSub1">Sub-Group 1</a></li>
+            <li><a href="#GroupBSub2">Sub-Group 2</a></li>
+          </ul>
+        </li>
+          <li>
+            <a href="#GroupC">Group C</a>
+            <ul class="nav nav-stacked">
+              <li><a href="#GroupCSub1">Sub-Group 1</a></li>
+              <li><a href="#GroupCSub2">Sub-Group 2</a></li>
+            </ul>
+          </li>
+      </ul>
+    </nav>
+	</div>	
 </div>
 
 {% endblock %}
 
 {% block javascript %}
   <script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.js'></script>
+  <script type="text/javascript">
+    $().ready(function() {
+			// scrollspy
+			$('body').scrollspy({
+				target: '.bs-docs-sidebar',
+    		offset: 40
+			});
+  	});
+  </script>
 {% endblock %}

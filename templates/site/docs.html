@@ -18,7 +18,7 @@
   <div class="container">
     <div class="row">
       <h1>Documentation</h1>
-      <p class="blurb">Welcome to the {{ app_name }} documentation.</p>
+      <p class="blurb">Welcome to the {{ app_name }} documentation! All your OpenStack are belong to us.</p>
     </div>
   </div>
 </div>
@@ -26,33 +26,71 @@
 	<div class="row">
     <!--Main Content -->
     <div class="col-xs-9">
-      <section id="GroupA" class="group">
-        <h3>Group A</h3>
-        <p>Pellentesque nec vulputate erat. Donec massa nisl, feugiat ut rutrum in, vulputate in mi. Nunc sed ligula feugiat, viverra massa ac, scelerisque est. Etiam ut nisi eu nibh lobortis volutpat. Duis viverra risus vitae magna mollis gravida. Donec eu viverra magna. Vivamus ornare tristique quam at maximus. Suspendisse potenti. Praesent elementum vestibulum ligula non sodales. Phasellus eleifend risus non hendrerit malesuada. Aliquam eros nibh, posuere in justo</p>
-
-        <div id="GroupASub1" class="subgroup">
-          <h4>Group A Sub 1</h4>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin non massa ac ligula pellentesque facilisis. Duis nec pretium nunc. Pellentesque feugiat, tortor et efficitur placerat, nisl felis imperdiet erat, vitae lacinia urna ligula vel ex. Duis tellus velit, aliquet nec luctus at, maximus id elit. Praesent luctus eu elit et porta. Nunc posuere commodo volutpat. Nam convallis, nulla sed eleifend fermentum, ipsum ligula eleifend libero, quis posuere ligula lectus eget ipsum. Donec ultricies, quam eget blandit fermentum, leo purus maximus libero, a scelerisque elit turpis vel nibh. Duis vel venenatis libero. Nam id dictum neque. Donec tellus turpis, dictum nec posuere at, vulputate a est. Phasellus enim metus, viverra sed leo tempor, accumsan vestibulum turpis. Vivamus in lobortis purus, eget convallis mi.</p>
-          <p>Pellentesque nec vulputate erat. Donec massa nisl, feugiat ut rutrum in, vulputate in mi. Nunc sed ligula feugiat, viverra massa ac, scelerisque est. Etiam ut nisi eu nibh lobortis volutpat. Duis viverra risus vitae magna mollis gravida. Donec eu viverra magna. Vivamus ornare tristique quam at maximus. Suspendisse potenti. Praesent elementum vestibulum ligula non sodales. Phasellus eleifend risus non hendrerit malesuada. Aliquam eros nibh, posuere in justo</p>
-        </div>
-        <div id="GroupASub2" class="subgroup">
-          <h4>Group A Sub 2</h4>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin non massa ac ligula pellentesque facilisis. Duis nec pretium nunc. Pellentesque feugiat, tortor et efficitur placerat, nisl felis imperdiet erat, vitae lacinia urna ligula vel ex. Duis tellus velit, aliquet nec luctus at, maximus id elit. Praesent luctus eu elit et porta. Nunc posuere commodo volutpat. Nam convallis, nulla sed eleifend fermentum, ipsum ligula eleifend libero, quis posuere ligula lectus eget ipsum. Donec ultricies, quam eget blandit fermentum, leo purus maximus libero, a scelerisque elit turpis vel nibh. Duis vel venenatis libero. Nam id dictum neque. Donec tellus turpis, dictum nec posuere at, vulputate a est. Phasellus enim metus, viverra sed leo tempor, accumsan vestibulum turpis. Vivamus in lobortis purus, eget convallis mi.</p>
-          <p>Pellentesque nec vulputate erat. Donec massa nisl, feugiat ut rutrum in, vulputate in mi. Nunc sed ligula feugiat, viverra massa ac, scelerisque est. Etiam ut nisi eu nibh lobortis volutpat. Duis viverra risus vitae magna mollis gravida. Donec eu viverra magna. Vivamus ornare tristique quam at maximus. Suspendisse potenti. Praesent elementum vestibulum ligula non sodales. Phasellus eleifend risus non hendrerit malesuada. Aliquam eros nibh, posuere in justo</p>
+      <section id="overview" class="group">
+        <h3>Overview</h3>
+        <p>{{ app_name }} is an instance of a <a href="http://utter.io/">Utter.io compute pool</a>.  Utter.io is like AirBnb for excess compute, providing fast location and provisioning of compute resources within a cooperative set of systems managed by <a href="http://superuser.openstack.org/">OpenStack operators</a>. Resource accounting inside the network is settled with <a href="https://bitcoin.org/">Bitcoin</a> and purchases of compute instances can be made by users without an account.</p>
+        <p>Providers can run a Utter.io virtual appliance on top of their OpenStack clusters, which allows a limited amount of control over the cluster by the appliance.  Appliances listen to the <strong>Bitcoin blockchain</strong> for payments to a given <strong>Bitcoin address</strong>.  When a payment is noted to an address, an instance is started using the flavor associated with the address.</p>
+        <p>The pool software provides a centralized location where appliances can advertise their instances for sale for a given ask price. By providing users the ability to bid on instances, this effectively creates a marketplace where compute can be openly sold, purchased or traded.  These transactions are done via <strong>Instance Reservations</strong>:</p>
+        <p class="text-center"><img src="/img/site/instance_reservation.png"/></p>
+        <p>Instances can only be started by payments made to an appliance's address. The appliance pool is not able to start a given appliance's instances directly, which should help eliminate payment fraud and general abuse of the system.</p>
+        <p>To elevate trust between users and providers, groups of operators can <a href="#pools-groups">form adhoc hybrid clouds</a>, which allows sharing of excess compute resources between trusted entities.  Future version of the software will provide additional trust levels automatically.</p>
+        <div class="bs-callout bs-callout-warning bs-callout-top">
+          <h4>Software Licensing</h4>
+					<p>All <a href="https://www.github.com/stackmonkey/">project code</a> is Open Source and licensed under the <a href="http://opensource.org/licenses/MIT">MIT License</a>. You may do whatever you please with the code!</p>
         </div>
       </section>
-      <section id="GroupB" class="group">
-        <h3>Group B</h3>
-          <div id="GroupBSub1" class="subgroup">
-            <h4>Group B Sub 1</h4>
+      <section id="pools" class="group">
+        <h3>Pools</h3>
+					<div id="pools-accounts" class="subgroup">
+            <h4>Pool Accounts</h4>
+	          <p>Accounts on the system are provided via federated logins with Google.  When you <a href="{{ uri_for('login') }}">login to {{ app_name }}</a> you will see a Google account chooser.  Select the account you want to use on {{ app_name }}.</p>
+	          <p class="text-center"><img src="/img/site/google_chooser.png"/></p>
+	          <p>Once you've logged into your Google account, you will be informed about the level of access {{ app_name }} will have to your Google account.  {{ app_name }} only needs access to your <strong>email address</strong>.
+	          </p>
+	          <p class="text-center"><img src="/img/site/google_access.png"/></p>
+          </div>
+          <div id="pools-launcher" class="subgroup">
+            <h4>Launching Instances</h4>
 	          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin non massa ac ligula pellentesque facilisis. Duis nec pretium nunc. Pellentesque feugiat, tortor et efficitur placerat, nisl felis imperdiet erat, vitae lacinia urna ligula vel ex. Duis tellus velit, aliquet nec luctus at, maximus id elit. Praesent luctus eu elit et porta. Nunc posuere commodo volutpat. Nam convallis, nulla sed eleifend fermentum, ipsum ligula eleifend libero, quis posuere ligula lectus eget ipsum. Donec ultricies, quam eget blandit fermentum, leo purus maximus libero, a scelerisque elit turpis vel nibh. Duis vel venenatis libero. Nam id dictum neque. Donec tellus turpis, dictum nec posuere at, vulputate a est. Phasellus enim metus, viverra sed leo tempor, accumsan vestibulum turpis. Vivamus in lobortis purus, eget convallis mi.</p>
           </div>
-          <div id="GroupBSub2" class="subgroup">
-            <h4>Group B Sub 2</h4>
+          <div id="pools-clouds" class="subgroup">
+            <h4>Forming Clouds</h4>
+            <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          </div>
+          <div id="pools-wisps" class="subgroup">
+            <h4>Server Wisps</h4>
+            <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          </div>
+          <div id="pools-appliances" class="subgroup">
+            <h4>Appliances</h4>
+            <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          </div>
+          <div id="pools-groups" class="subgroup">
+            <h4>Appliance Groups</h4>
             <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
           </div>
       </section>
-      <section id="GroupC" class="group">
+      <section id="appliance-install" class="group">
+        <h3>Group C</h3>
+        	<p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          <div id="appliance-install-openstack" class="subgroup">
+            <h4>Install OpenStack</h4>
+          	<p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          </div>
+          <div id="appliance-install-user" class="subgroup">
+            <h4>Configuring the User</h4>
+            <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          </div>
+          <div id="appliance-install-tenant" class="subgroup">
+            <h4>Configuring the Tenant</h4>
+            <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          </div>
+          <div id="appliance-install-instance" class="subgroup">
+            <h4>Starting the Appliance</h4>
+            <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          </div>
+      </section>   
+      <section id="appliance-operation" class="group">
         <h3>Group C</h3>
         	<p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
           <div id="GroupCSub1" class="subgroup">
@@ -70,26 +108,42 @@
     <nav class="col-xs-3 bs-docs-sidebar">
       <ul id="sidebar" class="nav nav-stacked" data-spy="affix" data-offset-top="120">
         <li>
-		      <a href="#GroupA">Group A</a>
-		      <ul class="nav nav-stacked">
-	          <li><a href="#GroupASub1">Sub-Group 1</a></li>
-	          <li><a href="#GroupASub2">Sub-Group 2</a></li>
-		      </ul>
+		      <a href="#overview">Overview</a>
         </li>
         <li>
-          <a href="#GroupB">Group B</a>
+          <a href="#pools">Pools</a>
           <ul class="nav nav-stacked">
-            <li><a href="#GroupBSub1">Sub-Group 1</a></li>
-            <li><a href="#GroupBSub2">Sub-Group 2</a></li>
+          	<li><a href="#pools-accounts">Accounts</a></li>
+            <li><a href="#pools-launcher">Launcher</a></li>
+            <li><a href="#pools-clouds">Clouds</a></li>
+            <li><a href="#pools-wisps">Wisps</a></li>
+            <li><a href="#pools-appliances">Appliances</a></li>
+            <li><a href="#pools-groups">Groups</a></li>
+            <li><a href="#pools-api">API</a></li>
           </ul>
         </li>
-          <li>
-            <a href="#GroupC">Group C</a>
-            <ul class="nav nav-stacked">
-              <li><a href="#GroupCSub1">Sub-Group 1</a></li>
-              <li><a href="#GroupCSub2">Sub-Group 2</a></li>
-            </ul>
-          </li>
+      	<li>
+      		<a href="#appliance-install">Appliance Install</a>
+      		<ul class="nav nav-stacked">
+            <li><a href="#appliance-install-openstack">Install OpenStack</a></li>
+            <li><a href="#appliance-install-user">Create User</a></li>
+            <li><a href="#appliance-install-tenant">Create Tenant</a></li>
+            <li><a href="#appliance-install-instance">Launch Instance</a></li>
+          </ul>
+      	</li>	
+      	<li>
+      		<a href="#appliance-operation">Appliance Operation</a>
+      		<ul class="nav nav-stacked">
+            <li><a href="#appliance-operation-settings">Basic Settings</a></li>
+            <li><a href="#appliance-operation-openstack">OpenStack</a></li>
+            <li><a href="#appliance-operation-flavors">Flavors</a></li>
+            <li><a href="#appliance-operation-ask">Ask Prices</a></li>
+            <li><a href="#appliance-operation-addresses">Bitcoin Addresses</a></li>
+            <li><a href="#appliance-operation-instances">Instances</a></li>
+            <li><a href="#appliance-operation-twitter">Twitter Bot</a></li>
+            <li><a href="#appliance-operation-api">APIs</a></li>
+           </ul>
+      	</li>	
       </ul>
     </nav>
 	</div>	

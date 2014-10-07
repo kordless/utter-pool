@@ -589,7 +589,6 @@ class InstanceDetailHandler(BaseHandler):
 			'post_create': post_creation})
 
 		self.response.set_status(200)
-		#self.response.set_status(200)
 		self.response.headers['Content-Type'] = 'application/json'
 		# write dictionary as json string
 		self.response.out.write(json.dumps(

@@ -1,14 +1,5 @@
 from utter_libs.schemas.flavor import flavor_schema
 
-image_schema = {
-	'type': 'object',
-	'title': 'Image',
-	'properties': {
-		'name': {'type': 'string'}
-	},
-	'required': ['name'],
-}
-
 ip_address_schema = {
 	'type': 'object',
 	'title': 'IPAddress',
@@ -21,12 +12,11 @@ ip_address_schema = {
 }
 
 instance_schema = {
-	"$schema": "http://json-schema.org/draft-04/schema#",
-	"type": "object",
+	'$schema': 'http://json-schema.org/draft-04/schema#',
+	'type': 'object',
 	'title': 'Instance',
 	'properties': {
 		'name': {'type': 'string'},
-		'image': image_schema,
 		'state': {'type': 'number'},
 		'address': {'type': 'string'},
 		'console_output': {
@@ -41,7 +31,7 @@ instance_schema = {
 		'flavor': flavor_schema,
 	},
 	'required': [
-		'name', 'image', 'state', 'address',
+		'name', 'state', 'address',
 		'expires', 'flavor',
 	],
 }

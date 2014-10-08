@@ -27,7 +27,7 @@ class ModelSchemaMixin(object):
 		# populate list schema with list of object schemas as dictionaries
 		schema.update({'items': [
 			x.as_schema().as_dict()
-			for x in query()]})
+			for x in query]})
 
 		# return schema
 		return schema

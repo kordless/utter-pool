@@ -713,7 +713,7 @@ class FlavorsHandler(BaseHandler):
 				# retrieve flavors as schema and convert schema to dict
 				Flavor.as_schema_list(
 					# pass get_all method as query object
-					Flavor.get_all).as_dict()))
+					Flavor.query(Flavor.active==True)).as_dict()))
 
 	def get(self, action):
 		return self.post(action)

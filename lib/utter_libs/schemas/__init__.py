@@ -4,6 +4,7 @@ from instance import instance_schema
 from appliance import appliance_schema
 from flavor import flavor_schema
 from flavor import flavor_list_schema
+from instance_start_parameters import instance_start_parameters_schema
 
 
 schemas = {
@@ -11,6 +12,8 @@ schemas = {
     'ApplianceSchema': (appliance_schema, 'Appliance'),
     'FlavorSchema': (flavor_schema, 'Flavor'),
     'FlavorListSchema': (flavor_list_schema, 'Flavorlist'),
+    'InstanceStartParametersSchema': (
+      instance_start_parameters_schema, 'Instancestartparameters'),
 }
 
 # iterate over schemas and create their according content-types

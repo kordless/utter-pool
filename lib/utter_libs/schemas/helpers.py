@@ -30,6 +30,11 @@ class ApiSchemaHelper(object):
         if hasattr(src, k) and getattr(src, k) != None:
           data[k] = getattr(src, k)
       elif issubclass(v['type'], ProtocolBase):
-        if getattr(src, k) != None:
-          data[k] = cls.iterate_properties(getattr(src, k), v['properties'])
+        prop = getattr(src, k)
+        if prop != None:
+          # if that's a Google Appengine key referencing another model
+          # it needs to be fetched first
+          if prop.__class__.__name__ == "Key":
+            prop = prop.get()
+          data[k] = cls.iterate_properties(prop, v['properties'])
     return data

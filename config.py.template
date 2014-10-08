@@ -34,6 +34,9 @@ captcha_private_key = "PRIVATE_CAPTCHA"
 # tracking shizzle
 google_analytics_code = "GA_CODE"
 
+# slack integration
+slack_webhook = ""
+
 # webapp config
 session_age = 3600
 webapp2_config = {}

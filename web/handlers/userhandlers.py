@@ -144,6 +144,14 @@ class CallbackLoginHandler(BaseHandler):
 			message = "You have successfully logged in!"            
 			self.add_message(message, 'success')
 
+			# slack the new user signup
+			slack_json = '{"text": "Woot! New user %s just signed up!", "username": "VP of Cloud", "icon_emoji": ":cloud:"}' % user_info.username
+			h = httplib2.Http()
+			resp, content = h.request(config.slack_webhook, 
+        'POST', 
+        slack_json,
+        headers={'Content-Type': 'application/json'})
+
 			# take user to whatever page was originally requested, or status if none
 			if next:
 				return self.redirect(str(next))

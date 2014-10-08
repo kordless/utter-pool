@@ -33,17 +33,29 @@
 <a name="contact"></a>
 <div class="container">
   <div class="row text-center">
-    <h1 class="team">Meet the Team</h1>
-    <img src="/img/about/kord.jpg" alt="Kord" class="img-rounded">
-    <a name="contact"></a>
-    <h3><a href="https://www.google.com/search?q=Kord+Campbell">Kord Campbell</a>, Solo Founder</h3>
-    <p class="paddme">Follow @<a href="http://twitter.com/kordless">kordless</a> on Twitter.  He's a hoot.</p>
+    <h1>Meet the Team</h1>
+    <ul class="team">
+      <li>
+        <b>Kord</b>
+        <a target="_blank" href="https://twitter.com/kordless"><img src="/img/site/twitter.png" alt="Twitter"></a>
+        <a target="_blank" href="https://github.com/kordless"><img src="/img/site/github.png" alt="Github"></a>
+        <img src="/img/about/kord.png">
+        <span class="mask"></span>
+      </li>
+      <li>
+        <b>Mauro</b>
+        <a target="_blank" href="https://twitter.com/r3pl4y"><img src="/img/site/twitter.png" alt="Twitter"></a>
+        <a target="_blank" href="https://github.com/replay"><img src="/img/site/github.png" alt="Github"></a>
+        <img src="/img/about/mauro.png">
+        <span class="mask"></span>
+      </li>
+    </ul>
   </div>
 </div>
 <div class="inverse">
   <div class="container">
     <div class="row text-center contact">
-      <h1 class="team">Give Us a Holler</h1>
+      <h1>Give Us a Holler</h1>
       <form action="{{ url|safe }}" method="post" role="form">
         <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
         {{ macros.input(form, "name", ("Name"), placeholder=("Wow. Your name is awesome."), class="form-control focused required") }}

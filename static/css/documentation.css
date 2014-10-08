@@ -43,9 +43,6 @@ h1 {
 /* all links */
 .bs-docs-sidebar .nav>li>a {
     color: #999;
-    border-left: 2px solid transparent;
-    padding: 4px 20px;
-    font-size: 13px;
     font-weight: 400;
 }
 
@@ -54,7 +51,7 @@ h1 {
     padding-top: 1px;
     padding-bottom: 1px;
     padding-left: 30px;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 /* active & hover links */
@@ -71,6 +68,7 @@ h1 {
 .bs-docs-sidebar .nav>.active:hover>a,
 .bs-docs-sidebar .nav>.active:focus>a {
     font-weight: 700;
+    font-size: 13px;
 }
 /* nested active links */
 .bs-docs-sidebar .nav .nav>.active>a, 
@@ -90,4 +88,7 @@ h1 {
 .group, .subgroup {
     padding-top: 50px;
     margin-top: -50px;
+}
+.nav-stacked > li + li {
+	margin-top: 0px;
 }

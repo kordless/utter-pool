@@ -20,7 +20,6 @@ class InstanceApiShim(object):
 			'appliance': 'self.prepare_appliance(val)',
 			'ip_addresses': 'self.prepare_ip_addresses(val)',
 			'console_output': 'self.prepare_console_output(val)',
-			'expires': '[("expires", datetime.fromtimestamp(long(val))),]',
 		}
 		if key == "instance":
 			super(InstanceApiShim, self).__setattr__(key, val)

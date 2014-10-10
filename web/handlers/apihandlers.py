@@ -433,8 +433,8 @@ class InstanceDetailHandler(BaseHandler):
 			# associate instance with it's appliance
 			instance_shim.appliance = appliance
 		except Exception as e:
-			print("Error in creating or updating instance from post data, "
-						"with message {0}".format(str(e)))
+			return error_response(self, 'Error in creating or updating instance from '
+														'post data, with message {0}'.format(str(e)), 500, {})
 
 		# update local instance
 		instance.put()
@@ -556,18 +556,22 @@ class InstanceDetailHandler(BaseHandler):
 		if not wisp:
 			wisp = Wisp.get_system_default()
 
-		# get the follow values or return None if not present
-		dynamic_image_url = wisp.dynamic_image_url if wisp.dynamic_image_url > "" else None
-		callback_url = wisp.callback_url if wisp.callback_url > "" else None
-		image = wisp.image.get().name if wisp.image else None
+		if wisp.dynamic_image_url == "":
+			image = wisp.image.get()
+			instance.image_url = image.url
+			instance.image_name = image.name
+		else:
+			instance.image_url =  wisp.dynamic_image_url
+			instance.image_name = "dynamic"
+		instance.put()
 
 		# pop the ssh_key script into an array
 		if wisp.ssh_key:
-			ssh_key = []
+			ssh_keys = []
 			for line in iter(wisp.ssh_key.splitlines()):
-				ssh_key.append(line)
+				ssh_keys.append(line)
 		else:
-			ssh_key = [""]
+			ssh_keys = [""]
 
 		# pop the post creation script into an array
 		if wisp.post_creation:
@@ -577,19 +581,19 @@ class InstanceDetailHandler(BaseHandler):
 		else:
 			post_creation = [""]
 
-		# load the instance info back into the response
-		params = {
-			'response': "success",
-			'instance_name': instance.name,
-			'image': image,
-			'dynamic_image_url': dynamic_image_url,
-			'callback_url': callback_url,
-			'ssh_key': ssh_key,
-			'post_creation': post_creation 
-		}
+		start_params = schemas['InstanceStartParametersSchema'](**{
+			'image_url': instance.image_url,
+			'image_name': instance.image_name,
+			'callback_url': wisp.callback_url if wisp.callback_url else "",
+			'ssh_keys': ssh_keys,
+			'post_create': post_creation})
 
+		self.response.set_status(200)
 		self.response.headers['Content-Type'] = 'application/json'
-		return self.render_template('api/instance.json', **params)
+		# write dictionary as json string
+		self.response.out.write(json.dumps(
+				# retrieve dict from schema
+				start_params.as_dict()))
 
 	# unauthenticated endpoint
 	def get(self, instance_name = None):

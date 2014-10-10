@@ -32,9 +32,12 @@ class ApiSchemaHelper(object):
       elif issubclass(v['type'], ProtocolBase):
         prop = getattr(src, k)
         if prop != None:
-          # if that's a Google Appengine key referencing another model
-          # it needs to be fetched first
-          if prop.__class__.__name__ == "Key":
-            prop = prop.get()
+          try:
+            # if that's a Google Appengine key referencing another model
+            # it needs to be fetched first
+            if prop.__class__.__name__ == "Key":
+              prop = prop.get()
+          except Exception:
+            pass
           data[k] = cls.iterate_properties(prop, v['properties'])
     return data

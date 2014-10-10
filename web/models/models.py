@@ -453,10 +453,10 @@ class Wisp(ndb.Model):
 
 # instance model
 class Instance(ndb.Model, ModelSchemaMixin):
-	created = ndb.IntegerProperty()
-	updated = ndb.IntegerProperty()
+	created = ndb.DateTimeProperty(auto_now_add=True)
+	updated = ndb.DateTimeProperty(auto_now=True)
 	expires = ndb.IntegerProperty()
-	started = ndb.IntegerProperty()
+	started = ndb.DateTimeProperty(auto_now=True)
 	name = ndb.StringProperty()
 	address = ndb.StringProperty() # bitcoin
 	owner = ndb.KeyProperty(kind=User)

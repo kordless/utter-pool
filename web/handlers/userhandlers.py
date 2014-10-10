@@ -117,7 +117,22 @@ class CallbackLoginHandler(BaseHandler):
 				# wait a few seconds for database server to update
 				time.sleep(1)
 				log_message = "new user registered"
-				
+
+				# slack the new user signup
+				if config.debug:
+					in_dev = " (in development)"
+
+				slack_data = {
+					'text': "Woot! New user %s just signed up%s!" % (user_info.username, in_dev),
+					'username': "VP of Cloud",
+					'icon_emoji': ":cloud:" 
+				}
+				h = httplib2.Http()
+				resp, content = h.request(config.slack_webhook, 
+	        'POST', 
+	        json.dumps(slack_data),
+	        headers={'Content-Type': 'application/json'})
+
 			else:
 				# existing user logging in - force a2fa check before continuing
 				now_minus_an_hour = datetime.now() + timedelta(0, -config.session_age)

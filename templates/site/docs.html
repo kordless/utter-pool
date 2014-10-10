@@ -1,0 +1,203 @@
+{% import "macros.html" as macros %}
+{% extends base_layout %}
+
+{% block page_styles %}
+    <!-- Home Page -->
+    <link href="/css/docs.css" rel="stylesheet">
+    <link href="/css/documentation.css" rel="stylesheet"> 
+    <link href="/css/font-awesome.css" rel="stylesheet">
+
+{% endblock %}
+
+{% block navbar %}
+  {% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="inverse">
+  <div class="container">
+    <div class="row">
+      <h1>Documentation</h1>
+      <p class="blurb">Welcome to the {{ app_name }} documentation! All your compute are belong to us.</p>
+    </div>
+  </div>
+</div>
+<div id="docs" class="container">
+  <div class="row">
+    <!--Main Content -->
+    <div class="col-xs-9">
+      <section id="overview" class="group">
+        <h3>Overview</h3>
+        <p>{{ app_name }} is running an instance of the <a href="http://utter.io/">Utter.io compute pool software</a>.  Utter.io is like AirBnb for excess compute, providing fast location and provisioning of compute resources within a cooperative set of systems managed by <a href="http://superuser.openstack.org/">OpenStack operators</a>. Resource accounting inside the network is settled with <a href="https://bitcoin.org/">Bitcoin</a> and purchases of compute instances can be made by users without an account.</p>
+        <p>Providers can run a <a href="https://www.github.com/stackmonkey/utter-va">Utter.io virtual appliance</a> on top of their <strong>OpenStack clusters</strong>, which allows a limited amount of control over the cluster by the appliance.  Appliances listen to the <strong>Bitcoin blockchain</strong> for payments to a given <strong>Bitcoin address</strong>.  When a payment is noted to an address, an instance is started using the <strong>Instance Flavor</strong> associated with the address.</p>
+        <p>The <a href="https://www.github.com/stackmonkey/utter-pool">Utter.io pool software</a> provides a centralized location where appliances can advertise their instances for sale for a given <strong>Ask Price</strong>. By providing users the ability to search and bid on instances, this effectively creates a marketplace where compute can be openly sold, purchased or traded.  These transactions are currently done via <strong>Instance Reservations</strong>:</p>
+        <p class="text-center"><img src="/img/site/instance_reservation.png"/></p>
+        <p>Instances can only be started by payments made to an address monitored by a provider's appliance. The appliance pool is not able to start a given appliance's instances directly, which should help eliminate payment fraud and general abuse of the system.</p>
+        <p>To elevate trust between users and providers, groups of operators can <a href="#pool-groups">form adhoc hybrid clouds</a>, which allows sharing of excess compute resources between trusted entities.  Future version of the software will provide additional trust levels automatically.</p>
+        <div class="bs-callout bs-callout-warning bs-callout-top">
+          <h4>Software Licensing</h4>
+          <p>All <a href="https://www.github.com/stackmonkey/">project code</a> is Open Source and licensed under the <a href="http://opensource.org/licenses/MIT">MIT License</a>. You may do whatever you please with the code.</p>
+        </div>
+      </section>
+      <section id="pool" class="group">
+        <h3>Compute Pool</h3>
+          <div id="pool-accounts" class="subgroup">
+            <h4>Account Setup</h4>
+            <p>Accounts on the compute pool are provided via federated logins with Google.  When you <a href="{{ uri_for('login') }}">login to {{ app_name }}</a> you will see a Google account chooser.  Select the account you want to use on {{ app_name }}.</p>
+            <p class="text-center"><img src="/img/site/google_chooser.png"/></p>
+            <p>Once you've logged into your Google account, you will be informed about the level of access {{ app_name }} will have to your Google account.  {{ app_name }} only needs access to your <strong>email address</strong>.
+            </p>
+            <p class="text-center"><img src="/img/site/google_access.png"/></p>
+            <p>Click on the <strong>Accept Button</strong> to create and login to your {{ app_name }} account.</p>
+          </div>
+          <div id="pool-2fa" class="subgroup">
+            <h4>Two Factor Authentication</h4>
+            <p>Once you have created your account, you should enable two factor authentication.  Start by clicking on the <strong>settings tab</strong> in the left navigation menu, then click on the slider under the <strong>Two Factor Authentication</strong> section.  You will be presented with a two factor authentication setup modal:</p>
+            <p class="text-center"><img src="/img/site/two_factor.png"/></p>
+            <p>To install Google Authenticator you can visit the <a target="_blank" href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en">Google Play Store</a> or the <a target="_blank" href="https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8">iOS App Store</a>.  Once you've installed Authenticator, set up a new account by clicking <strong>Set Up Account</strong> and then clicking <strong>Scan Barcode</strong> and scanning the barcode in the site's modal.  Finish the setup by using the Authenticator app to enter the verification code in the modal.</p>
+            <div class="bs-callout bs-callout-warning bs-callout-top">
+              <h4>Note</h4>
+              <p>After you've enabled two factor authentication on your account, you'll be prompted to enter a code from your phone's <strong>Google Authenticator app</strong> whenever you attempt to login to the {{ app_name }} site.</p>
+            </div>
+          </div>
+          <div id="pool-launcher" class="subgroup">
+            <h4>Launching Instances</h4>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin non massa ac ligula pellentesque facilisis. Duis nec pretium nunc. Pellentesque feugiat, tortor et efficitur placerat, nisl felis imperdiet erat, vitae lacinia urna ligula vel ex. Duis tellus velit, aliquet nec luctus at, maximus id elit. Praesent luctus eu elit et porta. Nunc posuere commodo volutpat. Nam convallis, nulla sed eleifend fermentum, ipsum ligula eleifend libero, quis posuere ligula lectus eget ipsum. Donec ultricies, quam eget blandit fermentum, leo purus maximus libero, a scelerisque elit turpis vel nibh. Duis vel venenatis libero. Nam id dictum neque. Donec tellus turpis, dictum nec posuere at, vulputate a est. Phasellus enim metus, viverra sed leo tempor, accumsan vestibulum turpis. Vivamus in lobortis purus, eget convallis mi.</p>
+          </div>
+          <div id="pool-clouds" class="subgroup">
+            <h4>Forming Clouds</h4>
+            <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          </div>
+          <div id="pool-wisps" class="subgroup">
+            <h4>Server Wisps</h4>
+            <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          </div>
+          <div id="pool-appliances" class="subgroup">
+            <h4>Appliances</h4>
+            <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          </div>
+          <div id="pool-groups" class="subgroup">
+            <h4>Appliance Groups</h4>
+            <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          </div>
+      </section>
+      <section id="appliance-install" class="group">
+        <h3>Group C</h3>
+          <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          <div id="appliance-install-openstack" class="subgroup">
+            <h4>Install OpenStack</h4>
+            <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          </div>
+          <div id="appliance-install-user" class="subgroup">
+            <h4>Configuring the User</h4>
+            <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          </div>
+          <div id="appliance-install-tenant" class="subgroup">
+            <h4>Configuring the Tenant</h4>
+            <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          </div>
+          <div id="appliance-install-instance" class="subgroup">
+            <h4>Starting the Appliance</h4>
+            <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          </div>
+      </section>   
+      <section id="appliance-operation" class="group">
+        <h3>Group C</h3>
+          <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          <div id="appliance-operation-flavors" class="subgroup">
+            <h4>Flavor synchronization from OpenStack cluster</h4>
+            <p>You can sell the existing <strong>flavors</strong> of your OpenStack cluster via <strong>StackMonkey</strong> by marking them with an <strong>extra_specs</strong> key indicating that a flavor should be sold and the <strong>price</strong> you are asking for it</p>
+            <p>This <strong>example</strong> demonstrates how you would sell your <strong>flavor</strong> with the id <strong><code>1000</code></strong> for a price of <strong>5 μBTC</strong>. It needs to be run as a user with sufficient <strong>permissions</strong>, for example <strong>admin</strong>:<p>
+            <p><strong><code># nova flavor-key 1000 set stackmonkey:ask_price=5</code></strong></p>
+            <p><strong>After a few minutes</strong> the newly marked flavor should be <strong>synced</strong> and appear on this page with the defined <strong>price</strong>.</p>
+                  <div class="row">
+        <div class="col-md-12">
+          <div class="section-header">
+            <h2><small>Flavor permissions</small></h2>
+            <div class="bs-callout bs-callout-info bs-callout-top">
+              <p>On many <strong>OpenStack</strong> installations a normal user cannot create or delete flavors by default. In such a case <strong>StackMonkey</strong> will be <strong>unable</strong> to <strong>install</strong> a flavor unless it's <strong>OpenStack user</strong> is <strong>admin</strong> or especially <strong>granted</strong> to execute certain API calls. If you don't feel comfortable making the user an <strong>admin</strong>, you can also allow the <strong>StackMonkey user</strong> to create and edit flavors by editing nova's <strong>policy.json</strong>.</p>
+              <p>For <strong>Example</strong> if your the OpenStack user's <strong>id</strong> is <strong><code>12345</code></strong>, you could <strong>grant</strong> her the necessary permissions by editing the following lines in <strong><code>/etc/nova/policy.json</code></strong> to look like this:
+              </p>
+              <p>
+                <code>
+                  "compute_extension:flavorextraspecs:create": "rule:admin_api or user_id:12345",<br />
+                  "compute_extension:flavorextraspecs:update": "rule:admin_api or user_id:12345",<br />
+                  "compute_extension:flavorextraspecs:delete": "rule:admin_api or user_id:12345",<br />
+                  "compute_extension:flavormanage": "rule:admin_api or user_id:12345",
+                </code>
+              </p>
+              <p>After <strong>restarting</strong> the <strong><code>nova-api</code></strong> service, the user with the <strong>id</strong> <strong><code>12345</code></strong> should be able to <strong>install flavors</strong>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+          </div>
+          <div id="GroupCSub2" class="subgroup">
+            <h4>Group C Sub 2</h4>
+            <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
+          </div>
+      </section>    
+    </div>
+
+    <!--Nav Bar -->
+    <nav class="col-xs-3 bs-docs-sidebar">
+      <ul id="sidebar" class="nav nav-stacked" data-spy="affix" data-offset-top="120">
+        <li>
+          <a href="#overview">Overview</a>
+        </li>
+        <li>
+          <a href="#pool">Compute Pool</a>
+          <ul class="nav nav-stacked">
+            <li><a href="#pool-accounts">Accounts</a></li>
+            <li><a href="#pool-2fa">Two Factor Auth</a></li>
+            <li><a href="#pool-launcher">Launcher</a></li>
+            <li><a href="#pool-clouds">Clouds</a></li>
+            <li><a href="#pool-wisps">Wisps</a></li>
+            <li><a href="#pool-appliances">Appliances</a></li>
+            <li><a href="#pool-groups">Groups</a></li>
+            <li><a href="#pool-api">API</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="#appliance-install">Appliance Install</a>
+          <ul class="nav nav-stacked">
+            <li><a href="#appliance-install-openstack">Install OpenStack</a></li>
+            <li><a href="#appliance-install-user">Create User</a></li>
+            <li><a href="#appliance-install-tenant">Create Tenant</a></li>
+            <li><a href="#appliance-install-instance">Launch Instance</a></li>
+          </ul>
+        </li> 
+        <li>
+          <a href="#appliance-operation">Appliance Operation</a>
+          <ul class="nav nav-stacked">
+            <li><a href="#appliance-operation-settings">Basic Settings</a></li>
+            <li><a href="#appliance-operation-openstack">OpenStack</a></li>
+            <li><a href="#appliance-operation-flavors">Flavors</a></li>
+            <li><a href="#appliance-operation-ask">Ask Prices</a></li>
+            <li><a href="#appliance-operation-addresses">Bitcoin Addresses</a></li>
+            <li><a href="#appliance-operation-instances">Instances</a></li>
+            <li><a href="#appliance-operation-twitter">Twitter Bot</a></li>
+            <li><a href="#appliance-operation-api">APIs</a></li>
+           </ul>
+        </li> 
+      </ul>
+    </nav>
+  </div>  
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+  <script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.js'></script>
+  <script type="text/javascript">
+    $().ready(function() {
+      // scrollspy
+      $('body').scrollspy({
+        target: '.bs-docs-sidebar',
+        offset: 40
+      });
+    });
+  </script>
+{% endblock %}

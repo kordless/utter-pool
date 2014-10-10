@@ -9,7 +9,7 @@ html, body {
 	margin-bottom: 4px;
 }
 h1 {
-	padding-top: 40px;
+	margin-top: 40px;
 }
 .text-center > h3 {
 	margin-top: 2px;
@@ -49,4 +49,73 @@ h1 {
 }
 #konami > button {
 	margin-right: 4px;
+}
+
+.team {
+	overflow: hidden;
+	margin-top: 10px;
+	margin-bottom: 48px;
+	text-align: center;
+}
+
+.team li {
+  position: relative;
+  float: left;
+  width: 208px;
+  height: 208px;
+  margin-right: 20px;
+	list-style-type: none;
+	display: inline-block !important;
+	float: none !important;
+}
+
+.team a {
+    position: absolute;
+    right: 23px;
+    bottom: 13px;
+    z-index: 5;
+    opacity: .8;
+}
+
+.team b {
+	font-size: 12px;
+	line-height: 1;
+	font-weight: 600;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+}
+
+.team a:hover {
+    opacity: 1;
+}
+
+.team a+a {
+    right: 66px;
+}
+
+.team img {
+    pointer-events: none;
+    border-radius: 6px;
+}
+
+.team b {
+    position: absolute;
+    left: 25px;
+    bottom: 20px;
+    z-index: 4;
+    color: #fff;
+    text-shadow: 0 4px 14px rgba(0,0,0,0.3);
+}
+
+.team .mask {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 3;
+    display: block;
+    width: 100%;
+    height: 120px;
+    border-radius: 0 0 6px 6px;
+    background: -webkit-linear-gradient(rgba(40,40,40,0), rgba(40,40,40,0.5));
+    background: linear-gradient(rgba(40,40,40,0), rgba(40,40,40,0.5));
 }

@@ -266,6 +266,10 @@ class Flavor(ndb.Model, ModelSchemaMixin):
 	object_list_schema = schemas['FlavorListSchema']
 
 	@property
+	def ask(self):
+		return self.rate
+
+	@property
 	def flags(self):
 		if self.active:
 			return 1

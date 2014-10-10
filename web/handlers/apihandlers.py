@@ -349,47 +349,13 @@ class BidsDetailHandler(BaseHandler):
 		self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
 		return
 
-# list of all available instances for sale
-# http://0.0.0.0/api/v1/instances/
-class InstancesHandler(BaseHandler):
+
+# handle actions on single instances
+class InstanceHandler(BaseHandler):
 	# disable csrf check in basehandler
 	csrf_exempt = True
 
-	def post(self):
-		# request basics
-		ip = self.request.remote_addr
-		offset = self.request.get("offset")
-		limit = self.request.get("limit")
-
-		instances = Instance().get_all_offered()
-		
-		# add gravatar URLs
-		for instance in instances:
-			email = instance.appliance.get().owner.get().email
-			gravatar_hash = md5.new(email.lower().strip()).hexdigest()
-			instance.gravatar_url = "https://www.gravatar.com/avatar/%s" % gravatar_hash
-
-		# build parameter list
-		params = {
-			'remote_ip': ip,
-			'instances': instances
-		}
-
-		# return images via template
-		self.response.headers['Content-Type'] = 'application/json'
-		return self.render_template('api/instances.json', **params)
-
-	def get(self):
-		return self.post()
-
-
-# instance callback handler to handle pool_instance() calls from utter-va
-# http://0.0.0.0/api/v1/instances/smi-xxxxxxxxx/ via POST
-class InstanceDetailHandler(BaseHandler):
-	# disable csrf check in basehandler
-	csrf_exempt = True
-	
-	def post(self, instance_name):
+	def _update(self):
 		# paramters, assume failure, response type
 		params = {}
 		params['response'] = "error"
@@ -596,8 +562,7 @@ class InstanceDetailHandler(BaseHandler):
 				start_params.as_dict()))
 
 	# unauthenticated endpoint
-	def get(self, instance_name = None):
-
+	def _list(self):
 		# get the instance, build the response type
 		instance = Instance.get_by_name(instance_name)
 		self.response.headers['Content-Type'] = "application/json"
@@ -614,6 +579,49 @@ class InstanceDetailHandler(BaseHandler):
 		self.response.headers['Content-Type'] = 'application/json'
 		
 		return self.render_template('api/instance.json', **params)
+
+	def get(self, action):
+		if action == "list":
+			return self._list()
+
+	def post(self, action):
+		if action == "update":
+			return self._update()
+
+
+# handle actions on lists of instances
+class InstancesHandler(BaseHandler):
+	# disable csrf check in basehandler
+	csrf_exempt = True
+
+	def _list(self):
+		# request basics
+		ip = self.request.remote_addr
+		offset = self.request.get("offset")
+		limit = self.request.get("limit")
+
+		instances = Instance().get_all_offered()
+		
+		# add gravatar URLs
+		for instance in instances:
+			email = instance.appliance.get().owner.get().email
+			gravatar_hash = md5.new(email.lower().strip()).hexdigest()
+			instance.gravatar_url = "https://www.gravatar.com/avatar/%s" % gravatar_hash
+
+		# build parameter list
+		params = {
+			'remote_ip': ip,
+			'instances': instances
+		}
+
+		# return images via template
+		self.response.headers['Content-Type'] = 'application/json'
+		return self.render_template('api/instances.json', **params)
+
+	def get(self, action="list"):
+
+		if action == "list":
+			return self._list()
 
 
 # accept sale of multiple instances from provider

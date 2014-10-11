@@ -1,4 +1,5 @@
 from utter_libs.schemas.flavor import flavor_schema
+from utter_libs.schemas.appliance import appliance_schema
 
 ip_address_schema = {
 	'type': 'object',
@@ -34,4 +35,15 @@ instance_schema = {
 		'name', 'state', 'address',
 		'expires', 'flavor',
 	],
+}
+
+instance_list_schema = {
+	'type': 'object',
+	'title': 'InstanceList',
+	'properties': {
+		'items': {
+			'type': 'array',
+			'items': instance_schema,
+		},
+	},
 }

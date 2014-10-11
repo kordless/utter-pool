@@ -41,3 +41,23 @@ class ApiSchemaHelper(object):
             pass
           data[k] = cls.iterate_properties(prop, v['properties'])
     return data
+
+  # render list of objects
+  @classmethod
+  def build_schema_list(cls, object_list, list_schema, object_schema):
+    schema = list_schema()
+
+    # populate list schema with list of object schemas as dictionaries
+    schema.update({'items': [
+      cls.build_schema_object(x, object_schema).as_dict()
+      for x in object_list]})
+
+    # return schema
+    return schema
+
+  # build schema from object
+  @classmethod
+  def build_schema_object(cls, object, schema):
+    schema = schema()
+    cls.fill_schema_from_object(schema, object)
+    return schema

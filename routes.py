@@ -1,6 +1,7 @@
 from webapp2_extras.routes import RedirectRoute
 from web.handlers import sitehandlers, adminhandlers, userhandlers, apihandlers, bloghandlers, emailhandlers, taskhandlers
 from web.handlers import statushandlers, appliancehandlers, grouphandlers, cloudhandlers, wisphandlers, labhandlers
+from web.handlers.api import instance as api_instance_handlers
 
 secure_scheme = 'https'
 
@@ -68,8 +69,32 @@ _routes = [
 		RedirectRoute('/api/v1/images/', apihandlers.ImagesHandler, name='api-images', strict_slash=True),
 		RedirectRoute('/api/v1/flavors/<action:.*>', apihandlers.FlavorsHandler, name='api-flavors', strict_slash=True),
 		RedirectRoute('/api/v1/broker/', apihandlers.BrokerHandler, name='api-broker', strict_slash=True),
-		RedirectRoute('/api/v1/instances/<action:.*>', apihandlers.InstancesHandler, name='api-instances', strict_slash=True),
-		RedirectRoute('/api/v1/instance/<action:.*>', apihandlers.InstanceHandler, name='api-instances', strict_slash=True),
+
+# instance routes
+		RedirectRoute(
+			'/api/v1/instances/list/',
+			api_instance_handlers.InstancesListHandler,
+			name='api-instance-list',
+			strict_slash=True),
+
+		RedirectRoute(
+			'/api/v1/instances/info/',
+			api_instance_handlers.InstanceInfoHandler,
+			name='api-instance-info',
+			strict_slash=True),
+
+		RedirectRoute(
+			'/api/v1/instances/get_startup_parameters/',
+			api_instance_handlers.InstanceStartupParamsHandler,
+			name='api-instance-startup-params',
+			strict_slash=True),
+
+		RedirectRoute(
+			'/api/v1/instances/update/',
+			api_instance_handlers.InstancesUpdateHandler,
+			name='api-instance-update',
+			strict_slash=True),
+
 		RedirectRoute('/api/v1/appliances/geopoints/', apihandlers.ApplianceGeoPoints, name='api-appliances-geopoints', strict_slash=True),
 		RedirectRoute('/api/v1/bids/', apihandlers.BidsHandler, name='api-bids', strict_slash=True),
 		RedirectRoute('/api/v1/bids/<token>/', apihandlers.BidsDetailHandler, name='api-bids-detail', strict_slash=True),

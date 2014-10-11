@@ -200,13 +200,6 @@ class Appliance(ndb.Model):
 
 		return geopoints
 
-	@classmethod
-	def authenticate(cls, apitoken):
-		appliance = cls.get_by_token(apitoken)
-		if not (appliance and appliance.activated):
-			return False
-		return True
-
 
 # image model
 class Image(ndb.Model):
@@ -450,6 +443,24 @@ class Wisp(ndb.Model):
 	
 		return wisp
 
+	def get_ssh_key_lines(self):
+		if self.ssh_key:
+			ssh_keys = []
+			for line in iter(self.ssh_key.splitlines()):
+				ssh_keys.append(line)
+		else:
+			ssh_keys = [""]
+		return ssh_keys
+
+	def get_post_creation_lines(self):
+		if self.post_creation:
+			post_creation = []
+			for line in iter(self.post_creation.splitlines()):
+				post_creation.append(line)
+		else:
+			post_creation = [""]
+		return post_creation
+
 
 # instance model
 class Instance(ndb.Model, ModelSchemaMixin):
@@ -543,8 +554,7 @@ class Instance(ndb.Model, ModelSchemaMixin):
 		instance = cls.query().filter(cls.name == appliance_instance['name']).get()
 
 		if not instance:
-			# lookup image and flavor info
-			image = Image().get_by_name(appliance_instance['image'])
+			# lookup flavor info
 			flavor = Flavor().get_by_name(appliance_instance['flavor'])
 
 			# create new entry
@@ -553,9 +563,8 @@ class Instance(ndb.Model, ModelSchemaMixin):
 			instance.address = appliance_instance['address']
 			instance.ask = appliance_instance['ask']
 			instance.state = appliance_instance['state']
-			instance.expires = datetime.fromtimestamp(long(appliance_instance['expires']))
+			instance.expires = appliance_instance['expires']
 			instance.flavor = flavor.key
-			instance.image = image.key
 			instance.appliance = appliance.key
 			instance.group = appliance.group
 			instance.owner = appliance.owner

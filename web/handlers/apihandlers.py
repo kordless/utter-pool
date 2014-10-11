@@ -17,17 +17,16 @@ from webapp2_extras import security
 from webapp2_extras.auth import InvalidAuthIdError, InvalidPasswordError
 from webapp2_extras.appengine.auth.models import Unique
 
+from utter_libs.schemas import schemas
+from utter_libs.schemas.helpers import ApiSchemaHelper
+
 # local application/library specific imports
 import config
 from lib.utils import generate_token
-from lib.apishims import InstanceApiShim
 from web.basehandler import BaseHandler
 
 # note User is not used except to send to channel
 from web.models.models import User, Appliance, Wisp, Cloud, Instance, InstanceBid, Image, Flavor, LogTracking
-
-from utter_libs.schemas import schemas
-from utter_libs.schemas.helpers import ApiSchemaHelper
 
 # easy button for error response
 def error_response(handler, message, code, params):
@@ -35,6 +34,7 @@ def error_response(handler, message, code, params):
 	params['message'] = message
 	handler.response.set_status(code)
 	return handler.render_template('api/response.json', **params)
+
 
 # appliance token validation
 # http://0.0.0.0/api/v1/authorization/ via POST
@@ -350,280 +350,6 @@ class BidsDetailHandler(BaseHandler):
 		return
 
 
-# handle actions on single instances
-class InstanceHandler(BaseHandler):
-	# disable csrf check in basehandler
-	csrf_exempt = True
-
-	def _update(self):
-		# paramters, assume failure, response type
-		params = {}
-		params['response'] = "error"
-		self.response.headers['Content-Type'] = "application/json"
-
-		# request basics
-		ip = self.request.remote_addr
-
-		try:
-			body = json.loads(self.request.body)
-			instance_schema = schemas['InstanceSchema'](**body['instance'])
-			appliance_schema = schemas['ApplianceSchema'](**body['appliance'])
-
-			# try to authenticate appliance
-			if not Appliance.authenticate(appliance_schema.apitoken.as_dict()):
-				logging.error("%s is using an invalid token(%s) or appliance deactivated."
-					% (ip, appliance_schema.apitoken.as_dict()))
-				return error_response(self, "Token is not valid.", 401, params)
-
-			# fetch appliance and instance
-			appliance = Appliance.get_by_token(appliance_schema.apitoken.as_dict())
-			instance = Instance.get_by_name_appliance(
-				instance_schema.name.as_dict(), appliance.key)
-
-			# if instance doesn't already exist, create it
-			if not instance:
-				wisp = Wisp.get_user_default(appliance.owner)
-				if not wisp:
-					wisp = Wisp.get_system_default()
-				instance = Instance(wisp=wisp.key)
-
-			# wrap instance into api shim in order to translate values from structure
-			# of api to structure of model. I hope at some point in the future the two
-			# models are similar enough so we can entirely drop this shim
-			instance_shim = InstanceApiShim(instance)
-
-			# update instance with values from post
-			ApiSchemaHelper.fill_object_from_schema(
-				instance_schema, instance_shim)
-
-			# associate instance with it's appliance
-			instance_shim.appliance = appliance
-		except Exception as e:
-			return error_response(self, 'Error in creating or updating instance from '
-														'post data, with message {0}'.format(str(e)), 500, {})
-
-		# update local instance
-		instance.put()
-
-		# sleep for dev
-		if config.debug:
-			time.sleep(1)
-
-		# send update information to channel
-		if instance.token:
-			output = {
-				"name": instance.name,
-				"token": instance.token,
-				"state": instance.state,
-			}
-			channel.send_message(instance.token, json.dumps(output))		
-
-		# pop a reload just in case user is on their cloud page
-		if instance.owner:
-			user_info = User.get_by_id(long(instance.owner.id()))
-			channel.send_message(user_info.key.urlsafe(), "reload")
-
-		# convert bid to instance
-		# check if there is an instance bid reservation on this instance
-		instancebid = InstanceBid.get_by_instance(instance.key)
-		if instancebid:
-			# check for a bid callback_url (entered in the callback field on the launcher)
-			if instancebid.callback_url > "":
-				# put the callback into the instance
-				instance.callback_url = instancebid.callback_url
-			else:
-				# assuming we have a wisp, try to get the wisp's callback URL
-				# maybe add a check to see if we have a wisp here...
-				callback_url = instancebid.wisp.get().callback_url
-			
-				# if the wisp has an empty callback URL, populate the instance with the wisp's bid details
-				if callback_url == "" or callback_url == None:
-					instance.wisp = instancebid.wisp
-					instance.owner = instancebid.wisp.get().owner
-					instance.cloud = instancebid.cloud
-				else:
-					# we have a custom callback in the wisp itself, so move to instance
-					instance.callback_url = callback_url
-
-			# update the instance
-			instance.put()
-
-			# delete the instance reservation
-			instancebid.key.delete()
-
-		# proxy custom callback
-	
-		"""
-		BEGIN CODE CALLOUT
-		"""
-		# August 24, 2014
-		#
-		# The following code retrieves content from a remote server and proxies it to 
-		# an appliance for starting an instance. It is at this point an anonymous user's
-		# callback pattern is most venerable to being monitored and manipulated by a 
-		# government agency.
-		# 
-		# The author of this software issues a warrant canary tweet to @stackape which 
-		# should appear on the 1st of each month indicating the absence of a gag order
-		# having been issued to StackMonkey, Utter.io, or Kord Campbell.
-		#
-		# Please monitor the code block between BEGIN CODE CALLOUT and END CODE CALLOUT 
-		# if the canary tweet does not appear on schedule. Please monitor any callback
-		# file's retrieval patterns if the canary tweet does not appear on schedule.
-		# Please report any findings to the community sections of the project/site.
-		#
-		# Remember, the code is Open Source. Use that fact to the community's advantage.
-		# 
-		# The warrant canary will likely be your only indication a change has possibly
-		# taken place to the system.  These changes may or may not enable a government 
-		# agency to intercept and monitor instances using a custom URL callback.
-		#
-		# Kord Campbell
-		#
-		if instance.callback_url:
-			try:
-				result = urlfetch.fetch(instance.callback_url, deadline=5)
-			except Exception as ex:
-				logging.error("Error fetching callback URL content.")
-				instance.console_output = "Error fetching callback url=(%s)'s' content. %s" % (instance.callback_url, ex)
-				instance.put()
-				channel.send_message(instance.token, "reload")
-				return error_response(self, "Error fetching callback URL content.", 401, params)
-
-			############################################
-			# 7a. proxy callback URL JSON to appliance #
-			############################################
-	
-			# return content retrieved from callback URL if the JSON returned by this method includes
-			# a callback_url in the data, the appliance will follow the URL and will not call this API 
-			# again during the life of the instance.
-			self.response.headers['Content-Type'] = 'application/json'
-			self.response.write(json.dumps(json.loads(result.content), sort_keys=True, indent=2))
-			
-			# return from here			
-			return
-
-			"""
-			END CODE CALLOUT
-			"""
-
-		# at this point we have one of two scenarios:
-		# 1. an external instance start (registered user with appliance, sans instancebid)
-		# 2. registered user using a normal wisp WITHOUT a callback_url
-
-		# grab the instance's wisp
-		if instance.wisp:
-			# used if registered user is using a wisp
-			wisp = Wisp.get_by_id(instance.wisp.id())
-		else:
-			wisp = Wisp.get_user_default(instance.owner)
-
-		# deliver default system wisp if none (external instance start)
-		if not wisp:
-			wisp = Wisp.get_system_default()
-
-		if wisp.dynamic_image_url == "":
-			image = wisp.image.get()
-			instance.image_url = image.url
-			instance.image_name = image.name
-		else:
-			instance.image_url =  wisp.dynamic_image_url
-			instance.image_name = "dynamic"
-		instance.put()
-
-		# pop the ssh_key script into an array
-		if wisp.ssh_key:
-			ssh_keys = []
-			for line in iter(wisp.ssh_key.splitlines()):
-				ssh_keys.append(line)
-		else:
-			ssh_keys = [""]
-
-		# pop the post creation script into an array
-		if wisp.post_creation:
-			post_creation = []
-			for line in iter(wisp.post_creation.splitlines()):
-				post_creation.append(line)
-		else:
-			post_creation = [""]
-
-		start_params = schemas['InstanceStartParametersSchema'](**{
-			'image_url': instance.image_url,
-			'image_name': instance.image_name,
-			'callback_url': wisp.callback_url if wisp.callback_url else "",
-			'ssh_keys': ssh_keys,
-			'post_create': post_creation})
-
-		self.response.set_status(200)
-		self.response.headers['Content-Type'] = 'application/json'
-		# write dictionary as json string
-		self.response.out.write(json.dumps(
-				# retrieve dict from schema
-				start_params.as_dict()))
-
-	# unauthenticated endpoint
-	def _list(self):
-		# get the instance, build the response type
-		instance = Instance.get_by_name(instance_name)
-		self.response.headers['Content-Type'] = "application/json"
-
-		# if no instance, then show error
-		if not instance:
-			params['message'] = "Instance not found."
-			self.response.set_status(404)
-			return self.render_template('api/response.json', **params)
-
-		params = {}
-		params['response'] = "success"
-		
-		self.response.headers['Content-Type'] = 'application/json'
-		
-		return self.render_template('api/instance.json', **params)
-
-	def get(self, action):
-		if action == "list":
-			return self._list()
-
-	def post(self, action):
-		if action == "update":
-			return self._update()
-
-
-# handle actions on lists of instances
-class InstancesHandler(BaseHandler):
-	# disable csrf check in basehandler
-	csrf_exempt = True
-
-	def _list(self):
-		# request basics
-		ip = self.request.remote_addr
-		offset = self.request.get("offset")
-		limit = self.request.get("limit")
-
-		instances = Instance().get_all_offered()
-		
-		# add gravatar URLs
-		for instance in instances:
-			email = instance.appliance.get().owner.get().email
-			gravatar_hash = md5.new(email.lower().strip()).hexdigest()
-			instance.gravatar_url = "https://www.gravatar.com/avatar/%s" % gravatar_hash
-
-		# build parameter list
-		params = {
-			'remote_ip': ip,
-			'instances': instances
-		}
-
-		# return images via template
-		self.response.headers['Content-Type'] = 'application/json'
-		return self.render_template('api/instances.json', **params)
-
-	def get(self, action="list"):
-
-		if action == "list":
-			return self._list()
-
-
 # accept sale of multiple instances from provider
 # http://0.0.0.0/api/v1/instances/broker/ via POST
 class BrokerHandler(BaseHandler):
@@ -719,9 +445,10 @@ class FlavorsHandler(BaseHandler):
 		# write dictionary as json string
 		self.response.out.write(json.dumps(
 				# retrieve flavors as schema and convert schema to dict
-				Flavor.as_schema_list(
-					# pass get_all method as query object
-					Flavor.query()).as_dict()))
+				ApiSchemaHelper.build_schema_list(
+					Flavor.query(),
+					schemas['FlavorListSchema'],
+					schemas['FlavorSchema']).as_dict()))
 
 	def get(self, action):
 		return self.post(action)

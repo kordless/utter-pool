@@ -617,7 +617,7 @@ class InstanceDetailHandler(BaseHandler):
 
 
 # accept sale of multiple instances from provider
-# http://0.0.0.0/api/v1/instances/broker/ via POST
+# http://0.0.0.0/api/v1/broker/ via POST
 class BrokerHandler(BaseHandler):
 	# disable csrf check in basehandler
 	csrf_exempt = True

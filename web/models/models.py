@@ -317,6 +317,9 @@ class Flavor(ndb.Model, ModelSchemaMixin):
 			for key in criteria.keys():
 				setattr(flavor, key, criteria[key])
 			flavor.put()
+			# because in dev put() seems to behave asynchronous
+			if config.debug:
+				time.sleep(2)
 		return flavor
 
 	@classmethod

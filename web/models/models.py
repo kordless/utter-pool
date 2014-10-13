@@ -267,7 +267,7 @@ class Flavor(ndb.Model, ModelSchemaMixin):
 
 	@property
 	def ask(self):
-		return self.rate
+		return 0
 
 	@property
 	def flags(self):

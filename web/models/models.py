@@ -259,8 +259,8 @@ class Flavor(ndb.Model, ModelSchemaMixin):
 		{'key': 'memory', 'name': 'm'},
 		{'key': 'vpus', 'name': 'v'},
 		{'key': 'disk', 'name': 'd'},
-		{'key': 'network_up', 'name': 'nu'},
-		{'key': 'network_down', 'name': 'nd'}]
+		{'key': 'network_up', 'name': 'e'},  # e = egress
+		{'key': 'network_down', 'name': 'i'}]  # i = ingress
 
 	object_schema = schemas['FlavorSchema']
 	object_list_schema = schemas['FlavorListSchema']

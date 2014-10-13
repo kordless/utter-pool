@@ -311,6 +311,7 @@ class Flavor(ndb.Model, ModelSchemaMixin):
 				locality=2, # merge generated in pool
 				hot=2, # because we feel like 2 is a good number
 				rate=kwargs['ask'] if kwargs.has_key('ask') else 0,
+				launches=0,
 				active=True,
 			)
 			for key in criteria.keys():

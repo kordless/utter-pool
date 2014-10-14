@@ -83,13 +83,14 @@
                   <thead>
                     <tr>
                       <th>Name</th>
-                      <th>VPUs</th>
                       <th>Memory</th>
+                      <th>VPUs</th>
                       <th>Disk</th>
-                      <th>Network</th>
+                      <th class="text-center">Egress</th>
+                      <th class="text-center">Ingress</th>
                       <th>Rate</th>
+                      <th>Origin</th>
                       <th>Serving</th>
-											<th>Origin</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -97,17 +98,18 @@
                     {% for flavor in flavors %}
                     <tr>
                       <td>{{ flavor.name }}</td>
-                      <td>{{ flavor.vpus }} Core{% if flavor.vpus > 1 %}s{% endif %}</td>
                       <td>{{ flavor.memory }}MB</td>
+                      <td>{{ flavor.vpus }} Core{% if flavor.vpus > 1 %}s{% endif %}</td>
                       <td>{{ flavor.disk }}GB</td>
-                      <td>{% if flavor.network_down < 0 %}Unlimited{% else %}{{ flavor.network_down }}/{% endif %}{% if flavor.network_up < 0 %}Unlimited{% else %}{{ flavor.network_up }} Mbps{% endif %}</td>
+                      <td class="text-center">{% if flavor.network_down < 1 %}<span class="glyphicon glyphicon-ban-circle"></span>{% else %}{{ flavor.network_down }} Mb/sec{% endif %}</td>
+                      <td class="text-center">{% if flavor.network_up < 1 %}<span class="glyphicon glyphicon-ban-circle"></span>{% else %}{{ flavor.network_up }} Mb/sec{% endif %}</td>
                       <td>{{ flavor.rate }} μBTC/Hour</td>
+                      <td>{% if flavor.locality == 0 %}Pool{% else %}Appliance{% endif %}</td>
                       <td>
                         <div class="toggle-modern">
                           <div id="flavor-{{ flavor.key.id() }}" class="toggle{% if flavor.active %} enabled{% endif %}"></div>
                         </div>
                       </td>
-											<td>{% if flavor.locality == 0 %}Pool{% else %}Appliance{% endif %}</td>
                       <td>
                         <button type="button" id="remove-{{flavor.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
                       </td>
@@ -152,6 +154,7 @@
       $("#new-flavor-modal").modal();
     });
     
+    // enable/disable sliders
     $('div[id^="flavor-"]').each(function(index){
       flavor_id = this.id.split("-").pop();
       $('#flavor-'+flavor_id).toggles({

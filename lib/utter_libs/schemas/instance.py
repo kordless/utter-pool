@@ -35,3 +35,14 @@ instance_schema = {
 		'expires', 'flavor',
 	],
 }
+
+instance_list_schema = {
+	'type': 'object',
+	'title': 'InstanceList',
+	'properties': {
+		'items': {
+			'type': 'array',
+			'items': instance_schema,
+		},
+	},
+}

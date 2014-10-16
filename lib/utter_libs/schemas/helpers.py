@@ -7,7 +7,7 @@ class ApiSchemaHelper(object):
 
   # take and object and fill it with values from schema content type
   @staticmethod
-  def fill_object_from_schema(schema, dst, exceptions=None):
+  def fill_object_from_schema(schema, dst, exceptions=[]):
     for (k, v) in schema.__class__.__dict__['__propinfo__'].iteritems():
       if k in exceptions:
         continue

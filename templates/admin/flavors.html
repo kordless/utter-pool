@@ -89,7 +89,6 @@
                       <th class="text-center">Egress</th>
                       <th class="text-center">Ingress</th>
                       <th>Rate</th>
-                      <th>Origin</th>
                       <th>Serving</th>
                       <th>Actions</th>
                     </tr>
@@ -104,7 +103,6 @@
                       <td class="text-center">{% if flavor.network_down < 1 %}<span class="glyphicon glyphicon-ban-circle"></span>{% else %}{{ flavor.network_down }} Mb/sec{% endif %}</td>
                       <td class="text-center">{% if flavor.network_up < 1 %}<span class="glyphicon glyphicon-ban-circle"></span>{% else %}{{ flavor.network_up }} Mb/sec{% endif %}</td>
                       <td>{{ flavor.rate }} μBTC/Hour</td>
-                      <td>{% if flavor.locality == 0 %}Pool{% else %}Appliance{% endif %}</td>
                       <td>
                         <div class="toggle-modern">
                           <div id="flavor-{{ flavor.key.id() }}" class="toggle{% if flavor.active %} enabled{% endif %}"></div>

@@ -59,6 +59,7 @@
                 <li class="active"><a href="#instance" data-toggle="tab">Instance</a></li>
                 <li><a href="#console" data-toggle="tab">Console Log</a></li>
               </ul>
+              
               <div class="tab-content">
                 <div class="tab-pane active" id="instance">
                   {% if instance.state > 3 %}
@@ -147,8 +148,12 @@
                           <td colspan=2>{{ instance.flavor.get().disk }}GB</td>
                         </tr>
                         <tr>
-                          <td><strong>Network</strong></td>
-                          <td colspan="2">{% if instance.flavor.get().network < 0 %}Unlimited{% else %}{{ instance.flavor.get().network }} Mb/sec{% endif %}</td>
+                          <td><strong>Network Up</strong></td>
+                          <td colspan="2">{% if instance.flavor.get().network < 0 %}<span title="Unlimited Bandwidth" class="glyphicon glyphicon-ban-circle"></span>{% else %}{{ instance.flavor.get().network }} Mb/sec{% endif %}</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Network Down</strong></td>
+                          <td colspan="2">{% if instance.flavor.get().network < 0 %}<span title="Unlimited Bandwidth" class="glyphicon glyphicon-ban-circle"></span>{% else %}{{ instance.flavor.get().network }} Mb/sec{% endif %}</td>
                         </tr>
                         <tr>
                           <td><strong>Ask</strong></td>
@@ -249,11 +254,11 @@
 
     // console toggle
     $('#console-toggle').click(function() {
-    if ($( "#console").is(":hidden")) {
-      $("#console").slideDown();
-    } else {
-      $("#console").slideUp();
-    }
+      if ($( "#console").is(":hidden")) {
+        $("#console").slideDown();
+      } else {
+        $("#console").slideUp();
+      }
     });
 
     // tabs 

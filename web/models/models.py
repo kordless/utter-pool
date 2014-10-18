@@ -385,7 +385,7 @@ class Wisp(ndb.Model):
 	updated = ndb.DateTimeProperty(auto_now=True)
 	image = ndb.KeyProperty(kind=Image)
 	ssh_key = ndb.StringProperty()
-	post_creation = ndb.StringProperty()
+	post_creation = ndb.TextProperty()
 	dynamic_image_url = ndb.StringProperty()
 	callback_url = ndb.StringProperty()
 	owner = ndb.KeyProperty(kind=User)

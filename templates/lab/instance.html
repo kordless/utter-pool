@@ -32,7 +32,7 @@
               <div class="{% if instance.state < 7 %}col-md-4{% else %}col-md-6{% endif %}">
                 <div class="text-center"><h3><small>Instance Timer</small></h3></div>
                 <div class="text-center">
-                  <input id="timer" data-state="{{ instance.state }}" data-expires="{{ instance.expires|epoch }}" data-updated="{{ instance.updated|epoch }}" data-step="1" data-readOnly=true data-min="0" value="0" data-max="{{ instance.data_max }}" data-width="230" data-height="230">
+                  <input id="timer" data-state="{{ instance.state }}" data-expires="{{ instance.expires }}" data-updated="{{ instance.updated|epoch }}" data-step="1" data-readOnly=true data-min="0" value="0" data-max="{{ instance.data_max }}" data-width="230" data-height="230">
                 </div>
                 <div class="text-center timer-state">
                   <p>{{ macros.instance_state(instance.state) }}</p>
@@ -48,7 +48,7 @@
               <div class="{% if instance.state < 7 %}col-md-4{% else %}col-md-6{% endif %}">
                 <div class="text-center"><h3><small>Instance Location</small></h3></div>
                 <div class="text-center" id="instance-map"></div>
-                <div class="text-center" id="provider"><a href="#" target="_blank"></a></div>
+                <div class="text-center" id="provider"><a href="#" target="_blank">{{ instance.appliance.get().name }}</a></div>
               </div>
             </div>
             
@@ -148,12 +148,12 @@
                           <td colspan=2>{{ instance.flavor.get().disk }}GB</td>
                         </tr>
                         <tr>
-                          <td><strong>Network Up</strong></td>
-                          <td colspan="2">{% if instance.flavor.get().network < 0 %}<span title="Unlimited Bandwidth" class="glyphicon glyphicon-ban-circle"></span>{% else %}{{ instance.flavor.get().network }} Mb/sec{% endif %}</td>
+                          <td><strong>Egress</strong></td>
+                          <td colspan="2">{% if instance.flavor.get().network_up < 0 %}<span title="Unlimited Bandwidth" class="glyphicon glyphicon-ban-circle"></span>{% else %}{{ instance.flavor.get().network_up }} Mb/sec{% endif %}</td>
                         </tr>
                         <tr>
-                          <td><strong>Network Down</strong></td>
-                          <td colspan="2">{% if instance.flavor.get().network < 0 %}<span title="Unlimited Bandwidth" class="glyphicon glyphicon-ban-circle"></span>{% else %}{{ instance.flavor.get().network }} Mb/sec{% endif %}</td>
+                          <td><strong>Ingress</strong></td>
+                          <td colspan="2">{% if instance.flavor.get().network_down < 0 %}<span title="Unlimited Bandwidth" class="glyphicon glyphicon-ban-circle"></span>{% else %}{{ instance.flavor.get().network_down }} Mb/sec{% endif %}</td>
                         </tr>
                         <tr>
                           <td><strong>Ask</strong></td>

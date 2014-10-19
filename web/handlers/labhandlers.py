@@ -76,7 +76,7 @@ class InstanceDetailHandler(BaseHandler):
 		instance = Instance.get_by_token(token)
 
 		# hack in time max for timer
-		instance.data_max = int(float(instance.expires.strftime('%s')) - float(instance.started.strftime('%s')))
+		instance.data_max = int(instance.expires - int(instance.started.strftime('%s')))
 
 		# setup channel to do page refresh
 		channel_token = token

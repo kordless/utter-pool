@@ -64,8 +64,12 @@
                       <td colspan=2>{{ bid.flavor.get().disk }}GB</td>
                     </tr>
                     <tr>
-                      <td><strong>Network</strong></td>
-                      <td colspan="2">{% if bid.flavor.get().network < 0 %}Unlimited{% else %}{{ bid.flavor.get().network }} Mb/sec{% endif %}</td>
+                      <td><strong>Ingress</strong></td>
+                      <td colspan="2">{% if bid.flavor.get().network_down < 1 %}<span title="Unlimited Bandwidth" class="glyphicon glyphicon-ban-circle"></span>{% else %}{{ bid.flavor.get().network_down }} Mb/sec{% endif %}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Egress</strong></td>
+                      <td colspan="2">{% if bid.flavor.get().network_up < 1 %}<span title="Unlimited Bandwidth" class="glyphicon glyphicon-ban-circle"></span>{% else %}{{ bid.flavor.get().network_up }} Mb/sec{% endif %}</td>
                     </tr>
                     <tr>
                       <td><strong>Ask</strong></td>

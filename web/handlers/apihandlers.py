@@ -537,9 +537,9 @@ class InstanceDetailHandler(BaseHandler):
 			# return from here			
 			return
 
-			"""
-			END CODE CALLOUT
-			"""
+		"""
+		END CODE CALLOUT
+		"""
 
 		# at this point we have one of two scenarios:
 		# 1. an external instance start (registered user with appliance, sans instancebid)
@@ -608,7 +608,7 @@ class InstanceDetailHandler(BaseHandler):
 			self.response.set_status(404)
 			return self.render_template('api/response.json', **params)
 
-		params = {}
+		params = {"instance": instance}
 		params['response'] = "success"
 		
 		self.response.headers['Content-Type'] = 'application/json'

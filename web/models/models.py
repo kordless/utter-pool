@@ -454,7 +454,7 @@ class Instance(ndb.Model, ModelSchemaMixin):
 	created = ndb.DateTimeProperty(auto_now_add=True)
 	updated = ndb.DateTimeProperty(auto_now=True)
 	expires = ndb.IntegerProperty()
-	started = ndb.DateTimeProperty(auto_now=True)
+	started = ndb.DateTimeProperty()
 	name = ndb.StringProperty()
 	address = ndb.StringProperty() # bitcoin
 	owner = ndb.KeyProperty(kind=User)
@@ -532,7 +532,7 @@ class Instance(ndb.Model, ModelSchemaMixin):
 		instance_query = cls.query().filter(cls.updated < delta)
 		instances = instance_query.fetch()
 		return instances
-
+		
 	# insert or update instance
 	# note that appliance is an object, not a dict
 	@classmethod

@@ -22,9 +22,9 @@ class InstancesHandler(BaseHandler):
 		# loop through results and mark returned instances as 'inactive'
 		if instances:
 			for instance in instances:
-				if instance.state == 1 and instance.reserved != True:
+				if instance.state == 1 and instance.reserved == False:
 					logging.info("Marking instance=(%s) stale." % instance.name)
-					instance.state == 0
+					instance.state = 0
 					instance.put()
 
 					# notification channel

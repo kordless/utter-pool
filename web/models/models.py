@@ -460,8 +460,8 @@ class Wisp(ndb.Model):
 			def __init__(self, wisp):
 				self.url = wisp.dynamic_image_url
 				self.name = 'dynamic'
-				self.container_format = 'bare' # purely guessing
-				self.disk_format = 'qcow2' # purely guessing
+				self.container_format = wisp.image_container_format
+				self.disk_format = wisp.image_disk_format
 
 		return dynamic_image(self)
 

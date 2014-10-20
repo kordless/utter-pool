@@ -383,7 +383,7 @@ class Wisp(ndb.Model):
 	created = ndb.DateTimeProperty(auto_now_add=True)
 	updated = ndb.DateTimeProperty(auto_now=True)
 	image = ndb.KeyProperty(kind=Image)
-	ssh_key = ndb.StringProperty()
+	ssh_key = ndb.TextProperty()
 	post_creation = ndb.TextProperty()
 	dynamic_image_url = ndb.StringProperty()
 	image_disk_format = ndb.StringProperty()

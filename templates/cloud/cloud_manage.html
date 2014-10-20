@@ -100,7 +100,7 @@
                   <td>{% if instance.state == 0 %}<span title="Inactive" class="glyphicon glyphicon-remove-sign"></span>{% elif instance.state == 1 %}<span title="Waiting on payment." class="glyphicon glyphicon-time"></span>{% elif instance.state == 2 %}<span title="Payment Received" class="glyphicon glyphicon-usd"></span>{% elif instance.state == 3 %}<span title="Starting" class="glyphicon glyphicon-off"></span>{% elif instance.state == 4 %}<span title="Running" class="glyphicon glyphicon-play"></span>{% elif instance.state == 5 %}<span title="Suspended" class="glyphicon glyphicon-pause"></span>{% elif instance.state == 6 %}<span title="Unsuspend" class="glyphicon glyphicon-fire"></span>{% elif instance.state == 7 %}<span title="Decommission" class="glyphicon glyphicon-fullscreen"></span>{% elif instance.state == 10 %}<span title="Reserved" class="glyphicon glyphicon-tag"></span>{% endif %}</td>
                   <td><a href="{{ uri_for('lab-instance-detail', token=instance.token) }}">{{ instance.name }}</a></td>
                   <td>{{ instance.flavor.get().name }}</td>
-                  <td id="instance-timer-{{instance.key.id()}}" data-state="{{ instance.state }}" data-expires="{{ instance.expires|epoch }}"><img src="/img/loading.gif"/></td>
+                  <td id="instance-timer-{{instance.key.id()}}" data-state="{{ instance.state }}" data-expires="{{ instance.expires }}"><img src="/img/loading.gif"/></td>
                   <td>
                     {% if instance.state < 7 %}
                     <button id="instance-payment-{{ instance.address }}" title="Make a payment." data-ask="{{ instance.ask }}" class="btn btn-xs btn-warning"><span class="glyphicon glyphicon-qrcode"></span> Payment</button>

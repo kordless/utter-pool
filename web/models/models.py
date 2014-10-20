@@ -558,6 +558,7 @@ class Instance(ndb.Model, ModelSchemaMixin):
 		else:
 			# update ask
 			instance.ask = appliance_instance['flavor']['ask']
+			instance.state = appliance_instance['state']
 			instance.put()
 
 		return instance

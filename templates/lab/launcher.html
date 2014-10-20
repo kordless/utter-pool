@@ -46,11 +46,7 @@
         <h4 class="modal-title">Building Instance Reservation</h4>
       </div>
       <div class="modal-body">
-        {% if user_id %}
-        <div id="terra"></div>
-        {% else %}
-        <img src="/img/nyancoin.gif"/>
-        {% endif %}
+        <p>Please wait while a reservations is built for the instance.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Please Wait</button>
@@ -156,7 +152,6 @@
 
 {% block javascript %}
 <script type="text/javascript" src="/js/toggles.js"></script>
-<script type="text/javascript" src="/js/terra.js"></script>
 <script type="text/javascript" src="/js/bootstrap-tagsinput.js"></script>
 <script type="text/javascript" src="/js/typeahead.bundle.js"></script>
 <script type="text/javascript" src="/_ah/channel/jsapi"></script>
@@ -333,16 +328,6 @@
       if (go_post == true) {
         // show modal
         $('#spinner-modal').modal();
-        
-        {% if user_id %}
-        // show terrarium
-        paTerrarium = new terra.Terrarium(57, 35);
-        terra.creatureFactory.register({type: 'plant', color: [0, 120, 0], size: 10, initialEnergy: 5, maxEnergy: 20, wait: function() {this.energy += 1;}, move: false, reproduceLv: 0.65});
-        terra.creatureFactory.register({type: 'brute', color: [0, 255, 255], maxEnergy: 50, initialEnergy: 10, size: 20 });
-        terra.creatureFactory.register({type: 'bully', color: [241, 196, 15], initialEnergy: 20, reproduceLv: 0.6, sustainability: 3 });
-        paTerrarium.populate([['plant', 50], ['brute', 5], ['bully', 5]]);
-        paTerrarium.animate();
-        {% endif %}
 
         // submit data to API
         $.ajax({

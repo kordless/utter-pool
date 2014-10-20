@@ -215,7 +215,6 @@ class Image(ndb.Model):
 	created = ndb.DateTimeProperty(auto_now_add=True)
 	updated = ndb.DateTimeProperty(auto_now=True)
 	url = ndb.StringProperty()
-	size = ndb.IntegerProperty()
 	diskformat = ndb.StringProperty()
 	containerformat = ndb.StringProperty()
 	active = ndb.BooleanProperty(default=False)
@@ -532,7 +531,7 @@ class Instance(ndb.Model, ModelSchemaMixin):
 		instance_query = cls.query().filter(cls.updated < delta)
 		instances = instance_query.fetch()
 		return instances
-		
+
 	# insert or update instance
 	# note that appliance is an object, not a dict
 	@classmethod

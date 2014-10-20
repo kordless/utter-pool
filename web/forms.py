@@ -111,6 +111,5 @@ class ImageForm(BaseForm):
     name = fields.TextField('Name', [validators.Required(), validators.Length(max=50)])
     description = fields.TextField('Description', [validators.Required(), validators.Length(max=100)])
     url = fields.TextField('Source URL', [validators.Required(), validators.Length(max=250)])
-    size = fields.IntegerField('Size', [validators.Required()])
     diskformat = fields.SelectField('Disk Format', choices=utils.DISKFORMATS)
     containerformat = fields.SelectField('Container Format', choices=utils.CONTAINERFORMATS)

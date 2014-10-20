@@ -176,7 +176,6 @@ class ImagesListHandler(BaseHandler):
 		name = self.form.name.data.strip()
 		description = self.form.description.data.strip()
 		url = self.form.url.data.strip()
-		size = self.form.size.data
 		diskformat = self.form.diskformat.data.strip()
 		containerformat = self.form.containerformat.data.strip()
 
@@ -185,7 +184,6 @@ class ImagesListHandler(BaseHandler):
 			name = name,
 			description = description,
 			url = url,
-			size = size,
 			diskformat = diskformat,
 			containerformat = containerformat
 		)

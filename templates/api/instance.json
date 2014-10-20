@@ -2,16 +2,11 @@
   "response": "{{ response }}",
   "result": {
     "instance": {
-      "name": "{{ instance_name }}",{% if callback_url %}
-      "callback_url": "{{ callback_url }}"{% else %}
-      {% if dynamic_image_url %}"dynamic_image_url": "{{ dynamic_image_url }}",
-      {% else %}"image": "{{ image }}",{% endif %}
-      "ssh_key": [{% for line in ssh_key %}
-        "{{ line }}"{% if not loop.last %},{% endif %}{% endfor %}
-      ],
-      "post_creation": [{% for line in post_creation %}
-        "{{ line }}"{% if not loop.last %},{% endif %}{% endfor %}
-      ]{% endif %}
+      "name": "{{ instance.name }}",{% if callback_url %}
+      "callback_url": "{{ instance.callback_url }}",{% endif %}
+      "address": "{{ instance.address }}",
+      "expires": {{ instance.expires }},
+      "ask": {{ instance.ask }}
     }
   }
 }

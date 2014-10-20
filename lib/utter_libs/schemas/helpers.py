@@ -23,23 +23,32 @@ class ApiSchemaHelper(object):
   def fill_schema_from_object(cls, schema, src):
     schema.update(cls.iterate_properties(src, schema.__class__.__dict__['__propinfo__']))
 
+  @classmethod
+  def get_attribute_or_key(cls, src, k):
+    if issubclass(src.__class__, object) and hasattr(src, k) and \
+        getattr(src, k) != None:
+      return getattr(src, k)
+    elif type(src) == types.DictType and src.get(k, None) != None:
+      return src.get(k)
+
   # iterate over properties of schema and copy valuees from src object into schema
   @classmethod
   def iterate_properties(cls, src, properties):
     data = {}
     for (k, v) in properties.iteritems():
       if type(v['type']) == types.StringType:
-        if hasattr(src, k) and getattr(src, k) != None:
-          data[k] = getattr(src, k)
+        val = cls.get_attribute_or_key(src, k)
+        if val != None:
+          data[k] = val
       elif issubclass(v['type'], ProtocolBase):
-        prop = getattr(src, k)
-        if prop != None:
+        val = cls.get_attribute_or_key(src, k)
+        if val != None:
           try:
             # if that's a Google Appengine key referencing another model
             # it needs to be fetched first
-            if prop.__class__.__name__ == "Key":
-              prop = prop.get()
+            if val.__class__.__name__ == "Key":
+              val = val.get()
           except Exception:
             pass
-          data[k] = cls.iterate_properties(prop, v['properties'])
+          data[k] = cls.iterate_properties(val, v['properties'])
     return data

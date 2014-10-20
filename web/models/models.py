@@ -392,6 +392,11 @@ class Wisp(ndb.Model):
 	amount = ndb.IntegerProperty()
 	default = ndb.BooleanProperty(default=False)
 
+	@property
+	def use_dynamic_image(self):
+		if self.dynamic_image_url is not None and self.dynamic_image_url != "":
+			return True
+
 	@classmethod
 	def get_by_user(cls, user):
 		wisp_query = cls.query().filter(cls.owner == user).order(cls.name)
@@ -446,6 +451,17 @@ class Wisp(ndb.Model):
 		wisp.put()
 	
 		return wisp
+
+	# generate and return a dynamic image
+	def get_dynamic_image(self):
+		class dynamic_image(object):
+			def __init__(self, wisp):
+				self.url = wisp.dynamic_image_url
+				self.name = 'dynamic'
+				self.container_format = 'bare' # purely guessing
+				self.disk_format = 'qcow2' # purely guessing
+
+		return dynamic_image(self)
 
 
 # instance model

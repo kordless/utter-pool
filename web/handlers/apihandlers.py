@@ -349,6 +349,7 @@ class BidsDetailHandler(BaseHandler):
 		self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
 		return
 
+
 # list of all available instances for sale
 # http://0.0.0.0/api/v1/instances/
 class InstancesHandler(BaseHandler):
@@ -556,14 +557,10 @@ class InstanceDetailHandler(BaseHandler):
 		if not wisp:
 			wisp = Wisp.get_system_default()
 
-		if wisp.dynamic_image_url == "":
+		if not wisp.use_dynamic_image:
 			image = wisp.image.get()
-			instance.image_url = image.url
-			instance.image_name = image.name
 		else:
-			instance.image_url =  wisp.dynamic_image_url
-			instance.image_name = "dynamic"
-		instance.put()
+			image = wisp.get_dynamic_image()
 
 		# pop the ssh_key script into an array
 		if wisp.ssh_key:
@@ -581,12 +578,13 @@ class InstanceDetailHandler(BaseHandler):
 		else:
 			post_creation = [""]
 
-		start_params = schemas['InstanceStartParametersSchema'](**{
-			'image_url': instance.image_url,
-			'image_name': instance.image_name,
+		start_params = schemas['InstanceStartParametersSchema']()
+		data = {
+			'image': image,
 			'callback_url': wisp.callback_url if wisp.callback_url else "",
 			'ssh_keys': ssh_keys,
-			'post_create': post_creation})
+			'post_create': post_creation}
+		ApiSchemaHelper.fill_schema_from_object(start_params, data)
 
 		self.response.set_status(200)
 		self.response.headers['Content-Type'] = 'application/json'

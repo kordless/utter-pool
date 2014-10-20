@@ -4,8 +4,14 @@ instance_start_parameters_schema = {
 	'type': 'object',
 	'title': 'InstanceStartParameters',
 	'properties': {
-		'image_url': {'type': 'string'},
-		'image_name': {'type': 'string'},
+		'image': {
+			'type': 'object',
+			'properties': {
+				'url': {'type': 'string'},
+				'name': {'type': 'string'},
+				'container_format': {'type': 'string'},
+				'disk_format': {'type': 'string'}},
+			'required': ['url', 'name', 'container_format', 'disk_format']},
 		'callback_url': {'type': 'string'},
 		'ssh_keys': {'type': 'array',
 								 'items': {'type': 'string'}},
@@ -13,6 +19,6 @@ instance_start_parameters_schema = {
 										'items': {'type': 'string'}},
 	},
 	'required': [
-		'image_url', 'callback_url', 'ssh_keys', 'post_create',
+		'image', 'callback_url', 'ssh_keys', 'post_create',
 	],
 }

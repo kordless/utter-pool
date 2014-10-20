@@ -215,8 +215,8 @@ class Image(ndb.Model):
 	created = ndb.DateTimeProperty(auto_now_add=True)
 	updated = ndb.DateTimeProperty(auto_now=True)
 	url = ndb.StringProperty()
-	diskformat = ndb.StringProperty()
-	containerformat = ndb.StringProperty()
+	disk_format = ndb.StringProperty()
+	container_format = ndb.StringProperty()
 	active = ndb.BooleanProperty(default=False)
 	dynamic = ndb.BooleanProperty(default=False)
 

@@ -176,16 +176,16 @@ class ImagesListHandler(BaseHandler):
 		name = self.form.name.data.strip()
 		description = self.form.description.data.strip()
 		url = self.form.url.data.strip()
-		diskformat = self.form.diskformat.data.strip()
-		containerformat = self.form.containerformat.data.strip()
+		disk_format = self.form.disk_format.data.strip()
+		container_format = self.form.container_format.data.strip()
 
 		# save the flavor in our database
 		image = Image(
 			name = name,
 			description = description,
 			url = url,
-			diskformat = diskformat,
-			containerformat = containerformat
+			disk_format = disk_format,
+			container_format = container_format
 		)
 		image.put()
 

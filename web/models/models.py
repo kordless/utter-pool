@@ -386,6 +386,8 @@ class Wisp(ndb.Model):
 	ssh_key = ndb.StringProperty()
 	post_creation = ndb.TextProperty()
 	dynamic_image_url = ndb.StringProperty()
+	image_disk_format = ndb.StringProperty()
+	image_container_format = ndb.StringProperty()
 	callback_url = ndb.StringProperty()
 	owner = ndb.KeyProperty(kind=User)
 	bid = ndb.IntegerProperty()

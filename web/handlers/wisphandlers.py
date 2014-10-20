@@ -90,6 +90,8 @@ class WispNewHandler(BaseHandler):
 		name = self.form.name.data.strip()
 		ssh_key = self.form.ssh_key.data.strip()
 		dynamic_image_url = self.form.dynamic_image_url.data.strip()
+		image_container_format = self.form.image_container_format.data.strip()
+		image_disk_format = self.form.image_disk_format.data.strip()
 		post_creation = self.form.post_creation.data.strip()
 		callback_url = self.form.callback_url.data.strip()
 		default = self.form.default.data # no strip cause bool
@@ -125,6 +127,8 @@ class WispNewHandler(BaseHandler):
 			image = image,
 			ssh_key = ssh_key,
 			dynamic_image_url = dynamic_image_url,
+			image_container_format = image_container_format,
+			image_disk_format = image_disk_format,
 			post_creation = post_creation,
 			callback_url = callback_url
 		)
@@ -168,6 +172,8 @@ class WispDetailHandler(BaseHandler):
 		self.form.name.data = wisp.name
 		self.form.ssh_key.data = wisp.ssh_key
 		self.form.dynamic_image_url.data = wisp.dynamic_image_url
+		self.form.image_disk_format.data = wisp.image_disk_format
+		self.form.image_container_format.data = wisp.image_container_format
 		self.form.post_creation.data = wisp.post_creation
 		self.form.callback_url.data = wisp.callback_url
 		self.form.default.data = wisp.default
@@ -226,6 +232,8 @@ class WispDetailHandler(BaseHandler):
 		name = self.form.name.data.strip()
 		ssh_key = self.form.ssh_key.data.strip()
 		dynamic_image_url = self.form.dynamic_image_url.data.strip()
+		image_container_format = self.form.image_container_format.data.strip()
+		image_disk_format = self.form.image_disk_format.data.strip()
 		post_creation = self.form.post_creation.data.strip()
 		callback_url = self.form.callback_url.data.strip()
 		default = self.form.default.data
@@ -252,6 +260,8 @@ class WispDetailHandler(BaseHandler):
 			wisp.image = image
 			wisp.ssh_key = ssh_key
 			wisp.dynamic_image_url = dynamic_image_url
+			wisp.image_container_format = image_container_format
+			wisp.image_disk_format = image_disk_format
 			wisp.post_creation = post_creation
 			wisp.callback_url = callback_url
 			wisp.put()

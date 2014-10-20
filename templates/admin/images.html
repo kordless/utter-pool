@@ -92,8 +92,8 @@
                     <tr>
                       <td><a href="{{ image.url }}">{{ image.name }}</td>
                       <td>{{ image.description }}</td>
-                      <td>{{ image.diskformat }}</td>
-                      <td>{{ image.containerformat }}</td>
+                      <td>{{ image.disk_format }}</td>
+                      <td>{{ image.container_format }}</td>
                       <td>
                         <div class="toggle-modern">
                           <div id="image-{{ image.key.id() }}" class="toggle{% if image.active %} enabled{% endif %}"></div>

@@ -124,8 +124,43 @@
             </ul>
             <div class="bs-callout bs-callout-warning bs-callout-top">
               <h4>Don't Have Admin?</h4>
-              <p>No worries! If you don't have an admin account on the OpenStack cluster, you can simply skip to the <a href="#install-an-ubuntu-image">Install an Ubuntu Image</a> section below. There will be a few limitations in functionality, but the appliance can still sell instances for you!</p>
+              <p>No worries! If you don't have an admin account on your OpenStack cluster you can still sell instances on it.  Simply skip to the <a href="#install-an-ubuntu-image">Install an Ubuntu Image</a> section below to continue the setup of the appliance.</p>
             </div>
+          </div>
+
+          <div id="create-a-keypair" class="subgroup">
+            <h4>Create an SSH Keypair</h4>
+            <p>You need to create a key pair that you can use to access the virtual appliance's command line console.  Follow these steps to create the key:</p>
+            <ul>
+              <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Instances</strong>. Click on <strong>Access &amp; Security</strong> and then click on the <strong>Key Pairs</strong> tab at the top.</li>
+              <li>Click <strong>Create Key Pair</strong> and name the key pair <strong>stackmonkey</strong>.  Click <strong>Create Key Pair</strong> to create the key pair.  The private key will be downloaded to your local machine.</li>
+            </ul>
+            <p>Next, move the private key into your <strong>.ssh directory</strong> (or similar for Windows) and then change the permissions on it:</p>
+<pre>
+cd ~/Downloads/
+mv stackmonkey.pem ~/.ssh/
+chmod 600 ~/.ssh/stackmonkey.pem
+</pre>
+            <p>Be sure to keep this key somewhere safe and secure!</p>
+            <div class="bs-callout bs-callout-info bs-callout-top">
+              <h4>Are you a developer?</h4>
+              <p>You can head over to Github to <a target="_blank" href="https://github.com/stackmonkey/utter-va/#shell-access">view the instructions for logging directly into the appliance</a>.</p>
+            </div>
+          </div>
+
+          <div id="create-a-flavor-for-the-appliance" class="subgroup">
+            <h4>Create a Flavor for the Appliance</h4>
+            <p>The appliance needs about 8GB of drive space for caching boot images. To create a new flavor that is the right size for for the appliance, do the following:</p>
+            <ul>
+              <li>Click on the <strong>Admin</strong> tab to the far left and then click on <strong>System Panel..Flavors</strong>.</li>
+              <li>Click the <strong>Create Flavor</strong> button at the top right.</li>
+              <li>Name the flavor <strong>'m512.v1.d8'</strong>.</li>
+              <li>Put <strong>'1'</strong> in for the number of <strong>VCPUs</strong>.</li>
+              <li>For <strong>RAM</strong> put <strong>'512'</strong>.</li>
+              <li>For <strong>Root Disk GB</strong> put <strong>'8'</strong>.</li>
+              <li>Finally, click <strong>Create Flavor</strong> to create the new flavor.</li>
+            </ul>
+            <p class="text-center"><img src="/img/site/flavor_thumb.png" alt="OpenStack Flavor"></p>
           </div>
 
           <div id="install-an-ubuntu-image" class="subgroup">
@@ -140,25 +175,10 @@
             </ul>
             <p>You will want to keep this image live on the cluster in case you decide to start another appliance.</p>
           </div>
-
-          <div id="create-a-keypair" class="subgroup">
-            <h4>Create a Keypair</h4>
-            <p>You need to create a key pair that you can use to access the virtual appliance's command line console.  Follow these steps to create the key:</p>
-            <ul>
-              <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Instances</strong>. Click on <strong>Access &amp; Security</strong> and then click on the <strong>Key Pairs</strong> tab at the top.</li>
-              <li>Click <strong>Create Key Pair</strong> and name the key pair <strong>stackmonkey</strong>.  Click <strong>Create Key Pair</strong> to create the key pair.  The private key will be downloaded to your local machine.</li>
-            </ul>
-            <p>You need to move the private key into your <strong>.ssh directory</strong> (or similar for Windows) and then change the permissions on it:</p>
-<pre>
-  cd ~/Downloads/
-  mv stackmonkey.pem ~/.ssh/
-  chmod 600 ~/.ssh/stackmonkey.pem
-</pre>
-          </div>
-
+          
           <div id="set-the-access-rules" class="subgroup">
             <h4>Set the Access Rules</h4>
-            <p>The instances being sold by the appliance will need unrestricted access from the Internet if they have publicly accessible addresses. For now, the appliance does not manage the security groups, so you need to open up the default group to allow all access to the instances you will be starting.  Follow these steps to setup your access rules for the appliance:</p>
+            <p>The appliance instance needs a couple of ports opened up to allow it to operate properly. Follow these steps to setup the access rules for the appliance:</p>
             <ul>
               <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Access &amp; Security</strong>.</li>
               <li>Click on the <strong>Security Groups</strong> tab at the top.  To the right, click on the <strong>Create Security Group</strong> button.</li>
@@ -168,7 +188,8 @@
             </ul>
             <p>Your <strong>appliance</strong> security group rules should now look like this:</p>
             <p class="text-center"><a target="_blank" href="/img/site/appliance_groups.png"><img src="/img/site/appliance_groups_thumb.png" alt="OpenStack Groups"></a></p>          
-            <p>Next, follow these steps to set up the access rules for the instances that will be started on the cluster by the appliance:</p>
+            <p>The instances being sold by the appliance will need unrestricted access from the Internet if they have publicly accessible IPv4 addresses. The appliance does not currently manage security groups, so you need to manually open up the default group to allow all access to the instances.</p>
+            <p>Follow these steps to set up the access rules for the instances the appliance starts:</p>
             <ul>
               <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Access &amp; Security</strong>.</li>
               <li>Click the <strong>Manage Rules</strong> button to the right in the <strong>default</strong> security group row.</li>
@@ -180,32 +201,27 @@
               <li>Enter the number <strong>'-1'</strong> in <strong>both</strong> the <strong>Type</strong> and <strong>Code</strong> fields.  Click <strong>Add</strong> to add the rule.</li>
             </ul>
             <p>Your <strong>default</strong> security group rules should now look like this:</p>
-            <p class="text-center"><a href="https://raw.githubusercontent.com/StackMonkey/utter-va/master/webapp/static/img/readme/default_groups.png"><img src="https://raw.githubusercontent.com/StackMonkey/utter-va/master/webapp/static/img/readme/default_groups_thumb.png" alt="OpenStack Groups"></a></p>
-          </div>
-
-          <div id="create-a-flavor-for-the-appliance" class="subgroup">
-            <h4>Create a Flavor for the Appliance</h4>
-            <p>The appliance needs about 8GB of drive space for caching boot images. To create a new flavor that is the right size for for the appliance, do the following:</p>
-            <ul>
-              <li>Click on the <strong>Admin</strong> tab to the far left and then click on <strong>System Panel..Flavors</strong>.  Click the <strong>Create Flavor</strong> button at the top right.</li>
-              <li>Name the flavor <strong>'m512.v1.d8'</strong>. For <strong>VCPUs</strong> put the number <strong>'1'</strong>.  For <strong>RAM</strong> put <strong>'512'</strong>.  For <strong>Root Disk GB</strong> put <strong>'8'</strong> and then click <strong>Create Flavor</strong> to create the new flavor.</li>
-            </ul>
-            <p class="text-center"><img src="https://raw.githubusercontent.com/StackMonkey/utter-va/master/webapp/static/img/readme/flavor_thumb.png" alt="OpenStack Flavor"></p>
+            <p class="text-center"><a target="_blank" href="/img/site/default_groups.png"><img src="/img/site/default_groups_thumb.png" alt="OpenStack Groups"></a></p>
           </div>
 
           <div id="start-the-appliance" class="subgroup">
             <h4>Start the Appliance</h4>
-            <p>Now all the components of the instance have been created, you can launch an instance which will configure itself into a StackMonkey virtual appliance.  Follow these instructions to launch the instance:</p>
+            <p>Now it's time to launch an instance which will configure itself into a StackMonkey virtual appliance.  Follow these instructions to launch the appliance:</p>
             <ul>
-              <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Instances</strong>. To the right, click on the <strong>Launch Instance</strong> button.</li>
-              <li>Name the instance <strong>'StackMonkey VA'</strong> and then click on the <strong>Flavor</strong> pulldown and select the <strong>m512.v1.d8</strong> flavor.</li>
-              <li>Click on the <strong>Instance Boot Source</strong> pulldown at the bottom and select <strong>Boot from image</strong>.  Under <strong>Image Name</strong>, select the <strong>Ubuntu Trusty 14.04LTS</strong> image you installed earlier.</li>
-              <li>Click on the <strong>Access &amp; Security</strong> tab at the top.  Use the <strong>Key Pair</strong> pulldown to select the <strong>stackmonkey</strong> key pair you generated earlier.</li>
+              <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Instances</strong>.</li>
+              <li>Click on the <strong>Launch Instance</strong> button.</li>
+              <li>Name the instance <strong>'StackMonkey VA'</strong> and then click on the <strong>Flavor</strong> pulldown.</li>
+              <li>If you created the <strong>m512.v1.d8</strong> flavor earlier, select it from the list.</li>
+              <li>If you are unable to create a custom flavor, select a <strong>m1.small</strong> stock flavor from the pulldown.</li>
+              <li>Click on the <strong>Instance Boot Source</strong> pulldown at the bottom and select <strong>Boot from image</strong>.</li>
+              <li>Under <strong>Image Name</strong>, select the <strong>Ubuntu Trusty 14.04LTS</strong> image you installed earlier.</li>
+              <li>Click on the <strong>Access &amp; Security</strong> tab at the top.</li>
+              <li>Use the <strong>Key Pair</strong> pulldown to select the <strong>stackmonkey</strong> key pair you generated earlier.</li>
               <li>In the same tab, check the <strong>appliance</strong> security group, and uncheck the <strong>default</strong> group.</li>
               <li>Click on the <strong>Post-Creation</strong> tab at the top.</li>
             </ul>
             <p>In the Customization Script text area that appears in the modal, paste the following exactly as shown:</p>
-            <pre><code>
+<pre>
 #cloud-config
 hostname: stackmonkey-va
 manage_etc_hosts: true
@@ -213,19 +229,21 @@ runcmd:
  - [ wget, "http://goo.gl/KJH5Sa", -O, /tmp/install.sh ]
  - chmod 755 /tmp/install.sh
  - /tmp/install.sh
-            </code></pre>
+</pre>
             <p>Click on the <strong>Launch</strong> button to launch the appliance.  You can monitor the instance's build state by refreshing the console log tab viewable by clicking on the instance name in the instance list.</p>
-            <p>The appliance takes about 10 minutes to build.</p>
+            <p>The appliance will take about 10 minutes to build.</p>
           </div>
-          <div id="create-a-keypair" class="subgroup">
-            <h4>Create a Keypair</h4>
 
-          </div>
-          <div id="create-a-keypair" class="subgroup">
-            <h4>Create a Keypair</h4>
+          <div id="accessing-the-appliances-ui" class="subgroup">
+            <h4>Accessing the Appliance's UI</h4>
+            <p>Once the appliance is running, you can access it by its IP address.  This can be found in the Horizon UI of OpenStack, next to the instance.  Here's an example:</p>
+            <p><a target="_blank" href="/img/site/appliance_ip.png"><img src="/img/site/appliance_ip_thumb.png" alt="Appliance IPs"></a></p>
+            <p>Build a URL of the IP address of the appliance and enter it into your browser's address bar:</p>
+            <pre>http://10.0.47.3/</pre>
+            <p>Remember, it takes about 10 minutes for the appliance to build!</p>
+          </div> 
+      </section> 
 
-          </div>
-      </section>   
       <section id="appliance-operation" class="group">
         <h3>Group C</h3>
           <p>Before we setup the appliance, you'll need to create or have the following accounts available for setup:</p>
@@ -298,10 +316,13 @@ runcmd:
         <li>
           <a href="#installing-the-appliance">Appliance Install</a>
           <ul class="nav nav-stacked">
-            <li><a href="#appliance-install-openstack">Install OpenStack</a></li>
-            <li><a href="#appliance-install-user">Create User</a></li>
-            <li><a href="#appliance-install-tenant">Create Tenant</a></li>
-            <li><a href="#appliance-install-instance">Launch Instance</a></li>
+            <li><a href="#creating-a-user-and-tenant">Create User/Tenant</a></li>
+            <li><a href="#install-an-ubuntu-image">Install an Ubuntu Image</a></li>
+            <li><a href="#create-a-keypair">Create SSH Keypair</a></li>
+            <li><a href="#set-the-access-rules">Set the Access Rules</a></li>
+            <li><a href="#create-a-flavor-for-the-appliance">Create a Flavor</a></li>
+            <li><a href="#start-the-appliance">Start the Appliance</a></li>
+            <li><a href="#accessing-the-appliances-ui">Access the UI</a></li>
           </ul>
         </li> 
         <li>

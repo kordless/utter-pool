@@ -53,7 +53,7 @@ class InstanceApiShim(object):
 		for address in addresses:
 			if address.version.as_dict() == 4 and address.scope.as_dict() == 'private':
 				processed.append(('ipv4_private_address', address.address.as_dict()))
-			if address.version.as_dict() == 6 and address.scope.as_dict() == 'private':
+			if address.version.as_dict() == 6 and address.scope.as_dict() == 'public':
 				processed.append(('ipv6_address', address.address.as_dict()))
 			if address.version.as_dict() == 4 and address.scope.as_dict() == 'public':
 				processed.append(('ipv4_address', address.address.as_dict()))

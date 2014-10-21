@@ -33,6 +33,7 @@
           <h4>Software Licensing</h4>
           <p>All <a href="https://www.github.com/stackmonkey/">project code</a> is Open Source and licensed under the <a href="http://opensource.org/licenses/MIT">MIT License</a>. You may do whatever you please with the code.</p>
         </div>
+
         <div id="how-it-works" class="subgroup">
           <h4>How It Works</h4>
           <p>Providers run <a href="https://www.github.com/stackmonkey/utter-va">virtual appliances</a> on top of their <strong>OpenStack clusters</strong>, which allows a limited amount of control over the cluster by the appliances.  Appliances listen to the <strong>Bitcoin blockchain</strong> for payments to a given <strong>Bitcoin address</strong>.  When a payment is noted to an address, an instance is started using the <strong>Instance Flavor</strong> associated with that address.</p>
@@ -40,19 +41,21 @@
           <p>The pool software provides a centralized location where appliances can advertise their instances for sale for a given <strong>Ask Price</strong>. By providing users the ability to search and bid on instances, this effectively creates a marketplace where compute can be openly sold, purchased or traded.  These transactions are currently done via <strong>Instance Reservations</strong>.  Here is a screenshot of an instance reservation using an OpenStack service provider located in Nairobi, Kenya:</p>
           <p class="text-center"><img src="/img/site/instance_reservation.png"/></p>
         </div>
+
         <div id="is-it-secure" class="subgroup">
           <h4>Is It Secure?</h4>
           <p>From a security standpoint, the system management and payment portions of the project should be reasonably secure against bad actors. The project is Open Source and can be audited by <a href="https://github.com/stackmonkey/">viewing the appliance and pool repositories on Github</a>.</p><p>Please <a href="https://github.com/StackMonkey/utter-pool/issues/new">open a ticket</a> if you find a security related issue.</p>
           <p>Instance starts on the network only occur after an appliance has noted a payment on the Bitcoin blockchain.  The notifications are sent into the appliance via webhook calls from <a href="https://www.coinbase.com/docs/merchant_tools/callbacks">Coinbase's payment callbacks</a>. Before an instance is started by the appliance, the callback payload from Coinbase must contact a tokenized hostname with the correct Bitcoin address and a special address token known only to Coinbase.</p>
           <p>The address tokens and tokenized hostname are never shared with the pool and the pool is incapable of contacting an appliance directly to give it commands. Appliances only call into the pool to give status updates on instances and to fetch flavor varieties.</a>
         </div>
+
         <div id="can-i-trust-it" class="subgroup">
           <h4>Can I Trust It?</h4>
           <p>Trusting public cloud infrastructure has been an ongoing challenge for companies with higher level trust-based use cases.  Because cloud computing use cases come in a wide variety of required trust levels, the answer to whether you can trust a coop infrastructure varies wildly with your specific use case.</p>
           <p>For example, trusting an unknown provider to do continuous integration tests for you on Open Source software requires a much lower trust level than handling financial transactions using closed source proprietary code.</p>
           <p>For high trust use cases, Utter.io provides a feature called <strong>Appliance Groups</strong> which allows users and operators to <a href="#pool-groups">form hybrid cloud groups</a>, allowing the sharing of excess compute resources between entities who trust each other.  Future version of the software will provide these types of additional trust levels automatically.</p>
-          
         </div>
+
         <div class="bs-callout bs-callout-danger bs-callout-top">
           <h4>High Trust Levels?</h4>
           <p>{{ app_name }} recommends you use <strong>Appliance Groups</strong> you form with trusted parties for higher trust level uses cases.  <a href="/groups/">Click here</a> to create your first trusted appliance group.</p>
@@ -101,12 +104,14 @@
             <p>Quisque efficitur metus in condimentum posuere. Maecenas lacinia viverra orci, sit amet cursus augue congue sit amet. Nunc quis luctus arcu, nec gravida risus. Sed augue eros, varius eu fringilla non, vulputate ut mi. Nullam id sollicitudin massa, eu lacinia eros. Pellentesque mi sem, malesuada sit amet aliquam id, finibus vel dui. Curabitur vitae fringilla magna. Pellentesque elementum gravida nibh et pretium. Vivamus tempor tempus elit, nec aliquet ligula sodales et. Praesent vitae enim aliquet, aliquet lorem at, feugiat nisl. Fusce vel tortor ac mi lobortis volutpat.</p>
           </div>
       </section>
+
       <section id="installing-the-appliance" class="group">
         <h3>Installing the Appliance</h3>
           <p>The virtual appliance requires a running OpenStack cluster. If you don't have an OpenStack cluster already running, fear not! You may follow the instructions for <a href="http://www.stackgeek.com/guides/gettingstarted.html">Installing OpenStack in 10 minutes</a> on the <a href="http://stackgeek.com/">StackGeek website</a> to get a fully functional OpenStack deployment running.</p>
           <p>The following video will help familiarize you with the process of installing the appliance on an OpenStack cluster:</p>
-          <iframe src="//player.vimeo.com/video/100944207" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+          <div class="text-center"><iframe src="//player.vimeo.com/video/100944207" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>
           <p></p>
+
           <div id="creating-a-user-and-tenant" class="subgroup">
             <h4>Creating a User and Tenant</h4>
             <p>If you have an admin account on the OpenStack cluster, you'll want to create a separate user and tenant for running the appliance:</p>
@@ -122,6 +127,7 @@
               <p>No worries! If you don't have an admin account on the OpenStack cluster, you can simply skip to the <a href="#install-an-ubuntu-image">Install an Ubuntu Image</a> section below. There will be a few limitations in functionality, but the appliance can still sell instances for you!</p>
             </div>
           </div>
+
           <div id="install-an-ubuntu-image" class="subgroup">
             <h4>Install an Ubuntu Image</h4>
             <p>The appliance requires an Ubuntu backed instance to run. If you don't have an Ubuntu image installed on your OpenStack cluster, follow these steps:</p>
@@ -134,6 +140,7 @@
             </ul>
             <p>You will want to keep this image live on the cluster in case you decide to start another appliance.</p>
           </div>
+
           <div id="create-a-keypair" class="subgroup">
             <h4>Create a Keypair</h4>
             <p>You need to create a key pair that you can use to access the virtual appliance's command line console.  Follow these steps to create the key:</p>
@@ -148,7 +155,8 @@
   chmod 600 ~/.ssh/stackmonkey.pem
 </pre>
           </div>
-          <div id="create-a-keypair" class="subgroup">
+
+          <div id="set-the-access-rules" class="subgroup">
             <h4>Set the Access Rules</h4>
             <p>The instances being sold by the appliance will need unrestricted access from the Internet if they have publicly accessible addresses. For now, the appliance does not manage the security groups, so you need to open up the default group to allow all access to the instances you will be starting.  Follow these steps to setup your access rules for the appliance:</p>
             <ul>
@@ -159,15 +167,55 @@
               <li>Click the <strong>Manage Rules</strong> button again, but this time click on the <strong>Rule</strong> pulldown and select <strong>Custom ICMP Rule</strong>.  Enter the number '-1' in <strong>both</strong> the <strong>Type</strong> and <strong>Code</strong> fields.  Click <strong>Add</strong> to add the rule.</li>
             </ul>
             <p>Your <strong>appliance</strong> security group rules should now look like this:</p>
-            <p><a href="/img/site/appliance_groups_thumb.png"><img src="/img/site/appliance_groups_thumb.png" alt="OpenStack Groups"></a></p>          
+            <p class="text-center"><a target="_blank" href="/img/site/appliance_groups.png"><img src="/img/site/appliance_groups_thumb.png" alt="OpenStack Groups"></a></p>          
+            <p>Next, follow these steps to set up the access rules for the instances that will be started on the cluster by the appliance:</p>
+            <ul>
+              <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Access &amp; Security</strong>.</li>
+              <li>Click the <strong>Manage Rules</strong> button to the right in the <strong>default</strong> security group row.</li>
+              <li>Delete any existing rules for the default group by clicking on <strong>Delete Rule</strong> in any of the existing rule's rows.</li>
+              <li>Click <strong>Add Rule</strong> and then select <strong>Custom TCP Rule</strong> from the <strong>Rule</strong> pulldown and <strong>Port Range</strong> from the <strong>Open Port</strong> pulldown.</li>
+              <li>Enter the number <strong>'1'</strong> in the <strong>From Port</strong> field. Enter the number <strong>'65535'</strong> in the <strong>To Port</strong> field. Click <strong>Add</strong>.</li>
+              <li>Repeat the previous two steps, but this time select <strong>Custom UDP Rule</strong> from the <strong>Rule</strong> pulldown.  Enter the same numbers for the range.</li>
+              <li>Click <strong>Add Rule</strong> and then select <strong>Custom ICPMP Rule</strong> from the <strong>Rule</strong> pulldown.</li>
+              <li>Enter the number <strong>'-1'</strong> in <strong>both</strong> the <strong>Type</strong> and <strong>Code</strong> fields.  Click <strong>Add</strong> to add the rule.</li>
+            </ul>
+            <p>Your <strong>default</strong> security group rules should now look like this:</p>
+            <p class="text-center"><a href="https://raw.githubusercontent.com/StackMonkey/utter-va/master/webapp/static/img/readme/default_groups.png"><img src="https://raw.githubusercontent.com/StackMonkey/utter-va/master/webapp/static/img/readme/default_groups_thumb.png" alt="OpenStack Groups"></a></p>
           </div>
-          <div id="create-a-keypair" class="subgroup">
+
+          <div id="create-a-flavor-for-the-appliance" class="subgroup">
             <h4>Create a Flavor for the Appliance</h4>
-
+            <p>The appliance needs about 8GB of drive space for caching boot images. To create a new flavor that is the right size for for the appliance, do the following:</p>
+            <ul>
+              <li>Click on the <strong>Admin</strong> tab to the far left and then click on <strong>System Panel..Flavors</strong>.  Click the <strong>Create Flavor</strong> button at the top right.</li>
+              <li>Name the flavor <strong>'m512.v1.d8'</strong>. For <strong>VCPUs</strong> put the number <strong>'1'</strong>.  For <strong>RAM</strong> put <strong>'512'</strong>.  For <strong>Root Disk GB</strong> put <strong>'8'</strong> and then click <strong>Create Flavor</strong> to create the new flavor.</li>
+            </ul>
+            <p class="text-center"><img src="https://raw.githubusercontent.com/StackMonkey/utter-va/master/webapp/static/img/readme/flavor_thumb.png" alt="OpenStack Flavor"></p>
           </div>
-          <div id="create-a-keypair" class="subgroup">
-            <h4>Start the Instance</h4>
 
+          <div id="start-the-appliance" class="subgroup">
+            <h4>Start the Appliance</h4>
+            <p>Now all the components of the instance have been created, you can launch an instance which will configure itself into a StackMonkey virtual appliance.  Follow these instructions to launch the instance:</p>
+            <ul>
+              <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Instances</strong>. To the right, click on the <strong>Launch Instance</strong> button.</li>
+              <li>Name the instance <strong>'StackMonkey VA'</strong> and then click on the <strong>Flavor</strong> pulldown and select the <strong>m512.v1.d8</strong> flavor.</li>
+              <li>Click on the <strong>Instance Boot Source</strong> pulldown at the bottom and select <strong>Boot from image</strong>.  Under <strong>Image Name</strong>, select the <strong>Ubuntu Trusty 14.04LTS</strong> image you installed earlier.</li>
+              <li>Click on the <strong>Access &amp; Security</strong> tab at the top.  Use the <strong>Key Pair</strong> pulldown to select the <strong>stackmonkey</strong> key pair you generated earlier.</li>
+              <li>In the same tab, check the <strong>appliance</strong> security group, and uncheck the <strong>default</strong> group.</li>
+              <li>Click on the <strong>Post-Creation</strong> tab at the top.</li>
+            </ul>
+            <p>In the Customization Script text area that appears in the modal, paste the following exactly as shown:</p>
+            <pre><code>
+#cloud-config
+hostname: stackmonkey-va
+manage_etc_hosts: true
+runcmd:
+ - [ wget, "http://goo.gl/KJH5Sa", -O, /tmp/install.sh ]
+ - chmod 755 /tmp/install.sh
+ - /tmp/install.sh
+            </code></pre>
+            <p>Click on the <strong>Launch</strong> button to launch the appliance.  You can monitor the instance's build state by refreshing the console log tab viewable by clicking on the instance name in the instance list.</p>
+            <p>The appliance takes about 10 minutes to build.</p>
           </div>
           <div id="create-a-keypair" class="subgroup">
             <h4>Create a Keypair</h4>

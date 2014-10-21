@@ -23,14 +23,16 @@
         <p>1092 Sanders Drive</p>
         <p>Moraga, CA 94556</p>
         <p>&nbsp;</p>
-        <p>@stackape</p>
         <p>{{ app_email }}</p>
         <p>(510) 230-3482</p>
+        <p>&nbsp;</p>
+        <iframe src="http://ghbtns.com/github-btn.html?user=stackmonkey&amp;repo=utter-va&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="150" height="30"></iframe>
+        <a href="https://twitter.com/stackape" class="twitter-follow-button" data-show-count="false" data-size="large">Follow @stackape</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>        <a name="contact"></a>
       </div>
     </div>
   </div>
 </div>
-<a name="contact"></a>
 <div class="container">
   <div class="row text-center">
     <h1>Meet the Team</h1>
@@ -60,7 +62,7 @@
         <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
         {{ macros.input(form, "name", ("Name"), placeholder=("Wow. Your name is awesome."), class="form-control focused required") }}
         {{ macros.input(form, "email", ("Email"), placeholder=("you@example.com"), class="form-control required") }}
-        {{ macros.input(form, "message", "Message", placeholder="I'd like to work on this, actually.",class="form-control required", cols="40", rows="8") }}
+        {{ macros.input(form, "message", "Message", placeholder="I'm awesome.",class="form-control required", cols="40", rows="8") }}
         <div class="form-actions">
           <button type="submit" class="btn btn-success">Send Message</button>
         </div>

@@ -4,6 +4,13 @@ html, body {
 h1 {
 	padding-top: 10px;
 }
+h3 {
+    margin-bottom: 8px;
+}
+h4 {
+    margin-top: 12px;
+    margin-bottom: 6px;
+}
 #docs {
 	margin-bottom: 40px;
 }

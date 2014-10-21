@@ -191,12 +191,13 @@ class Appliance(ndb.Model):
 
 		# loop through the appliances
 		for appliance in appliances:
-			geopoints.append({
-				"latitude": appliance.location.lat, 
-				"longitude": appliance.location.lon, 
-				"name": appliance.name,
-				"id": appliance.key.id()
-			})
+			if appliance.location:
+				geopoints.append({
+					"latitude": appliance.location.lat, 
+					"longitude": appliance.location.lon, 
+					"name": appliance.name,
+					"id": appliance.key.id()
+				})
 
 		return geopoints
 

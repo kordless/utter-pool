@@ -22,6 +22,11 @@ indexes:
 
 - kind: Appliance
   properties:
+  - name: group
+  - name: location
+
+- kind: Appliance
+  properties:
   - name: owner
   - name: created
     direction: desc

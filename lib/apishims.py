@@ -45,7 +45,7 @@ class InstanceApiShim(object):
 			('ask', flavor_specs['ask']),]
 
 	def prepare_console_output(self, console_lines):
-		return [('console_output', '\n'.join(console_lines)),]
+		return [('console_output', '\n'.join([x.as_dict() for x in console_lines])),]
 
 	# change the more flexible structure from the API scheme into the local model
 	def prepare_ip_addresses(self, addresses):

@@ -429,8 +429,8 @@ class Wisp(ndb.Model):
 			wisp = Wisp()
 			wisp.name = "System Default"
 			wisp.dynamic_image_url = "http://download.cirros-cloud.net/0.3.2/cirros-0.3.2-x86_64-disk.img"
-			wisp.container_format = "bare"
-			wisp.disk_format = "qcow2"
+			wisp.image_container_format = "bare"
+			wisp.image_disk_format = "qcow2"
 			wisp.default = True
 			wisp.put()
 

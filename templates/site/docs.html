@@ -28,20 +28,40 @@
     <div class="col-xs-9">
       <section id="overview" class="group">
         <h3>Overview</h3>
-        <p>{{ app_name }} is running an instance of the <a href="http://utter.io/">Utter.io compute pool software</a>.  Utter.io is like AirBnb for excess compute, providing fast location and provisioning of compute resources within a cooperative set of systems managed by <a href="http://superuser.openstack.org/">OpenStack operators</a>. Resource accounting inside the network is settled with <a href="https://bitcoin.org/">Bitcoin</a> and purchases of compute instances can be made by users without an account.</p>
-        <p>Providers can run a <a href="https://www.github.com/stackmonkey/utter-va">Utter.io virtual appliance</a> on top of their <strong>OpenStack clusters</strong>, which allows a limited amount of control over the cluster by the appliance.  Appliances listen to the <strong>Bitcoin blockchain</strong> for payments to a given <strong>Bitcoin address</strong>.  When a payment is noted to an address, an instance is started using the <strong>Instance Flavor</strong> associated with the address.</p>
-        <p>The <a href="https://www.github.com/stackmonkey/utter-pool">Utter.io pool software</a> provides a centralized location where appliances can advertise their instances for sale for a given <strong>Ask Price</strong>. By providing users the ability to search and bid on instances, this effectively creates a marketplace where compute can be openly sold, purchased or traded.  These transactions are currently done via <strong>Instance Reservations</strong>:</p>
-        <p class="text-center"><img src="/img/site/instance_reservation.png"/></p>
-        <p>Instances can only be started by payments made to an address monitored by a provider's appliance. The appliance pool is not able to start a given appliance's instances directly, which should help eliminate payment fraud and general abuse of the system.</p>
-        <p>To elevate trust between users and providers, groups of operators can <a href="#pool-groups">form adhoc hybrid clouds</a>, which allows sharing of excess compute resources between trusted entities.  Future version of the software will provide additional trust levels automatically.</p>
+        <p>The {{ app_name }} site is an instance of the <a href="http://utter.io/">Utter.io</a> compute pool.  Utter.io is like AirBnb for excess compute, providing fast location and provisioning of compute resources within a cooperative set of systems managed by <a href="http://superuser.openstack.org/">OpenStack operators</a>. Resource accounting inside the network is settled with <a href="https://bitcoin.org/">Bitcoin</a> and purchases of compute instances can be made by users without an account.</p>
         <div class="bs-callout bs-callout-warning bs-callout-top">
           <h4>Software Licensing</h4>
           <p>All <a href="https://www.github.com/stackmonkey/">project code</a> is Open Source and licensed under the <a href="http://opensource.org/licenses/MIT">MIT License</a>. You may do whatever you please with the code.</p>
         </div>
+        <div id="how-it-works" class="subgroup">
+          <h4>How It Works</h4>
+          <p>Providers run <a href="https://www.github.com/stackmonkey/utter-va">virtual appliances</a> on top of their <strong>OpenStack clusters</strong>, which allows a limited amount of control over the cluster by the appliances.  Appliances listen to the <strong>Bitcoin blockchain</strong> for payments to a given <strong>Bitcoin address</strong>.  When a payment is noted to an address, an instance is started using the <strong>Instance Flavor</strong> associated with that address.</p>
+          <p>Right before an instance is started, the appliance will ask the <a href="https://www.github.com/stackmonkey/utter-pool">pool software</a> for provisioning details related to the instance, including ssh-keys and post boot configuration scripts.</p>
+          <p>The pool software provides a centralized location where appliances can advertise their instances for sale for a given <strong>Ask Price</strong>. By providing users the ability to search and bid on instances, this effectively creates a marketplace where compute can be openly sold, purchased or traded.  These transactions are currently done via <strong>Instance Reservations</strong>.  Here is a screenshot of an instance reservation using an OpenStack service provider located in Nairobi, Kenya:</p>
+          <p class="text-center"><img src="/img/site/instance_reservation.png"/></p>
+        </div>
+        <div id="is-it-secure" class="subgroup">
+          <h4>Is It Secure?</h4>
+          <p>From a security standpoint, the system management and payment portions of the project should be reasonably secure against bad actors. The project is Open Source and can be audited by <a href="https://github.com/stackmonkey/">viewing the appliance and pool repositories on Github</a>.</p><p>Please <a href="https://github.com/StackMonkey/utter-pool/issues/new">open a ticket</a> if you find a security related issue.</p>
+          <p>Instance starts on the network only occur after an appliance has noted a payment on the Bitcoin blockchain.  The notifications are sent into the appliance via webhook calls from <a href="https://www.coinbase.com/docs/merchant_tools/callbacks">Coinbase's payment callbacks</a>. Before an instance is started by the appliance, the callback payload from Coinbase must contact a tokenized hostname with the correct Bitcoin address and a special address token known only to Coinbase.</p>
+          <p>The address tokens and tokenized hostname are never shared with the pool and the pool is incapable of contacting an appliance directly to give it commands. Appliances only call into the pool to give status updates on instances and to fetch flavor varieties.</a>
+        </div>
+        <div id="can-i-trust-it" class="subgroup">
+          <h4>Can I Trust It?</h4>
+          <p>Trusting public cloud infrastructure has been an ongoing challenge for companies with higher level trust-based use cases.  Because cloud computing use cases come in a wide variety of required trust levels, the answer to whether you can trust a coop infrastructure varies wildly with your specific use case.</p>
+          <p>For example, trusting an unknown provider to do continuous integration tests for you on Open Source software requires a much lower trust level than handling financial transactions using closed source proprietary code.</p>
+          <p>For high trust use cases, Utter.io provides a feature called <strong>Appliance Groups</strong> which allows users and operators to <a href="#pool-groups">form hybrid cloud groups</a>, allowing the sharing of excess compute resources between entities who trust each other.  Future version of the software will provide these types of additional trust levels automatically.</p>
+          
+        </div>
+        <div class="bs-callout bs-callout-danger bs-callout-top">
+          <h4>High Trust Levels?</h4>
+          <p>{{ app_name }} recommends you use <strong>Appliance Groups</strong> you form with trusted parties for higher trust level uses cases.  <a href="/groups/">Click here</a> to create your first trusted appliance group.</p>
+        </div>
       </section>
       <section id="pool" class="group">
         <h3>Compute Pool</h3>
-          <div id="pool-accounts" class="subgroup">
+          <p>This section of the documentation covers the use of the compute pool functionality at {{ app_name }}.</p>
+          <div id="account-setup" class="subgroup">
             <h4>Account Setup</h4>
             <p>Accounts on the compute pool are provided via federated logins with Google.  When you <a href="{{ uri_for('login') }}">login to {{ app_name }}</a> you will see a Google account chooser.  Select the account you want to use on {{ app_name }}.</p>
             <p class="text-center"><img src="/img/site/google_chooser.png"/></p>
@@ -50,7 +70,7 @@
             <p class="text-center"><img src="/img/site/google_access.png"/></p>
             <p>Click on the <strong>Accept Button</strong> to create and login to your {{ app_name }} account.</p>
           </div>
-          <div id="pool-2fa" class="subgroup">
+          <div id="two-factor-authentication" class="subgroup">
             <h4>Two Factor Authentication</h4>
             <p>Once you have created your account, you should enable two factor authentication.  Start by clicking on the <strong>settings tab</strong> in the left navigation menu, then click on the slider under the <strong>Two Factor Authentication</strong> section.  You will be presented with a two factor authentication setup modal:</p>
             <p class="text-center"><img src="/img/site/two_factor.png"/></p>
@@ -146,12 +166,17 @@
       <ul id="sidebar" class="nav nav-stacked" data-spy="affix" data-offset-top="120">
         <li>
           <a href="#overview">Overview</a>
+          <ul class="nav nav-stacked">
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#is-it-secure">Is It Secure?</a></li>
+            <li><a href="#can-i-trust-it">Can I Trust It?</a></li>
+          </ul>
         </li>
         <li>
           <a href="#pool">Compute Pool</a>
           <ul class="nav nav-stacked">
-            <li><a href="#pool-accounts">Accounts</a></li>
-            <li><a href="#pool-2fa">Two Factor Auth</a></li>
+            <li><a href="#account-setup">Account Setup</a></li>
+            <li><a href="#two-factor-authentication">Two Factor Auth</a></li>
             <li><a href="#pool-launcher">Launcher</a></li>
             <li><a href="#pool-clouds">Clouds</a></li>
             <li><a href="#pool-wisps">Wisps</a></li>

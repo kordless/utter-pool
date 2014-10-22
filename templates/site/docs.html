@@ -39,7 +39,7 @@
           <p>Providers run <a href="https://www.github.com/stackmonkey/utter-va">virtual appliances</a> on top of their <strong>OpenStack clusters</strong>, which allows a limited amount of control over the cluster by the appliances.  Appliances listen to the <strong>Bitcoin blockchain</strong> for payments to a given <strong>Bitcoin address</strong>.  When a payment is noted to an address, an instance is started using the <strong>Instance Flavor</strong> associated with that address.</p>
           <p>Right before an instance is started, the appliance will ask the <a href="https://www.github.com/stackmonkey/utter-pool">pool software</a> for provisioning details related to the instance, including ssh-keys and post boot configuration scripts.</p>
           <p>The pool software provides a centralized location where appliances can advertise their instances for sale for a given <strong>Ask Price</strong>. By providing users the ability to search and bid on instances, this effectively creates a marketplace where compute can be openly sold, purchased or traded.  These transactions are currently done via <strong>Instance Reservations</strong>.  Here is a screenshot of an instance reservation using an OpenStack service provider located in Nairobi, Kenya:</p>
-          <p class="text-center"><img src="/img/site/instance_reservation.png"/></p>
+          <p><img src="/img/site/instance_reservation.png"/></p>
         </div>
 
         <div id="is-it-secure" class="subgroup">
@@ -70,17 +70,17 @@
           <div id="account-setup" class="subgroup">
             <h4>Account Setup</h4>
             <p>Accounts on the compute pool are provided via federated logins with Google.  When you <a href="{{ uri_for('login') }}">login to {{ app_name }}</a> you will see a Google account chooser.  Select the account you want to use on {{ app_name }}.</p>
-            <p class="text-center"><img src="/img/site/google_chooser.png"/></p>
+            <p><img src="/img/site/google_chooser.png"/></p>
             <p>Once you've logged into your Google account, you will be informed about the level of access {{ app_name }} will have to your Google account.  {{ app_name }} only needs access to your <strong>email address</strong>.
             </p>
-            <p class="text-center"><img src="/img/site/google_access.png"/></p>
+            <p><img src="/img/site/google_access.png"/></p>
             <p>Click on the <strong>Accept Button</strong> to create and login to your {{ app_name }} account.</p>
           </div>
       
           <div id="two-factor-authentication" class="subgroup">
             <h4>Two Factor Authentication</h4>
             <p>Once you have created your account, you should enable two factor authentication.  Start by clicking on the <strong>settings tab</strong> in the left navigation menu, then click on the slider under the <strong>Two Factor Authentication</strong> section.  You will be presented with a two factor authentication setup modal:</p>
-            <p class="text-center"><img src="/img/site/two_factor.png"/></p>
+            <p><img src="/img/site/two_factor.png"/></p>
             <p>To install Google Authenticator you can visit the <a target="_blank" href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en">Google Play Store</a> or the <a target="_blank" href="https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8">iOS App Store</a>.  Once you've installed Authenticator, set up a new account by clicking <strong>Set Up Account</strong> and then clicking <strong>Scan Barcode</strong> and scanning the barcode in the site's modal.  Finish the setup by using the Authenticator app to enter the verification code in the modal.</p>
             <div class="bs-callout bs-callout-warning bs-callout-top">
               <h4>Note</h4>
@@ -98,7 +98,7 @@
         <h3>Installing the Appliance</h3>
           <p>The virtual appliance requires a running OpenStack cluster. If you don't have an OpenStack cluster already running, you may follow the instructions for <a href="http://www.stackgeek.com/guides/gettingstarted.html">Installing OpenStack in 10 minutes</a> on the <a href="http://stackgeek.com/">StackGeek website</a>. Over 15,000 people have used the StackGeek scripts to install OpenStack.</p>
           <p>The following video will help familiarize you with the process of installing the appliance on an OpenStack cluster:</p>
-          <div class="text-center"><iframe src="//player.vimeo.com/video/100944207" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>
+          <div><iframe src="//player.vimeo.com/video/100944207" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>
           <p></p>
 
           <div id="creating-a-user-and-tenant" class="subgroup">
@@ -149,7 +149,7 @@ chmod 600 ~/.ssh/stackmonkey.pem
               <li>For <strong>Root Disk GB</strong> put <strong>'8'</strong>.</li>
               <li>Finally, click <strong>Create Flavor</strong> to create the new flavor.</li>
             </ul>
-            <p class="text-center"><img src="/img/site/flavor_thumb.png" alt="OpenStack Flavor"></p>
+            <p><img src="/img/site/flavor_thumb.png" alt="OpenStack Flavor"></p>
           </div>
 
           <div id="install-an-ubuntu-image" class="subgroup">
@@ -176,7 +176,7 @@ chmod 600 ~/.ssh/stackmonkey.pem
               <li>Click the <strong>Manage Rules</strong> button again, but this time click on the <strong>Rule</strong> pulldown and select <strong>Custom ICMP Rule</strong>.  Enter the number '-1' in <strong>both</strong> the <strong>Type</strong> and <strong>Code</strong> fields.  Click <strong>Add</strong> to add the rule.</li>
             </ul>
             <p>Your <strong>appliance</strong> security group rules should now look like this:</p>
-            <p class="text-center"><a target="_blank" href="/img/site/appliance_groups.png"><img src="/img/site/appliance_groups_thumb.png" alt="OpenStack Groups"></a></p>          
+            <p><a target="_blank" href="/img/site/appliance_groups.png"><img src="/img/site/appliance_groups_thumb.png" alt="OpenStack Groups"></a></p>          
             <p>The instances being sold by the appliance will need unrestricted access from the Internet if they have publicly accessible IPv4 addresses. The appliance does not currently manage security groups, so you need to manually open up the default group to allow all access to the instances.</p>
             <p>Follow these steps to set up the access rules for the instances the appliance starts:</p>
             <ul>
@@ -190,7 +190,7 @@ chmod 600 ~/.ssh/stackmonkey.pem
               <li>Enter the number <strong>'-1'</strong> in <strong>both</strong> the <strong>Type</strong> and <strong>Code</strong> fields.  Click <strong>Add</strong> to add the rule.</li>
             </ul>
             <p>Your <strong>default</strong> security group rules should now look like this:</p>
-            <p class="text-center"><a target="_blank" href="/img/site/default_groups.png"><img src="/img/site/default_groups_thumb.png" alt="OpenStack Groups"></a></p>
+            <p><a target="_blank" href="/img/site/default_groups.png"><img src="/img/site/default_groups_thumb.png" alt="OpenStack Groups"></a></p>
           </div>
 
           <div id="start-the-appliance" class="subgroup">
@@ -333,7 +333,55 @@ runcmd:
             <p><img src="/img/site/flavors_thumb.png" alt="Flavors Table"></p>
             <p>To enable serving a flavor, simply click on the <strong>Serving Slider</strong> next to the flavor you would like to enable. When you enable a flavor that has a zero ask price, you will be prompted to enter an ask price before the appliance will enable it:</p>
             <p><img src="/img/site/ask_price.png"></p>
+            <p>&nbsp;</p>
+            <div class="bs-callout bs-callout-info bs-callout-top">
+              <h4>Pricing Instances</h4>
+              <p>The pool returns average pricing of instances to your appliance every 15 minutes.  The ask price dialog will auto-populate with the average ask price of other flavors for sale on the pool that have the same properties as the flavor you are enabling.  Set a price for the flavor that makes the most sense for your particular deployment costs.</p>
+            </div>
+          </div>
+
+          <div id="managing-openstack-flavors" class="subgroup">
+            <h4>Managing OpenStack Flavors</h4>
+            <p>This section assumes you personally have admin level privileges on your OpenStack cluster. If you don't have admin on your cluster, you will be unable to create new flavors for selling on the {{ app_name }} site and can safely skip this section.</p>
+            <p>If you have admin privileges and have configured the appliance with an OpenStack user that also has admin privileges, you should be able to install a flavor from the appliance UI. To install a new flavor, start by clicking on the <strong>Install a New Flavor</strong> button and then choosing a flavor to install:</p>
+            <p><img src="/img/site/install_flavor.png"></p>
+            <p>If you <strong>have not</strong> configured the appliance using a user with admin privileges, you can still add flavors manually using the OpenStack interface. Use the following steps to add a new flavor to the cluster and set its ask rate:</p>
+            <ul>
+              <li>Log into your OpenStack cluster with a user that has <strong>Admin Privileges</strong>.</li>
+              <li>To the left, click on the <strong>Admin</strong> tab and then click on <strong>System Panel</strong>.</li>
+              <li>Click on the <strong>Flavors</strong> tab and then, to the right, click on <strong>Create Flavor</strong>.</li>
+              <li>Under <strong>Flavor Info</strong> create a new flavor and set the <strong>name</strong> to <strong>m1.test</strong></li>
+              <li>Set the flavor's <strong>VCPUs</strong> to <strong>1</strong>, <strong>RAM</strong> to <strong>512</strong>, and <strong>Root Disk GB</strong> to <strong>10</strong>.</li>
+              <li>Set both <strong>Ephemeral</strong> and <strong>Swap</strong> Disk to <strong>0</strong>.</li>
+              <li>Click on <strong>Create Flavor</strong> to create the flavor.</li>
+              <li>To the right side of the new flavor entry, click the <strong>More</strong> pulldown and then click <strong>View Extra Specs</strong>.</li>
+              <li>Click the <strong>Create</strong> button and select <strong>Other Key</strong> from the <strong>Keys</strong> pulldown.</li>
+              <li>Enter <strong>stackmonkey:ask_price</strong> for the <strong>Key Name</strong> and then enter <strong>10</strong> for the <strong>Value</strong>.</li>
+              <li>Click the <strong>Create</strong> button to set the extra spec value for <strong>Ask Price</strong>.</li>
+            </ul>
+            <p>Give the appliance a few minutes to pick up the new settings for the flavor after you have edited it.</p>
+            <p>Regardless of whether the appliance has admin privileges or not, you can always set meta data values that the appliance can use for updating the list of flavors it sells.  This example shows editing a custom flavor and setting the <strong>Egress</strong> and <strong>Ingress</strong> rates plus the <strong>Ask Price</strong>:</p>
+            <p><img src="/img/site/openstack_extra_specs.png"></p>
+            <p>You can also set these values using the command line from the <strong>OpenStack Controller</strong> (assuming flavor ID is 1000):</p>
+            <p><strong><code># nova flavor-key 1000 set stackmonkey:ask_price=5</code></strong></p>
+            <p>&nbsp;</p>
+            <div class="bs-callout bs-callout-warning bs-callout-top">
+              <h4>Adjusting OpenStack's Default Flavor Policy</h4>
+              <p>On many <strong>OpenStack</strong> installations a normal user cannot create or modify flavors by default.  In cases where it is less than ideal to run the appliance user with admin privileges, you can modify the default flavor permissions by editing nova's <strong>policy.json</strong>. For most OpenStack distributions, that file is located at <strong>/etc/nova/policy.json</strong>.</p>
+              <p>The entries that need to be updated for enabling flavor editing are as follows:</p>
+              <p>
+                <code>"compute_extension:flavorextraspecs:create": "rule:admin_api or user_id:12345",</code>
+                <code>"compute_extension:flavorextraspecs:update": "rule:admin_api or user_id:12345",</code>
+                <code>"compute_extension:flavorextraspecs:delete": "rule:admin_api or user_id:12345",</code>
+                <code>"compute_extension:flavormanage": "rule:admin_api or user_id:12345",</code>
+              </p>
+              <p>You will substitute the actual User ID for string <code>12345</code> above.  The User ID for users is listed in the <strong>OpenStack Users Table</strong> located under <strong>Admin..Identity Panel..Users<strong> tab in the OpenStack UI.</p>
+            </div>
           </div> 
+
+          <div id="" class="subgroup">
+            <h4></h4>
+          </div>           
 
       </section>    
     </div>
@@ -375,6 +423,7 @@ runcmd:
             <li><a href="#appliance-configuration">Configuration</a></li>
             <li><a href="#connecting-to-openstack">Connect OpenStack</a></li>
             <li><a href="#configuring-flavors">Configuring Flavors</a></li>
+            <li><a href="#managing-openstack-flavors">Managing Flavors</a></li>
           </ul>
         </li> 
       </ul>

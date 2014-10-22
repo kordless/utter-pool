@@ -195,11 +195,11 @@ chmod 600 ~/.ssh/stackmonkey.pem
 
           <div id="start-the-appliance" class="subgroup">
             <h4>Start the Appliance</h4>
-            <p>Now it's time to launch an instance which will configure itself into a StackMonkey virtual appliance.  Follow these instructions to launch the appliance:</p>
+            <p>Now it's time to launch an instance which will configure itself into a {{ app_name }} virtual appliance.  Follow these instructions to launch the appliance:</p>
             <ul>
               <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Instances</strong>.</li>
               <li>Click on the <strong>Launch Instance</strong> button.</li>
-              <li>Name the instance <strong>'StackMonkey VA'</strong> and then click on the <strong>Flavor</strong> pulldown.</li>
+              <li>Name the instance <strong>'{{ app_name }} VA'</strong> and then click on the <strong>Flavor</strong> pulldown.</li>
               <li>If you created the <strong>m512.v1.d8</strong> flavor earlier, select it from the list.</li>
               <li>If you are unable to create a custom flavor, select a <strong>m1.small</strong> stock flavor from the pulldown.</li>
               <li>Click on the <strong>Instance Boot Source</strong> pulldown at the bottom and select <strong>Boot from image</strong>.</li>
@@ -238,7 +238,7 @@ runcmd:
         <h3>Appliance Operation</h3>
           <p>Before we setup the appliance, you'll need to create or have the following account information available:</p>
           <ul>
-            <li>A <a target="_blank" href="https://www.stackmonkey.com/login/">StackMonkey account</a></li>
+            <li>A <a target="_blank" href="https://www.stackmonkey.com/login/">{{ app_name }} account</a></li>
             <li>A <a target="_blank" href="https://coinbase.com/signup?r=52a9c6bf937ab6453a00001e&utm_campaign=user-referral&src=referral-link">Coinbase account</a></li>
             <li>An <a target="_blank" href="https://ngrok.com/user/signup">Ngrok account</a></li>
           </ul>
@@ -255,12 +255,12 @@ runcmd:
             <p>Once you've logged into the appliance, click on the <strong>Appliance</strong> tab at the top left.  You'll see a few warning messages pop up and go away in the bottom right corner.  There should be some notifications next to a few of the tabs to the left, indicating the appliance isn't functional yet. Here's a view of that configuration screen with warnings:</p>
             <p><a target="_blank" href="/img/site/appliance_configuration.png"><img src="/img/site/appliance_configuration_thumb.png" alt="Create an admin account."></a></p>
             <h5>1. Pool API Token</h5>
-            <p>Click the <strong>Register API Token</strong> button to register the appliance with the pool.  If you haven't signed up for the <strong>StackMonkey pool</strong> yet, you will be prompted by Google to allow access to your account from the site.  Once you have authenticated with the site, you'll be presented with a new appliance form:</p>
+            <p>Click the <strong>Register API Token</strong> button to register the appliance with the pool.  If you haven't signed up for the <strong>{{ app_name }} pool</strong> yet, you will be prompted by Google to allow access to your account from the site.  Once you have authenticated with the site, you'll be presented with a new appliance form:</p>
             <p><img src="/img/site/new_appliance.png" alt="Create an admin account."></p>
             <p>Enter a name for the appliance and leave it in the <strong>Public</strong> group for now.  Click on <strong>Create Appliance</strong> to add it to your account.</p>
             <div class="bs-callout bs-callout-danger bs-callout-top">
               <h4>Setup Two Factor Authentication!</h4>
-              <p>Now that you have an appliance running, take this moment and <a href="/docs#two-factor-authentication">setup two factor authentication</a> on StackMonkey.</p>
+              <p>Now that you have an appliance running, take this moment and <a href="/docs#two-factor-authentication">setup two factor authentication</a> on {{ app_name }}.</p>
             </div>
             <h5>2. Coinbase Tokens</h5>
             <p>Navigate to <a href="https://coinbase.com/signup?r=52a9c6bf937ab6453a00001e&amp;utm_campaign=user-referral&amp;src=referral-link">Coinbase</a> and sign up for a new account. Coinbase will email you a confirmation link which you will need to click to complete your login.</p>
@@ -269,7 +269,7 @@ runcmd:
               <li>Click on the <strong>API</strong> tab at the top and then click on the <strong>New API Key</strong> button to the right.</li>
               <li>You'll be prompted for a password or two factor auth key.  Enter whichever is applicable and click <strong>Verify</strong> to continue.</li>
             </ul>
-            <p>When you create a new API key on Coinbase, you can specify what actions it can perform on your account.  Given Bitcoin is like money, you'll want to be very careful about the permissions you give external applications.  The StackMonkey appliance only needs access to <strong>creating new Bitcoin addresses</strong> for your account.  This allows it to create new addresses for instances, and watch payments to those addresses by individuals.</p>
+            <p>When you create a new API key on Coinbase, you can specify what actions it can perform on your account.  Given Bitcoin is like money, you'll want to be very careful about the permissions you give external applications.  The {{ app_name }} appliance only needs access to <strong>creating new Bitcoin addresses</strong> for your account.  This allows it to create new addresses for instances, and watch payments to those addresses by individuals.</p>
             <p>Proceed by ensuring <strong>HMAC (Key + Secret)</strong> is selected at the top.  Check the <strong>My Wallet</strong> checkbox and then check the <strong>addresses</strong> checkbox under permissions.  Verify there are no other method permissions checked, other than addresses:</p>
             <p><img src="/img/site/coinbase_thumb.png" alt="Create an admin account."></p>
             <p>Proceed with these steps to finish adding the Coinbase API keys to the appliance:</p>
@@ -279,9 +279,9 @@ runcmd:
               <li>Back on the Coinbase page, paste the code into the <strong>API Key details</strong> prompt and then click <strong>Verify</strong>.</li>
               <li>Click on the <strong>Key Link</strong> just to the right of the <strong>enabled</strong> status for the key. You'll be prompted again for a password/2FA key.</li>
               <li>Enter the appropriate credentials and then click <strong>Verify</strong> again.</li>
-              <li>Copy the <strong>API Key</strong> into your paste buffer and then switch back to the <strong>StackMonkey Virtual Appliance</strong> page.</li>
+              <li>Copy the <strong>API Key</strong> into your paste buffer and then switch back to the <strong>{{ app_name }} Virtual Appliance</strong> page.</li>
               <li>Paste the key into the <strong>Coinbase Client ID</strong> field.  Switch back to the <strong>Coinbase</strong> page.</li>
-              <li>Copy the <strong>API Secret</strong> into your paste buffer and then switch back to the <strong>StackMonkey Virtual Appliance</strong> page.</li>
+              <li>Copy the <strong>API Secret</strong> into your paste buffer and then switch back to the <strong>{{ app_name }} Virtual Appliance</strong> page.</li>
               <li>Paste the key into the <strong>Coinbase Client Secret</strong> field.</li>
               <li>Click on <strong>Save Configuration</strong> at the bottom.</li>
             </ul>
@@ -292,7 +292,7 @@ runcmd:
               <li>Click the <strong>cog</strong> icon next to the <strong>Ngrok Token</strong> field.  The Ngrok site will appear.</li>
               <li>Click on <strong>Login with Github</strong>.  Github will ask you to approve the Ngrok site's access to your account.</li>
               <li>Once you've tied Ngrok to your Github account, you'll be presented with an <strong>auth token</strong> at the top of the page.</li>
-              <li>Click the <strong>copy</strong> button to copy the token and then switch back to the <strong>StackMonkey Virtual Appliance</strong> page.</li>
+              <li>Click the <strong>copy</strong> button to copy the token and then switch back to the <strong>{{ app_name }} Virtual Appliance</strong> page.</li>
               <li>Paste the token into the <strong>Ngrok Token</strong> field and then click <strong>Save Configuration</strong>.</li>
             </ul>
             <p>The Ngrok SSL tunnel will be established as soon as you've completed the rest of the configuration.  The lack of a warning indicator next to the <strong>Appliance</strong> tab will be your cue that the appliance is ready to serve instances.</p>
@@ -327,8 +327,12 @@ runcmd:
             <p><img src="/img/site/openstack_thumb.png" alt="Openstack Setup"></p>
           </div> 
 
-          <div id="" class="subgroup">
-            <h4></h4>
+          <div id="configuring-flavors" class="subgroup">
+            <h4>Configuring Flavors</h4>
+            <p>The appliance will attempt to download a list of flavors installed on the connected OpenStack cluster.  When the appliance first displays the flavors, they will be disabled and have their ask prices set to zero.<p>
+            <p><img src="/img/site/flavors_thumb.png" alt="Flavors Table"></p>
+            <p>To enable serving a flavor, simply click on the <strong>Serving Slider</strong> next to the flavor you would like to enable. When you enable a flavor that has a zero ask price, you will be prompted to enter an ask price before the appliance will enable it:</p>
+            <p><img src="/img/site/ask_price.png"></p>
           </div> 
 
       </section>    
@@ -370,6 +374,7 @@ runcmd:
             <li><a href="#logging-into-the-appliance">Logging In</a></li>
             <li><a href="#appliance-configuration">Configuration</a></li>
             <li><a href="#connecting-to-openstack">Connect OpenStack</a></li>
+            <li><a href="#configuring-flavors">Configuring Flavors</a></li>
           </ul>
         </li> 
       </ul>

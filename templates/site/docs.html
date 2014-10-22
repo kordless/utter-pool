@@ -29,7 +29,7 @@
       <section id="overview" class="group">
         <h3>Overview</h3>
         <p>The {{ app_name }} site is an instance of the <a href="http://utter.io/">Utter.io</a> compute pool.  Utter.io is like AirBnb for excess compute, providing fast location and provisioning of compute resources within a cooperative set of systems managed by <a href="http://superuser.openstack.org/">OpenStack operators</a>. Resource accounting inside the network is settled with <a href="https://bitcoin.org/">Bitcoin</a> and purchases of compute instances can be made by users without an account.</p>
-        <div class="bs-callout bs-callout-warning bs-callout-top">
+        <div class="bs-callout bs-callout-info bs-callout-top">
           <h4>Software Licensing</h4>
           <p>All <a href="https://www.github.com/stackmonkey/">project code</a> is Open Source and licensed under the <a href="http://opensource.org/licenses/MIT">MIT License</a>. You may do whatever you please with the code.</p>
         </div>
@@ -92,6 +92,29 @@
             <h4></h4>
           </div> 
 
+      </section>
+
+      <section id="becoming-a-provider" class="group">
+        <h3>Becoming a Provider</h3>
+          <p>Becoming a provider for the {{ app_name }} pool is relatively straightforward. The following is a short list of requirements needed to provide compute resources to the network:</p>
+          <ul>
+            <li>Access to a user and tenant on an <strong>OpenStack Backed Cluster</strong>.</li>
+            <li>Optionally, access to an OpenStack backed offering such as <strong>HP's Helion Public Cloud</strong>.</li>
+            <li>A <a target="_blank" href="https://coinbase.com/signup?r=52a9c6bf937ab6453a00001e&utm_campaign=user-referral&src=referral-link">Coinbase account</a> and the willingness to take <a href="https://bitcoin.org">Bitcoin</a> in exchange for providing compute resources to others.</li>
+            <li>Healthy tolerance to the software development process and willingness to assist in <a target="_blank" href="https://github.com/StackMonkey/utter-va/issues/new">debugging issues</a> while in Beta.</li>
+            <li>About an hour's worth of your time to <a href="/docs#installing-the-appliance">get the appliance installed</a>.</li>
+          </ul>
+          <div class="bs-callout bs-callout-info bs-callout-top">
+            <h4>Getting Assistance</h4>
+            <p>If you are wanting to become a provider and need assistance in planning or evaluation, please use our handy <a href="/about/#contact">contact form</a> to send us some email.  We're here to help!</p>
+          </div>
+          <p>If you are wondering who else is a provider, here's a short list of participating companies:</p>
+          <ul>
+            <li><a href="https://www.nebula.com/">Nebula</a></li>
+            <li><a href="https://www.rackspace.com/">Rackspace</a></li>
+            <li><a href="http://kili.io/">Kili</a></li>
+          </ul>
+          <p>Stop sitting there and just <a href="/login">signup already</a>; this is the future of the cloud and you'll just miss out on it.</p>
       </section>
 
       <section id="installing-the-appliance" class="group">
@@ -403,6 +426,9 @@ runcmd:
             <li><a href="#account-setup">Account Setup</a></li>
             <li><a href="#two-factor-authentication">Two Factor Auth</a></li>
           </ul>
+        </li>
+        <li>
+          <a href="#becoming-a-provider">Becoming a Provider</a>
         </li>
         <li>
           <a href="#installing-the-appliance">Appliance Install</a>

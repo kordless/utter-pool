@@ -331,6 +331,18 @@ class Flavor(ndb.Model, ModelSchemaMixin):
 		flavor = flavor_query.get()
 		return flavor
 
+	@classmethod
+	def keys_with_instances_on_sale(self):
+		flavors = set()
+		for instance in Instance.get_all_offered():
+			flavors.add(instance.flavor)
+		return list(flavors)
+
+	def ask_prices(self):
+		return [
+			instance.ask
+			for instance in Instance.query(Instance.flavor == self.key)]
+
 
 # address model
 class Address(ndb.Model):

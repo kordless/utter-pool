@@ -16,42 +16,23 @@
 {% endblock %}
 
 {% block content %}
-  <!-- hidden not launched yet content modal -->
-  <div id="not-launched-modal" class="modal fade">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="myModalLabel">This is an Experimental Feature</h4>
-        </div>
-        <div class="modal-body">
-          <p>Launching an instance is currently an <strong>experimental feature and may be subject to periodic outages</strong> while this site is under active development.</p>
-          <p><strong>An account is not required to start an instance</strong>. Given the pseudo anonymous nature of Bitcoin and the way the <a href="https://github.com/StackMonkey/utter-pool/blob/master/whitepaper.md#distributed-compute-exchange-whitepaper">the framework has been architected</a>, it should be virtually impossible to know who is starting instances on the network. </p>
-          <p>Please understand instances starts are provided on an as-is basis by this pool and its providers. There will be <strong>no refunds</strong> for failed launches.</p>
-          <p>Clicking on <strong>I understand</strong> indicates an agreement to these vague explanations/terms.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" id="agree-button" class="btn btn-success">I understand.</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- end modal -->
-
+  <!--floating stuff-->
   <div class="splash-container">
-    <h1>Decentralized Cloud Servers</h1>
+    <h1>Decentralized Clouds for Everyone</h1>
     <div>
-      <button id="launch-cloud-button" class="btn btn-lg btn-success">Launch an Instance with <span id="bitcoin" class="fa fa-bitcoin"></span>itcoin</button>
-      <button id="survey-home-button" class="btn btn-lg btn-warning">Become a Service Provider</button>
+      <button id="launch-cloud-button" class="btn btn-lg btn-success">Launch an {% if not user_id %}Anonymous Instance™{% else %}Instance{% endif %}</button>
+      <button id="become-a-provider-button" class="btn btn-lg btn-warning"><span id="bitcoin" class="fa fa-bitcoin"></span>ecome a Coop Service Provider</button>
     </div>
     <div class="splash-instructions">
-      Anyone can <a href="{{ uri_for('login') }}">register</a> with a Google account.
+      It only takes a few seconds to <a href="{{ uri_for('login') }}">register</a> with a Google account.
     </div>
   </div>
+  <!--/floating stuff-->
 
-  <div id="map"></div>
-  
+  <!--top billboard-->
+  <div id="billboard"></div>
+  <!--/top billboard-->
+
   <!--container-->
   <div class="container">
     
@@ -112,9 +93,9 @@
 
     <hr class="soften">
     <blockquote class="big-quote">
-      <p>&#8220;We will always need more compute. A globally federated cloud of compute is inevitable.&#8221;</p>
+      <p>&#8220;It's not like we're going to wake up tomorrow and announce we need less compute.&#8221;</p>
       <small>
-        Kord Campbell
+        Kord Campbell, Founder
       </small>
     </blockquote>
 
@@ -129,62 +110,15 @@
   <script type="text/javascript">
     $().ready(function() {
       // buttons
-      $('#launch-cloud-button').on('click', function(e) {
-        var cookiebutter = $.cookie("launcher-agreement");
-        if (cookiebutter == "agree") {
-          window.location = "{{ uri_for('lab-launcher') }}"; 
-        } else {
-          $('#not-launched-modal').modal(); 
-        }
-      });
-      $('#agree-button').on('click', function(e) { 
-        $.cookie("launcher-agreement", "agree", { expires : 1 });
+      $('#launch-cloud-button').on('click', function(e) { 
         window.location = "{{ uri_for('lab-launcher') }}"; 
       });
-      $('#survey-home-button').on('click', function(e) { 
-        window.location = "https://www.surveymonkey.com/s/HHWTZG9"; 
+      $('#become-a-provider-button').on('click', function(e) { 
+        window.location = "/docs/#installing-the-appliance"; 
       });
       $('#cant-wait-button').on('click', function(e) { 
         $('#not-launched-modal').modal('hide');
       });
-
-      // map
-      var themap = L.mapbox.map('map', 'kordless.gnm28jg1', {scrollWheelZoom: false, zoomControl: false}).setView([20, 20], 3);
-      
-      // fetch geopoints
-      geopoints = []
-      var ajax = $.getJSON( "{{ uri_for('api-appliances-geopoints') }}", function( data ) {
-        geopoints = data['result']['geopoints'];
-      });
-
-      // icon
-      var osicon = L.icon({
-        iconUrl: '/img/openstackicon.png',
-        iconSize: [16, 16]
-      });
-
-      // add the map markers
-      ajax.complete(function() {
-        var markers = new L.MarkerClusterGroup();
-
-        $.each(geopoints, function() {
-          var marker = L.marker(
-            new L.LatLng(
-              this.lat, 
-              this.lng
-            ), 
-            { icon: osicon }
-          );
-          markers.addLayer(marker);
-        });
-
-        themap.addLayer(markers);
-      });
-
-      // scroll the map a little
-      setInterval(function(){
-        themap.panBy([-1, 0]);
-      },30000);
     })
   </script>
 {% endblock %}

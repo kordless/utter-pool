@@ -184,7 +184,9 @@ class Appliance(ndb.Model):
 	@classmethod
 	def get_geopoints(cls):
 		# fetch public appliances
-		appliances = cls.query().filter(cls.group == None).fetch()
+		appliances = cls.query().filter(
+			cls.group == None,
+			cls.updated >= datetime.now() - timedelta(seconds=900)).fetch()
 		
 		# geopoint array
 		geopoints = []

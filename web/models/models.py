@@ -237,7 +237,6 @@ class Image(ndb.Model):
 # flavor model
 class Flavor(ndb.Model, ModelSchemaMixin):
 	name = ndb.StringProperty()
-	description = ndb.StringProperty()
 	created = ndb.DateTimeProperty(auto_now_add=True)
 	updated = ndb.DateTimeProperty(auto_now=True)
 	vpus = ndb.IntegerProperty()
@@ -290,9 +289,19 @@ class Flavor(ndb.Model, ModelSchemaMixin):
 
 	# generate flavor name based on it's specs
 	@property
-	def pretty_name(self):
-		name_format = 'Mem {memory}M VPUs {vpus} Disk {disk} Net-I/O {network_down}/{network_up}'
+	def description(self):
+		# format string
+		name_format = '{memory}MB RAM, {vpus} VPUs, {disk}GB Disk'
 
+		# add network if set
+		if self.network_down > 0:
+			name_format += ', {network_down} Mbps Ingress'
+		if self.network_up > 0:
+			name_format += ', {network_up} Mbps Egress'
+		if self.network_down == 0 and self.network_up == 0:
+			name_format += ', Unlimited Ingress/Egress'
+
+		# populate from keys
 		return name_format.format(**dict([
 			(crit['key'], getattr(self, crit['key']))
 			for crit in self.comparison_criteria]))
@@ -312,7 +321,6 @@ class Flavor(ndb.Model, ModelSchemaMixin):
 		if not flavor:
 			flavor = Flavor(
 				name=cls.flavor_name(criteria),
-				description='',
 				hot=2, # because we feel like 2 is a good number
 				rate=kwargs['ask'] if kwargs.has_key('ask') else 0,
 				launches=0,

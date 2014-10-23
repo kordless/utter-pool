@@ -99,7 +99,7 @@
           <p>Becoming a provider for the {{ app_name }} pool is relatively straightforward. The following is a short list of requirements needed to provide compute resources to the network:</p>
           <ul>
             <li>Access to a user and tenant on an <strong>OpenStack Backed Cluster</strong>.</li>
-            <li>Optionally, access to an OpenStack backed offering such as <strong>HP's Helion Public Cloud</strong>.</li>
+            <li>Alternately, access to an OpenStack backed offering such as <strong>HP's Helion Public Cloud</strong>.</li>
             <li>A <a target="_blank" href="https://coinbase.com/signup?r=52a9c6bf937ab6453a00001e&utm_campaign=user-referral&src=referral-link">Coinbase account</a> and the willingness to take <a href="https://bitcoin.org">Bitcoin</a> in exchange for providing compute resources to others.</li>
             <li>Healthy tolerance to the software development process and willingness to assist in <a target="_blank" href="https://github.com/StackMonkey/utter-va/issues/new">debugging issues</a> while in Beta.</li>
             <li>About an hour's worth of your time to <a href="/docs#installing-the-appliance">get the appliance installed</a>.</li>
@@ -108,13 +108,14 @@
             <h4>Getting Assistance</h4>
             <p>If you are wanting to become a provider and need assistance in planning or evaluation, please use our handy <a href="/about/#contact">contact form</a> to send us some email.  We're here to help!</p>
           </div>
-          <p>If you are wondering who else is a provider, here's a short list of participating companies:</p>
+          <p>Here's a short list infrastructure providers who are currently hosting an appliance:</p>
           <ul>
+            <li><a href="http://hpcloud.com/">HP Helion</a></li>
+            <li><a href="http://kili.io/">Kili</a></li>
             <li><a href="https://www.nebula.com/">Nebula</a></li>
             <li><a href="https://www.rackspace.com/">Rackspace</a></li>
-            <li><a href="http://kili.io/">Kili</a></li>
           </ul>
-          <p>Stop sitting there and just <a href="/login">signup already</a>; this is the future of the cloud and you'll just miss out on it.</p>
+          <p>Stop sitting there and just <a href="/login">signup already</a>; this is the future of the cloud and you'll just end up missing out on it if you don't.</p>
       </section>
 
       <section id="installing-the-appliance" class="group">
@@ -270,7 +271,7 @@ runcmd:
             <h4>Logging Into the Appliance</h4>
             <p>Once the web-based UI comes up, you start things off by creating an administrator account.  Enter the username, password, and  password again to create an account. Click the <strong>Create Admin Account</strong> button to create the account and automatically sign in.</p>
             <p><a target="_blank" href="/img/site/admin.png"><img src="/img/site/admin_thumb.png" alt="Create an admin account."></a></p>
-            <p><strong><em>Note:</em></strong> Keep in mind that the appliance URL is not intended to be shared with others.  While connections from the outside are encrypted over the SSL tunnel, and the URL of the appliance is never publicly shared, your local access to the UI via IP address is neither secured nor encrypted.  This will be addressed in later version.</p>
+            <p><strong><em>Note:</em></strong> The appliance URL is not intended to be shared with others.  While connections from the outside are encrypted over the SSL tunnel, and the URL of the appliance is never publicly shared, your local access to the UI via IP address is neither secured nor encrypted.  This will be addressed in later version.</p>
           </div> 
 
           <div id="appliance-configuration" class="subgroup">
@@ -386,7 +387,13 @@ runcmd:
             <p>Regardless of whether the appliance has admin privileges or not, you can always set meta data values that the appliance can use for updating the list of flavors it sells.  This example shows editing a custom flavor and setting the <strong>Egress</strong> and <strong>Ingress</strong> rates plus the <strong>Ask Price</strong>:</p>
             <p><img src="/img/site/openstack_extra_specs.png"></p>
             <p>You can also set these values using the command line from the <strong>OpenStack Controller</strong> (assuming flavor ID is 1000):</p>
-            <p><strong><code># nova flavor-key 1000 set stackmonkey:ask_price=5</code></strong></p>
+            <p>
+<pre>
+nova flavor-key 1000 set stackmonkey:ask_price=5
+nova flavor-key 1000 set quota:inbound_average=1
+nova flavor-key 1000 set quota:inbound_average=1
+</pre>
+            </p>
             <p>&nbsp;</p>
             <div class="bs-callout bs-callout-warning bs-callout-top">
               <h4>Adjusting OpenStack's Default Flavor Policy</h4>

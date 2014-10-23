@@ -13,7 +13,8 @@ import json
 
 import bleach
 import html5lib
-from markdown import markdown
+
+from lib import markdown
 
 from google.appengine.api import taskqueue
 from google.appengine.api import channel
@@ -52,7 +53,7 @@ class BlogHandler(BaseHandler):
 
 			if content:
 				# create markdown and sanitize
-				article_html = bleach.clean(markdown(content), config.bleach_tags, config.bleach_attributes)
+				article_html = bleach.clean(markdown.markdown(unicode(content, 'utf-8')), config.bleach_tags, config.bleach_attributes)
 				article_title = bleach.clean(article.title)
 
 				# created when and by whom
@@ -300,7 +301,7 @@ class SlugHandler(BaseHandler):
 		article_created = article.created.strftime(date_format)
 
 		# create markdown and sanitize
-		article_html = markdown(content)
+		article_html = markdown.markdown(unicode(content, 'utf-8'))
 		article_html = bleach.clean(article_html, config.bleach_tags, config.bleach_attributes)
 
 		# load page content into params

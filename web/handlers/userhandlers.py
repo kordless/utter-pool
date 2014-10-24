@@ -121,6 +121,8 @@ class CallbackLoginHandler(BaseHandler):
 				# slack the new user signup
 				if config.debug:
 					in_dev = " (in development)"
+				else:
+					in_dev = ""
 
 				slack_data = {
 					'text': "Woot! New user %s just signed up%s!" % (user_info.username, in_dev),

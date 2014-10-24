@@ -528,14 +528,14 @@ class InstanceDetailHandler(BaseHandler):
 			############################################
 			# 7a. proxy callback URL JSON to appliance #
 			############################################
-	
+
 			# return content retrieved from callback URL if the JSON returned by this method includes
 			# a callback_url in the data, the appliance will follow the URL and will not call this API 
 			# again during the life of the instance.
 			self.response.headers['Content-Type'] = 'application/json'
 			self.response.write(json.dumps(json.loads(result.content), sort_keys=True, indent=2))
 			
-			# return from here			
+			# return from here	
 			return
 
 		"""

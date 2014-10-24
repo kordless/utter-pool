@@ -46,7 +46,7 @@
         <h4 class="modal-title">Building Instance Reservation</h4>
       </div>
       <div class="modal-body">
-        <p>Please wait while an instance reservation is prepared for consumption.</p>
+        <p>Please wait while an instance is being located and reserved.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Please Wait</button>
@@ -71,7 +71,7 @@
             <div class="bs-callout bs-callout-info">
               <h4>About the Instance Launcher</h4>
               <p>The <strong>{% if not user_id %}Anonymous{% endif %} Instance Launcher™</strong> launches <strong>OpenStack Backed Instances</strong> after a <strong>Pool Appliance</strong> observes a payment to a <strong>Bitcoin Address</strong>.</p>
-              <p>Use the IP sliders to indicate whether <strong>Public IPv4 or IPv6 Addresses</strong> are needed for the instance. Use the flavor pulldown to pick an <strong>Instance Flavor</strong>{% if not user_id or not wisp%} and enter a valid URL to be used for the <strong>Instance Callback URL</strong>. The callback URL will be used by the <strong>Provider's Appliance</strong> to inject a JSON formatted <strong>Cloud-Init</strong> file into the instance after it receives a payment. Click on the <span class="glyphicon glyphicon-pencil"></span> icon to the right of the callback input box to see an <a href="https://gist.githubusercontent.com/kordless/7b496134997d233f2664/raw/a6e928a04c1984965d159c7c72922f3cf5b3af21/callback.json">example callback on Github</a>.{% else %}. Use the <strong>Cloud Wisp</strong> pulldown to select a wisp for booting the instance.{% endif %}</p>
+              <p>Use the IP sliders to indicate whether <strong>Public IPv4 or IPv6 Addresses</strong> are needed for the instance. Use the flavor pulldown to pick an <strong>Instance Flavor</strong>{% if not user_id or not wisp%} and enter a valid URL to be used for the <strong>Instance Callback URL</strong>. The callback URL will be used by the <strong>Provider's Appliance</strong> to inject a JSON formatted <strong>Cloud-Init</strong> file into the instance after it receives a payment. Click on the <span class="glyphicon glyphicon-pencil"></span> icon to the right of the callback input box to see an <a href="https://gist.githubusercontent.com/kordless/7b496134997d233f2664/">example callback on Github</a>.{% else %}. Use the <strong>Cloud Wisp</strong> pulldown to select a wisp for booting the instance.{% endif %}</p>
               {% if not wisp %}<p>A <strong>Cloud Wisp</strong> <a href="{{ uri_for('account-wisps-new') }}">may be created</a> instead of using the callback URL.</p>{% endif %}
               <p>The map may be used to build a <strong>Provider Filter</strong> to choose a provider by location and/or name. The filter is used to select an instance from a given pool of providers.</p>
             </div>

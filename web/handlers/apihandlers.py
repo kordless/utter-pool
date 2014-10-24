@@ -522,6 +522,9 @@ class InstanceDetailHandler(BaseHandler):
 				logging.error("Error fetching callback URL content.")
 				instance.console_output = "Error fetching callback url=(%s)'s' content. %s" % (instance.callback_url, ex)
 				instance.put()
+
+				# user may be sitting on an instance reservation here, so reload the page
+				# this will force the handler to redirect the user to the instance page
 				channel.send_message(instance.token, "reload")
 				return error_response(self, "Error fetching callback URL content.", 401, params)
 

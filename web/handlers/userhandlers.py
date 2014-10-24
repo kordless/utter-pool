@@ -131,9 +131,9 @@ class CallbackLoginHandler(BaseHandler):
 				}
 				h = httplib2.Http()
 				resp, content = h.request(config.slack_webhook, 
-	        'POST', 
-	        json.dumps(slack_data),
-	        headers={'Content-Type': 'application/json'})
+			        'POST', 
+			        json.dumps(slack_data),
+			        headers={'Content-Type': 'application/json'})
 
 			else:
 				# existing user logging in - force a2fa check before continuing

@@ -46,7 +46,6 @@
           <div class="row">
             <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
             {{ macros.input(form, "name", "Name", "col-xs-9", placeholder="m512.v1.d20.n1", class="form-control required") }}
-            {{ macros.input(form, "description", "Description", "col-xs-12", placeholder="New Flavor", class="form-control required") }}
             {{ macros.input(form, "memory", "Memory (MB)", "col-xs-6", placeholder="512", class="form-control required") }} 
             {{ macros.input(form, "vpus", "VPUs", "col-xs-6", placeholder="1", class="form-control required") }}
             {{ macros.input(form, "disk", "Disk (GB)", "col-xs-6", placeholder="20", class="form-control required") }}

@@ -165,7 +165,7 @@
                 </div>
               
                 <div class="tab-pane" id="console">
-                  <pre id="console">{% if instance.console_output %}{{ instance.console_output }}{% else %}Waiting on console log...{% endif %}</pre>
+                  <pre id="console_log">{% if instance.console_output %}{{ instance.console_output }}{% else %}Waiting on console log...{% endif %}</pre>
                 </div>
               
               </div>
@@ -194,6 +194,9 @@
     var csrf_token = "{{ csrf_token() }}";
     var channel_token = "{{ channel_token }}";
     var refresh_channel = "{{ refresh_channel }}";
+
+    // current state when page loads
+    var state = {{ instance.state }};
 
     {% if instance.cloud %}
     // add new instance button
@@ -229,9 +232,60 @@
     var qrcode_string = "bitcoin:{{instance.address}}?amount="+(parseInt({{instance.ask}})/1000000);
     $('#qrcode').qrcode({text: qrcode_string});
 
-    // listen to our refresh channel for page reload
-    onMessage = function() {
-      window.location.reload();
+    // state indicator
+    var state_indicator = function(state) {
+      // remove all colors
+      $('#state').removeClass("label-danger").removeClass("label-warning").removeClass("label-info").removeClass("label-success");
+      
+      // set label state
+      if (state == 3) {
+        $('#state').html("Starting");
+        $('#state').addClass("label-success");
+      } else if (state == 5) {
+        $('#state').html("Suspended");
+        $('#state').addClass("label-warning");
+      } else if (state == 6) {
+        $('#state').html("Unsuspended");
+        $('#state').addClass("label-info");
+      } else if (state == 7) {
+        $('#state').html("Decommissioned");
+        $('#state').addClass("label-danger");
+      } else if (state == 10) {
+        $('#state').html("Reserved");
+        $('#state').addClass("label-danger");
+      } else if (state == 11) {
+        $('#state').html("Loading Image");
+        $('#state').addClass("label-success");
+      }
+    }
+
+    // handle channel messages
+    onMessage = function(packet) {
+      var data = JSON.parse(packet.data);
+      var name = data.name;
+
+      // if our ajax state is larger than the existing state
+      if (data.state > state) {
+        if (data.state == 4) {
+          // moving to state 4, we reload so we get the IPs
+          window.location.reload();
+        } else {
+          state_indicator(data.state);
+          state = data.state;
+        }
+      } else if (data.state < state) {
+        // we went back a state, which means openstack is loading image
+        state_indicator(11);
+        state = data.state;
+      } else if (data.state == 4) {
+        // we're getting a reload while we're running, so update console
+        $.ajax("/api/v1/instances/"+name+"/")
+          .success(function(data) {
+            var console_log = atob(data.result.instance.console_output);
+            console.log("updating console log");
+            $('#console_log').html(console_log);
+          });
+      }
     };
     
     // highlight entire IP for copying
@@ -250,15 +304,6 @@
     $('.ip').on('input', function() {
       var ip = $(this).attr('id');
       $(this).val(ip);
-    });
-
-    // console toggle
-    $('#console-toggle').click(function() {
-      if ($( "#console").is(":hidden")) {
-        $("#console").slideDown();
-      } else {
-        $("#console").slideUp();
-      }
     });
 
     // tabs 

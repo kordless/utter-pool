@@ -3,6 +3,7 @@ import re
 import md5
 import os
 import time
+import base64
 
 from datetime import datetime
 
@@ -86,13 +87,17 @@ def appliance_update(value):
 def epoch(value):
 	return int(value.strftime("%s"))
 
+def base64encode(value):
+	return base64.b64encode(value)
+
 def jinja2_factory(app):
 	j = jinja2.Jinja2(app)
 	j.environment.filters.update({
 		# Set filters.
 		'bleach': bleach_clean,
 		'appliance_update': appliance_update,
-		'epoch': epoch
+		'epoch': epoch,
+		'base64encode': base64encode,
 	})
 	j.environment.globals.update({
 		# Set global variables.

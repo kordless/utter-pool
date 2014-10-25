@@ -446,6 +446,7 @@ class InstanceDetailHandler(BaseHandler):
 
 		# send update information to channel
 		if instance.token:
+
 			output = {
 				"name": instance.name,
 				"token": instance.token,
@@ -609,7 +610,10 @@ class InstanceDetailHandler(BaseHandler):
 			self.response.set_status(404)
 			return self.render_template('api/response.json', **params)
 
-		params = {"instance": instance}
+		params = {
+			"instance": instance
+		}
+		
 		params['response'] = "success"
 		
 		self.response.headers['Content-Type'] = 'application/json'

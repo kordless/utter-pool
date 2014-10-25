@@ -6,6 +6,8 @@
       "callback_url": "{{ instance.callback_url }}",{% endif %}
       "address": "{{ instance.address }}",
       "expires": {{ instance.expires }},
+      "state": {{ instance.state }},
+      "console_output": "{{ instance.console_output | base64encode }}",
       "ask": {{ instance.ask }}
     }
   }

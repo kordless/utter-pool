@@ -121,6 +121,8 @@ class CallbackLoginHandler(BaseHandler):
 				# slack the new user signup
 				if config.debug:
 					in_dev = " (in development)"
+				else:
+					in_dev = ""
 
 				slack_data = {
 					'text': "Woot! New user %s just signed up%s!" % (user_info.username, in_dev),
@@ -129,9 +131,9 @@ class CallbackLoginHandler(BaseHandler):
 				}
 				h = httplib2.Http()
 				resp, content = h.request(config.slack_webhook, 
-	        'POST', 
-	        json.dumps(slack_data),
-	        headers={'Content-Type': 'application/json'})
+			        'POST', 
+			        json.dumps(slack_data),
+			        headers={'Content-Type': 'application/json'})
 
 			else:
 				# existing user logging in - force a2fa check before continuing

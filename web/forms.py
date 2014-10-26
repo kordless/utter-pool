@@ -100,7 +100,6 @@ class InstanceLauncherForm(BaseForm):
 
 class FlavorForm(BaseForm):
     name = fields.TextField('Name', [validators.Required(), validators.Length(max=50)])
-    description = fields.TextField('Description', [validators.Required(), validators.Length(max=100)])
     vpus = fields.IntegerField('VPUs', [validators.Required()])
     memory = fields.IntegerField('Memory (MB)', [validators.Required()])
     disk = fields.IntegerField('Disk (GB)', [validators.Required()])

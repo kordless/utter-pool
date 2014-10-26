@@ -67,7 +67,6 @@ class FlavorsListHandler(BaseHandler):
 
 		# load values out of the form
 		name = self.form.name.data.strip()
-		description = self.form.description.data.strip()
 		vpus = self.form.vpus.data
 		memory = self.form.memory.data
 		disk = self.form.disk.data
@@ -78,7 +77,6 @@ class FlavorsListHandler(BaseHandler):
 		# save the flavor in our database
 		flavor = Flavor(
 			name = name,
-			description = description,
 			vpus = vpus,
 			memory = memory,
 			disk = disk,

@@ -446,6 +446,7 @@ class InstanceDetailHandler(BaseHandler):
 
 		# send update information to channel
 		if instance.token:
+
 			output = {
 				"name": instance.name,
 				"token": instance.token,
@@ -522,20 +523,23 @@ class InstanceDetailHandler(BaseHandler):
 				logging.error("Error fetching callback URL content.")
 				instance.console_output = "Error fetching callback url=(%s)'s' content. %s" % (instance.callback_url, ex)
 				instance.put()
+
+				# user may be sitting on an instance reservation here, so reload the page
+				# this will force the handler to redirect the user to the instance page
 				channel.send_message(instance.token, "reload")
 				return error_response(self, "Error fetching callback URL content.", 401, params)
 
 			############################################
 			# 7a. proxy callback URL JSON to appliance #
 			############################################
-	
+
 			# return content retrieved from callback URL if the JSON returned by this method includes
 			# a callback_url in the data, the appliance will follow the URL and will not call this API 
 			# again during the life of the instance.
 			self.response.headers['Content-Type'] = 'application/json'
 			self.response.write(json.dumps(json.loads(result.content), sort_keys=True, indent=2))
 			
-			# return from here			
+			# return from here	
 			return
 
 		"""
@@ -606,7 +610,10 @@ class InstanceDetailHandler(BaseHandler):
 			self.response.set_status(404)
 			return self.render_template('api/response.json', **params)
 
-		params = {"instance": instance}
+		params = {
+			"instance": instance
+		}
+		
 		params['response'] = "success"
 		
 		self.response.headers['Content-Type'] = 'application/json'

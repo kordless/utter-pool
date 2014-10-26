@@ -18,7 +18,7 @@
 {% block content %}
   <!--floating stuff-->
   <div class="splash-container">
-    <h1>Decentralized Clouds For The Win</h1>
+    <h1>Decentralize the Cloud</h1>
     <div>
       <button id="launch-cloud-button" class="btn btn-lg btn-success">Launch an {% if not user_id %}Anonymous Instance™{% else %}Instance{% endif %}</button>
       <button id="become-a-provider-button" class="btn btn-lg btn-warning"><span id="bitcoin" class="fa fa-bitcoin"></span>ecome a Coop Service Provider™</button>
@@ -42,15 +42,15 @@
       <div class="row drivel">
         <div class="col-md-4">
           <h3><span class="glyphicon glyphicon-lock"></span> Login Secured by Google™</h3>
-          <p>{{ app_name }}'s pool controller runs on <a href="https://developers.google.com/appengine/docs/whatisgoogleappengine">Google Appengine™</a> and utilizes <a href="https://developers.google.com/appengine/articles/openid">Google's federated login system</a> to deter provider account theft. Supports two factor authentication via <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2">Google Authenticator</a>.</p>
+          <p>The {{ app_name }} site runs on <a href="https://developers.google.com/appengine/docs/whatisgoogleappengine">Google Appengine™</a> and utilizes <a href="https://developers.google.com/appengine/articles/openid">Google's federated login system</a>. The site also supports two factor authentication via <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2">Google Authenticator</a>.</p>
         </div>
         <div class="col-md-4">
           <h3><span class="glyphicon glyphicon-qrcode"></span> Payments by <span id="bitcoin" class="fa fa-bitcoin"></span>itcoin</h3>
-          <p>Start 100s of instances in minutes by simply sending Bitcoin.  An account is NOT required to start instances, helping protect against surveillance by agencies who threatens personal freedom and privacy.</p>
-        </div>  
+          <p>Start 100s of instances in minutes by simply sending Bitcoin.  An account is NOT required to <a href="/launcher/">start instances</a>, helping protect against surveillance by agencies and individuals who threaten information-based freedom and privacy.</p>
+        </div>
         <div class="col-md-4">
-          <h3><span class="glyphicon glyphicon-map-marker"></span> Geo Diverse Instances</h3>
-          <p>{{ app_name }} providers can be located in any country around the globe.  Start instances based on geo requirements or take advantage of ultra cheap compute in emerging markets.</p>
+          <h3><span class="glyphicon glyphicon-tasks"></span> Powered by OpenStack™</h3>
+          <p>The <a href="http://openstack.org">OpenStack Open Source project</a> provides the cloud controller fabric for the pools and can run on anything from a single desktop computer to an entire datacenter. Did you know that you can <a href="https://github.com/StackGeek/openstackgeek/tree/master/icehouse">install OpenStack in about 10 minutes</a>?</p>
         </div>
       </div>
       <!--/row-->
@@ -58,33 +58,16 @@
       <!--row-->
       <div class="row drivel">
         <div class="col-md-4">
-          <h3><span class="glyphicon glyphicon-user"></span> A Compute Market</h3>
-          <p>Service providers who <a href="/login">signup with {{ app_name }}</a> start earning revenue immediately by selling their excess compute capacity. Individuals can fund micro deployments and enjoy participating in our education based community.</p>
+          <h3><span class="glyphicon glyphicon-map-marker"></span> Geo Diverse Instances</h3>
+          <p>{{ app_name }} providers can be located in any country around the globe.  Start instances based on geo requirements or take advantage of ultra cheap compute in emerging markets.</p>
         </div>
         <div class="col-md-4">
-          <h3><span class="glyphicon glyphicon-tasks"></span> Powered by OpenStack™</h3>
-          <p>The <a href="http://openstack.org">OpenStack Open Source project</a> provides the cloud controller fabric for the pools and can run on anything from a single desktop computer to an entire datacenter. Did you know that you can <a href="https://github.com/StackGeek/openstackgeek/tree/master/icehouse">install OpenStack in about 10 minutes</a>?</p>
-        </div>
-        <div class="col-md-4">
-          <h3><span class="glyphicon glyphicon-cloud"></span> Coop Cloud Groups</h3>
-          <p>Companies running OpenStack based infrastrcuture can create, share and join private coop cloud groups. Cloud groups allow one or more companies to rent/purchase excess capacity with trusted business/operations partners.  It's like running your own private public cloud with friends!</p>
-        </div>
-      </div>
-      <!--/row-->
-
-      <!--row-->
-      <div class="row drivel">
-        <div class="col-md-4">
-          <h3><span class="glyphicon glyphicon-transfer"></span> IPv6 Ready</h3>
-          <p>The world is nearly out of IPV4 address space, so there's no sense in providing a highly distributed compute cloud without providing enough addresses for billions of instances.  Support for purchasing static public IPv4 addresses coming soon!</p>
-        </div>
-        <div class="col-md-4">
-          <h3><span class="glyphicon glyphicon-cog"></span> Powerful APIs</h3>
-          <p>Use our RESTful APIs to search and stop instances anywhere in the world.  Spin up a micro cluster in The Mission for streaming video or start instances in Madagascar, Missouri and Madrid for remote penetration testing.</p>
+          <h3><span class="glyphicon glyphicon-cloud"></span> Hybrid Cloud Groups</h3>
+          <p>Individuals and companies running OpenStack-based infrastructures can <a href="/groups/">create, share and join private Hybrid Cloud Groups</a>. Hybrid Groups allow one or more companies to purchase excess capacity from trusted business and operations partners.</p>
         </div>
         <div class="col-md-4">
           <h3><span class="glyphicon glyphicon-heart"></span> 100% Open Source</h3>
-          <p>Everything you see here is Open Source and free to use by anyone, anywhere, at any time. The Bitcoin methodology teaches high decentralization of all components, including infrastructure hardware and software.  Run your own <a href="https://github.com/stackmonkey/">pool or contribute</a> to the code today!</p>
+          <p>The <a href="http://utter.io/">Utter.io</a> framework that powers this site is Open Source and free to use by anyone, anywhere, at any time. <strong>Utter.io</strong> appliances <a href="/docs#becoming-a-provider">can be run by anyone</a> who has spare compute to share.</p>
         </div>
       </div>
       <!--/row-->
@@ -93,7 +76,7 @@
 
     <hr class="soften">
     <blockquote class="big-quote">
-      <p>&#8220;It's not like we're going to wake up tomorrow and announce we need less compute.&#8221;</p>
+      <p>&#8220;Mankind will always need more compute. Given <a href="http://www.utter.io/prezo/?r=stackmonkey/slide-0#/slide-20">bandwidth will never keep up with compute and storage</a>, our future lies in building a decentralized cloud run by many and trusted by all.&#8221;</p>
       <small>
         Kord Campbell, Founder
       </small>

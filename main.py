@@ -35,8 +35,11 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lib'))
 import webapp2
 import config
 import routes
+import logging
 
 from web.basehandler import handle_error
+
+logging.getLogger().setLevel(logging.WARNING)
 
 # base application
 app = webapp2.WSGIApplication(debug = os.environ['SERVER_SOFTWARE'].startswith('Dev'), config=config.webapp2_config)

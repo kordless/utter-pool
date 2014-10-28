@@ -8,9 +8,7 @@
     <link href="/css/font-awesome.css" rel="stylesheet">
 {% endblock %}
 
-{% block description %}
-  <meta name="description" content="You've managed to find the StackMonkey documentation. Things are looking up for you.">
-{% endblock %}
+{% block description %}It looks like you've managed to find the StackMonkey documentation; things are looking up for you!{% endblock %}
 
 {% block navbar %}
   {% include 'navbar.html' %}
@@ -470,7 +468,6 @@ nova flavor-key 1000 set quota:inbound_average=1
 {% endblock %}
 
 {% block javascript %}
-  <script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.js'></script>
   <script type="text/javascript">
     $().ready(function() {
       // scrollspy

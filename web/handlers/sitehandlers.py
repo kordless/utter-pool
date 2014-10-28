@@ -125,6 +125,22 @@ class AboutHandler(BaseHandler):
 		return forms.AboutForm(self)
 
 
+class DemoHandler(BaseHandler):
+	def get(self, demo_name = None):
+		params = {}
+		return self.render_template('site/demo.html', **params)
+
+
+class DemosHandler(BaseHandler):
+	def get(self, demo_name = None):
+		params = {}
+		return self.render_template('site/demos.html', **params)
+
+	def post(self, demo_name = None):
+		params = {}
+		return self.render_template('site/demos.html', **params)
+
+
 class DocsHandler(BaseHandler):
 	def get(self):
 		params = {}

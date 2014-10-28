@@ -13,6 +13,7 @@ _routes = [
 		# admin
 		RedirectRoute('/admin/', adminhandlers.AdminHandler, name='admin', strict_slash=True),
 		RedirectRoute('/admin/users/', adminhandlers.UsersHandler, name='admin-users', strict_slash=True),
+		RedirectRoute('/admin/users/export/', adminhandlers.UsersExportHandler, name='admin-users-export', strict_slash=True),
 		RedirectRoute('/admin/flavors/', adminhandlers.FlavorsListHandler, name='admin-flavors', strict_slash=True),
 		RedirectRoute('/admin/flavors/<flavor_id>/', adminhandlers.FlavorsActionsHandler, name='admin-flavors-action', strict_slash=True),
 		RedirectRoute('/admin/images/', adminhandlers.ImagesListHandler, name='admin-images', strict_slash=True),

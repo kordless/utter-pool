@@ -47,12 +47,16 @@
                     {% endfor %}
                   </tbody>
                 </table>
-                <p>{% for user in users %}{{ user.email }}, {% endfor %}</p>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <div class="row">
+        <div class="col-md-5">
+          <button type="button" id="export-users" class="btn btn-success">Export to CSV</button>
+        </div>
+      </div> 
     </div>
   </div> 
 </div>
@@ -78,6 +82,11 @@
     channel = new goog.appengine.Channel(refresh_channel);
     socket = channel.open();
     socket.onmessage = onMessage;
+
+    // export button
+    $('#export-users').click(function() {
+      window.location = "/admin/users/export/";
+    });
   });
 </script>
 

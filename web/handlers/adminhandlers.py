@@ -37,6 +37,26 @@ class UsersHandler(BaseHandler):
 		return self.render_template('admin/users.html', **params)
 
 
+class UsersExportHandler(BaseHandler):
+	@user_required
+	@admin_required
+	def get(self):
+		# lookup user's auth info
+		user_info = User.get_by_id(long(self.user_id))
+
+		# look up usrs
+		users = User.get_all()
+
+		params = {
+			'users': users
+		}
+
+		# mime it up
+		self.response.headers['Content-Type'] = "text/csv"
+		self.response.headers['Content-Disposition'] = "attachment; filename=users.csv"
+		return self.render_template('admin/user.csv', **params)
+
+
 class FlavorsListHandler(BaseHandler):
 	@user_required
 	@admin_required

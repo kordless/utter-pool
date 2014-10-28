@@ -5,9 +5,6 @@
     <!-- Home Page -->
     <link href="/css/index.css" rel="stylesheet">
     <link href="/css/font-awesome.css" rel="stylesheet">
-    <link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.css' rel='stylesheet' />
-    <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css' rel='stylesheet' />
-    <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css' rel='stylesheet' />
 
 {% endblock %}
 
@@ -18,13 +15,13 @@
 {% block content %}
   <!--floating stuff-->
   <div class="splash-container">
-    <h1>Decentralize the Cloud</h1>
+    <h1>Decentralize the Problem Cloud</h1>
     <div>
       <button id="launch-cloud-button" class="btn btn-lg btn-success">Launch an {% if not user_id %}Anonymous Instance™{% else %}Instance{% endif %}</button>
       <button id="become-a-provider-button" class="btn btn-lg btn-warning"><span id="bitcoin" class="fa fa-bitcoin"></span>ecome a Coop Service Provider™</button>
     </div>
     <div class="splash-instructions">
-      It only takes a few seconds to <a href="{{ uri_for('login') }}">register</a> with a Google account.
+      It only takes a few seconds to <a href="{{ uri_for('login') }}">register</a> with a Google account. <span id="make-up-your-mind"></span>
     </div>
   </div>
   <!--/floating stuff-->
@@ -46,7 +43,7 @@
         </div>
         <div class="col-md-4">
           <h3><span class="glyphicon glyphicon-qrcode"></span> Payments by <span id="bitcoin" class="fa fa-bitcoin"></span>itcoin</h3>
-          <p>Start 100s of instances in minutes by simply sending Bitcoin.  An account is NOT required to <a href="/launcher/">start instances</a>, helping protect against surveillance by agencies and individuals who threaten information-based freedom and privacy.</p>
+          <p>Start 100s of instances in minutes by simply sending Bitcoin.  If you are interested in protecting your privacy, an account on {{ app_name }} is NOT required to <a href="/launcher/">start instances</a>. You can even request to use your own provisioning server!</p>
         </div>
         <div class="col-md-4">
           <h3><span class="glyphicon glyphicon-tasks"></span> Powered by OpenStack™</h3>
@@ -76,7 +73,7 @@
 
     <hr class="soften">
     <blockquote class="big-quote">
-      <p>&#8220;Mankind will always need more compute. Given <a href="http://www.utter.io/prezo/?r=stackmonkey/slide-0#/slide-20">bandwidth will never keep up with compute and storage</a>, our future lies in building a decentralized cloud run by many and trusted by all.&#8221;</p>
+      <p>&#8220;Mankind's <a href="http://www.utter.io/prezo/?r=stackmonkey/slide-0#/slide-20">future</a> depends on building a decentralized cloud run by many and trusted by all.&#8221;</p>
       <small>
         Kord Campbell, Founder
       </small>
@@ -87,8 +84,7 @@
 {% endblock %}
 
 {% block javascript %}
-  <script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.js'></script>
-  <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js'></script>
+  <script type='text/javascript' src='/js/typed.js'></script>
   <script type='text/javascript' src='/js/jquery.cookie.js'></script>
   <script type="text/javascript">
     $().ready(function() {
@@ -101,6 +97,16 @@
       });
       $('#cant-wait-button').on('click', function(e) { 
         $('#not-launched-modal').modal('hide');
+      });
+
+      // type effect
+      $("#make-up-your-mind").typed({
+        strings: ["Go on. ^1000 Do it.", "Clicky, clicky, click.", "Launch. ^2000 An. ^2000 Instance. ^6000", "", "Hi.", ""],
+        typeSpeed: 60,
+        showCursor: false,
+        startDelay: 8000,
+        loopCount: 2,
+        loop: true
       });
     })
   </script>

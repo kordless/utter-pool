@@ -354,6 +354,7 @@ class BaseHandler(webapp2.RequestHandler):
 
 		# set or overwrite special vars for jinja templates
 		kwargs.update({
+			'debug': config.debug,
 			'app_name': config.app_name,
 			'app_email': config.app_email,
 			'app_description': config.app_description,

@@ -51,9 +51,9 @@ handlers:
   static_files: static/apple-touch-icon-precomposed.png
   upload: static/apple-touch-icon-precomposed.png
 
-- url: /(robots\.txt|humans\.txt|crossdomain\.xml)
+- url: /(robots\.txt|humans\.txt|crossdomain\.xml|sitemap\.xml)
   static_files: static/\1
-  upload: static/(robots\.txt|humans\.txt|crossdomain\.xml)
+  upload: static/(robots\.txt|humans\.txt|crossdomain\.xml|sitemap\.xml)
 
 - url: /img/(.*\.(gif|png|jpg))
   static_files: static/img/\1

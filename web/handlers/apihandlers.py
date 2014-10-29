@@ -148,16 +148,16 @@ class BidsHandler(BaseHandler):
 			providers = [{u'id': 1, u'name': u'All Providers'}]		
 
 		# flavors (required)
-		if 'flavor_id' in request:
-			flavor_id = request['flavor_id']
-			flavor = Flavor.get_by_id(long(flavor_id))
+		if 'flavor' in request:
+			flavor_name = request['flavor']
+			flavor = Flavor.get_by_name(flavor_name)
 
 			# check if flavor was found
 			if not flavor:
-				return error_response(self, "Flavor ID not found.", 403, params)
+				return error_response(self, "Flavor not found.", 403, params)
 
 		else:
-			return error_response(self, "Flavor ID is required.", 403, params)
+			return error_response(self, "Flavor name is required.", 403, params)
 
 		# cloud (optional)
 		if 'cloud_id' in request:
@@ -747,6 +747,66 @@ class TrackingPingHandler(BaseHandler):
 		params['result'] = "ping recorded for %s" % ip
 		self.response.headers['Content-Type'] = "application/json"
 		return self.render_template('api/response.json', **params)
+
+
+# create anonymous wisp
+# http://0.0.0.0/api/v1/wisp/ via GET, POST
+class WispHandler(BaseHandler):
+	# disable csrf check in basehandler
+	csrf_exempt = True
+
+	def post(self):
+		# paramters, assume failure, response type
+		params = {}
+		params['response'] = "error"
+		self.response.headers['Content-Type'] = "application/json"
+
+
+		# see if we have our variables
+		body = json.loads(self.request.body)
+		try:
+			ssh_key = body['ssh_key']
+			post_creation = body['post_creation']
+			dynamic_image_url = body['dynamic_image_url']
+
+		except:
+			params['message'] = "Wisp creation requires additional parameters."
+			self.response.set_status(401)
+			return self.render_template('api/response.json', **params)
+
+		# create an anonymous wisp
+		wisp = Wisp().anonymous(ssh_key, post_creation, dynamic_image_url)
+
+		# return JSON response
+		params = {}
+		params['response'] = "success"
+		params['result'] = "New wisp created."
+		return self.render_template('api/wisp.json', **params)
+
+	def get(self):
+		return self.post()
+
+# create anonymous wisp
+# http://0.0.0.0/api/v1/wisp/ via GET, POST
+class WispDetailHandler(BaseHandler):
+	def post(self):
+		pass
+		
+	def get(self):
+		return self.post()
+
+# generate list of appliances
+# http://0.0.0.0/api/v1/appliances/ GET
+class ApplianceListHandler(BaseHandler):
+	def get(self):
+		appliances = Appliance().appliances_with_instances_on_sale()
+
+		# return JSON response
+		params = {
+			'appliances': appliances
+		}
+		self.response.headers['Content-Type'] = "application/json"
+		return self.render_template('api/appliances.json', **params)
 
 
 # generate list of geopoints for appliances

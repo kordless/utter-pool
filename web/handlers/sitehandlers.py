@@ -134,12 +134,15 @@ class DemoHandler(BaseHandler):
 class DemosHandler(BaseHandler):
 	def get(self, demo_name = None):
 		params = {}
-		return self.render_template('site/demos.html', **params)
+		return self.render_template('site/demos/%s.html' % demo_name, **params)
 
 	def post(self, demo_name = None):
 		params = {}
-		return self.render_template('site/demos.html', **params)
+		return self.render_template('site/demos/%s.html' % demo_name, **params)
 
+	@webapp2.cached_property
+	def form(self):
+		return forms.DemoForm(self)
 
 class DocsHandler(BaseHandler):
 	def get(self):

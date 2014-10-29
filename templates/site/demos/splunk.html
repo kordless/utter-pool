@@ -1,0 +1,78 @@
+{% import "macros.html" as macros %}
+{% extends base_layout %}
+
+{% block title %}Demos :: {% endblock %}
+
+{% block description %}Let's demo Splunk.{% endblock %}
+
+{% block page_styles %}
+  <link href="/css/demo.css" rel="stylesheet">
+{% endblock %}
+
+{% block navbar %}
+  {% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<!-- hidden create modal -->
+<div id="modal-create" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Enter Your Public SSH Key</h4>
+      </div>
+      <div class="modal-body">
+        <p>Paste a <strong>public</strong> key into the field below and click <strong>Reserve Instance</strong> to reserve an instance. Your SSH keys will be removed from the system after 24 hours.</p>
+        <div class="row form-group">
+          <div class="col-md-12">
+            <div class="row">
+              <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+              {{ macros.input(form, "ssh_key", "Authorized SSH Key", "col-xs-12", class="form-control form-ssh-key", rows=10, placeholder="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAklOUpkDHrfHY17SbrmTIpNLTGK9Tjom/BWDSUGPl+nafzlHDTYW7hdI4yZ5ew18JH4JW9jbhUFrviQzM7xlELEVf4h9lFX5QVkbPppSwg0cda3Pbv7kOdJ/MTyBlWXFCR+HAo3FXRitBqxiX1nKhXpHAZsMciLq8V6RjsNAQwdsdMFvSlVK/7XAt3FaoJoAsncM1Q9x5+3V0Ww68/eIFmb1zuUFljQJKprrX88XypNDvjYNby6vw/Pb0rwert/EnmZ+AW4OZPnTPI89ZPmVMLuayrD2cE86Z/il8b+gw3r3+1nKatmIkjn2so1d01QraTlMqVSsbxNrRFi9wrf+M7Q== anonymous@bitcoin.local") }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="modal-close-button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" id="`" class="btn btn-danger">Reserve Instance</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end modal -->
+
+<div class="inverse">
+  <div class="container">
+    <div class="row text-center">
+      <h1>Splunk Demo Server</h1>
+      <p class="blurb">Use the buttons below to launch an instance with the free version of <a href="https://splunk.com/">Splunk</a> installed on it.</p>
+      <p>StackMonkey is <strong>NOT</strong> affiliated with Splunk and your user experience may vary depending on provider.</p>
+      <div class="launch-buttons">
+        <button type="button" id="launch-with-ssh-key" class="btn btn-info">Launch With SSH Key</button>
+        <button type="button" id="launch-without-ssh-key" class="btn btn-danger">Launch Without SSH Key</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row text-center">
+    <div id="qrcode"></div>
+    <div id="address"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="/js/jquery.qrcode.js"></script>
+<script type="text/javascript" src="/js/qrcode.js"></script>
+
+  <script type="text/javascript">
+    $().ready(function() {
+      // launch with ssh key button
+      $('#launch-with-ssh-key').click(function() {
+        $('#modal-create').modal('show');
+      });
+    });
+  </script>
+{% endblock %}

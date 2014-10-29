@@ -1,0 +1,12 @@
+{ 
+  "response": "{{ response }}",
+  "result": {
+    "wisp": {
+      "name": "{{ wisp.name }}",
+      "dynamic_image_url": "{{ wisp.dynamic_image_url }}",
+      "post_creation": "{{ wisp.post_creation }}",
+      "ssh_key": "{{ wisp.ssh_key }}",
+      "token": "{{ wisp.token }}"
+    }
+  }
+}

@@ -29,7 +29,7 @@ class LauncherHandler(BaseHandler):
 		# add list of user's flavors, if any
 		flavors = Flavor.flavors_with_instances_on_sale()
 		for flavor in flavors:
-			self.form.flavor.choices.insert(0, (flavor.key.id(), flavor.description))
+			self.form.flavor.choices.insert(0, (flavor.name, flavor.description))
 
 		# used for determining element layout
 		wisp = None

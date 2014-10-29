@@ -70,13 +70,17 @@ _routes = [
 		RedirectRoute('/api/v1/track/', apihandlers.TrackingPingHandler, name='api-track', strict_slash=True),
 		RedirectRoute('/api/v1/images/', apihandlers.ImagesHandler, name='api-images', strict_slash=True),
 		RedirectRoute('/api/v1/flavors/<action:.*>', apihandlers.FlavorsHandler, name='api-flavors', strict_slash=True),
-		RedirectRoute('/api/v1/instances/', apihandlers.InstancesHandler, name='api-instances', strict_slash=True),
+		RedirectRoute('/api/v1/wisp/', apihandlers.WispHandler, name='api-wisp', strict_slash=True),
+		RedirectRoute('/api/v1/wisp/<token>/', apihandlers.WispDetailHandler, name='api-wisps', strict_slash=True),
 		RedirectRoute('/api/v1/broker/', apihandlers.BrokerHandler, name='api-broker', strict_slash=True),
 		RedirectRoute('/api/v1/instances/', apihandlers.InstancesHandler, name='api-instances', strict_slash=True),
 		RedirectRoute('/api/v1/instances/<instance_name>/', apihandlers.InstanceDetailHandler, name='api-instance-details', strict_slash=True),
+		RedirectRoute('/api/v1/instances/<token>/', apihandlers.BidsDetailHandler, name='api-bids-detail', strict_slash=True),
+		RedirectRoute('/api/v1/appliances/', apihandlers.ApplianceListHandler, name='api-appliances', strict_slash=True),
 		RedirectRoute('/api/v1/appliances/geopoints/', apihandlers.ApplianceGeoPoints, name='api-appliances-geopoints', strict_slash=True),
 		RedirectRoute('/api/v1/bids/', apihandlers.BidsHandler, name='api-bids', strict_slash=True),
 		RedirectRoute('/api/v1/bids/<token>/', apihandlers.BidsDetailHandler, name='api-bids-detail', strict_slash=True),
+
 
 		# blog handlers
 		RedirectRoute('/blog/', bloghandlers.BlogHandler, name='blog', strict_slash=True),

@@ -1,0 +1,15 @@
+{ 
+  "response": "success",
+  "result": {
+    "appliances": [{% for appliance in appliances %}
+      {
+        "appliance": {
+          "id": "{{ appliance.key.id() }}"
+          "name": "{{ appliance.name }}",
+          "gravatar_url": "{{ appliance.owner.gravatar_url }}",
+          "location": [{{ appliance.location }}]
+        } 
+      }{% if not loop.last %},{% endif %}{% endfor %}
+    ]
+  }
+}

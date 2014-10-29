@@ -73,6 +73,9 @@ class WispForm(BaseForm):
     default = fields.BooleanField('Default Wisp')
 
 
+class DemoForm(BaseForm):
+    ssh_key = fields.TextAreaField('Public SSH Key', [validators.Length(max=2048)]) 
+
 class ApplianceForm(BaseForm):
     name = fields.TextField('Name', [validators.Required(), validators.Length(max=50)])
     token = fields.TextField('Token', [validators.Required(), validators.Length(max=64)])

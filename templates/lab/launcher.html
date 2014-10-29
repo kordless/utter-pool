@@ -293,9 +293,9 @@
     // reservation button
     $('#reservation-button').click(function() {
       var providers = $('#location-filter-input').tagsinput('items');
-      var flavor_id = $("#flavor").val();
+      var flavor = $("#flavor").val();
       var post_data = { 
-        "flavor_id": flavor_id,
+        "flavor": flavor,
         "requires_ipv4": $('#require-public-ipv4').children('.active').length,
         "requires_ipv6": $('#require-public-ipv6').children('.active').length,
         "providers": providers

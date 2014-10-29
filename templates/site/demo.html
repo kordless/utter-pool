@@ -25,7 +25,7 @@
 <div class="container">
   <div class="row text-center">
     <ul class="demos">
-      <li class="software">
+      <li id="demo-splunk" class="software">
         <b>Splunk</b>
         <a target="_blank" href="https://twitter.com/splunk"><img src="/img/site/twitter.png" alt="Twitter"></a>
         <a target="_blank" href="https://gist.github.com/"><img src="/img/site/github.png" alt="Github"></a>
@@ -40,8 +40,11 @@
 {% block javascript %}
   <script type="text/javascript">
     $().ready(function() {
-      $('.software').click(function() {
-        
+      $('li[id^="demo-"]').each(function(index) {
+        $('#'+this.id).click(function() {
+          var demo = this.id.split("-").pop();
+          window.location = "/demo/"+demo+"/";
+        });
       });
     });
   </script>

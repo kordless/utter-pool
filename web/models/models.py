@@ -182,6 +182,19 @@ class Appliance(ndb.Model):
 		return cls.query().filter(cls.owner == user, cls.group == group).count()
 
 	@classmethod
+	def keys_with_instances_on_sale(cls):
+		appliances = set()
+		for instance in Instance.get_all_offered():
+			appliances.add(instance.appliance)
+		return list(appliances)
+
+	@classmethod
+	def appliances_with_instances_on_sale(cls):
+		return [
+			appliance_key.get()
+			for appliance_key in cls.keys_with_instances_on_sale()]
+
+	@classmethod
 	def get_geopoints(cls):
 		# fetch public appliances
 		appliances = cls.query().filter(
@@ -429,6 +442,18 @@ class Wisp(ndb.Model):
 	bid = ndb.IntegerProperty()
 	amount = ndb.IntegerProperty()
 	default = ndb.BooleanProperty(default=False)
+	token = ndb.StringProperty()
+	remote_ip = ndb.StringProperty()
+
+	@classmethod
+	def get_by_remote_ip(cls, remote_ip):
+		query = cls.query().filter(cls.remote_ip == remote_ip, cls.status != 1)
+		wisp = query.get()
+
+		if wisp:
+			return wisp
+		else:
+			return False
 
 	@property
 	def use_dynamic_image(self):
@@ -471,6 +496,31 @@ class Wisp(ndb.Model):
 
 		# return whatever we did
 		return wisp
+
+	@classmethod
+	def anonymous(cls, ssh_key, post_creation, dynamic_image_url):
+		# do we have this ssh-key already?
+		entry = cls.query().filter(cls.ssh_key == ssh_key).get()
+
+		# create if we didn't find it
+		if not entry:
+			# generate new token and create new entry 
+			token = "%s" % generate_token(size=16, caselimit=True)
+			entry = Wisp(
+				name = 'anonymous',
+				ssh_key = ssh_key,
+				dynamic_image_url = dynamic_image_url,
+				post_creation = post_creation,
+				token = token
+			)
+			entry.put()
+
+		return entry
+
+	@classmethod
+	def get_by_token(cls, token):
+		query = cls.query(cls.token == token).get()
+		return query
 
 	@classmethod
 	def set_default(cls, wisp):

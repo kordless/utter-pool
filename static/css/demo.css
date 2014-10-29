@@ -31,7 +31,7 @@ h1 {
 .inverse {
     background-color: #252525;
     color: #fff;
-    padding-bottom: 60px;
+    padding-bottom: 50px;
 }
 .container > div.contact {
     padding: 0 25% 0 25%;
@@ -51,6 +51,9 @@ h1 {
     margin-right: 4px;
 }
 
+.launch-buttons {
+  margin-top: 20px;
+}
 .demos {
     overflow: hidden;
     margin-top: 40px;

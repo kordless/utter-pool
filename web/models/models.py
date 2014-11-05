@@ -433,6 +433,7 @@ class Wisp(ndb.Model):
 	updated = ndb.DateTimeProperty(auto_now=True)
 	image = ndb.KeyProperty(kind=Image)
 	ssh_key = ndb.TextProperty()
+	ssh_key_hash = ndb.StringProperty()
 	post_creation = ndb.TextProperty()
 	dynamic_image_url = ndb.StringProperty()
 	image_disk_format = ndb.StringProperty()
@@ -487,7 +488,7 @@ class Wisp(ndb.Model):
 		# create it if we don't have it
 		if not wisp:
 			wisp = Wisp()
-			wisp.name = "System Default"
+			wisp.name = "default"
 			wisp.dynamic_image_url = "http://download.cirros-cloud.net/0.3.2/cirros-0.3.2-x86_64-disk.img"
 			wisp.image_container_format = "bare"
 			wisp.image_disk_format = "qcow2"
@@ -498,9 +499,19 @@ class Wisp(ndb.Model):
 		return wisp
 
 	@classmethod
-	def anonymous(cls, ssh_key, post_creation, dynamic_image_url):
+	def anonymous(cls, ssh_key, post_creation, dynamic_image_url, image_disk_format, image_container_format, token):
+		# calculate the hash of the ssh_key
+		import hashlib
+		m = hashlib.md5()
+		m.update(ssh_key)
+		ssh_key_hash = m.hexdigest()
+
+		# blank string our token if we don't have one
+		if token == None:
+			token = ""
+		
 		# do we have this ssh-key already?
-		entry = cls.query().filter(cls.ssh_key == ssh_key).get()
+		entry = cls.query().filter(cls.ssh_key_hash == ssh_key_hash).get()
 
 		# create if we didn't find it
 		if not entry:
@@ -509,8 +520,11 @@ class Wisp(ndb.Model):
 			entry = Wisp(
 				name = 'anonymous',
 				ssh_key = ssh_key,
-				dynamic_image_url = dynamic_image_url,
+				ssh_key_hash = ssh_key_hash,
 				post_creation = post_creation,
+				dynamic_image_url = dynamic_image_url,
+				image_disk_format = image_disk_format,
+				image_container_format = image_container_format,
 				token = token
 			)
 			entry.put()

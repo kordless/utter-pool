@@ -16,7 +16,7 @@
             <div class="navbar-collapse collapse navbar-right">
               <ul class="nav navbar-nav">
                 <li><a class='{% if "blog" in path %}active{% endif %}' href='{{ blog_url }}'>Blog</a></li>
-                <li><a class='{% if "features" in path %}active{% endif %}' href='{{ uri_for("features")}}'>Features</a></li>
+                <li><a class='{% if "demo" in path %}active{% endif %}' href='{{ uri_for("demo")}}'>Demo</a></li>
                 <li><a class='{% if "pricing" in path %}active{% endif %}' href='{{ uri_for("pricing")}}'>Pricing</a></li>
                 {% if user_id %}
                 <li class="dropdown">

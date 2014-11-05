@@ -28,6 +28,7 @@ _routes = [
 		RedirectRoute('/docs/', sitehandlers.DocsHandler, name='docs', strict_slash=True),
 		RedirectRoute('/demo/', sitehandlers.DemoHandler, name='demo', strict_slash=True),
 		RedirectRoute('/demo/<demo_name>/', sitehandlers.DemosHandler, name='demos', strict_slash=True),
+		RedirectRoute('/demo/<demo_name>/<token>/', sitehandlers.DemosInstanceHandler, name='demos-instance', strict_slash=True),
 
 		# users
 		RedirectRoute('/login/', userhandlers.LoginHandler, name='login', strict_slash=True),
@@ -80,7 +81,6 @@ _routes = [
 		RedirectRoute('/api/v1/appliances/geopoints/', apihandlers.ApplianceGeoPoints, name='api-appliances-geopoints', strict_slash=True),
 		RedirectRoute('/api/v1/bids/', apihandlers.BidsHandler, name='api-bids', strict_slash=True),
 		RedirectRoute('/api/v1/bids/<token>/', apihandlers.BidsDetailHandler, name='api-bids-detail', strict_slash=True),
-
 
 		# blog handlers
 		RedirectRoute('/blog/', bloghandlers.BlogHandler, name='blog', strict_slash=True),

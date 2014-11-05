@@ -353,13 +353,8 @@
               window.location = "{{ uri_for('lab-bids') }}" + response.result.bid.token + "/";
             }, 2000);
           } else {
-            // hide the spinner
+            // hide the spinner and alert
             $('#spinner-modal').modal('hide');
-            
-            // delete the terra canvas
-            $('#terra > canvas').remove();
-
-            // show the error
             alertify.error(response.result.message);
 
             // if it mentioned 'callback' highlight the callback URL

@@ -12,11 +12,13 @@ from webapp2_extras.appengine.auth.models import Unique
 # google imports
 from google.appengine.api import taskqueue
 from google.appengine.api import users
+from google.appengine.api import channel
 
 # local application/library specific imports
 import config
 import web.forms as forms
 import web.models.models as models
+from web.models.models import InstanceBid, Instance
 
 from lib import utils, httpagentparser
 from web.basehandler import BaseHandler
@@ -136,13 +138,37 @@ class DemosHandler(BaseHandler):
 		params = {}
 		return self.render_template('site/demos/%s.html' % demo_name, **params)
 
-	def post(self, demo_name = None):
-		params = {}
-		return self.render_template('site/demos/%s.html' % demo_name, **params)
-
 	@webapp2.cached_property
 	def form(self):
 		return forms.DemoForm(self)
+
+
+class DemosInstanceHandler(BaseHandler):
+	def get(self, demo_name = None, token = None):
+		# lookup up bid
+		bid = InstanceBid.get_by_token(token)
+		if not bid:
+			self.add_message("Instance reservation token %s has expired." % token, 'error')
+			return self.redirect_to('demos', demo_name=demo_name)
+
+		# grab the instance
+		instance = Instance.get_by_token(token)
+		if not instance:
+			self.add_message("All available instance reservations are in use. Please try again in a few minutes.", 'error')
+			return self.redirect_to('demos', demo_name=demo_name)
+
+		# setup channel to do page refresh
+		channel_token = token
+		refresh_channel = channel.create_channel(channel_token)
+
+		params = {
+			'instance': instance,
+			'bid': bid,
+			'refresh_channel': refresh_channel,
+			'channel_token': channel_token 
+		}
+		return self.render_template('site/demos/%s_instance.html' % demo_name, **params)
+
 
 class DocsHandler(BaseHandler):
 	def get(self):

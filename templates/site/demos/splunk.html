@@ -63,7 +63,7 @@
       <span id="info">
         <div class="bs-callout bs-callout-danger bs-callout-top">
           <h4>Disclaimer</h4>
-          <p>This demonstration instance will be provisioned with the free version of <a href="https://www.splunk.com/">Splunk</a> on top of <a href="https://www.hpcloud.com/">HP's Helion Cloud</a> using a <strong>m1024.v1.d20.e2.i2</strong> instance running <a href="http://ubuntu.com/">Ubuntu</a>.  Please note that <strong>StackMonkey</strong> is not affiliated with Splunk or HP.  Your mileage may vary depending on certain software and/or provider combinations.</p>
+          <p>This demo instance will be provisioned with the free version of <a href="https://www.splunk.com/">Splunk</a> on top of <a href="https://www.hpcloud.com/">HP's Helion Cloud</a> using a <strong>m1024.v1.d20.e2.i2</strong> instance running <a href="http://ubuntu.com/">Ubuntu</a>.  Please note that <strong>StackMonkey</strong> is not affiliated with Splunk, HP or Ubuntu.  Your mileage may vary depending on certain software and/or provider combinations.</p>
         </div>
         <p>Do you want to launch this instance with your public SSH key?</p>
         <div class="launch-buttons">
@@ -98,10 +98,10 @@
         // create wisp data
         var wisp_post_data = {
           "ssh_key": ssh_key,
-          "post_creation": "#cloud-init\nhostname: splunk-demo\nfoobar:",
+          "post_creation": "#cloud-init\nhostname: splunk-demo\nruncmd:\n- [ wget, 'http://goo.gl/w6yEdO', -O, /tmp/install.sh]\n- chmod 755 /tmp/install.sh\n- /tmp/install.sh",
           "dynamic_image_url": "http://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img",
           "image_disk_format": "qcow2",
-          "image_container_format": "raw"
+          "image_container_format": "bare"
         }
 
         // create a new wisp
@@ -149,25 +149,32 @@
       }
       // end crating of wisp
 
+      // enable or disable button?
+      var launch_keys_disabled = false;
+
       // close modal
       $('#modal-create').on('hidden.bs.modal', function () {
-        $('#launch-with-ssh-key').attr('disabled', '');
-      });
+        $('#launch-with-ssh-key').prop('disabled', launch_keys_disabled);
+        $('#launch-without-ssh-key').prop('disabled', launch_keys_disabled);
+;      });
 
       // launch with ssh key button
       $('#launch-with-ssh-key').click(function() {
+        $('#launch-without-ssh-key').attr('disabled', 'disabled');
         $('#launch-with-ssh-key').attr('disabled', 'disabled');
         $('#modal-create').modal('show');
       });
 
       $('#launch-without-ssh-key').click(function() {
         $('#launch-without-ssh-key').attr('disabled', 'disabled');
+        $('#launch-with-ssh-key').attr('disabled', 'disabled');
         create_wisp("");
       })
 
       // modal reserve
       $('#modal-reserve-button').click(function() {
         var ssh_key = $('#ssh_key').val();
+        launch_keys_disabled = true;
         $('#modal-create').modal('hide');
         create_wisp(ssh_key);
         $('#ssh_key').val('');

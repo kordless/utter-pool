@@ -34,14 +34,14 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <h3>Step #3: Wait for Provisioning</h3>
-      <p>Please wait while the instance is started and provisioned. This page will update once Splunk is running.</p>
+      <h3>Step #2: Pay for the Instance</h3>
+      <p>Please use your <a target="_blank" href="https://blockchain.info">Bitcoin wallet</a> to pay for this instance reservation by scanning the qrcode below. The default amount is for <strong>24 Hours of Use</strong> and may be modified for shorter periods. This page will update when the payment has been observed by the <a href="/docs/#becoming-a-provider">provider's appliance</a>.</p>
 
       <div class="row instance-detail-row">
         <div class="{% if instance.state < 7 %}col-md-4{% else %}col-md-6{% endif %}">
           <div class="text-center"><h3><small>Instance Timer</small></h3></div>
           <div class="text-center">
-            <input id="timer" data-state="{{ instance.state }}" data-expires="{{ instance.expires }}" data-updated="{{ instance.updated|epoch }}" data-step="1" data-readOnly=true data-min="0" value="0" data-max="{{ instance.data_max }}" data-width="230" data-height="230">
+            <input id="timer" data-state="{{ instance.state }}" data-expires="{{ bid.expires|epoch }}" data-updated="{{ instance.updated|epoch }}" data-step="1" data-readOnly=true data-min="0" value="0" data-max="300" data-width="230" data-height="230">
           </div>
           <div class="text-center timer-state">
             <p>{{ macros.instance_state(instance.state) }}</p>
@@ -62,7 +62,7 @@
       </div>
       <div id="back" class="row">
         <div id="back-inner" class="col-md-4 hidden">
-          <button type="button" id="back-to-demos-button" class="btn btn-info"><span class="glyphicon glyphicon-arrow-left"></span> Back to Demos</button>
+          <button type="button" id="delete-reservation-button" class="btn btn-danger">Cancel Reservation</button>
         </div>
       </div>
     </div>
@@ -83,6 +83,7 @@
     var refresh_channel = "{{ refresh_channel }}";
 
     // populate the address section
+    alertify.success("Instance ready for payment.");
     var qrcode_string = "bitcoin:{{instance.address}}?amount="+(parseInt({{instance.ask}}*24)/1000000);
     $('#qrcode').qrcode({text: qrcode_string});
     $('#address').html('<a href="https://blockchain.info/address/'+address+'" target="_blank">'+address+'</a>');
@@ -92,13 +93,10 @@
     var state_indicator = function(state) {
       // remove all colors
       $('#state').removeClass("label-danger").removeClass("label-warning").removeClass("label-info").removeClass("label-success");
-
+      
       // set label state
       if (state == 3) {
         $('#state').html("Starting");
-        $('#state').addClass("label-success");
-      } else if (state == 4) {
-        $('#state').html("Provisioning");
         $('#state').addClass("label-success");
       } else if (state == 5) {
         $('#state').html("Suspended");
@@ -118,69 +116,14 @@
       }
     }
 
-    // get our state and IPs after forced reload to running
-    var load_state = {{ instance.state }};
-    var ipv4 = "{{ instance.ipv4_address }}";
-    var ipv6 = "{{ instance.ipv6_address }}";
-    
-    // for testing
-    if (ipv4 == "None") {
-     ipv4 = "{{ instance.ipv4_private_address }}";
-     console.log(ipv4);
-    }
-
-    // test the site
-    var test_site = function(ip) {
-      console.log('testing ip: '+ip);
-      $.ajax({
-        type: 'HEAD',
-        url: 'http://'+ip+':8000/',
-        dataType: 'jsonp',
-        complete: function() {
-          window.location = 'http://'+ip+':8000/';
-        }
-      });
-    }
-
-    // for running reloads
-    if (load_state == 4) {
-      setInterval(function() {
-        test_site(ipv4);
-      }, 5000);
-    }
-
-    // for message state tracking
-    var prev_state = 0;
-
-    // handle channel messages
+    // listen to our refresh channel for instance booting callback
     onMessage = function(packet) {
-      var data = JSON.parse(packet.data);
-      var name = data.name;
-
-      console.log("onmessage"+data.state);
-
-      // if our ajax state is larger than the existing state
-      if (data.state > prev_state) {
-        if (data.state == 4) {
-          // moving to state 4, we reload so we get the IPs
-          window.location.reload();
-        } else {
-          state_indicator(data.state);
-          prev_state = data.state;
-        }
-      } else if (data.state < prev_state) {
-        // we went back a state, which means openstack is loading image
-        state_indicator(11);
-        prev_state = data.state;
-      } else if (data.state == 4) {
-        state_indicator(4);
-        // we're getting a reload while we're running, so update console
-        $.ajax("/api/v1/instances/"+name+"/")
-          .success(function(data) {
-            setInterval(function() {
-              test_site();
-            }, 5000);
-          });
+      data = jQuery.parseJSON(packet.data);
+      if (data.token == "{{ bid.token }}") {
+        alertify.success("Payment received! Loading instance...")
+        setTimeout(function() {
+          window.location = "{{ uri_for('demos-instance', demo_name='splunk', token=bid.token) }}";
+        }, 3000);
       }
     };
 
@@ -200,12 +143,20 @@
         $('#timer').val(timer2).trigger("change");
       } else {
         $('#timer').val(0).trigger("change");
+        // delete from webpage (cron will also handle this on server)
+        $('#delete-reservation-button').trigger('click');
       }
     }, 1000);
 
     // wire delete reservation
-    $('#back-to-demos-button').click(function() {
-      window.location = "{{ uri_for('demo') }}";
+    $('#delete-reservation-button').click(function() {
+      $.ajax({
+        type: "DELETE",
+        url: "/api/v1/bids/"+token+"/",
+        processData: false
+      }).done(function(data) {
+        window.location = "{{ uri_for('demos', demo_name='splunk')}}";
+      });
     });
 
     // map

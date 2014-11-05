@@ -5,6 +5,7 @@
       "name": "{{ instance.name }}",{% if callback_url %}
       "callback_url": "{{ instance.callback_url }}",{% endif %}
       "address": "{{ instance.address }}",
+      "ipv4_address": "{{ instance.ipv4_address }}",
       "expires": {{ instance.expires }},
       "state": {{ instance.state }},
       "console_output": "{{ instance.console_output | base64encode }}",

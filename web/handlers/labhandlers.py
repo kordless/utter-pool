@@ -73,7 +73,11 @@ class LauncherHandler(BaseHandler):
 
 class InstanceDetailHandler(BaseHandler):
 	def get(self, token = None):
+		# grab the instance
 		instance = Instance.get_by_token(token)
+		if not instance:
+			self.add_message("Could not find an instance with token %s." % token, 'error')
+			return self.redirect_to('lab-launcher')
 
 		# hack in time max for timer
 		instance.data_max = int(instance.expires - int(instance.started.strftime('%s')))

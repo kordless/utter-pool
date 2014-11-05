@@ -28,7 +28,8 @@ _routes = [
 		RedirectRoute('/docs/', sitehandlers.DocsHandler, name='docs', strict_slash=True),
 		RedirectRoute('/demo/', sitehandlers.DemoHandler, name='demo', strict_slash=True),
 		RedirectRoute('/demo/<demo_name>/', sitehandlers.DemosHandler, name='demos', strict_slash=True),
-		RedirectRoute('/demo/<demo_name>/<token>/', sitehandlers.DemosInstanceHandler, name='demos-instance', strict_slash=True),
+		RedirectRoute('/demo/<demo_name>/<token>/', sitehandlers.DemosBidHandler, name='demos-bid', strict_slash=True),
+		RedirectRoute('/demo/<demo_name>/instance/<token>/', sitehandlers.DemosInstanceHandler, name='demos-instance', strict_slash=True),
 
 		# users
 		RedirectRoute('/login/', userhandlers.LoginHandler, name='login', strict_slash=True),

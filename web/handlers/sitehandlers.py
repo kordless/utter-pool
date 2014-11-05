@@ -143,7 +143,7 @@ class DemosHandler(BaseHandler):
 		return forms.DemoForm(self)
 
 
-class DemosInstanceHandler(BaseHandler):
+class DemosBidHandler(BaseHandler):
 	def get(self, demo_name = None, token = None):
 		# lookup up bid
 		bid = InstanceBid.get_by_token(token)
@@ -164,6 +164,29 @@ class DemosInstanceHandler(BaseHandler):
 		params = {
 			'instance': instance,
 			'bid': bid,
+			'refresh_channel': refresh_channel,
+			'channel_token': channel_token 
+		}
+		return self.render_template('site/demos/%s_bid.html' % demo_name, **params)
+
+
+class DemosInstanceHandler(BaseHandler):
+	def get(self, demo_name = None, token = None):
+		# grab the instance
+		instance = Instance.get_by_token(token)
+		if not instance:
+			self.add_message("That instance cannot be found.", 'error')
+			return self.redirect_to('demos', demo_name=demo_name)
+
+		# setup channel to do page refresh
+		channel_token = token
+		refresh_channel = channel.create_channel(channel_token)
+
+		# hack in time max for timer
+		instance.data_max = int(instance.expires - int(instance.started.strftime('%s')))
+
+		params = {
+			'instance': instance,
 			'refresh_channel': refresh_channel,
 			'channel_token': channel_token 
 		}

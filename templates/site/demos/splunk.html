@@ -63,7 +63,7 @@
       <span id="info">
         <div class="bs-callout bs-callout-danger bs-callout-top">
           <h4>Disclaimer</h4>
-          <p>This demo instance will be provisioned with the free version of <a href="https://www.splunk.com/">Splunk</a> on top of <a href="https://www.hpcloud.com/">HP's Helion Cloud</a> using a <strong>m8192.v4.d30.e0.i0</strong> instance running <a href="http://ubuntu.com/">Ubuntu</a>.  Please note that <strong>StackMonkey</strong> is not affiliated with Splunk, HP or Ubuntu.  Your mileage may vary depending on certain software and/or provider combinations.</p>
+          <p>This demo instance will be provisioned with the free version of <a href="https://www.splunk.com/">Splunk 6.1.4</a> on top of <a href="https://www.hpcloud.com/">HP's Helion Cloud</a> using a <strong>m8192.v4.d30.e0.i0</strong> instance running <a href="http://ubuntu.com/">Ubuntu</a>.  Please note that <strong>StackMonkey</strong> is not affiliated with Splunk, HP or Ubuntu.  Your mileage may vary depending on certain software and/or provider combinations.</p>
         </div>
         <p>Do you want to launch this instance with your public SSH key?</p>
         <div class="launch-buttons">
@@ -98,7 +98,7 @@
         // create wisp data
         var wisp_post_data = {
           "ssh_key": ssh_key,
-          "post_creation": "#cloud-init\nhostname: splunk-demo\nruncmd:\n- [ wget, 'http://goo.gl/w6yEdO', -O, /tmp/install.sh]\n- chmod 755 /tmp/install.sh\n- /tmp/install.sh",
+          "post_creation": "#cloud-init\nhostname: splunk-demo\nruncmd:\n- [ wget, 'http://goo.gl/cxBQR3', -O, /tmp/install.sh]\n- chmod 755 /tmp/install.sh\n- /tmp/install.sh",
           "dynamic_image_url": "http://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img",
           "image_disk_format": "qcow2",
           "image_container_format": "bare"

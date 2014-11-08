@@ -35,7 +35,7 @@
   <div class="row">
     <div class="col-md-12">
       <h3>Step #3: Wait for Provisioning</h3>
-      <p>Please wait while the instance is started and provisioned. This page will update once Splunk is running.</p>
+      <p><span id="info">Please wait while the instance is started and provisioned. This page will update once Splunk is running.</span></p>
 
       <div class="row instance-detail-row">
         <div class="{% if instance.state < 7 %}col-md-4{% else %}col-md-6{% endif %}">
@@ -126,7 +126,6 @@
     // for testing
     if (ipv4 == "None") {
      ipv4 = "{{ instance.ipv4_private_address }}";
-     console.log(ipv4);
     }
 
     // test the site
@@ -134,7 +133,7 @@
       console.log('testing ip: '+ip);
       $.ajax({
         type: 'HEAD',
-        url: 'http://'+ip+':8000/',
+        url: 'https://'+ip+':8000/',
         dataType: 'jsonp',
         complete: function() {
           window.location = 'http://'+ip+':8000/';
@@ -144,6 +143,7 @@
 
     // for running reloads
     if (load_state == 4) {
+      $('#info').html("The Splunk instance is ready and the UI can be access <a href='http://"+ipv4+":8000/'>from here</a>.");
       setInterval(function() {
         test_site(ipv4);
       }, 5000);

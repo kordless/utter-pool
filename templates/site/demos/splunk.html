@@ -63,7 +63,7 @@
       <span id="info">
         <div class="bs-callout bs-callout-danger bs-callout-top">
           <h4>Disclaimer</h4>
-          <p>This demo instance will be provisioned with the free version of <a href="https://www.splunk.com/">Splunk</a> on top of <a href="https://www.hpcloud.com/">HP's Helion Cloud</a> using a <strong>m1024.v1.d20.e2.i2</strong> instance running <a href="http://ubuntu.com/">Ubuntu</a>.  Please note that <strong>StackMonkey</strong> is not affiliated with Splunk, HP or Ubuntu.  Your mileage may vary depending on certain software and/or provider combinations.</p>
+          <p>This demo instance will be provisioned with the free version of <a href="https://www.splunk.com/">Splunk</a> on top of <a href="https://www.hpcloud.com/">HP's Helion Cloud</a> using a <strong>m1024.v1.d30.e2.i2</strong> instance running <a href="http://ubuntu.com/">Ubuntu</a>.  Please note that <strong>StackMonkey</strong> is not affiliated with Splunk, HP or Ubuntu.  Your mileage may vary depending on certain software and/or provider combinations.</p>
         </div>
         <p>Do you want to launch this instance with your public SSH key?</p>
         <div class="launch-buttons">
@@ -117,7 +117,7 @@
           // create instance bid
           var wisp_id = data.result.wisp.id;
           var bid_post_data = { 
-            "flavor": "m1024.v1.d20.e2.i2",
+            "flavor": "m2048.v2.d30.e0.i0",
             "wisp_id": data.result.wisp.id
           }
 

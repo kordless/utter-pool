@@ -34,7 +34,7 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <h3>Step #3: Wait for Provisioning</h3>
+      <h3 id="info-title">Step #3: Wait for Provisioning</h3>
       <p><span id="info">Please wait while the instance is started and provisioned. This page will update once Splunk is running.</span></p>
 
       <div class="row instance-detail-row">
@@ -123,35 +123,17 @@
     var ipv4 = "{{ instance.ipv4_address }}";
     var ipv6 = "{{ instance.ipv6_address }}";
     
-    // for testing
+    // for development instances
     if (ipv4 == "None") {
      ipv4 = "{{ instance.ipv4_private_address }}";
-    }
-
-    // test the site
-    var test_site = function(ip) {
-      console.log('testing ip: '+ip);
-      $.ajax({
-        type: 'HEAD',
-        url: 'https://'+ip+':8000/',
-        dataType: 'jsonp',
-        complete: function() {
-          window.location = 'http://'+ip+':8000/';
-        }
-      });
-    }
-
-    // for running reloads
-    if (load_state == 4) {
-      $('#info').html("The Splunk instance is ready and the UI can be access <a href='http://"+ipv4+":8000/'>from here</a>.");
-      setInterval(function() {
-        test_site(ipv4);
-      }, 5000);
     }
 
     // for message state tracking
     var prev_state = 0;
 
+    // see if we have meta data
+    console.log("{{ instance.meta }}");
+    
     // handle channel messages
     onMessage = function(packet) {
       var data = JSON.parse(packet.data);
@@ -174,13 +156,12 @@
         prev_state = data.state;
       } else if (data.state == 4) {
         state_indicator(4);
-        // we're getting a reload while we're running, so update console
-        $.ajax("/api/v1/instances/"+name+"/")
-          .success(function(data) {
-            setInterval(function() {
-              test_site();
-            }, 5000);
-          });
+        // we're getting a message while we're running, so it might be meta data
+        if (data.meta.splunk == "installed") {
+          // splunk is installed, so update
+          $('#info').html("The Splunk instance is ready and the UI can be accessed <a href='http://"+ipv4+":8000/'>from here</a>.");
+          $('#info-title').html("Step #4: Access the Splunk UI");
+        }
       }
     };
 

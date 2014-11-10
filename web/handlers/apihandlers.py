@@ -639,6 +639,16 @@ class InstanceDetailHandler(BaseHandler):
 			self.response.set_status(500)
 			return self.render_template('api/response.json', **params)
 
+		# send update information to channel
+		if instance.token:
+			output = {
+				"name": instance.name,
+				"token": instance.token,
+				"state": instance.state,
+				"meta": meta
+			}
+			channel.send_message(instance.token, json.dumps(output))	
+
 		# build response
 		params = {
 			"instance": instance,
@@ -663,10 +673,16 @@ class InstanceDetailHandler(BaseHandler):
 			self.response.set_status(404)
 			return self.render_template('api/response.json', **params)
 
+		# load the instance's meta data, if any
+		if instance.meta:
+			meta = json.loads(instance.meta)
+		else:
+			meta = json.loads('{}')
+
 		# build response
 		params = {
 			"instance": instance,
-			"meta": json.loads(instance.meta)
+			"meta": json.loads(meta)
 		}
 		print json.loads(instance.meta)
 		params['response'] = "success"

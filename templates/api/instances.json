@@ -11,7 +11,8 @@
         "vpus": {{ instance.flavor.get().vpus }},
         "memory": {{ instance.flavor.get().memory }},
         "disk": {{ instance.flavor.get().disk }},
-        "network": {{ instance.flavor.get().network }},
+        "egress": {{ instance.flavor.get().network_up }},
+        "ingress": {{ instance.flavor.get().network_down }},
         "ask": {{ instance.ask }},
         "appliance": {
           "name": "{{ instance.appliance.get().name }}",

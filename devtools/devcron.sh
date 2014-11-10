@@ -8,6 +8,9 @@ do
   echo "Running...instance tasks"
   curl -s http://0.0.0.0:8079/tasks/instances/
 
+  echo "Running...wisp tasks"
+  curl -s http://0.0.0.0:8079/tasks/wisps/
+
   echo "Running in 60"
   sleep 30
   echo "Running in 30"

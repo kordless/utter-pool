@@ -9,6 +9,7 @@ _routes = [
 		RedirectRoute('/tasks/sendinvite/', emailhandlers.SendEmailInviteHandler, name='tasks-sendinvite', strict_slash=True),
 		RedirectRoute('/tasks/instances/', taskhandlers.InstancesHandler, name='tasks-instances', strict_slash=True),
 		RedirectRoute('/tasks/instancebids/', taskhandlers.InstanceBidsHandler, name='tasks-instancebids', strict_slash=True),
+		RedirectRoute('/tasks/wisps/', taskhandlers.AnonymousWispHandler, name='tasks-anonymous-wisps', strict_slash=True),
 
 		# admin
 		RedirectRoute('/admin/', adminhandlers.AdminHandler, name='admin', strict_slash=True),

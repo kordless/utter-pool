@@ -152,6 +152,12 @@ indexes:
 
 - kind: Wisp
   properties:
+  - name: name
+  - name: owner
+  - name: created
+
+- kind: Wisp
+  properties:
   - name: owner
   - name: created
     direction: desc

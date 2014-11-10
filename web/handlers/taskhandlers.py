@@ -5,7 +5,7 @@ import logging
 from google.appengine.api import channel
 
 import config
-from web.models.models import Instance, InstanceBid
+from web.models.models import Instance, InstanceBid, Wisp
 from web.basehandler import BaseHandler
 
 def channel_message(token, message):
@@ -72,5 +72,19 @@ class InstanceBidsHandler(BaseHandler):
 				# notification channel
 				if instancebid.token:
 					channel_message(instancebid.token, "delete")
+
+		return
+
+# expire anonymous wisps
+class AnonymousWispHandler(BaseHandler):
+	def get(self):
+		# get older anonymous wisps to delete
+		wisps = Wisp.get_expired_anonymous()
+
+		if wisps:
+			# remove wisps
+			for wisp in wisps:
+				# delete wisp
+				wisp.key.delete()
 
 		return

@@ -532,6 +532,16 @@ class Wisp(ndb.Model):
 		return entry
 
 	@classmethod
+	def get_expired_anonymous(cls):
+		# grab anonymous wisps older than a day
+		epoch_time = int(time.time())
+		expires = datetime.fromtimestamp(epoch_time-86400)
+		query = cls.query().filter(cls.created < expires, cls.name == 'anonymous', cls.owner == None)
+		wisps = query.fetch()
+
+		return wisps
+
+	@classmethod
 	def get_by_token(cls, token):
 		query = cls.query(cls.token == token).get()
 		return query

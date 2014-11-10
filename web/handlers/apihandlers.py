@@ -280,7 +280,7 @@ class BidsHandler(BaseHandler):
 
 
 # bids detail
-# http://0.0.0.0/api/v1/bids/xxxxxxxx/
+# http://0.0.0.0/api/v1/bids/<token>/
 class BidsDetailHandler(BaseHandler):
 	# disable csrf check in basehandler
 	csrf_exempt = True
@@ -386,7 +386,7 @@ class InstancesHandler(BaseHandler):
 
 
 # instance callback handler to handle pool_instance() calls from utter-va
-# http://0.0.0.0/api/v1/instances/smi-xxxxxxxxx/ via POST
+# http://0.0.0.0/api/v1/instances/<instance_name>/ via POST
 class InstanceDetailHandler(BaseHandler):
 	# disable csrf check in basehandler
 	csrf_exempt = True
@@ -497,8 +497,7 @@ class InstanceDetailHandler(BaseHandler):
 		#
 		# The following code retrieves content from a remote server and proxies it to 
 		# an appliance for starting an instance. It is at this point an anonymous user's
-		# callback pattern is most venerable to being monitored and manipulated by a 
-		# government agency.
+		# callback pattern is most venerable to being monitored and manipulated.
 		# 
 		# The author of this software issues a warrant canary tweet to @stackape which 
 		# should appear on the 1st of each month indicating the absence of a gag order
@@ -529,10 +528,6 @@ class InstanceDetailHandler(BaseHandler):
 				# this will force the handler to redirect the user to the instance page
 				channel.send_message(instance.token, "reload")
 				return error_response(self, "Error fetching callback URL content.", 401, params)
-
-			############################################
-			# 7a. proxy callback URL JSON to appliance #
-			############################################
 
 			# return content retrieved from callback URL if the JSON returned by this method includes
 			# a callback_url in the data, the appliance will follow the URL and will not call this API 
@@ -829,9 +824,16 @@ class ApplianceListHandler(BaseHandler):
 	def get(self):
 		appliances = Appliance().appliances_with_instances_on_sale()
 
+		# add gravatar URLs
+		for appliance in appliances:
+			email = appliance.owner.get().email
+			gravatar_hash = md5.new(email.lower().strip()).hexdigest()
+			appliance.gravatar_url = "https://www.gravatar.com/avatar/%s" % gravatar_hash
+
 		# return JSON response
 		params = {
-			'appliances': appliances
+			'appliances': appliances,
+			'message': "This is a list of all active appliances with instances for sale."
 		}
 		self.response.headers['Content-Type'] = "application/json"
 		return self.render_template('api/appliances.json', **params)

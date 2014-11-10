@@ -6,3 +6,7 @@ cron:
 - description: instancebids tasks
   url: /tasks/instancebids/
   schedule: every 5 minutes
+
+- description: wisps tasks
+  url: /tasks/wisp/
+  schedule: every 5 minutes

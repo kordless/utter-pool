@@ -603,6 +603,7 @@ class Instance(ndb.Model, ModelSchemaMixin):
 	reserved = ndb.BooleanProperty(default=False)
 	token = ndb.StringProperty()
 	console_output = ndb.TextProperty()
+	meta = ndb.TextProperty()
 
 	object_schema = schemas['InstanceSchema']
 

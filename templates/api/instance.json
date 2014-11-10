@@ -6,10 +6,17 @@
       "callback_url": "{{ instance.callback_url }}",{% endif %}
       "address": "{{ instance.address }}",
       "ipv4_address": "{{ instance.ipv4_address }}",
+      "ipv4_private_address": "{{ instance.ipv4_private_address }}",
+      "ipv6_address": "{{ instance.ipv6_address }}",
+      "created": "{{ instance.created }}",
+      "updated": "{{ instance.updated }}",
       "expires": {{ instance.expires }},
       "state": {{ instance.state }},
       "console_output": "{{ instance.console_output | base64encode }}",
-      "ask": {{ instance.ask }}
+      "ask": {{ instance.ask }},
+      "meta": { {% for key, value in meta.iteritems() %}
+        "{{ key }}": "{{ value }}"{% if not loop.last %},{% endif %}{% endfor %}
+      }
     }
   }
 }

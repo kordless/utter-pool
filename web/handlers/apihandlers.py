@@ -1,5 +1,5 @@
 # standard library imports
-import logging, os, md5
+import logging, os, md5, sys
 import hashlib, json
 import simplejson
 import time
@@ -386,7 +386,7 @@ class InstancesHandler(BaseHandler):
 
 
 # instance callback handler to handle pool_instance() calls from utter-va
-# http://0.0.0.0/api/v1/instances/<instance_name>/ via POST
+# http://0.0.0.0/api/v1/instances/<instance_name>/ via POST, PUT, GET
 class InstanceDetailHandler(BaseHandler):
 	# disable csrf check in basehandler
 	csrf_exempt = True
@@ -434,6 +434,7 @@ class InstanceDetailHandler(BaseHandler):
 
 			# associate instance with it's appliance
 			instance_shim.appliance = appliance
+
 		except Exception as e:
 			return error_response(self, 'Error in creating or updating instance from '
 														'post data, with message {0}'.format(str(e)), 500, {})
@@ -578,6 +579,7 @@ class InstanceDetailHandler(BaseHandler):
 		else:
 			post_creation = [""]
 
+		# some of replay's magic - need docs on this
 		start_params = schemas['InstanceStartParametersSchema']()
 		data = {
 			'image': image,
@@ -588,10 +590,65 @@ class InstanceDetailHandler(BaseHandler):
 
 		self.response.set_status(200)
 		self.response.headers['Content-Type'] = 'application/json'
+
 		# write dictionary as json string
 		self.response.out.write(json.dumps(
 				# retrieve dict from schema
 				start_params.as_dict()))
+
+	# unauthenticated put for meta data
+	def put(self, instance_name = None):
+		# disable csrf check in basehandler
+		csrf_exempt = True
+
+		# paramters, assume failure, response type
+		params = {}
+		params['response'] = "error"
+		self.response.headers['Content-Type'] = "application/json"
+
+		# get the instance, build the response type
+		instance = Instance.get_by_name(instance_name)
+		self.response.headers['Content-Type'] = "application/json"		
+
+		# if no instance, then show error
+		if not instance:
+			params['message'] = "Instance not found."
+			self.response.set_status(404)
+			return self.render_template('api/response.json', **params)
+		else:
+			# load the instance's meta data, if any
+			if instance.meta:
+				meta = json.loads(instance.meta)
+			else:
+				meta = json.loads('{}')
+
+		# load the json from the call
+		try:
+			body = json.loads(self.request.body)
+			print body
+			# loop through key space and set meta data
+			for key in body:
+				meta[key] = body[key]
+
+			# dump back into the db
+			instance.meta = json.dumps(meta)
+			instance.put()
+
+		except Exception as e:
+			params['message'] = "An error was encountered with parsing meta key values: %s." % str(e)
+			self.response.set_status(500)
+			return self.render_template('api/response.json', **params)
+
+		# build response
+		params = {
+			"instance": instance,
+			"meta": json.loads(instance.meta)
+		}
+		params['response'] = "success"
+		self.response.headers['Content-Type'] = 'application/json'
+		
+		return self.render_template('api/instance.json', **params)
+
 
 	# unauthenticated endpoint
 	def get(self, instance_name = None):
@@ -606,12 +663,13 @@ class InstanceDetailHandler(BaseHandler):
 			self.response.set_status(404)
 			return self.render_template('api/response.json', **params)
 
+		# build response
 		params = {
-			"instance": instance
+			"instance": instance,
+			"meta": json.loads(instance.meta)
 		}
-		
+		print json.loads(instance.meta)
 		params['response'] = "success"
-		
 		self.response.headers['Content-Type'] = 'application/json'
 		
 		return self.render_template('api/instance.json', **params)
@@ -677,7 +735,6 @@ class BrokerHandler(BaseHandler):
 		return self.post()
 
 
-# NO AUTHENTICATION
 # images list
 # http://0.0.0.0/api/v1/images/ GET or POST
 class ImagesHandler(BaseHandler):

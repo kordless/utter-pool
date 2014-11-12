@@ -10,6 +10,7 @@ _routes = [
 		RedirectRoute('/tasks/instances/', taskhandlers.InstancesHandler, name='tasks-instances', strict_slash=True),
 		RedirectRoute('/tasks/instancebids/', taskhandlers.InstanceBidsHandler, name='tasks-instancebids', strict_slash=True),
 		RedirectRoute('/tasks/wisps/', taskhandlers.AnonymousWispHandler, name='tasks-anonymous-wisps', strict_slash=True),
+	    RedirectRoute('/tasks/mail/', sitehandlers.SendEmailHandler, name='taskqueue-send-email', strict_slash=True),
 
 		# admin
 		RedirectRoute('/admin/', adminhandlers.AdminHandler, name='admin', strict_slash=True),

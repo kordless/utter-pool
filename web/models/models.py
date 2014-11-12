@@ -501,10 +501,12 @@ class Wisp(ndb.Model):
 
 	@classmethod
 	def anonymous(cls, ssh_key, post_creation, dynamic_image_url, image_disk_format, image_container_format, token):
-		# calculate the hash of the ssh_key
+		# calculate the hash of the ssh_key+post_creation+dynamic_image_url
 		import hashlib
 		m = hashlib.md5()
 		m.update(ssh_key)
+		m.update(post_creation)
+		m.update(dynamic_image_url)
 		ssh_key_hash = m.hexdigest()
 
 		# blank string our token if we don't have one

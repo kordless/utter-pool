@@ -35,7 +35,7 @@
   <div class="row">
     <div class="col-md-12">
       <h3 id="info-title">{% if instance.state < 4 %}Step #3: Wait for Provisioning{% else %}Step 4: Access the Instance{% endif %}</h3>
-      <p><span id="info">{% if instance.state < 4 %}Please wait while the instance is started and provisioned. This page will update once CoreOS is running.{% endif %}</span> {% if instance.ipv4_address %}This instance is running an IPv4 address at <strong>{{ instance.ipv4_address }}</strong>.{% elif instance.ipv6_address %}This instance is running an IPv6 address at <strong>{{ instance.ipv6_address }}</strong>.{% endif %}</p>
+      <p><span id="info">{% if instance.state < 4 %}Please wait while the instance is started and provisioned. This page will update once CoreOS is running.{% endif %}</span> {% if instance.ipv4_address %}This instance is running an IPv4 address at <strong>{{ instance.ipv4_address }}</strong>. You may ssh into it by doing a <code>ssh core@{{ instance.ipv4_address }}</code> using your ssh key.{% elif instance.ipv6_address %}This instance is running an IPv6 address at <strong>{{ instance.ipv6_address }}</strong>. You may ssh into it by doing a <code>ssh core@{{ instance.ipv6_address }}</code> using your ssh key.{% endif %}</p>
 
       <div class="row instance-detail-row">
         <div class="{% if instance.state < 7 %}col-md-4{% else %}col-md-6{% endif %}">

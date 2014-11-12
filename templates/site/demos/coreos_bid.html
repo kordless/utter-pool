@@ -3,7 +3,7 @@
 
 {% block title %}Demos :: {% endblock %}
 
-{% block description %}Let's demo Splunk.{% endblock %}
+{% block description %}Let's demo CoreOS.{% endblock %}
 
 {% block page_styles %}
   <link href="/css/demo.css" rel="stylesheet">
@@ -22,11 +22,11 @@
   <div class="container">
     <div class="row">
       <div class="logo col-md-1">
-        <img src="/img/site/splunk.png">
+        <img src="/img/site/coreos.png">
       </div>
       <div class="col-md-10">
-        <h1>Splunk</h1>
-        <p class="blurb">Make machine data accessible, usable and valuable to everyone.</p>
+        <h1>CoreOS</h1>
+        <p class="blurb">CoreOS enables warehouse-scale computing on top of a minimal, modern operating system.</p>
       </div>
     </div>
   </div>
@@ -122,7 +122,7 @@
       if (data.token == "{{ bid.token }}") {
         alertify.success("Payment received! Loading instance...")
         setTimeout(function() {
-          window.location = "{{ uri_for('demos-instance', demo_name='splunk', token=bid.token) }}";
+          window.location = "{{ uri_for('demos-instance', demo_name='coreos', token=bid.token) }}";
         }, 3000);
       }
     };
@@ -155,7 +155,7 @@
         url: "/api/v1/bids/"+token+"/",
         processData: false
       }).done(function(data) {
-        window.location = "{{ uri_for('demos', demo_name='splunk')}}";
+        window.location = "{{ uri_for('demos', demo_name='coreos')}}";
       });
     });
 

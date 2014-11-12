@@ -437,10 +437,17 @@ class InstanceDetailHandler(BaseHandler):
 
 		except Exception as e:
 			return error_response(self, 'Error in creating or updating instance from '
-														'post data, with message {0}'.format(str(e)), 500, {})
+				'post data, with message {0}'.format(str(e)), 500, {})
 
 		# update local instance
 		instance.put()
+
+		# update appliance ip address hint
+		if instance.state > 3 and instance.ipv4_address:
+			appliance.ipv4enabled = True
+		if instance.state > 3 and instance.ipv6_address:
+			appliance.ipv6enabled = True
+		appliance.put()
 
 		# sleep for dev
 		if config.debug:

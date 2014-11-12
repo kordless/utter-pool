@@ -366,10 +366,14 @@ class Flavor(ndb.Model, ModelSchemaMixin):
 		flavors = set()
 		for instance in Instance.get_all_offered():
 			flavors.add(instance.flavor)
+
 		return list(flavors)
 
 	@classmethod
 	def flavors_with_instances_on_sale(cls):
+		for flavor_key in cls.keys_with_instances_on_sale():
+			print flavor_key.get()
+
 		return [
 			flavor_key.get()
 			for flavor_key in cls.keys_with_instances_on_sale()]

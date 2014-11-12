@@ -185,6 +185,12 @@ class DemosInstanceHandler(BaseHandler):
 		# hack in time max for timer
 		instance.data_max = int(instance.expires - int(instance.started.strftime('%s')))
 
+		# dict the meta
+		if instance.meta:
+			instance.meta_dict = json.loads(instance.meta)
+		else:
+			instance.meta_dict = {}
+
 		params = {
 			'instance': instance,
 			'refresh_channel': refresh_channel,

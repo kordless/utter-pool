@@ -67,7 +67,6 @@ h1 {
   margin-top: 30px;
   margin-bottom: 48px;
   padding-left: 0px;
-  text-align: center;
 }
 
 .demos li {
@@ -75,8 +74,9 @@ h1 {
   float: left;
   width: 208px;
   height: 208px;
-  margin-right: 0px;
+  margin-right: 20px;
   list-style-type: none;
+  display: inline-block !important;
   float: none !important;
 }
 

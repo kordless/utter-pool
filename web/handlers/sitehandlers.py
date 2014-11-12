@@ -25,6 +25,9 @@ from web.basehandler import BaseHandler
 from web.basehandler import user_required
 
 class SendEmailHandler(BaseHandler):
+	# disable csrf check in basehandler
+	csrf_exempt = True
+
 	# task queue stuff for sending emails
 	def post(self):
 		from google.appengine.api import mail, app_identity

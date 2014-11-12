@@ -97,144 +97,144 @@
 
       <section id="becoming-a-provider" class="group">
         <h3>Becoming a Provider</h3>
-          <p>Becoming a provider for the {{ app_name }} pool is relatively straightforward. The following is a short list of requirements needed to provide compute resources to the network:</p>
-          <ul>
-            <li>Access to a user and tenant on an <strong>OpenStack Backed Cluster</strong>.</li>
-            <li>Alternately, access to an OpenStack backed offering such as <strong>HP's Helion Public Cloud</strong>.</li>
-            <li>A <a target="_blank" href="https://coinbase.com/signup?r=52a9c6bf937ab6453a00001e&utm_campaign=user-referral&src=referral-link">Coinbase account</a> and the willingness to take <a href="https://bitcoin.org">Bitcoin</a> in exchange for providing compute resources to others.</li>
-            <li>Healthy tolerance to the software development process and willingness to assist in <a target="_blank" href="https://github.com/StackMonkey/utter-va/issues/new">debugging issues</a> while in Beta.</li>
-            <li>About an hour's worth of your time to <a href="/docs#installing-the-appliance">get the appliance installed</a>.</li>
-          </ul>
-          <div class="bs-callout bs-callout-info bs-callout-top">
-            <h4>Getting Assistance</h4>
-            <p>If you are wanting to become a provider and need assistance in planning or evaluation, please use our handy <a href="/about/#contact">contact form</a> to send us some email.  We're here to help!</p>
-          </div>
-          <p>Here's a short list infrastructure providers who are currently hosting an appliance:</p>
-          <ul>
-            <li><a href="http://hpcloud.com/">HP Helion</a></li>
-            <li><a href="http://kili.io/">Kili</a></li>
-            <li><a href="https://www.nebula.com/">Nebula</a></li>
-            <li><a href="https://www.rackspace.com/">Rackspace</a></li>
-          </ul>
-          <p>Stop sitting there and just <a href="/login">signup already</a>; this is the future of the cloud and you'll just end up missing out on it if you don't.</p>
+        <p>Becoming a provider for the {{ app_name }} pool is relatively straightforward. The following is a short list of requirements needed to provide compute resources to the network:</p>
+        <ul>
+          <li>Access to a user and tenant on an <strong>OpenStack Backed Cluster</strong>.</li>
+          <li>Alternately, access to an OpenStack backed offering such as <strong>HP's Helion Public Cloud</strong>.</li>
+          <li>A <a target="_blank" href="https://coinbase.com/signup?r=52a9c6bf937ab6453a00001e&utm_campaign=user-referral&src=referral-link">Coinbase account</a> and the willingness to take <a href="https://bitcoin.org">Bitcoin</a> in exchange for providing compute resources to others.</li>
+          <li>Healthy tolerance to the software development process and willingness to assist in <a target="_blank" href="https://github.com/StackMonkey/utter-va/issues/new">debugging issues</a> while in Beta.</li>
+          <li>About an hour's worth of your time to <a href="/docs#installing-the-appliance">get the appliance installed</a>.</li>
+        </ul>
+        <div class="bs-callout bs-callout-info bs-callout-top">
+          <h4>Getting Assistance</h4>
+          <p>If you are wanting to become a provider and need assistance in planning or evaluation, please use our handy <a href="/about/#contact">contact form</a> to send us some email.  We're here to help!</p>
+        </div>
+        <p>Here's a short list infrastructure providers who are currently hosting an appliance:</p>
+        <ul>
+          <li><a href="http://hpcloud.com/">HP Helion</a></li>
+          <li><a href="http://kili.io/">Kili</a></li>
+          <li><a href="https://www.nebula.com/">Nebula</a></li>
+          <li><a href="https://www.rackspace.com/">Rackspace</a></li>
+        </ul>
+        <p>Stop sitting there and just <a href="/login">signup already</a>; this is the future of the cloud and you'll just end up missing out on it if you don't.</p>
       </section>
 
       <section id="installing-the-appliance" class="group">
         <h3>Installing the Appliance</h3>
-          <p>The virtual appliance requires a running OpenStack cluster. If you don't have an OpenStack cluster already running, you may follow the instructions for <a href="http://www.stackgeek.com/guides/gettingstarted.html">Installing OpenStack in 10 minutes</a> on the <a href="http://stackgeek.com/">StackGeek website</a>. Over 15,000 people have used the StackGeek scripts to install OpenStack.</p>
-          <p>The following video will help familiarize you with the process of installing the appliance on an OpenStack cluster:</p>
-          <div><iframe src="//player.vimeo.com/video/100944207" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>
-          <p></p>
+        <p>The virtual appliance requires a running OpenStack cluster. If you don't have an OpenStack cluster already running, you may follow the instructions for <a href="http://www.stackgeek.com/guides/gettingstarted.html">Installing OpenStack in 10 minutes</a> on the <a href="http://stackgeek.com/">StackGeek website</a>. Over 15,000 people have used the StackGeek scripts to install OpenStack.</p>
+        <p>The following video will help familiarize you with the process of installing the appliance on an OpenStack cluster:</p>
+        <div><iframe src="//player.vimeo.com/video/100944207" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>
+        <p></p>
 
-          <div id="creating-a-user-and-tenant" class="subgroup">
-            <h4>Creating a User and Tenant</h4>
-            <p>If you have an admin account on your OpenStack cluster, you'll want to create a separate user and tenant for running the virtual appliance:</p>
-            <ul>
-              <li>Click on the <strong>Admin</strong> tab to the far left and then click on <strong>Identity Panel..Projects</strong>. To the right, click on the <strong>Create Project</strong> button and then enter a new project name called <strong>stackmonkey</strong> in the name field.</li>
-              <li>Click on <strong>Create Project</strong> below to create the new project.</li>
-              <li>Back in the <strong>Admin</strong> panel, click on <strong>Users</strong>.  To the right, click on the <strong>Create User</strong> button and then create a new user called <strong>stackmonkey</strong> and set the user's password.</li>
-              <li>Set the primary project to <strong>stackmonkey</strong> and set role of the new user account to either <strong>member</strong> or <strong>admin</strong>.</li>
-              <li>Log out of the system and then log back in as the <strong>stackmonkey</strong> user. </li>
-            </ul>
-            <div class="bs-callout bs-callout-warning bs-callout-top">
-              <h4>Don't Have Admin?</h4>
-              <p>No worries! If you don't have an admin account on your OpenStack cluster you can still sell instances on it.  Simply skip to the <a href="#install-an-ubuntu-image">Install an Ubuntu Image</a> section below to continue the setup of the appliance.</p>
-            </div>
+        <div id="creating-a-user-and-tenant" class="subgroup">
+          <h4>Creating a User and Tenant</h4>
+          <p>If you have an admin account on your OpenStack cluster, you'll want to create a separate user and tenant for running the virtual appliance:</p>
+          <ul>
+            <li>Click on the <strong>Admin</strong> tab to the far left and then click on <strong>Identity Panel..Projects</strong>. To the right, click on the <strong>Create Project</strong> button and then enter a new project name called <strong>stackmonkey</strong> in the name field.</li>
+            <li>Click on <strong>Create Project</strong> below to create the new project.</li>
+            <li>Back in the <strong>Admin</strong> panel, click on <strong>Users</strong>.  To the right, click on the <strong>Create User</strong> button and then create a new user called <strong>stackmonkey</strong> and set the user's password.</li>
+            <li>Set the primary project to <strong>stackmonkey</strong> and set role of the new user account to either <strong>member</strong> or <strong>admin</strong>.</li>
+            <li>Log out of the system and then log back in as the <strong>stackmonkey</strong> user. </li>
+          </ul>
+          <div class="bs-callout bs-callout-warning bs-callout-top">
+            <h4>Don't Have Admin?</h4>
+            <p>No worries! If you don't have an admin account on your OpenStack cluster you can still sell instances on it.  Simply skip to the <a href="#install-an-ubuntu-image">Install an Ubuntu Image</a> section below to continue the setup of the appliance.</p>
           </div>
+        </div>
 
-          <div id="create-a-keypair" class="subgroup">
-            <h4>Create an SSH Keypair</h4>
-            <p>You need to create a key pair that you can use to access the virtual appliance's command line console.  Follow these steps to create the key:</p>
-            <ul>
-              <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Instances</strong>. Click on <strong>Access &amp; Security</strong> and then click on the <strong>Key Pairs</strong> tab at the top.</li>
-              <li>Click <strong>Create Key Pair</strong> and name the key pair <strong>stackmonkey</strong>.  Click <strong>Create Key Pair</strong> to create the key pair.  The private key will be downloaded to your local machine.</li>
-            </ul>
-            <p>Next, move the private key into your <strong>.ssh directory</strong> (or similar for Windows) and then change the permissions on it:</p>
+        <div id="create-a-keypair" class="subgroup">
+          <h4>Create an SSH Keypair</h4>
+          <p>You need to create a key pair that you can use to access the virtual appliance's command line console.  Follow these steps to create the key:</p>
+          <ul>
+            <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Instances</strong>. Click on <strong>Access &amp; Security</strong> and then click on the <strong>Key Pairs</strong> tab at the top.</li>
+            <li>Click <strong>Create Key Pair</strong> and name the key pair <strong>stackmonkey</strong>.  Click <strong>Create Key Pair</strong> to create the key pair.  The private key will be downloaded to your local machine.</li>
+          </ul>
+          <p>Next, move the private key into your <strong>.ssh directory</strong> (or similar for Windows) and then change the permissions on it:</p>
 <pre>
 cd ~/Downloads/
 mv stackmonkey.pem ~/.ssh/
 chmod 600 ~/.ssh/stackmonkey.pem
 </pre>
-            <p>Be sure to keep this key somewhere safe and secure!</p>
-            <div class="bs-callout bs-callout-info bs-callout-top">
-              <h4>Are you a developer?</h4>
-              <p>You can head over to Github to <a target="_blank" href="https://github.com/stackmonkey/utter-va/#shell-access">view the instructions for logging directly into the appliance</a>.</p>
-            </div>
+          <p>Be sure to keep this key somewhere safe and secure!</p>
+          <div class="bs-callout bs-callout-info bs-callout-top">
+            <h4>Are you a developer?</h4>
+            <p>You can head over to Github to <a target="_blank" href="https://github.com/stackmonkey/utter-va/#shell-access">view the instructions for logging directly into the appliance</a>.</p>
           </div>
+        </div>
 
-          <div id="create-a-flavor-for-the-appliance" class="subgroup">
-            <h4>Create a Flavor for the Appliance</h4>
-            <p>The appliance needs about 8GB of drive space for caching boot images. To create a new flavor that is the right size for for the appliance, do the following:</p>
-            <ul>
-              <li>Click on the <strong>Admin</strong> tab to the far left and then click on <strong>System Panel..Flavors</strong>.</li>
-              <li>Click the <strong>Create Flavor</strong> button at the top right.</li>
-              <li>Name the flavor <strong>'m1536.v1.d8'</strong>.</li>
-              <li>Put <strong>'1'</strong> in for the number of <strong>VCPUs</strong>.</li>
-              <li>For <strong>RAM</strong> put <strong>'1536'</strong>.</li>
-              <li>For <strong>Root Disk GB</strong> put <strong>'8'</strong>.</li>
-              <li>Finally, click <strong>Create Flavor</strong> to create the new flavor.</li>
-            </ul>
-            <p><img src="/img/site/flavor_thumb.png" alt="OpenStack Flavor"></p>
-          </div>
+        <div id="create-a-flavor-for-the-appliance" class="subgroup">
+          <h4>Create a Flavor for the Appliance</h4>
+          <p>The appliance needs about 8GB of drive space for caching boot images. To create a new flavor that is the right size for for the appliance, do the following:</p>
+          <ul>
+            <li>Click on the <strong>Admin</strong> tab to the far left and then click on <strong>System Panel..Flavors</strong>.</li>
+            <li>Click the <strong>Create Flavor</strong> button at the top right.</li>
+            <li>Name the flavor <strong>'m1536.v1.d8'</strong>.</li>
+            <li>Put <strong>'1'</strong> in for the number of <strong>VCPUs</strong>.</li>
+            <li>For <strong>RAM</strong> put <strong>'1536'</strong>.</li>
+            <li>For <strong>Root Disk GB</strong> put <strong>'8'</strong>.</li>
+            <li>Finally, click <strong>Create Flavor</strong> to create the new flavor.</li>
+          </ul>
+          <p><img src="/img/site/flavor_thumb.png" alt="OpenStack Flavor"></p>
+        </div>
 
-          <div id="install-an-ubuntu-image" class="subgroup">
-            <h4>Install an Ubuntu Image</h4>
-            <p>The appliance requires an Ubuntu backed instance to run. If you don't have an Ubuntu image installed on your OpenStack cluster, follow these steps:</p>
-            <ul>
-              <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Images</strong>.</li>
-              <li>Click on the <strong>Create Image</strong> button to the top right.</li>
-              <li>Name the image <strong>Ubuntu Trusty 14.04LTS</strong> and paste the URL <code><a href="http://goo.gl/u2IBP9">http://goo.gl/u2IBP9</a></code> into the location field.</li>
-              <li>Select the <strong>QCOW2</strong> format in the pulldown and make the image public.</li>
-              <li>Click <strong>Create Image</strong> to create the new system image.</li>
-            </ul>
-            <p>You will want to keep this image live on the cluster in case you decide to start another appliance.</p>
-          </div>
+        <div id="install-an-ubuntu-image" class="subgroup">
+          <h4>Install an Ubuntu Image</h4>
+          <p>The appliance requires an Ubuntu backed instance to run. If you don't have an Ubuntu image installed on your OpenStack cluster, follow these steps:</p>
+          <ul>
+            <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Images</strong>.</li>
+            <li>Click on the <strong>Create Image</strong> button to the top right.</li>
+            <li>Name the image <strong>Ubuntu Trusty 14.04LTS</strong> and paste the URL <code><a href="http://goo.gl/u2IBP9">http://goo.gl/u2IBP9</a></code> into the location field.</li>
+            <li>Select the <strong>QCOW2</strong> format in the pulldown and make the image public.</li>
+            <li>Click <strong>Create Image</strong> to create the new system image.</li>
+          </ul>
+          <p>You will want to keep this image live on the cluster in case you decide to start another appliance.</p>
+        </div>
           
-          <div id="set-the-access-rules" class="subgroup">
-            <h4>Set the Access Rules</h4>
-            <p>The appliance instance needs a couple of ports opened up to allow it to operate properly. Follow these steps to setup the access rules for the appliance:</p>
-            <ul>
-              <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Access &amp; Security</strong>.</li>
-              <li>Click on the <strong>Security Groups</strong> tab at the top.  To the right, click on the <strong>Create Security Group</strong> button.</li>
-              <li>Name the security group <strong>'appliance'</strong> and enter a short description.  Click <strong>Create Security Group</strong> to create the group.</li>
-              <li>Click the <strong>Manage Rules</strong> button to the right in the <strong>appliance</strong> security group row.  Click <strong>Add Rule</strong> and then enter the number <strong>'22'</strong> (ssh) in the port field.  Click <strong>Add</strong>.  Repeat this step and enter the number <strong>'80'</strong> (http) in the port field instead.  Click <strong>Add</strong> again.</li>
-              <li>Click the <strong>Manage Rules</strong> button again, but this time click on the <strong>Rule</strong> pulldown and select <strong>Custom ICMP Rule</strong>.  Enter the number '-1' in <strong>both</strong> the <strong>Type</strong> and <strong>Code</strong> fields.  Click <strong>Add</strong> to add the rule.</li>
-            </ul>
-            <p>Your <strong>appliance</strong> security group rules should now look like this:</p>
-            <p><a target="_blank" href="/img/site/appliance_groups.png"><img src="/img/site/appliance_groups_thumb.png" alt="OpenStack Groups"></a></p>          
-            <p>The instances being sold by the appliance will need unrestricted access from the Internet if they have publicly accessible IPv4 addresses. The appliance does not currently manage security groups, so you need to manually open up the default group to allow all access to the instances.</p>
-            <p>Follow these steps to set up the access rules for the instances the appliance starts:</p>
-            <ul>
-              <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Access &amp; Security</strong>.</li>
-              <li>Click the <strong>Manage Rules</strong> button to the right in the <strong>default</strong> security group row.</li>
-              <li>Delete any existing rules for the default group by clicking on <strong>Delete Rule</strong> in any of the existing rule's rows.</li>
-              <li>Click <strong>Add Rule</strong> and then select <strong>Custom TCP Rule</strong> from the <strong>Rule</strong> pulldown and <strong>Port Range</strong> from the <strong>Open Port</strong> pulldown.</li>
-              <li>Enter the number <strong>'1'</strong> in the <strong>From Port</strong> field. Enter the number <strong>'65535'</strong> in the <strong>To Port</strong> field. Click <strong>Add</strong>.</li>
-              <li>Repeat the previous two steps, but this time select <strong>Custom UDP Rule</strong> from the <strong>Rule</strong> pulldown.  Enter the same numbers for the range.</li>
-              <li>Click <strong>Add Rule</strong> and then select <strong>Custom ICPMP Rule</strong> from the <strong>Rule</strong> pulldown.</li>
-              <li>Enter the number <strong>'-1'</strong> in <strong>both</strong> the <strong>Type</strong> and <strong>Code</strong> fields.  Click <strong>Add</strong> to add the rule.</li>
-            </ul>
-            <p>Your <strong>default</strong> security group rules should now look like this:</p>
-            <p><a target="_blank" href="/img/site/default_groups.png"><img src="/img/site/default_groups_thumb.png" alt="OpenStack Groups"></a></p>
-          </div>
+        <div id="set-the-access-rules" class="subgroup">
+          <h4>Set the Access Rules</h4>
+          <p>The appliance instance needs a couple of ports opened up to allow it to operate properly. Follow these steps to setup the access rules for the appliance:</p>
+          <ul>
+            <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Access &amp; Security</strong>.</li>
+            <li>Click on the <strong>Security Groups</strong> tab at the top.  To the right, click on the <strong>Create Security Group</strong> button.</li>
+            <li>Name the security group <strong>'appliance'</strong> and enter a short description.  Click <strong>Create Security Group</strong> to create the group.</li>
+            <li>Click the <strong>Manage Rules</strong> button to the right in the <strong>appliance</strong> security group row.  Click <strong>Add Rule</strong> and then enter the number <strong>'22'</strong> (ssh) in the port field.  Click <strong>Add</strong>.  Repeat this step and enter the number <strong>'80'</strong> (http) in the port field instead.  Click <strong>Add</strong> again.</li>
+            <li>Click the <strong>Manage Rules</strong> button again, but this time click on the <strong>Rule</strong> pulldown and select <strong>Custom ICMP Rule</strong>.  Enter the number '-1' in <strong>both</strong> the <strong>Type</strong> and <strong>Code</strong> fields.  Click <strong>Add</strong> to add the rule.</li>
+          </ul>
+          <p>Your <strong>appliance</strong> security group rules should now look like this:</p>
+          <p><a target="_blank" href="/img/site/appliance_groups.png"><img src="/img/site/appliance_groups_thumb.png" alt="OpenStack Groups"></a></p>          
+          <p>The instances being sold by the appliance will need unrestricted access from the Internet if they have publicly accessible IPv4 addresses. The appliance does not currently manage security groups, so you need to manually open up the default group to allow all access to the instances.</p>
+          <p>Follow these steps to set up the access rules for the instances the appliance starts:</p>
+          <ul>
+            <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Access &amp; Security</strong>.</li>
+            <li>Click the <strong>Manage Rules</strong> button to the right in the <strong>default</strong> security group row.</li>
+            <li>Delete any existing rules for the default group by clicking on <strong>Delete Rule</strong> in any of the existing rule's rows.</li>
+            <li>Click <strong>Add Rule</strong> and then select <strong>Custom TCP Rule</strong> from the <strong>Rule</strong> pulldown and <strong>Port Range</strong> from the <strong>Open Port</strong> pulldown.</li>
+            <li>Enter the number <strong>'1'</strong> in the <strong>From Port</strong> field. Enter the number <strong>'65535'</strong> in the <strong>To Port</strong> field. Click <strong>Add</strong>.</li>
+            <li>Repeat the previous two steps, but this time select <strong>Custom UDP Rule</strong> from the <strong>Rule</strong> pulldown.  Enter the same numbers for the range.</li>
+            <li>Click <strong>Add Rule</strong> and then select <strong>Custom ICPMP Rule</strong> from the <strong>Rule</strong> pulldown.</li>
+            <li>Enter the number <strong>'-1'</strong> in <strong>both</strong> the <strong>Type</strong> and <strong>Code</strong> fields.  Click <strong>Add</strong> to add the rule.</li>
+          </ul>
+          <p>Your <strong>default</strong> security group rules should now look like this:</p>
+          <p><a target="_blank" href="/img/site/default_groups.png"><img src="/img/site/default_groups_thumb.png" alt="OpenStack Groups"></a></p>
+        </div>
 
-          <div id="start-the-appliance" class="subgroup">
-            <h4>Start the Appliance</h4>
-            <p>Now it's time to launch an instance which will configure itself into a {{ app_name }} virtual appliance.  Follow these instructions to launch the appliance:</p>
-            <ul>
-              <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Instances</strong>.</li>
-              <li>Click on the <strong>Launch Instance</strong> button.</li>
-              <li>Name the instance <strong>'{{ app_name }} VA'</strong> and then click on the <strong>Flavor</strong> pulldown.</li>
-              <li>If you created the <strong>m1536.v1.d8</strong> flavor earlier, select it from the list.</li>
-              <li>If you are unable to create a custom flavor, select a <strong>m1.small</strong> stock flavor from the pulldown.</li>
-              <li>Click on the <strong>Instance Boot Source</strong> pulldown at the bottom and select <strong>Boot from image</strong>.</li>
-              <li>Under <strong>Image Name</strong>, select the <strong>Ubuntu Trusty 14.04LTS</strong> image you installed earlier.</li>
-              <li>Click on the <strong>Access &amp; Security</strong> tab at the top.</li>
-              <li>Use the <strong>Key Pair</strong> pulldown to select the <strong>stackmonkey</strong> key pair you generated earlier.</li>
-              <li>In the same tab, check the <strong>appliance</strong> security group, and uncheck the <strong>default</strong> group.</li>
-              <li>Click on the <strong>Post-Creation</strong> tab at the top.</li>
-            </ul>
-            <p>In the Customization Script text area that appears in the modal, paste the following exactly as shown:</p>
+        <div id="start-the-appliance" class="subgroup">
+          <h4>Start the Appliance</h4>
+          <p>Now it's time to launch an instance which will configure itself into a {{ app_name }} virtual appliance.  Follow these instructions to launch the appliance:</p>
+          <ul>
+            <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Instances</strong>.</li>
+            <li>Click on the <strong>Launch Instance</strong> button.</li>
+            <li>Name the instance <strong>'{{ app_name }} VA'</strong> and then click on the <strong>Flavor</strong> pulldown.</li>
+            <li>If you created the <strong>m1536.v1.d8</strong> flavor earlier, select it from the list.</li>
+            <li>If you are unable to create a custom flavor, select a <strong>m1.small</strong> stock flavor from the pulldown.</li>
+            <li>Click on the <strong>Instance Boot Source</strong> pulldown at the bottom and select <strong>Boot from image</strong>.</li>
+            <li>Under <strong>Image Name</strong>, select the <strong>Ubuntu Trusty 14.04LTS</strong> image you installed earlier.</li>
+            <li>Click on the <strong>Access &amp; Security</strong> tab at the top.</li>
+            <li>Use the <strong>Key Pair</strong> pulldown to select the <strong>stackmonkey</strong> key pair you generated earlier.</li>
+            <li>In the same tab, check the <strong>appliance</strong> security group, and uncheck the <strong>default</strong> group.</li>
+            <li>Click on the <strong>Post-Creation</strong> tab at the top.</li>
+          </ul>
+          <p>In the Customization Script text area that appears in the modal, paste the following exactly as shown:</p>
 <pre>
 #cloud-config
 hostname: stackmonkey-va
@@ -244,19 +244,19 @@ runcmd:
  - chmod 755 /tmp/install.sh
  - /tmp/install.sh
 </pre>
-            <p>Click on the <strong>Launch</strong> button to launch the appliance.  You can monitor the instance's build state by refreshing the console log tab viewable by clicking on the instance name in the instance list.</p>
-            <p>The appliance will take about 10 minutes to build.</p>
-          </div>
+          <p>Click on the <strong>Launch</strong> button to launch the appliance.  You can monitor the instance's build state by refreshing the console log tab viewable by clicking on the instance name in the instance list.</p>
+          <p>The appliance will take about 10 minutes to build.</p>
+        </div>
 
-          <div id="accessing-the-appliances-ui" class="subgroup">
-            <h4>Accessing the Appliance's UI</h4>
-            <p>Once the appliance is running, you can access it by its IP address.  This can be found in the Horizon UI of OpenStack, next to the instance.  Here's an example:</p>
-            <p><a target="_blank" href="/img/site/appliance_ip.png"><img src="/img/site/appliance_ip_thumb.png" alt="Appliance IPs"></a></p>
-            <p>Build a URL of the IP address of the appliance and enter it into your browser's address bar:</p>
-            <p><code>http://10.0.47.3/</code></p>
+        <div id="accessing-the-appliances-ui" class="subgroup">
+          <h4>Accessing the Appliance's UI</h4>
+          <p>Once the appliance is running, you can access it by its IP address.  This can be found in the Horizon UI of OpenStack, next to the instance.  Here's an example:</p>
+          <p><a target="_blank" href="/img/site/appliance_ip.png"><img src="/img/site/appliance_ip_thumb.png" alt="Appliance IPs"></a></p>
+          <p>Build a URL of the IP address of the appliance and enter it into your browser's address bar:</p>
+          <p><code>http://10.0.47.3/</code></p>
 
-            <p>Remember, it takes about 10 minutes for the appliance to build, so the UI won't appear until it's done!</p>
-          </div> 
+          <p>Remember, it takes about 10 minutes for the appliance to build, so the UI won't appear until it's done!</p>
+        </div> 
       </section> 
 
       <section id="appliance-operation" class="group">

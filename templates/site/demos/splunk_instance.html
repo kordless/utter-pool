@@ -64,6 +64,7 @@
       <div id="back" class="row">
         <div id="back-inner" class="col-md-4 hidden">
           <button type="button" id="back-to-demos-button" class="btn btn-info"><span class="glyphicon glyphicon-arrow-left"></span> Back to Demos</button>
+          <button type="button" id="instance-details-button" class="btn btn-success"><span class="glyphicon glyphicon-search"></span> View Instance Details</button>
         </div>
       </div>
     </div>
@@ -133,7 +134,7 @@
     var update_info = function() {
       // update bits to indicate splunk is running
       $('#info-title').html("Step #4: Access the Splunk UI");
-      $('#info').html("The Splunk instance is ready and the UI can be accessed <a id='splunk-link' target='_blank'>from here</a>.");
+      $('#info').html("The Splunk instance is ready and the UI can be accessed <a href='http://"+ipv4+":8000' target='_blank'>from here</a>.");
     }
 
     // meta data
@@ -152,8 +153,6 @@
     onMessage = function(packet) {
       var data = JSON.parse(packet.data);
       var name = data.name;
-
-      console.log("onmessage"+data.state);
 
       // if our ajax state is larger than the existing state
       if (data.state > prev_state) {
@@ -196,9 +195,14 @@
       }
     }, 1000);
 
-    // wire delete reservation
+    // go back to demos
     $('#back-to-demos-button').click(function() {
       window.location = "{{ uri_for('demo') }}";
+    });
+
+    // wire delete reservation
+    $('#instance-details-button').click(function() {
+      window.location = "{{ uri_for('lab-instance-detail', token=instance.token) }}";
     });
 
     // map

@@ -197,11 +197,17 @@ chmod 600 ~/.ssh/stackmonkey.pem
             <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Access &amp; Security</strong>.</li>
             <li>Click on the <strong>Security Groups</strong> tab at the top.  To the right, click on the <strong>Create Security Group</strong> button.</li>
             <li>Name the security group <strong>'appliance'</strong> and enter a short description.  Click <strong>Create Security Group</strong> to create the group.</li>
-            <li>Click the <strong>Manage Rules</strong> button to the right in the <strong>appliance</strong> security group row.  Click <strong>Add Rule</strong> and then enter the number <strong>'22'</strong> (ssh) in the port field.  Click <strong>Add</strong>.  Repeat this step and enter the number <strong>'80'</strong> (http) in the port field instead.  Click <strong>Add</strong> again.</li>
+            <li>Click the <strong>Manage Rules</strong> button to the right in the <strong>appliance</strong> security group row.  Click <strong>Add Rule</strong> and then enter the number <strong>'22'</strong> (ssh) in the port field.  Click <strong>Add</strong>.  Repeat this step and enter the number <strong>'80'</strong> (http) in the port field instead.  Click <strong>Add</strong> again. Repeat one more time, and enter the number <strong>8080</strong> in the port filed. Click <strong>Add</strong> one final time.</li>
             <li>Click the <strong>Manage Rules</strong> button again, but this time click on the <strong>Rule</strong> pulldown and select <strong>Custom ICMP Rule</strong>.  Enter the number '-1' in <strong>both</strong> the <strong>Type</strong> and <strong>Code</strong> fields.  Click <strong>Add</strong> to add the rule.</li>
           </ul>
           <p>Your <strong>appliance</strong> security group rules should now look like this:</p>
-          <p><a target="_blank" href="/img/site/appliance_groups.png"><img src="/img/site/appliance_groups_thumb.png" alt="OpenStack Groups"></a></p>          
+          <p><a target="_blank" href="/img/site/appliance_groups.png"><img src="/img/site/appliance_groups_thumb.png" alt="OpenStack Groups"></a></p>
+
+          <div class="bs-callout bs-callout-warning bs-callout-top">
+            <h4>Disabling Appliance Ports</h4>
+            <p>The appliance uses <strong>port 80</strong> for HTTP connections, <strong>port 22</strong> for ssh access, and <strong>port 8080</strong> for the reverse caching proxy for Glance images.  If you would like to disable the appliance's ports for security purposes, you must leave <strong>port 8080</strong> open for image caching if you have that option enabled in the configuration settings.</p>
+          </div>
+
           <p>The instances being sold by the appliance will need unrestricted access from the Internet if they have publicly accessible IPv4 addresses. The appliance does not currently manage security groups, so you need to manually open up the default group to allow all access to the instances.</p>
           <p>Follow these steps to set up the access rules for the instances the appliance starts:</p>
           <ul>

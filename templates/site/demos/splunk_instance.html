@@ -171,6 +171,7 @@
         state_indicator(4);
         // we're getting a message while we're running, so it might be meta data
         if (data.meta.splunk == "installed") {
+          state_indicator(4);
           update_info();
         }
       }

@@ -3,7 +3,7 @@
 
 {% block title %}Demos :: {% endblock %}
 
-{% block description %}Let's demo CoreOS.{% endblock %}
+{% block description %}Let's demo a Minecraft server.{% endblock %}
 
 {% block page_styles %}
   <link href="/css/demo.css" rel="stylesheet">
@@ -22,11 +22,11 @@
   <div class="container">
     <div class="row">
       <div class="logo col-md-1">
-        <img src="/img/site/coreos.png">
+        <img src="/img/site/minecraft.png">
       </div>
       <div class="col-md-10">
-        <h1>CoreOS</h1>
-        <p class="blurb">CoreOS enables warehouse-scale computing on top of a minimal, modern operating system.</p>
+        <h1>Minecraft</h1>
+        <p class="blurb">A game server for breaking and placing blocks.</p>
       </div>
     </div>
   </div>
@@ -35,7 +35,7 @@
   <div class="row">
     <div class="col-md-12">
       <h3 id="info-title">{% if instance.state < 4 %}Step #3: Wait for Provisioning{% else %}Step 4: Access the Instance{% endif %}</h3>
-      <p><span id="info">{% if instance.state < 4 %}Please wait while the instance is started and provisioned. This page will update once CoreOS is running.{% endif %}</span> {% if instance.ipv4_address %}This instance is running an IPv4 address at <strong>{{ instance.ipv4_address }}</strong>. You may ssh into it by doing a <code>ssh core@{{ instance.ipv4_address }}</code> using your ssh key.{% elif instance.ipv6_address %}This instance is running an IPv6 address at <strong>{{ instance.ipv6_address }}</strong>. You may ssh into it by doing a <code>ssh core@{{ instance.ipv6_address }}</code> using your ssh key.{% endif %}</p>
+      <p><span id="info">Please wait while the instance is started and provisioned. This page will update once the Minecraft server is running.</span> {% if instance.ipv4_address %}The server can be accessed by doing a <code>ssh ubuntu@{{ instance.ipv4_address }}</code> and then doing a <code>sudo su; screen -x</code>.{% endif %}</p>
 
       <div class="row instance-detail-row">
         <div class="{% if instance.state < 7 %}col-md-4{% else %}col-md-6{% endif %}">
@@ -130,6 +130,19 @@
      ipv4 = "{{ instance.ipv4_private_address }}";
     }
 
+    // update the page with minecraft instance info
+    var update_info = function() {
+      // update bits to indicate minecraft is running
+      $('#info-title').html("Step #4: Access the Minecraft Server");
+      $('#info').html("The Minecraft instance is ready and can be added to your game client using the IP address of <code>"+ipv4+"</code>. The server can be accessed by doing a <code>ssh ubuntu@"+ipv4+"</code> and then doing a <code>sudo su; screen -x</code>.");
+    }
+
+    // meta data
+    var minecraft_state = "{{ instance.meta_dict.minecraft }}";
+    if (minecraft_state == "installed") {
+      update_info();
+    }
+
     // for message state tracking
     var prev_state = 0;
     if (load_state > 0) {
@@ -158,6 +171,11 @@
         prev_state = data.state;
       } else if (data.state == 4) {
         state_indicator(4);
+        // we're getting a message while we're running, so it might be meta data
+        if (data.meta.minecraft == "installed") {
+          state_indicator(4);
+          update_info();
+        }
       }
     };
 

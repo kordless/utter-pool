@@ -3,7 +3,7 @@
 
 {% block title %}Demos :: {% endblock %}
 
-{% block description %}Let's demo CoreOS.{% endblock %}
+{% block description %}Let's demo StackStorm.{% endblock %}
 
 {% block page_styles %}
   <link href="/css/demo.css" rel="stylesheet">
@@ -22,11 +22,11 @@
   <div class="container">
     <div class="row">
       <div class="logo col-md-1">
-        <img src="/img/site/coreos.png">
+        <img src="/img/site/stackstorm.png">
       </div>
       <div class="col-md-10">
-        <h1>CoreOS</h1>
-        <p class="blurb">CoreOS enables warehouse-scale computing on top of a minimal, modern operating system.</p>
+        <h1>StackStorm</h1>
+        <p class="blurb">Automation as a Service.</p>
       </div>
     </div>
   </div>
@@ -34,8 +34,8 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <h3 id="info-title">{% if instance.state < 4 %}Step #3: Wait for Provisioning{% else %}Step 4: Access the Instance{% endif %}</h3>
-      <p><span id="info">{% if instance.state < 4 %}Please wait while the instance is started and provisioned. This page will update once CoreOS is running.{% endif %}</span> {% if instance.ipv4_address %}This instance is running an IPv4 address at <strong>{{ instance.ipv4_address }}</strong>. You may ssh into it by doing a <code>ssh core@{{ instance.ipv4_address }}</code> using your ssh key.{% elif instance.ipv6_address %}This instance is running an IPv6 address at <strong>{{ instance.ipv6_address }}</strong>. You may ssh into it by doing a <code>ssh core@{{ instance.ipv6_address }}</code> using your ssh key.{% endif %}</p>
+      <h3 id="info-title">Step #3: Wait for Provisioning</h3>
+      <p><span id="info">Please wait while the instance is started and provisioned. This page will update once Splunk is running.</span> {% if instance.ipv4_address %}This instance is running at <strong>{{ instance.ipv4_address }}</strong> if you would like to access it directly.{% endif %}</p>
 
       <div class="row instance-detail-row">
         <div class="{% if instance.state < 7 %}col-md-4{% else %}col-md-6{% endif %}">
@@ -100,7 +100,7 @@
         $('#state').html("Starting");
         $('#state').addClass("label-success");
       } else if (state == 4) {
-        $('#state').html("Running");
+        $('#state').html("Provisioning");
         $('#state').addClass("label-success");
       } else if (state == 5) {
         $('#state').html("Suspended");
@@ -130,6 +130,19 @@
      ipv4 = "{{ instance.ipv4_private_address }}";
     }
 
+    // update the page with splunk instance info
+    var update_info = function() {
+      // update bits to indicate splunk is running
+      $('#info-title').html("Step #4: Access the Splunk UI");
+      $('#info').html("The Splunk instance is ready and the UI can be accessed <a href='http://"+ipv4+":8000' target='_blank'>from here</a>.");
+    }
+
+    // meta data
+    var splunk_state = "{{ instance.meta_dict.splunk }}";
+    if (splunk_state == "installed") {
+      update_info();
+    }
+
     // for message state tracking
     var prev_state = 0;
     if (load_state > 0) {
@@ -140,8 +153,6 @@
     onMessage = function(packet) {
       var data = JSON.parse(packet.data);
       var name = data.name;
-
-      console.log("onmessage"+data.state);
 
       // if our ajax state is larger than the existing state
       if (data.state > prev_state) {
@@ -158,6 +169,11 @@
         prev_state = data.state;
       } else if (data.state == 4) {
         state_indicator(4);
+        // we're getting a message while we're running, so it might be meta data
+        if (data.meta.splunk == "installed") {
+          state_indicator(4);
+          update_info();
+        }
       }
     };
 
@@ -180,12 +196,12 @@
       }
     }, 1000);
 
-    // wire back to demos button
+    // go back to demos
     $('#back-to-demos-button').click(function() {
       window.location = "{{ uri_for('demo') }}";
     });
 
-    // wire instance detail button
+    // wire delete reservation
     $('#instance-details-button').click(function() {
       window.location = "{{ uri_for('lab-instance-detail', token=instance.token) }}";
     });

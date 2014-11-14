@@ -35,7 +35,7 @@
   <div class="row">
     <div class="col-md-12">
       <h3 id="info-title">Step #3: Wait for Provisioning</h3>
-      <p><span id="info">Please wait while the instance is started and provisioned. This page will update once Splunk is running.</span> {% if instance.ipv4_address %}This instance is running at <strong>{{ instance.ipv4_address }}</strong> if you would like to access it directly.{% endif %}</p>
+      <p><span id="info">Please wait while the instance is started and provisioned. This page will update once StackStorm is running.</span> {% if instance.ipv4_address %}This instance is running at <code>{{ instance.ipv4_address }}</code> if you would like to access it directly.{% endif %}</p>
 
       <div class="row instance-detail-row">
         <div class="{% if instance.state < 7 %}col-md-4{% else %}col-md-6{% endif %}">
@@ -130,16 +130,16 @@
      ipv4 = "{{ instance.ipv4_private_address }}";
     }
 
-    // update the page with splunk instance info
+    // update the page with stackstorm instance info
     var update_info = function() {
       // update bits to indicate splunk is running
-      $('#info-title').html("Step #4: Access the Splunk UI");
-      $('#info').html("The Splunk instance is ready and the UI can be accessed <a href='http://"+ipv4+":8000' target='_blank'>from here</a>.");
+      $('#info-title').html("Step #4: Access the StackStorm Instance");
+      $('#info').html("The StackStorm instance is ready and you can log into it using <code>ubuntu@"+ipv4+"</code>. Documentation for StackStorm is available <a href='http://docs.stackstorm.com/'>here</a>.");
     }
 
     // meta data
-    var splunk_state = "{{ instance.meta_dict.splunk }}";
-    if (splunk_state == "installed") {
+    var stackstorm_state = "{{ instance.meta_dict.stackstorm }}";
+    if (stackstorm_state == "installed") {
       update_info();
     }
 
@@ -170,7 +170,7 @@
       } else if (data.state == 4) {
         state_indicator(4);
         // we're getting a message while we're running, so it might be meta data
-        if (data.meta.splunk == "installed") {
+        if (data.meta.stackstorm == "installed") {
           state_indicator(4);
           update_info();
         }

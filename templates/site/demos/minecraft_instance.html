@@ -134,7 +134,7 @@
     var update_info = function() {
       // update bits to indicate minecraft is running
       $('#info-title').html("Step #4: Access the Minecraft Server");
-      $('#info').html("The Minecraft instance is ready and can be added to your game client using the IP address of <code>"+ipv4+"</code>. The server can be accessed by doing a <code>ssh ubuntu@"+ipv4+"</code> and then doing a <code>sudo su; screen -x</code>.");
+      $('#info').html("The Minecraft instance is ready and can be added to your game client using the IP address of <code>"+ipv4+"</code>.");
     }
 
     // meta data
@@ -154,7 +154,7 @@
       var data = JSON.parse(packet.data);
       var name = data.name;
 
-      console.log("onmessage"+data.state);
+      console.log(data);
 
       // if our ajax state is larger than the existing state
       if (data.state > prev_state) {

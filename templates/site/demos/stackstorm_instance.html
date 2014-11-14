@@ -35,7 +35,7 @@
   <div class="row">
     <div class="col-md-12">
       <h3 id="info-title">Step #3: Wait for Provisioning</h3>
-      <p><span id="info">Please wait while the instance is started and provisioned. This page will update once StackStorm is running.</span> {% if instance.ipv4_address %}This instance is running at <code>{{ instance.ipv4_address }}</code> if you would like to access it directly.{% endif %}</p>
+      <p><span id="info">Please wait while the instance is started and provisioned. This page will update once StackStorm is running.</span> {% if instance.ipv4_address %}You can log into the instance using <code>ubuntu@{{ instance.ipv4_address }}</code>, keeping in mind the software is still installing.{% endif %}</p>
 
       <div class="row instance-detail-row">
         <div class="{% if instance.state < 7 %}col-md-4{% else %}col-md-6{% endif %}">
@@ -62,7 +62,7 @@
       </div>
 
       <div id="back" class="row">
-        <div id="back-inner" class="col-md-4 hidden">
+        <div id="back-inner" class="col-md-8 hidden">
           <button type="button" id="back-to-demos-button" class="btn btn-info"><span class="glyphicon glyphicon-arrow-left"></span> Back to Demos</button>
           <button type="button" id="instance-details-button" class="btn btn-success"><span class="glyphicon glyphicon-search"></span> View Instance Details</button>
         </div>

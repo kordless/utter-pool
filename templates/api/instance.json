@@ -5,6 +5,7 @@
       "name": "{{ instance.name }}",{% if callback_url %}
       "callback_url": "{{ instance.callback_url }}",{% endif %}
       "address": "{{ instance.address }}",
+      "token": "{{ instance.token }}",
       "ipv4_address": "{{ instance.ipv4_address }}",
       "ipv4_private_address": "{{ instance.ipv4_private_address }}",
       "ipv6_address": "{{ instance.ipv6_address }}",

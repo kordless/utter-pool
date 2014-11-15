@@ -1,0 +1,177 @@
+{% import "macros.html" as macros %}
+{% extends base_layout %}
+
+{% block title %}Demos :: {% endblock %}
+
+{% block description %}Let's demo OpenBazaar.{% endblock %}
+
+{% block page_styles %}
+  <link href="/css/demo.css" rel="stylesheet">
+  <link href="/css/docs.css" rel="stylesheet">
+  <link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.css' rel='stylesheet' />
+  <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css' rel='stylesheet' />
+  <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css' rel='stylesheet' />
+{% endblock %}
+
+{% block navbar %}
+  {% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="inverse">
+  <div class="container">
+    <div class="row">
+      <div class="logo col-md-1">
+        <img src="/img/site/openbazaar.png">
+      </div>
+      <div class="col-md-10">
+        <h1>OpenBazaar</h1>
+        <p class="blurb">Decentralized marketplace for instantly trading with anyone using Bitcoin.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h3>Step #2: Pay for the Instance</h3>
+      <p>Please use your <a target="_blank" href="https://blockchain.info">Bitcoin wallet</a> to pay for this instance reservation by scanning the qrcode below. The default amount is for <strong>24 Hours of Use</strong> for a <strong>m2048.v2.d30.e0.i0</strong> instance and may be modified for shorter periods. This page will update when the payment has been observed by the <a href="/docs/#becoming-a-provider">provider's appliance</a>.</p>
+
+      <div class="row instance-detail-row">
+        <div class="{% if instance.state < 7 %}col-md-4{% else %}col-md-6{% endif %}">
+          <div class="text-center"><h3><small>Instance Timer</small></h3></div>
+          <div class="text-center">
+            <input id="timer" data-state="{{ instance.state }}" data-expires="{{ bid.expires|epoch }}" data-updated="{{ instance.updated|epoch }}" data-step="1" data-readOnly=true data-min="0" value="0" data-max="300" data-width="230" data-height="230">
+          </div>
+          <div class="text-center timer-state">
+            <p>{{ macros.instance_state(instance.state) }}</p>
+          </div>
+        </div>
+        {% if instance.state < 7 %}
+        <div class="col-md-4">
+          <div class="text-center"><h3><small>Payment Address</small></h3></div>
+          <div class="text-center" id="qrcode"></div>
+          <div class="text-center" id="address"><a href="https://blockchain.info/address/{{ instance.address }}" target="_blank">{{ instance.address }}</a></div>
+        </div>
+        {% endif %}
+        <div class="{% if instance.state < 7 %}col-md-4{% else %}col-md-6{% endif %}">
+          <div class="text-center"><h3><small>Instance Location</small></h3></div>
+          <div class="text-center" id="instance-map"></div>
+          <div class="text-center" id="provider"><a href="#" target="_blank">{{ instance.appliance.get().name }}</a></div>
+        </div>
+      </div>
+      <div id="back" class="row">
+        <div id="back-inner" class="col-md-4 hidden">
+          <button type="button" id="delete-reservation-button" class="btn btn-danger">Cancel Reservation</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+  $().ready(function() {
+    // vars
+    var address = "{{ instance.address }}";
+    var token = "{{ instance.token }}";
+
+    // standard stuff
+    var csrf_token = "{{ csrf_token() }}";
+    var channel_token = "{{ channel_token }}";
+    var refresh_channel = "{{ refresh_channel }}";
+
+    // populate the address section
+    alertify.success("Instance ready for payment.");
+    var qrcode_string = "bitcoin:{{instance.address}}?amount="+(parseInt({{instance.ask}}*24)/1000000);
+    $('#qrcode').qrcode({text: qrcode_string});
+    $('#address').html('<a href="https://blockchain.info/address/'+address+'" target="_blank">'+address+'</a>');
+    $('#back-inner').removeClass('hidden');
+
+    // state indicator
+    var state_indicator = function(state) {
+      // remove all colors
+      $('#state').removeClass("label-danger").removeClass("label-warning").removeClass("label-info").removeClass("label-success");
+      
+      // set label state
+      if (state == 3) {
+        $('#state').html("Starting");
+        $('#state').addClass("label-success");
+      } else if (state == 5) {
+        $('#state').html("Suspended");
+        $('#state').addClass("label-warning");
+      } else if (state == 6) {
+        $('#state').html("Unsuspended");
+        $('#state').addClass("label-info");
+      } else if (state == 7) {
+        $('#state').html("Decommissioned");
+        $('#state').addClass("label-danger");
+      } else if (state == 10) {
+        $('#state').html("Reserved");
+        $('#state').addClass("label-danger");
+      } else if (state == 11) {
+        $('#state').html("Loading Image");
+        $('#state').addClass("label-success");
+      }
+    }
+
+    // listen to our refresh channel for instance booting callback
+    onMessage = function(packet) {
+      data = jQuery.parseJSON(packet.data);
+      if (data.token == "{{ bid.token }}") {
+        alertify.success("Payment received! Loading instance...")
+        setTimeout(function() {
+          window.location = "{{ uri_for('demos-instance', demo_name='openbazaar', token=bid.token) }}";
+        }, 3000);
+      }
+    };
+
+    // sockets, bitches
+    channel = new goog.appengine.Channel(refresh_channel);
+    socket = channel.open();
+    socket.onmessage = onMessage;
+
+    // timer knob
+    $('#timer').knob();
+    setInterval(function() {
+      var epoch_time = parseInt((new Date).getTime()/1000);
+      var expires = parseInt($('#timer').attr('data-expires'));
+      var state = parseInt($('#timer').attr('data-state'));
+      var timer2 = expires - epoch_time;
+      if (timer2 > -1) {
+        $('#timer').val(timer2).trigger("change");
+      } else {
+        $('#timer').val(0).trigger("change");
+        // delete from webpage (cron will also handle this on server)
+        $('#delete-reservation-button').trigger('click');
+      }
+    }, 1000);
+
+    // wire delete reservation
+    $('#delete-reservation-button').click(function() {
+      $.ajax({
+        type: "DELETE",
+        url: "/api/v1/bids/"+token+"/",
+        processData: false
+      }).done(function(data) {
+        window.location = "{{ uri_for('demos', demo_name='openbazaar')}}";
+      });
+    });
+
+    // map
+    var location = [{{ instance.appliance.get().location }}];
+    var themap = L.mapbox.map('instance-map', 'kordless.gnm28jg1', {scrollWheelZoom: true}).setView(location, 8);
+    var marker = L.marker(location).addTo(themap);
+    
+  });
+</script>
+{% endblock %}
+
+{% block extras %}
+  <script type="text/javascript" src="/js/jquery.qrcode.js"></script>
+  <script type="text/javascript" src="/js/qrcode.js"></script>
+  <script type="text/javascript" src="/js/jquery.knob.js"></script>
+  <script type="text/javascript" src="/_ah/channel/jsapi"></script>
+  <script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.js'></script>
+{% endblock %}

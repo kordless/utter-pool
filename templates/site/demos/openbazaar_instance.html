@@ -35,7 +35,7 @@
   <div class="row">
     <div class="col-md-12">
       <h3 id="info-title">Step #3: Wait for Provisioning</h3>
-      <p><span id="info">Please wait while the instance is started and provisioned; The OpenBazaar software can take up to 10 minutes to provision. This page will update once OpenBazaar is running. {% if instance.ipv4_address %}You can ssh into the instance using <code>ubuntu@{{ instance.ipv4_address }}</code>.{% endif %}</span></p>
+      <p><span id="info">Please wait while the instance is started and provisioned; The OpenBazaar software can take up to 15 minutes to provision. This page will update once OpenBazaar is running. {% if instance.ipv4_address %}You can ssh into the instance using <code>ubuntu@{{ instance.ipv4_address }}</code>.{% endif %}</span></p>
 
       <div class="row instance-detail-row">
         <div class="{% if instance.state < 7 %}col-md-4{% else %}col-md-6{% endif %}">
@@ -155,6 +155,8 @@
       var data = JSON.parse(packet.data);
       var name = data.name;
 
+      console.log(data.meta);
+      
       // if our ajax state is larger than the existing state
       if (data.state > prev_state) {
         if (data.state == 4) {

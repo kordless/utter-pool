@@ -149,11 +149,11 @@
                         </tr>
                         <tr>
                           <td><strong>Egress</strong></td>
-                          <td colspan="2">{% if instance.flavor.get().network_up < 0 %}<span title="Unlimited Bandwidth" class="glyphicon glyphicon-ban-circle"></span>{% else %}{{ instance.flavor.get().network_up }} Mb/sec{% endif %}</td>
+                          <td colspan="2">{% if instance.flavor.get().network_up < 1 %}<span title="Unlimited Bandwidth" class="glyphicon glyphicon-ban-circle"></span>{% else %}{{ instance.flavor.get().network_up }} Mb/sec{% endif %}</td>
                         </tr>
                         <tr>
                           <td><strong>Ingress</strong></td>
-                          <td colspan="2">{% if instance.flavor.get().network_down < 0 %}<span title="Unlimited Bandwidth" class="glyphicon glyphicon-ban-circle"></span>{% else %}{{ instance.flavor.get().network_down }} Mb/sec{% endif %}</td>
+                          <td colspan="2">{% if instance.flavor.get().network_down < 1 %}<span title="Unlimited Bandwidth" class="glyphicon glyphicon-ban-circle"></span>{% else %}{{ instance.flavor.get().network_down }} Mb/sec{% endif %}</td>
                         </tr>
                         <tr>
                           <td><strong>Ask</strong></td>

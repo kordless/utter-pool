@@ -98,7 +98,7 @@
         // create wisp data
         var wisp_post_data = {
           "ssh_key": ssh_key,
-          "post_creation": "#cloud-init\nhostname: coreos-demo\n",
+          "post_creation": "#cloud-init\nhostname: coreos-demo\nmanage_etc_hosts: true\n",
           "dynamic_image_url": "http://alpha.release.core-os.net/amd64-usr/current/coreos_production_openstack_image.img.bz2",
           "image_disk_format": "qcow2",
           "image_container_format": "bare"

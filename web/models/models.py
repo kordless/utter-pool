@@ -418,6 +418,28 @@ class Cloud(ndb.Model):
 		cloud.put()
 		return cloud
 
+
+# app model
+class App(ndb.Model):
+	created = ndb.DateTimeProperty(auto_now_add=True)
+	updated = ndb.DateTimeProperty(auto_now=True)
+	name = ndb.StringProperty()
+	description = ndb.StringProperty()
+	owner = ndb.KeyProperty(kind=User)
+
+	@classmethod
+	def get_by_user(cls, user):
+		query = cls.query().filter(cls.owner == user).order(-cls.created)
+		results = query.fetch()
+		return results
+
+	@classmethod
+	def get_by_user_name(cls, user, name):
+		query = cls.query().filter(cls.owner == user, cls.name == name)
+		result = query.get()
+		return result
+
+
 # callback model
 class Callback(ndb.Model):
 	name = ndb.StringProperty()

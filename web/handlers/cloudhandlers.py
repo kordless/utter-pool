@@ -76,7 +76,7 @@ class CloudHandler(BaseHandler):
 		return forms.CloudForm(self)
 
 
-# provide editing for cloud object		
+# provide editing for cloud instance		
 class CloudRemoveInstanceHandler(BaseHandler):
 	@user_required
 	def delete(self, cloud_id = None, instance_id = None):
@@ -200,5 +200,3 @@ class CloudConfigureHandler(BaseHandler):
 	@webapp2.cached_property
 	def form(self):
 		return forms.CloudForm(self)
-
-

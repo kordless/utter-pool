@@ -16,10 +16,10 @@
 {% block content %}
   <!--floating stuff-->
   <div class="splash-container">
-    <h1>Hook Your Depoyment to the Blockchain</h1>
+    <h1>Deployments with the Blockchain</h1>
     <div>
-      <button id="launch-cloud-button" class="btn btn-lg btn-success">Launch an {% if not user_id %}Anonymous Instance™{% else %}Instance{% endif %}</button>
-      <button id="become-a-provider-button" class="btn btn-lg btn-warning"><span id="bitcoin" class="fa fa-bitcoin"></span>ecome a Service Provider™</button>
+      <button id="launch-cloud-button" class="btn btn-lg btn-success">Launch an {% if not user_id %}Anonymous Instance{% else %}Instance{% endif %}</button>
+      <button id="become-a-provider-button" class="btn btn-lg btn-warning"><span id="bitcoin" class="fa fa-bitcoin"></span>ecome a Trusted Node Provider</button>
     </div>
     <div class="splash-instructions">
       It only takes a few seconds to <a href="{{ uri_for('login') }}">register</a> with a Google account. <span id="make-up-your-mind"></span>
@@ -39,16 +39,16 @@
       <!--row-->
       <div class="row drivel">
         <div class="col-md-4">
-          <h3><span class="glyphicon glyphicon-lock"></span> Login Secured by Google™</h3>
-          <p>The {{ app_name }} site runs on <a href="https://developers.google.com/appengine/docs/whatisgoogleappengine">Google Appengine™</a> and utilizes <a href="https://developers.google.com/appengine/articles/openid">Google's federated login system</a>. The site also supports two factor authentication via <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2">Google Authenticator</a>. Because of this, it's pretty darn secure.</p>
+          <h3><span class="glyphicon glyphicon-map-marker"></span> Global Deployments</h3>
+          <p>{{ app_name }} unlocks the power of your private cloud no matter the location.  Users, providers and vendors can deploy software based on geo requirements, take advantage of low cost compute in emerging markets, or store sensitive data in safe havens.</p>
         </div>
         <div class="col-md-4">
-          <h3><span class="glyphicon glyphicon-qrcode"></span> Payments by <span id="bitcoin" class="fa fa-bitcoin"></span>itcoin</h3>
-          <p>Start instances in minutes by simply sending Bitcoin to an instance address.  If you are interested in protecting your privacy, an account on {{ app_name }} is NOT required to <a href="/launcher/">start instances</a>. You can even request to use your own provisioning server!</p>
+          <h3><span class="glyphicon glyphicon-qrcode"></span> Authenticate Using <span id="bitcoin" class="fa fa-bitcoin"></span>itcoin</h3>
+          <p>Deploy instances and code in minutes to your private cloud deployment by simply sending Bitcoin to a payment address. Bitcoin wallet keys get you and your vendors authenticated into your private cloud, enabling trusted systems managment.</p>
         </div>
         <div class="col-md-4">
-          <h3><span class="glyphicon glyphicon-tasks"></span> Powered by OpenStack™</h3>
-          <p>The <a href="http://openstack.org">OpenStack Open Source project</a> provides a cloud controller fabric used by the {{ app_name }} appliance. OpenStack can run on anything from a single desktop computer to an entire datacenter. It only takes about 10 minutes to <a href="https://github.com/StackGeek/openstackgeek/tree/master/icehouse">install OpenStack</a>!</p>
+          <h3><span class="glyphicon glyphicon-cloud"></span> Hybrid Private Clouds</h3>
+          <p>Companies running OpenStack-based infrastructure can <a href="/groups/">create and share</a> their private clouds with others. Vendors can purchase excess capacity from trusted business and operations partners to provide specialized managed services to their customers.</p>
         </div>
       </div>
       <!--/row-->
@@ -56,16 +56,16 @@
       <!--row-->
       <div class="row drivel">
         <div class="col-md-4">
-          <h3><span class="glyphicon glyphicon-map-marker"></span> Geo Diverse Instances</h3>
-          <p>{{ app_name }} providers can be located in any country around the globe.  Start instances based on geo requirements or take advantage of ultra cheap compute in emerging markets.</p>
+          <h3><span class="glyphicon glyphicon-lock"></span> Login with Google™</h3>
+          <p>The {{ app_name }} site runs on <a href="https://developers.google.com/appengine/docs/whatisgoogleappengine">Google Appengine™</a> and utilizes <a href="https://developers.google.com/appengine/articles/openid">Google's federated login system</a>. The site also supports two factor authentication via <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2">Google Authenticator</a>. Want even better security? You don't need to login to <a href="{{ uri_for('lab-launcher') }}">start instances</a>.</p>
         </div>
         <div class="col-md-4">
-          <h3><span class="glyphicon glyphicon-cloud"></span> Hybrid Cloud Groups</h3>
-          <p>Individuals and companies running OpenStack-based infrastructures can <a href="/groups/">create, share and join private Hybrid Cloud Groups</a>. Hybrid Groups allow one or more companies to purchase excess capacity from trusted business and operations partners.</p>
+          <h3><span class="glyphicon glyphicon-tasks"></span> Runs on OpenStack™</h3>
+          <p>The <a href="http://openstack.org">OpenStack Open Source project</a> provides a cloud controller fabric used by {{ app_name }}'s appliance. OpenStack can run on anything from a single desktop computer to an entire datacenter. It only takes about 10 minutes to <a href="https://github.com/StackGeek/openstackgeek/tree/master/icehouse">install OpenStack</a>!</p>
         </div>
         <div class="col-md-4">
           <h3><span class="glyphicon glyphicon-heart"></span> 100% Open Source</h3>
-          <p>The <a href="http://utter.io/">Utter.io</a> framework that powers this site is Open Source and free to use by anyone, anywhere, at any time. <strong>Utter.io</strong> appliances <a href="/docs#becoming-a-provider">can be run by anyone</a> who has spare compute to share.</p>
+          <p>The <a href="http://utter.io/">Utter.io</a> framework that powers this site is Open Source and free to use by anyone, anywhere, at any time. <strong>Utter.io</strong> appliances <a href="/docs#becoming-a-provider">can be run by anyone</a> who has spare compute they want to share with others they trust.</p>
         </div>
       </div>
       <!--/row-->
@@ -74,7 +74,7 @@
 
     <hr class="soften">
     <blockquote class="big-quote">
-      <p>&#8220;Mankind's <a href="http://www.utter.io/prezo/?r=stackmonkey/slide-0#/slide-20">future</a> depends on building a decentralized cloud run by many and trusted by all.&#8221;</p>
+      <p>&#8220;Our <a href="http://www.utter.io/prezo/?r=stackmonkey/slide-0#/slide-20">future</a> depends on building a decentralized cloud run by many and trusted by all.&#8221;</p>
       <small>
         Kord Campbell, Founder
       </small>
@@ -85,7 +85,6 @@
 {% endblock %}
 
 {% block javascript %}
-  <script type='text/javascript' src='/js/typed.js'></script>
   <script type='text/javascript' src='/js/jquery.cookie.js'></script>
   <script type="text/javascript">
     $().ready(function() {
@@ -98,16 +97,6 @@
       });
       $('#cant-wait-button').on('click', function(e) { 
         $('#not-launched-modal').modal('hide');
-      });
-
-      // type effect
-      $("#make-up-your-mind").typed({
-        strings: ["Go on. ^1000 Do it.", "Clicky, clicky, click.", "Launch. ^2000 An. ^2000 Instance. ^6000", "", "Hi. ^9500", ""],
-        typeSpeed: 60,
-        showCursor: false,
-        startDelay: 8000,
-        loopCount: 2,
-        loop: true
       });
     })
   </script>

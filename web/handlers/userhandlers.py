@@ -38,8 +38,7 @@ class LogoutHandler(BaseHandler):
 
 			# if 2fa enabled, set the last login to an hour ago
 			if user_info.tfenabled:
-				now_minus_an_hour = datetime.now() + timedelta(0, -config.session_age)
-				user_info.last_login = now_minus_an_hour
+				user_info.last_login = datetime.now() + timedelta(0, -config.session_age)
 				user_info.put()
 
 			message = "You have been logged out."
@@ -62,11 +61,11 @@ class LoginHandler(BaseHandler):
 			dest_url=self.uri_for('login-complete')
 		
 		try:
-			login_url = users.create_login_url(federated_identity='gmail.com', dest_url=dest_url)
+			login_url = users.create_login_url(dest_url=dest_url)
 			self.redirect(login_url)
 		except users.NotAllowedError:
 			self.add_message("The pool operator must enable Federated Login before you can login.", "error")
-			self.redirect_to('login')
+			self.redirect_to('home')
 
 
 # google auth callback

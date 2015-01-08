@@ -1,5 +1,5 @@
 application: stackmonkeyapp
-version: 1-3-3
+version: 1-3-4
 runtime: python27
 api_version: 1
 threadsafe: true
@@ -62,7 +62,7 @@ handlers:
 - url: /sounds
   mime_type: application/octet-stream
   static_dir: static/sounds
-  
+
 - url: /css
   mime_type: text/css
   static_dir: static/css

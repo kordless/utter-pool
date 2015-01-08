@@ -1,6 +1,6 @@
 from webapp2_extras.routes import RedirectRoute
 from web.handlers import sitehandlers, adminhandlers, userhandlers, apihandlers, bloghandlers, emailhandlers, taskhandlers
-from web.handlers import statushandlers, appliancehandlers, grouphandlers, cloudhandlers, wisphandlers, labhandlers
+from web.handlers import statushandlers, apphandlers, appliancehandlers, grouphandlers, cloudhandlers, wisphandlers, labhandlers
 
 secure_scheme = 'https'
 
@@ -50,7 +50,10 @@ _routes = [
 		RedirectRoute('/bids/<token>/', labhandlers.BidDetailHandler, name='lab-bid-detail', strict_slash=True),
 		RedirectRoute('/instances/<token>/', labhandlers.InstanceDetailHandler, name='lab-instance-detail', strict_slash=True),
 
-		# clouds, bids and wisps
+		# apps, clouds, bids and wisps
+		RedirectRoute('/apps/', apphandlers.AppHandler, name='account-apps', strict_slash=True),
+		RedirectRoute('/apps/new/', apphandlers.AppNewHandler, name='account-apps-new', strict_slash=True),
+		RedirectRoute('/apps/<app_id>/', apphandlers.AppDetailHandler, name='account-apps-detail', strict_slash=True),
 		RedirectRoute('/clouds/', cloudhandlers.CloudHandler, name='account-clouds', strict_slash=True),
 		RedirectRoute('/clouds/<cloud_id>/', cloudhandlers.CloudConfigureHandler, name='account-clouds-configure', strict_slash=True),
 		RedirectRoute('/clouds/<cloud_id>/instances/<instance_id>/', cloudhandlers.CloudRemoveInstanceHandler, name='clouds-remove-instance', strict_slash=True),

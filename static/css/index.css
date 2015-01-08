@@ -50,7 +50,7 @@ body {
 #billboard {
   padding-top: 130px;
   height: 665px;
-  background-image: url(/img/site/datacenter.png);
+  background-image: url(/img/site/datacenter2.png);
   background-size: cover;
 }
 
@@ -104,4 +104,7 @@ body {
 }
 .big-quote > p {
   font-size: 24px;
+}
+blockquote.big-quote {
+  margin-bottom: 60px;
 }

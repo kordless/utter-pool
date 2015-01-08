@@ -51,6 +51,9 @@ class CloudForm(BaseForm):
     description = fields.TextField('Description', [validators.Required(), validators.Length(max=100)])
 
 
+class AppForm(BaseForm):
+    url = fields.TextField('Github Repository URL', [validators.Required(), validators.Length(max=1024)])
+
 def validate_custom_callback(form, field):
     if form.callback.data == "custom" and field.data == "":
         raise ValidationError("You must specify a callback URL.")

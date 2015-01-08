@@ -377,7 +377,6 @@ class BaseHandler(webapp2.RequestHandler):
 			'path': self.request.path,
 			'query_string': self.request.query_string,
 			'is_mobile': self.is_mobile,
-			'enable_federated_login': config.enable_federated_login,
 			'base_layout': self.get_base_layout,
 			'twofactor_enabled': self.twofactor_enabled,
 			'admin_interface_url': config.admin_interface_url,

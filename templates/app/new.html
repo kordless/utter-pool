@@ -1,0 +1,76 @@
+{% import "macros.html" as macros %}
+{% extends base_layout %}
+
+{% block title %}Applications :: {% endblock %}
+
+{% block page_styles %}
+  <link href="/css/configure.css" rel="stylesheet">
+  <link href="/css/docs.css" rel="stylesheet">
+{% endblock %}
+
+{% block navbar %}
+  {% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="container content">
+  <div class="row">
+    <div class="col-md-2">
+    {{ macros.side_menu("apps", user_id) }}
+    </div>
+    <div class="col-md-9">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="section-header">
+            <h2><small>Create a <strong>New Application</strong></small></h2>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="bs-callout bs-callout-info bs-callout-top">
+                  <h4>New Application</h4>
+                  <p><strong>Applications</strong> are software repositories hosted on <strong>Github</strong> which are used by the system to create new <strong>Wisps</strong> and <strong>Instance Addresses</strong> for users. <strong>Wisps</strong> are used by <strong>Appliances</strong> to launch and provision <strong>Instances</strong> with the application after noting a payment to a given <strong>Bitcoin Address</strong>.</p>
+                  <p>To create a new application, past the URL of a <strong>Public Repository</strong> below and then click <span class="label label-success">Create New Application</span>.</p>
+                  <p><strong>Note:</strong> You may fork a sample application by clicking the link below.</p>
+                </div>
+                <form id="form-new-app" action="{{ url|safe }}" method="post" class="form-horizontal">
+                  <div class="row">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                    {{ macros.input(form, "url", "Repository URL", "col-xs-10", placeholder="https://www.github.com/kordless/utter-application", class="form-control required") }}
+                  </div>
+                  <button type="submit" id="create-button" class="btn btn-success">Create Application</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> 
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="/_ah/channel/jsapi"></script>
+<script type="text/javascript">
+  $().ready(function() {
+    // standard stuff
+    var username = "{{username}}";
+    var csrf_token = "{{ csrf_token() }}";
+    var channel_token = "{{ channel_token }}";
+    var refresh_channel = "{{ refresh_channel }}";
+
+    // listen to our refresh channel for page reload
+    onMessage = function() {
+        window.location.reload();
+    };
+    channel = new goog.appengine.Channel(refresh_channel);
+    socket = channel.open();
+    socket.onmessage = onMessage;
+
+    // focus the name input field
+    $('#name').focus();
+
+  });
+
+</script>
+{% endblock %}
+

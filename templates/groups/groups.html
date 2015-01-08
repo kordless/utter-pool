@@ -109,8 +109,10 @@
               <div class="col-md-12">
                 {% if not groups %}
                 <div class="bs-callout bs-callout-info bs-callout-top">
-                  <h4>Groups</h4>
-                  <p><strong>Hybrid Groups</strong> are collections of <strong>Private Appliances</strong> owned, operated and shared by one or more <strong>Providers</strong>. Hybrid groups allow providers to limit the use and sale of the <strong>Instances</strong> running on their <strong>Private OpenStack Clouds</strong> to other trusted operators.</p><p>Click on the <span class="label label-success">Create Hybrid Group</span> button below to create a new hybrid group.</p>
+                  <h4>Appliance Groups</h4>
+                  <p><strong>Hybrid Groups</strong> are collections of <strong>Appliances</strong> owned, operated and optionally shared by one or more <strong>Cloud Operators</strong>. Hybrid groups allow operators to limit the sale and trust the use of <strong>Instances</strong> running on their <strong>Private OpenStack Clouds</strong>.</p>
+                  <p><strong>Hybrid Groups</strong> can be utilized by <strong>Software Application Vendors</strong> to mangage deployments of their software onto <strong>Cloud Operators</strong>.</p>
+                  <p>Click on the <span class="label label-success">Create Hybrid Group</span> button below to create a new hybrid group.</p>
                 </div>
                 {% else %}
                 <p>The following hybrid groups are available for use with this account. These groups may be used with <a href="{{ uri_for('account-clouds') }}">clouds</a> or  <a href="{{ uri_for('account-appliances') }}">appliances</a>.</p>

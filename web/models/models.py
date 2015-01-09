@@ -424,6 +424,7 @@ class App(ndb.Model):
 	created = ndb.DateTimeProperty(auto_now_add=True)
 	updated = ndb.DateTimeProperty(auto_now=True)
 	name = ndb.StringProperty()
+	url = ndb.StringProperty()
 	description = ndb.StringProperty()
 	owner = ndb.KeyProperty(kind=User)
 
@@ -439,6 +440,11 @@ class App(ndb.Model):
 		result = query.get()
 		return result
 
+	@classmethod
+	def get_by_user_url(cls, owner, url):
+		query = cls.query().filter(cls.url == url, cls.owner == owner)
+		result = query.get()
+		return result
 
 # callback model
 class Callback(ndb.Model):

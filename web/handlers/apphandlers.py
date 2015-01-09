@@ -1,8 +1,11 @@
 import time
+import json
+from urlparse import urlparse
 
 import webapp2
 
 from google.appengine.api import channel
+from google.appengine.api import urlfetch
 
 import config
 import web.forms as forms
@@ -70,25 +73,46 @@ class AppNewHandler(BaseHandler):
 		url = self.form.url.data.strip()
 		
 		# check if we have it already
-		if App.get_by_url(user_info.key, url):
-			self.add_message("An application with that URL already exists in this account!", "error")
+		if App.get_by_user_url(user_info.key, url):
+			self.add_message("An application with that URL already exists.", "error")
 			return self.redirect_to('account-apps')		
+
+		try:
+			# parse the url and build a normalized github URL
+			parts = urlparse(url)
+			url = "https://%s/%s" % (config.github_url.strip('/'), parts[2].strip('/'))
+			
+			# use the path to make an API GET for the repo JSON
+			repo = json.loads(
+				urlfetch.fetch("https://%s/%s/%s" % (
+					config.github_api_url.strip('/'),
+					'repos',
+					parts[2].strip('/')
+				), deadline=5).content
+			)
+
+			if 'name' not in repo:
+				raise Exception("A valid repository was not found.")
+
+		except Exception as ex:
+			self.add_message('Application was not added. %s' % ex, 'error')
+			return self.redirect_to('account-apps')
+
 
 		# save the new app in our database
 		app = App()           
 		app.url = url
-		name = "populated name"
-		app.name = name
-		app.description = "populated description"
+		app.name = repo['name']
+		app.description = repo['description']
 		app.owner = user_info.key 
 		app.put()
 
 		# log to alert
-		self.add_message("Application %s successfully created!" % name, "success")
+		self.add_message("Application %s successfully created!" % app.name, "success")
 
 		# give it a few seconds to update db, then redirect
 		time.sleep(1)
-		return self.redirect_to('account-apps')
+		return self.redirect_to('account-apps-detail', app_id = app.key.id())
 
 	@webapp2.cached_property
 	def form(self):

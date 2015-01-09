@@ -59,7 +59,7 @@
                     <tr>
                       <td><a href="{{ uri_for('account-apps-detail', self.request, app_id=app.key.id()) }}">{{ app.name }}</a></td>
                       <td>{{ app.description }}</td>
-                      <td>{{ app.url }}</td>
+                      <td><a target="_blank" href="{{ app.url }}">{{ app.url }}</a></td>
                       <td>
                         <button type="button" id="remove-{{app.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
                       </td>

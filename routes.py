@@ -28,10 +28,7 @@ _routes = [
 		RedirectRoute('/pricing/', sitehandlers.PricingHandler, name='pricing', strict_slash=True),
 		RedirectRoute('/features/', sitehandlers.FeaturesHandler, name='features', strict_slash=True),
 		RedirectRoute('/docs/', sitehandlers.DocsHandler, name='docs', strict_slash=True),
-		RedirectRoute('/demo/', sitehandlers.DemoHandler, name='demo', strict_slash=True),
-		RedirectRoute('/demo/<demo_name>/', sitehandlers.DemosHandler, name='demos', strict_slash=True),
-		RedirectRoute('/demo/<demo_name>/<token>/', sitehandlers.DemosBidHandler, name='demos-bid', strict_slash=True),
-		RedirectRoute('/demo/<demo_name>/instance/<token>/', sitehandlers.DemosInstanceHandler, name='demos-instance', strict_slash=True),
+		RedirectRoute('/projects/', sitehandlers.ProjectsHandler, name='projects', strict_slash=True),
 
 		# users
 		RedirectRoute('/login/', userhandlers.LoginHandler, name='login', strict_slash=True),
@@ -51,9 +48,9 @@ _routes = [
 		RedirectRoute('/instances/<token>/', labhandlers.InstanceDetailHandler, name='lab-instance-detail', strict_slash=True),
 
 		# apps, clouds, bids and wisps
-		RedirectRoute('/apps/', apphandlers.AppHandler, name='account-apps', strict_slash=True),
-		RedirectRoute('/apps/new/', apphandlers.AppNewHandler, name='account-apps-new', strict_slash=True),
-		RedirectRoute('/apps/<app_id>/', apphandlers.AppDetailHandler, name='account-apps-detail', strict_slash=True),
+		RedirectRoute('/projects/list/', apphandlers.AppListHandler, name='account-projects', strict_slash=True),
+		RedirectRoute('/projects/new/', apphandlers.AppNewHandler, name='account-projects-new', strict_slash=True),
+		RedirectRoute('/projects/<app_id>/', apphandlers.AppDetailHandler, name='account-projects-detail', strict_slash=True),
 		RedirectRoute('/clouds/', cloudhandlers.CloudHandler, name='account-clouds', strict_slash=True),
 		RedirectRoute('/clouds/<cloud_id>/', cloudhandlers.CloudConfigureHandler, name='account-clouds-configure', strict_slash=True),
 		RedirectRoute('/clouds/<cloud_id>/instances/<instance_id>/', cloudhandlers.CloudRemoveInstanceHandler, name='clouds-remove-instance', strict_slash=True),

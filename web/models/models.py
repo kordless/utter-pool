@@ -446,13 +446,13 @@ class App(ndb.Model):
 		result = query.get()
 		return result
 
-# callback model
-class Callback(ndb.Model):
-	name = ndb.StringProperty()
-	owner = ndb.KeyProperty(kind=User)
+
+# app/user model
+class AppUser(ndb.Model):
 	created = ndb.DateTimeProperty(auto_now_add=True)
 	updated = ndb.DateTimeProperty(auto_now=True)
-	json_content = ndb.StringProperty()
+	owner = ndb.KeyProperty(kind=User)
+	app = ndb.KeyProperty(kind=App)
 
 
 # wisp model

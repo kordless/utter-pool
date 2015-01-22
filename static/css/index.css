@@ -1,102 +1,67 @@
 /* HOME STYLES
 -------------------------------------------------- */
 
-body {
+html, body {
   color: #5a5a5a;
+  padding-top: 25px;
 }
 
-
-/* Special class on .container surrounding .navbar, used for positioning it into place. */
-.navbar-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 20;
+#prop {
+  text-transform: uppercase;
 }
-.caret {
-  float: right;
-}
-/* Flip around the padding for proper display in narrow viewports */
-.navbar-wrapper .container {
-  padding-left: 0;
-  padding-right: 0;
-}
-.navbar-wrapper .navbar {
-  padding-left: 15px;
-  padding-right: 15px;
-  margin-bottom: 4px;
-}
-.navbar-inverse .navbar-toggle {
-  margin-top: 12px;
+.inversetop{
+  background-color: #252525;
+  color: #fff;
+  padding-top: 100px;
+  padding-bottom: 30px;
+  margin-bottom: 20px;
+  min-height: 500px;
 }
 
-/* responsive crap */
+.inversetop h1 {
+  font-size: 34px;
+}
+
+.inversetop .blurb {
+  font-size: 16px;
+}
+
+.blurb {
+  margin-bottom: 20px;
+}
+
+#heroimage {
+  width: 570px;
+  height: 333px;
+  margin-top: 20px;
+  background-repeat: no-repeat;
+  background-image: url("/img/site/hero.png");
+}
+
 @media (min-width: 768px) {
-  /* Navbar positioning foo */
-  .navbar-wrapper {
-    margin-top: 20px;
+  #heroimage {
+    display: none;
   }
-  .navbar-wrapper .container {
-    padding-left:  15px;
-    padding-right: 15px;
+}
+@media (min-width: 992px) {
+  #heroimage {
+    display: inherit;
   }
-  .navbar-wrapper .navbar {
-    padding-left:  0;
-    padding-right: 0;
+}
+@media (min-width: 1200px) {
+  #heroimage {
+    margin-top: 0px;
+    display: inherit;
   }
 }
 
-#billboard {
-  padding-top: 130px;
-  height: 665px;
-  background-image: url(/img/site/datacenter2.png);
-  background-size: cover;
-}
+<a class="twitter-timeline" href="https://twitter.com/stackape" data-widget-id="445274451664322560">Tweets by @stackape</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 
-/* the almighty map */
-#map {
-  top:0; 
-  bottom:0; 
-  width:100%;
-  z-index: -1;
-  height: 720px;
-  border-bottom: 1px solid #888;
-  opacity:0.8;
-  filter:alpha(opacity=80);
-}
-
-/* home page overlay */
-.splash-container {
-  position: absolute;
-  z-index: 10;
-  left: 0;
-  right: 0;
-  top: 240px;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-  background: rgba(30, 30, 30, 0.8);
-  padding: 20px 60px 40px 60px;
-}
-.splash-container h1 {
-  color: white;
-}
-.splash-instructions {
-  padding-top: 12px;
-  color: white;
-}
-.splash-instructions > a:link,
-.splash-instructions > a:visited,
-.splash-instructions > a:active {
-  color: white;
-  text-decoration: underline;
-  padding-top: 12px;
-}
 
 /* marketing drivel */
 .marketing {
-  margin-top: 20px;
+  margin-top: 0px;
 }
 .marketing > .drivel {
   padding-top: 30px;

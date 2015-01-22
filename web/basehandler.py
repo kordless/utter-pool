@@ -35,7 +35,6 @@ def user_required(handler):
 				
 		except AttributeError, e:
 			# avoid AttributeError when the session was deleted from the server
-			print e
 			logging.error(e)
 			self.auth.unset_session()
 			self.redirect_to('home')

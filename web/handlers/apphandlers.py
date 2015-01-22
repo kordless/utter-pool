@@ -9,12 +9,13 @@ from google.appengine.api import urlfetch
 
 import config
 import web.forms as forms
-from web.models.models import User, App
+from web.models.models import User, App, AppUser
 from web.basehandler import BaseHandler
 from web.basehandler import user_required
 
 
-class AppHandler(BaseHandler):
+
+class AppListHandler(BaseHandler):
 	@user_required
 	def get(self):
 		# lookup user's auth info
@@ -38,7 +39,7 @@ class AppHandler(BaseHandler):
 			'channel_token': channel_token 
 		}
 
-		return self.render_template('app/apps.html', **params)
+		return self.render_template('app/list.html', **params)
 
 
 class AppNewHandler(BaseHandler):
@@ -50,6 +51,25 @@ class AppNewHandler(BaseHandler):
 		# setup channel to do page refresh
 		channel_token = user_info.key.urlsafe()
 		refresh_channel = channel.create_channel(channel_token)
+
+		# check for url param or referer
+		url = ""
+		if 'url' in self.request.GET:
+			url = self.request.GET['url']
+		elif self.request.referer:
+			if config.github_url in self.request.referer:
+				url = self.request.referer
+
+		# if we have a URL, we deal with it
+		if url:
+			app = App.get_by_user_url(user_info.key, url)
+			if not app:
+				# create a new application for this user for this repo
+				self.form.url.data = url
+				return self.post()
+			else:
+				# go to the existing application
+				return self.redirect_to('account-apps-detail', app_id = app.key.id())
 
 		# params build out
 		params = {
@@ -92,7 +112,7 @@ class AppNewHandler(BaseHandler):
 			)
 
 			if 'name' not in repo:
-				raise Exception("A valid repository was not found.")
+				raise Exception("A valid Github repository was not found using that URL.")
 
 		except Exception as ex:
 			self.add_message('Application was not added. %s' % ex, 'error')
@@ -117,6 +137,18 @@ class AppNewHandler(BaseHandler):
 	@webapp2.cached_property
 	def form(self):
 		return forms.AppForm(self)
+
+
+# associate apps with accounts
+class AppUserHandler(BaseHandler):
+	@user_required
+	def post(self):
+		# lookup user's auth info
+		user_info = User.get_by_id(long(self.user_id))
+
+	def delete(self):
+		# remove app from user's account
+		user_info = User.get_by_id(long(self.user_id))
 
 
 # provide editing for app object		
@@ -144,7 +176,7 @@ class AppDetailHandler(BaseHandler):
 			'channel_token': channel_token 
 		}
 
-		return self.render_template('app/app_manage.html', **params)
+		return self.render_template('app/manage.html', **params)
 	
 	@user_required
 	def post(self, app_id = None):

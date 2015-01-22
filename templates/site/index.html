@@ -14,42 +14,46 @@
 {% endblock %}
 
 {% block content %}
-  <!--floating stuff-->
-  <div class="splash-container">
-    <h1>Deployments with the Blockchain</h1>
-    <div>
-      <button id="launch-cloud-button" class="btn btn-lg btn-success">Launch an {% if not user_id %}Anonymous Instance{% else %}Instance{% endif %}</button>
-      <button id="become-a-provider-button" class="btn btn-lg btn-warning"><span id="bitcoin" class="fa fa-bitcoin"></span>ecome a Trusted Node Provider</button>
-    </div>
-    <div class="splash-instructions">
-      It only takes a few seconds to <a href="{{ uri_for('login') }}">register</a> with a Google account. <span id="make-up-your-mind"></span>
+
+<div class="inversetop">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h1 class="prop">Support Open Source Projects by Launching Them with Bitcoin</h1>
+        <p class="blurb">When you launch your favorite Open Source software instances with {{ app_name }}, we'll send part of your instance payment to the project to help support the developers who work on the project. It's fast and easy!</p>
+        <button id="browse-projects-button" class="btn btn-info">Browse Projects</button>
+        <button id="add-project-button" class="btn btn-success"></span>Add a Project</button>
+     
+      </div>
+      <div class="col-md-6">
+        <div id="heroimage"></div>
+      </div>
     </div>
   </div>
-  <!--/floating stuff-->
-
-  <!--top billboard-->
-  <div id="billboard"></div>
-  <!--/top billboard-->
+</div>
 
   <!--container-->
+
   <div class="container">
+
     
     <!--marketing-->
     <div class="marketing">  
       <!--row-->
       <div class="row drivel">
         <div class="col-md-4">
+          <h3><span class="glyphicon glyphicon-gift"></span> Supporting Developers</h3>
+          <p>{{ app_name }} gives users a way to say "thank you" to the developers who work on Open Source projects, while making it super easy to preview their software. Revenue from launching instances is shared with developers and providers using Bitcoin.</p>
+        </div>
+        <div class="col-md-4">
+          <h3><span class="glyphicon glyphicon-qrcode"></span> Pay Using <span id="bitcoin" class="fa fa-bitcoin"></span>itcoin</h3>
+          <p>Deploy instances and projects in minutes by simply sending Bitcoin to a payment address. Coming soon, multi-factor keys will let both users and project authors log into the instances, enabling revenue from remote system's managment services.</p>
+        </div>
+        <div class="col-md-4">
           <h3><span class="glyphicon glyphicon-map-marker"></span> Global Deployments</h3>
-          <p>{{ app_name }} unlocks the power of your private cloud no matter the location.  Users, providers and vendors can deploy software based on geo requirements, take advantage of low cost compute in emerging markets, or store sensitive data in safe havens.</p>
+          <p>{{ app_name }} unlocks the power of a decentralized cloud. Software project owners, users, and self-hosted providers can deploy software based on geo requirements, enabling them to take advantage of low cost compute in emerging markets.</p>
         </div>
-        <div class="col-md-4">
-          <h3><span class="glyphicon glyphicon-qrcode"></span> Authenticate Using <span id="bitcoin" class="fa fa-bitcoin"></span>itcoin</h3>
-          <p>Deploy instances and code in minutes to your private cloud deployment by simply sending Bitcoin to a payment address. Bitcoin wallet keys get you and your vendors authenticated into your private cloud, enabling trusted systems managment.</p>
-        </div>
-        <div class="col-md-4">
-          <h3><span class="glyphicon glyphicon-cloud"></span> Hybrid Private Clouds</h3>
-          <p>Companies running OpenStack-based infrastructure can <a href="/groups/">create and share</a> their private clouds with others. Vendors can purchase excess capacity from trusted business and operations partners to provide specialized managed services to their customers.</p>
-        </div>
+
       </div>
       <!--/row-->
       
@@ -57,7 +61,7 @@
       <div class="row drivel">
         <div class="col-md-4">
           <h3><span class="glyphicon glyphicon-lock"></span> Login with Google™</h3>
-          <p>The {{ app_name }} site runs on <a href="https://developers.google.com/appengine/docs/whatisgoogleappengine">Google Appengine™</a> and utilizes <a href="https://developers.google.com/appengine/articles/openid">Google's federated login system</a>. The site also supports two factor authentication via <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2">Google Authenticator</a>. Want even better security? You don't need to login to <a href="{{ uri_for('lab-launcher') }}">start instances</a>.</p>
+          <p>The {{ app_name }} site runs on <a href="https://developers.google.com/appengine/docs/whatisgoogleappengine">Google Appengine™</a> and utilizes <a href="https://developers.google.com/appengine/articles/openid">Google's federated login system</a>. The site also supports two factor authentication via <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2">Google Authenticator</a>. Even better, you don't need to login to if you just want to <a href="{{ uri_for('lab-launcher') }}">start instances</a>.</p>
         </div>
         <div class="col-md-4">
           <h3><span class="glyphicon glyphicon-tasks"></span> Runs on OpenStack™</h3>
@@ -74,7 +78,7 @@
 
     <hr class="soften">
     <blockquote class="big-quote">
-      <p>&#8220;Our <a href="http://www.utter.io/prezo/?r=stackmonkey/slide-0#/slide-20">future</a> depends on building a decentralized cloud run by many and trusted by all.&#8221;</p>
+      <p>&#8220;StackMonkey is what you would get if Bitcoin got married to OpenStack™, less all the drama.&#8221;</p>
       <small>
         Kord Campbell, Founder
       </small>
@@ -90,7 +94,7 @@
     $().ready(function() {
       // buttons
       $('#launch-cloud-button').on('click', function(e) { 
-        window.location = "{{ uri_for('lab-launcher') }}"; 
+        window.location = "{{ uri_for('projects') }}"; 
       });
       $('#become-a-provider-button').on('click', function(e) { 
         window.location = "/docs/#becoming-a-provider"; 

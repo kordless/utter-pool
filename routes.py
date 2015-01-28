@@ -1,6 +1,6 @@
 from webapp2_extras.routes import RedirectRoute
 from web.handlers import sitehandlers, adminhandlers, userhandlers, apihandlers, bloghandlers, emailhandlers, taskhandlers
-from web.handlers import statushandlers, apphandlers, appliancehandlers, grouphandlers, cloudhandlers, wisphandlers, labhandlers
+from web.handlers import statushandlers, projecthandlers, appliancehandlers, grouphandlers, cloudhandlers, wisphandlers, labhandlers
 
 secure_scheme = 'https'
 
@@ -25,11 +25,13 @@ _routes = [
 		# website
 		RedirectRoute('/', sitehandlers.HomeRequestHandler, name='home', strict_slash=True),
 		RedirectRoute('/about/', sitehandlers.AboutHandler, name='about', strict_slash=True),
-		RedirectRoute('/pricing/', sitehandlers.PricingHandler, name='pricing', strict_slash=True),
+		RedirectRoute('/sponsor/', sitehandlers.SponsorHandler, name='sponsor', strict_slash=True),
 		RedirectRoute('/features/', sitehandlers.FeaturesHandler, name='features', strict_slash=True),
 		RedirectRoute('/docs/', sitehandlers.DocsHandler, name='docs', strict_slash=True),
 		RedirectRoute('/projects/', sitehandlers.ProjectsHandler, name='projects', strict_slash=True),
-
+		RedirectRoute('/terms/', sitehandlers.TermsHandler, name='terms', strict_slash=True),
+		RedirectRoute('/privacy/', sitehandlers.PrivacyHandler, name='privacy', strict_slash=True),
+		
 		# users
 		RedirectRoute('/login/', userhandlers.LoginHandler, name='login', strict_slash=True),
 		RedirectRoute('/logout/', userhandlers.LogoutHandler, name='logout', strict_slash=True),
@@ -47,10 +49,11 @@ _routes = [
 		RedirectRoute('/bids/<token>/', labhandlers.BidDetailHandler, name='lab-bid-detail', strict_slash=True),
 		RedirectRoute('/instances/<token>/', labhandlers.InstanceDetailHandler, name='lab-instance-detail', strict_slash=True),
 
-		# apps, clouds, bids and wisps
-		RedirectRoute('/projects/list/', apphandlers.AppListHandler, name='account-projects', strict_slash=True),
-		RedirectRoute('/projects/new/', apphandlers.AppNewHandler, name='account-projects-new', strict_slash=True),
-		RedirectRoute('/projects/<app_id>/', apphandlers.AppDetailHandler, name='account-projects-detail', strict_slash=True),
+		# projects, clouds, bids and wisps
+		RedirectRoute('/projects/list/', projecthandlers.ProjectListHandler, name='account-projects', strict_slash=True),
+		RedirectRoute('/projects/new/', projecthandlers.ProjectNewHandler, name='account-projects-new', strict_slash=True),
+		RedirectRoute('/projects/<project_id>/', projecthandlers.ProjectDetailHandler, name='account-projects-detail', strict_slash=True),
+
 		RedirectRoute('/clouds/', cloudhandlers.CloudHandler, name='account-clouds', strict_slash=True),
 		RedirectRoute('/clouds/<cloud_id>/', cloudhandlers.CloudConfigureHandler, name='account-clouds-configure', strict_slash=True),
 		RedirectRoute('/clouds/<cloud_id>/instances/<instance_id>/', cloudhandlers.CloudRemoveInstanceHandler, name='clouds-remove-instance', strict_slash=True),

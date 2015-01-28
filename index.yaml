@@ -156,6 +156,12 @@ indexes:
   - name: remote_ip
   - name: status
 
+- kind: Project
+  properties:
+  - name: owner
+  - name: created
+    direction: desc
+
 - kind: Wisp
   properties:
   - name: name

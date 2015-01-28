@@ -12,12 +12,16 @@
     {% if user_id %}
     <li{% if page=="status" %} class="active"{% endif %}><a href="{{ uri_for('account-status') }}">Status</a></li>
     {% endif %}
+    {% if has_clouds %}
     <li{% if page=="clouds" %} class="active"{% endif %}><a href="{{ uri_for('account-clouds') }}">Clouds</a></li>
+    {% endif %}
     {% if user_id %}
-    <li{% if page=="apps" %} class="active"{% endif %}><a href="{{ uri_for('account-apps') }}">Applications</a></li>
+    <li{% if page=="projects" %} class="active"{% endif %}><a href="{{ uri_for('account-projects') }}">Projects</a></li>
     <li{% if page=="wisps" %} class="active"{% endif %}><a href="{{ uri_for('account-wisps') }}">Wisps</a></li>
+    {% if provider %}
     <li{% if page=="appliances" %} class="active"{% endif %}><a href="{{ uri_for('account-appliances') }}">Appliances</a></li>
     <li{% if page=="groups" %} class="active"{% endif %}><a href="{{ uri_for('account-groups') }}">Hybrid Groups</a></li>
+    {% endif %}
     <li{% if page=="settings" %} class="active"{% endif %}><a href="{{ uri_for('account-settings') }}">Settings</a></li>
     {% endif %}
   </ul>

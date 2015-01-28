@@ -1,0 +1,120 @@
+{% import "macros.html" as macros %}
+{% extends base_layout %}
+
+{% block title %}Privacy :: {% endblock %}
+
+{% block page_styles %}
+  <link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.css' rel='stylesheet' />
+  <link href="/css/termsprivacy.css" rel="stylesheet">
+{% endblock %}
+
+{% block navbar %}
+  {% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="inverse">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+
+<h2>StackMonkey's Privacy Policy</h2>
+      <p class="blurb">&#8220;If you tell the truth, you don't have to remember anything.&#8221; - Mark Twain</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="container terms">
+    <div class="row">
+      <div class="col-md-10">
+
+<h3>
+	Collection of Personal Information
+</h3>
+
+<p>
+	Your privacy is very important to us. This privacy policy discloses the privacy practices for StackMonkey. This privacy policy applies solely to information collected by this web site. It will notify you of the following:
+</p>
+
+<ul>
+	<li>
+		Before or at the time of collecting personal information, we will identify the purposes for which information is being collected.
+	</li>
+	<li>
+		We will collect and use of personal information solely with the objective of fulfilling those purposes specified by us and for other compatible purposes, unless we obtain the consent of the individual concerned or as required by law.		
+	</li>
+	<li>
+		We will only retain personal information as long as necessary for the fulfillment of those purposes. 
+	</li>
+	<li>
+		We will collect personal information by lawful and fair means and, where appropriate, with the knowledge or consent of the individual concerned. 
+	</li>
+	<li>
+		Personal data should be relevant to the purposes for which it is to be used, and, to the extent necessary for those purposes, should be accurate, complete, and up-to-date. 
+	</li>
+	<li>
+		We will protect personal information by reasonable security safeguards against loss or theft, as well as unauthorized access, disclosure, copying, use or modification.
+	</li>
+	<li>
+		We will make readily available to customers information about our policies and practices relating to the management of personal information. 
+	</li>
+</ul>
+
+<h3>
+	Information Collection, Use, and Sharing
+</h3>
+
+<p>We are the sole owners of the information collected on this site. We only have access to/collect information that you voluntarily give us via email or other direct contact from you. We will not sell or rent this information to anyone.</p>
+<p>We will use your information to respond to you, regarding the reason you contacted us. We will not share your information with any third party outside of our organization, other than as necessary to fulfill your request, e.g. to start an instance for someone.</p>
+<p>Unless you ask us not to, we may contact you via email in the future to tell you about specials, new products or services, or changes to this privacy policy.</p>
+
+<h3>Your Access to and Control Over Information</h3>
+<p>
+You may opt out of any future contacts from us at any time. You can do the following at any time by contacting us via the email address or phone number given on our website:</p>
+<ul>
+	<li>See what data we have about you, if any.</li>
+	<li>Change/correct any data we have about you.</li>
+	<li>Have us delete any data we have about you.</li>
+	<li>Express any concern you have about our use of your data.</li>
+</ul>
+
+<h3>Security </h3>
+<p>We take precautions to protect your information. When you submit sensitive information via the website, your information is protected both online and offline.
+
+Wherever we collect sensitive information (such as credit card data), that information is encrypted and transmitted to us in a secure way. You can verify this by looking for a closed lock icon at the bottom of your web browser, or looking for "https" at the beginning of the address of the web page.
+
+While we use encryption to protect sensitive information transmitted online, we also protect your information offline. Only employees who need the information to perform a specific job (for example, billing or customer service) are granted access to personally identifiable information. The computers/servers in which we store personally identifiable information are kept in a secure environment.</p>
+<h3>Updates</h3>
+<p>Our Privacy Policy may change from time to time and all updates will be posted on this page.</p>
+<h3>Registration</h3>
+<p>In order to use this website, a user must first complete registration using their Google account. During registration, users are required to give access to information stored in their Google account (email address). This information is used to contact you about the products/services on our site in which you have expressed interest and help uniquely identify you to the site. At your option, you may also provide addtional information (name, company, timezone, country) about yourself, but it is not required.</p>
+<h3>Cookies</h3>
+<p>We use "cookies" on this site. A cookie is a piece of data stored on a site visitor's hard drive to help us improve your access to our site and identify repeat visitors to our site. For instance, when we use a cookie to identify you, you would not have to log in a password more than once, thereby saving time while on our site. Cookies can also enable us to track and target the interests of our users to enhance the experience on our site. Usage of a cookie is in no way linked to any personally identifiable information on our site.</p>
+<h3>Sharing</h3>
+<p>We partner with Open Source software developers to provide specific services related to their software. When a user uses our services we may share some small amount of your information to the developers to provide these services. The developers are not allowed to use personally identifiable information except for the purpose of providing these services.</p>
+
+<h3>Links</h3>
+<p>This web site contains links to other sites. Please be aware that we are not responsible for the content or privacy practices of such other sites. We encourage our users to be aware when they leave our site and to read the privacy statements of any other site that collects personally identifiable information.</p>
+<h3>Surveys & Contests</h3>
+<p>From time-to-time our site requests information via surveys or contests. Participation in these surveys or contests is completely voluntary and you may choose whether or not to participate and therefore disclose this information. Information requested may include contact information (such as name and company), and demographic information (such as country and timezone). Contact information will be used to notify the winners and award prizes. Survey information will be used for purposes of monitoring or improving the use and satisfaction of this site.</p>
+<p>You may <a href="/about/#contact">contact us</a> if you have any questions about our privacy policy.</p>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}
+
+{% block javascript %}
+  <script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.js'></script>
+  <script type="text/javascript">
+    $().ready(function() {
+      // map + map update
+      var themap = L.mapbox.map('map', 'kordless.hifh5abd', {scrollWheelZoom: false, zoomControl: false}).setView([37.87, -122.14], 12);
+      var marker = L.marker([37.834, -122.127]).addTo(themap);
+    });
+
+  </script>
+{% endblock %}
+			

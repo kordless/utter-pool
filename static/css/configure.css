@@ -32,6 +32,9 @@ html, body {
 .form-ssh-key {
   word-break: break-all;
 }
+.controls {
+  margin-top: 30px;
+}
 #new-group-create-button {
   margin-top: 25px;
 }

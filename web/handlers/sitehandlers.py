@@ -18,7 +18,7 @@ from google.appengine.api import channel
 import config
 import web.forms as forms
 import web.models.models as models
-from web.models.models import InstanceBid, Instance
+from web.models.models import InstanceBid, Instance, Project
 
 from lib import utils, httpagentparser
 from web.basehandler import BaseHandler
@@ -130,76 +130,9 @@ class AboutHandler(BaseHandler):
 		return forms.AboutForm(self)
 
 
-class DemoHandler(BaseHandler):
-	def get(self, demo_name = None):
-		params = {}
-		return self.render_template('site/demo.html', **params)
-
-
-class DemosHandler(BaseHandler):
-	def get(self, demo_name = None):
-		params = {}
-		return self.render_template('site/demos/%s.html' % demo_name, **params)
-
-	@webapp2.cached_property
-	def form(self):
-		return forms.DemoForm(self)
-
-
-class DemosBidHandler(BaseHandler):
-	def get(self, demo_name = None, token = None):
-		# lookup up bid
-		bid = InstanceBid.get_by_token(token)
-		if not bid:
-			self.add_message("Instance reservation token %s has expired." % token, 'error')
-			return self.redirect_to('demos', demo_name=demo_name)
-
-		# grab the instance
-		instance = Instance.get_by_token(token)
-		if not instance:
-			self.add_message("All available instance reservations are in use. Please try again in a few minutes.", 'error')
-			return self.redirect_to('demos', demo_name=demo_name)
-
-		# setup channel to do page refresh
-		channel_token = token
-		refresh_channel = channel.create_channel(channel_token)
-
-		params = {
-			'instance': instance,
-			'bid': bid,
-			'refresh_channel': refresh_channel,
-			'channel_token': channel_token 
-		}
-		return self.render_template('site/demos/%s_bid.html' % demo_name, **params)
-
-
-class DemosInstanceHandler(BaseHandler):
-	def get(self, demo_name = None, token = None):
-		# grab the instance
-		instance = Instance.get_by_token(token)
-		if not instance:
-			self.add_message("That instance cannot be found.", 'error')
-			return self.redirect_to('demos', demo_name=demo_name)
-
-		# setup channel to do page refresh
-		channel_token = token
-		refresh_channel = channel.create_channel(channel_token)
-
-		# hack in time max for timer
-		instance.data_max = int(instance.expires - int(instance.started.strftime('%s')))
-
-		# dict the meta
-		if instance.meta:
-			instance.meta_dict = json.loads(instance.meta)
-		else:
-			instance.meta_dict = {}
-
-		params = {
-			'instance': instance,
-			'refresh_channel': refresh_channel,
-			'channel_token': channel_token 
-		}
-		return self.render_template('site/demos/%s_instance.html' % demo_name, **params)
+class ProjectsHandler(BaseHandler):
+	def get(self):
+		return self.render_template('site/projects.html')
 
 
 class DocsHandler(BaseHandler):
@@ -214,10 +147,10 @@ class HomeRequestHandler(BaseHandler):
 		return self.render_template('site/index.html', **params)
 
 
-class PricingHandler(BaseHandler):
+class SponsorHandler(BaseHandler):
 	def get(self):
 		params = {}
-		return self.render_template('site/pricing.html', **params)
+		return self.render_template('site/sponsor.html', **params)
 
 
 class FeaturesHandler(BaseHandler):
@@ -225,3 +158,14 @@ class FeaturesHandler(BaseHandler):
 		params = {}
 		return self.render_template('site/features.html', **params)
 
+
+class PrivacyHandler(BaseHandler):
+	def get(self):
+		params = {}
+		return self.render_template('site/privacy.html', **params)
+
+
+class TermsHandler(BaseHandler):
+	def get(self):
+		params = {}
+		return self.render_template('site/terms.html', **params)

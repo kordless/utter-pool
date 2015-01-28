@@ -14,46 +14,42 @@
 {% endblock %}
 
 {% block content %}
-
-<div class="inversetop">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6">
-        <h1 class="prop">Support Open Source Projects by Launching Them with Bitcoin</h1>
-        <p class="blurb">When you launch your favorite Open Source software instances with {{ app_name }}, we'll send part of your instance payment to the project to help support the developers who work on the project. It's fast and easy!</p>
-        <button id="browse-projects-button" class="btn btn-info">Browse Projects</button>
-        <button id="add-project-button" class="btn btn-success"></span>Add a Project</button>
-     
-      </div>
-      <div class="col-md-6">
-        <div id="heroimage"></div>
+  <!--top container-->
+  <div class="inversetop">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h1 class="prop">Support Open Source Projects by Launching Them with Bitcoin</h1>
+          <p class="blurb">When you launch your favorite Open Source software instances on the <em>Utter.io Intercloud</em> with {{ app_name }}, we'll send part of your instance payment to the project to help support the developers who work on the project. It's fast and easy!</p>
+          <button id="browse-projects-button" class="btn btn-info">Browse Projects</button>
+          <button id="add-project-button" class="btn btn-success"></span>Add a Project</button>
+        </div>
+        <div class="col-md-6">
+          <div id="heroimage"></div>
+        </div>
       </div>
     </div>
   </div>
-</div>
+  <!--/top container-->
 
-  <!--container-->
-
+  <!--bottom container-->
   <div class="container">
-
-    
     <!--marketing-->
     <div class="marketing">  
       <!--row-->
       <div class="row drivel">
         <div class="col-md-4">
           <h3><span class="glyphicon glyphicon-gift"></span> Supporting Developers</h3>
-          <p>{{ app_name }} gives users a way to say "thank you" to the developers who work on Open Source projects, while making it super easy to preview their software. Revenue from launching instances is shared with developers and providers using Bitcoin.</p>
+          <p>{{ app_name }} gives users and providers a way to say "thank you" to the developers who work on Open Source projects, while making it easy to preview their software. Revenue from launching instances is shared with developers and providers using <a href="https://www.bitcoin.org/">Bitcoin</a>.</p>
         </div>
         <div class="col-md-4">
           <h3><span class="glyphicon glyphicon-qrcode"></span> Pay Using <span id="bitcoin" class="fa fa-bitcoin"></span>itcoin</h3>
-          <p>Deploy instances and projects in minutes by simply sending Bitcoin to a payment address. Coming soon, multi-factor keys will let both users and project authors log into the instances, enabling revenue from remote system's managment services.</p>
+          <p>Deploy instances running Open Source projects in minutes by simply sending Bitcoin to a <a href="https://en.bitcoin.it/wiki/Address">payment address</a>. Soon, multi-factor keys will let both users and project authors to log into the instances, enabling remote system's managment revenue for the project!</p>
         </div>
         <div class="col-md-4">
           <h3><span class="glyphicon glyphicon-map-marker"></span> Global Deployments</h3>
-          <p>{{ app_name }} unlocks the power of a decentralized cloud. Software project owners, users, and self-hosted providers can deploy software based on geo requirements, enabling them to take advantage of low cost compute in emerging markets.</p>
+          <p>{{ app_name }} provides simplified and secure global cloud federation via the <a href="http://en.wikipedia.org/wiki/Intercloud">Intercloud</a>. Users deploy projects based on cost and geo location without the hassle of infrastructure provider tokens. Users can even lauch instances on their own private clouds.</p>
         </div>
-
       </div>
       <!--/row-->
       
@@ -65,11 +61,11 @@
         </div>
         <div class="col-md-4">
           <h3><span class="glyphicon glyphicon-tasks"></span> Runs on OpenStack™</h3>
-          <p>The <a href="http://openstack.org">OpenStack Open Source project</a> provides a cloud controller fabric used by {{ app_name }}'s appliance. OpenStack can run on anything from a single desktop computer to an entire datacenter. It only takes about 10 minutes to <a href="https://github.com/StackGeek/openstackgeek/tree/master/icehouse">install OpenStack</a>!</p>
+          <p>The <a href="http://openstack.org">OpenStack Open Source project</a> provides the cloud controller fabric used by the {{ app_name }} provider's appliance(s). OpenStack can run on anything from a single desktop computer to an entire datacenter and <a href="https://github.com/StackGeek/openstackgeek/tree/master/icehouse">installing it takes about 10 minutes</a>.</p>
         </div>
         <div class="col-md-4">
-          <h3><span class="glyphicon glyphicon-heart"></span> 100% Open Source</h3>
-          <p>The <a href="http://utter.io/">Utter.io</a> framework that powers this site is Open Source and free to use by anyone, anywhere, at any time. <strong>Utter.io</strong> appliances <a href="/docs#becoming-a-provider">can be run by anyone</a> who has spare compute they want to share with others they trust.</p>
+          <h3><span class="glyphicon glyphicon-heart"></span> 100% Open Source Trust</h3>
+          <p>The <a href="http://utter.io/">Utter.io</a> framework that powers this site is Open Source and free to use by anyone, anywhere, at any time. <strong>Utter.io</strong> appliances <a href="/docs#becoming-a-provider">are run by anyone</a> who wishes to share spare compute with others they trust, or even those they don't, <a href="/docs/#can-i-trust-it">depending on the use case</a>.</p>
         </div>
       </div>
       <!--/row-->
@@ -88,19 +84,17 @@
   <!--/container-->
 {% endblock %}
 
+<!--what are you looking at?-->
 {% block javascript %}
   <script type='text/javascript' src='/js/jquery.cookie.js'></script>
   <script type="text/javascript">
     $().ready(function() {
       // buttons
-      $('#launch-cloud-button').on('click', function(e) { 
+      $('#add-project-button').on('click', function(e) { 
+        window.location = "{{ uri_for('account-projects-new') }}"; 
+      });
+      $('#browse-projects-button').on('click', function(e) { 
         window.location = "{{ uri_for('projects') }}"; 
-      });
-      $('#become-a-provider-button').on('click', function(e) { 
-        window.location = "/docs/#becoming-a-provider"; 
-      });
-      $('#cant-wait-button').on('click', function(e) { 
-        $('#not-launched-modal').modal('hide');
       });
     })
   </script>

@@ -16,6 +16,8 @@ from webapp2_extras.appengine.auth.models import User
 from google.appengine.ext import ndb
 
 from lib.utils import generate_token
+from lib.github import github
+
 from utter_libs.schemas import schemas
 from utter_libs.schemas.model_mixin import ModelSchemaMixin
 
@@ -29,6 +31,7 @@ class User(User):
 	timezone = ndb.StringProperty()
 	country = ndb.StringProperty()
 	company = ndb.StringProperty()
+	provider = ndb.BooleanProperty(default=False) 
 	blogger = ndb.BooleanProperty(default=False)
 	activated = ndb.BooleanProperty(default=False)
 	created = ndb.DateTimeProperty(auto_now_add=True)
@@ -419,14 +422,31 @@ class Cloud(ndb.Model):
 		return cloud
 
 
-# app model
-class App(ndb.Model):
+# project model
+class Project(ndb.Model):
 	created = ndb.DateTimeProperty(auto_now_add=True)
 	updated = ndb.DateTimeProperty(auto_now=True)
 	name = ndb.StringProperty()
+	repo_name = ndb.StringProperty()
 	url = ndb.StringProperty()
 	description = ndb.StringProperty()
+	address = ndb.StringProperty()
+	amount = ndb.IntegerProperty()
+	vpus = ndb.IntegerProperty()
+	mem = ndb.IntegerProperty()
+	disk = ndb.IntegerProperty()
+	image = ndb.KeyProperty(kind=Image)
+	dynamic_image_url = ndb.StringProperty()
+	readme_url = ndb.StringProperty()
+	readme_link = ndb.StringProperty()
+	json_url = ndb.StringProperty()
+	json_link = ndb.StringProperty()
+	install_url = ndb.StringProperty()
+	install_link = ndb.StringProperty()
+	icon_url = ndb.StringProperty()
+	icon_link = ndb.StringProperty()
 	owner = ndb.KeyProperty(kind=User)
+	public = ndb.BooleanProperty(default=False)
 
 	@classmethod
 	def get_by_user(cls, user):
@@ -446,14 +466,18 @@ class App(ndb.Model):
 		result = query.get()
 		return result
 
+	@classmethod
+	def get_public(cls):
+		query = cls.query().filter(cls.public == True)
+		results = query.fetch()
+		return results
 
-# app/user model
-class AppUser(ndb.Model):
-	created = ndb.DateTimeProperty(auto_now_add=True)
-	updated = ndb.DateTimeProperty(auto_now=True)
-	owner = ndb.KeyProperty(kind=User)
-	app = ndb.KeyProperty(kind=App)
-
+	@classmethod
+	def sync(cls, url):
+		query = cls.query().filter(cls.url == url)
+		result = query.get()
+		message = github.repo_sync_contents(result, url)
+		return message
 
 # wisp model
 class Wisp(ndb.Model):

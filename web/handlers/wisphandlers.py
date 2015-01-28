@@ -41,7 +41,6 @@ class WispHandler(BaseHandler):
 			if wisp.default:
 				default = True
 		if not default:
-			print "wtf"
 			self.add_message("Please set a wisp to be default!", "error")
 
 		return self.render_template('wisp/wisps.html', **params)
@@ -195,7 +194,6 @@ class WispDetailHandler(BaseHandler):
 			# params build out
 			params = {
 				'wisp': wisp,
-				'image': image,
 				'refresh_channel': refresh_channel,
 				'channel_token': channel_token 
 			}

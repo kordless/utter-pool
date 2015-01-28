@@ -268,6 +268,31 @@ class BaseHandler(webapp2.RequestHandler):
 			return False
 
 	@webapp2.cached_property
+	def has_cloud(self):
+		try:
+			# look up appliances
+			clouds = models.Cloud.get_by_user(long(self.user_id))
+			if clouds:
+				return True
+		
+		except AttributeError, e:
+			pass
+
+		return False
+
+	@webapp2.cached_property
+	def is_provider(self):
+		if self.user:
+			try:
+				user_info = models.User.get_by_id(long(self.user_id))
+				if users.provider:
+					return True
+			except AttributeError, e:
+				pass
+
+		return False
+
+	@webapp2.cached_property
 	def twofactor_enabled(self):
 		if self.user:
 			try:
@@ -356,6 +381,7 @@ class BaseHandler(webapp2.RequestHandler):
 			'debug': config.debug,
 			'app_name': config.app_name,
 			'app_email': config.app_email,
+			'app_domain': config.app_domain,
 			'app_description': config.app_description,
 			'copyright_date': config.copyright_date,
 			'copyright_name': config.copyright_name,
@@ -379,7 +405,8 @@ class BaseHandler(webapp2.RequestHandler):
 			'base_layout': self.get_base_layout,
 			'twofactor_enabled': self.twofactor_enabled,
 			'admin_interface_url': config.admin_interface_url,
-			'admin': self.is_admin
+			'admin': self.is_admin,
+			'provider': self.is_provider
 		})
 	
 		if hasattr(self, 'form'):

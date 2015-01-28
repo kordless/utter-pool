@@ -15,9 +15,9 @@
             </div>
             <div class="navbar-collapse collapse navbar-right">
               <ul class="nav navbar-nav">
-                <li><a class='{% if "pricing" in path %}active{% endif %}' href='{{ uri_for("pricing")}}'>Sponsor</a></li>
+                <li><a class='{% if "sponor" in path %}active{% endif %}' href='{{ uri_for('sponsor')}}'>Sponsor</a></li>
                 <li><a class='{% if "blog" in path %}active{% endif %}' href='{{ blog_url }}'>Blog</a></li>
-                <li><a class='{% if "demo" in path %}active{% endif %}' href='{{ uri_for("demo")}}'>Projects</a></li>
+                <li><a class='{% if "projects" in path %}active{% endif %}' href='/projects/#fixme'>Projects</a></li>
                 {% if user_id %}
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -26,10 +26,15 @@
                   <ul class="dropdown-menu">
                     <li class="dropdown-header">Account</li>
                     <li><a href="{{ uri_for('account-status') }}">Status</a></li>
+                    <li><a href="{{ uri_for('account-projects') }}">Projects</a></li>
+                    {% if has_cloud %}
                     <li><a href="{{ uri_for('lab-launcher') }}">Launcher</a></li>
                     <li><a href="{{ uri_for('account-clouds') }}">Clouds</a></li>
+                    {% endif %}
                     <li><a href="{{ uri_for('account-wisps') }}">Wisps</a></li>
+                    {% if provider %}
                     <li><a href="{{ uri_for('account-appliances') }}">Appliances</a></li>
+                    {% endif %}
                     <li><a href="{{ uri_for('account-settings') }}">Settings</a></li>
                     {% if admin %}
                     <li class="divider"></li>

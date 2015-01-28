@@ -19,7 +19,7 @@
   <div class="container">
     <div class="row">
       <h1>Documentation</h1>
-      <p class="blurb">Welcome to the {{ app_name }} documentation! All your compute are belong to us.</p>
+      <p class="blurb">Welcome to the {{ app_name }} documentation! Remember, all your compute are belong to us.</p>
     </div>
   </div>
 </div>
@@ -29,17 +29,18 @@
     <div class="col-xs-9">
       <section id="overview" class="group">
         <h3>Overview</h3>
-        <p>The {{ app_name }} site is an instance of the <a href="http://utter.io/">Utter.io</a> compute pool.  Utter.io is like AirBnb for excess compute, providing fast location and provisioning of compute resources within a cooperative set of systems managed by <a href="http://superuser.openstack.org/">OpenStack operators</a>. Resource accounting inside the network is settled with <a href="https://bitcoin.org/">Bitcoin</a> and purchases of compute instances can be made by users without an account.</p>
+        <p>The {{ app_name }} site provides Open Source projects a free service to allow users to start and preview instances running a deployment of the project's code.  Users, not projects, pay {{ app_name }} for starting the instances. {{ app_name }} splits part of the revenue with the project's maintainers and part of the revenue with the the provider whose cloud was used to launch the instance for the user.</p> 
+        <p>Cloud providers participate by running an instance of the <a href="http://utter.io/">Utter.io</a> Intercloud framework, which provides fast location and provisioning of compute resources within a cooperative set of global systems managed by various <a href="http://superuser.openstack.org/">OpenStack operators</a>. Resource accounting inside the network of providers is settled with <a href="https://bitcoin.org/">Bitcoin</a> and purchases of compute instances can be made by users without an account.</p>
         <div class="bs-callout bs-callout-info bs-callout-top">
           <h4>Software Licensing</h4>
           <p>All <a href="https://www.github.com/stackmonkey/">project code</a> is Open Source and licensed under the <a href="http://opensource.org/licenses/MIT">MIT License</a>. You may do whatever you please with the code.</p>
         </div>
 
         <div id="how-it-works" class="subgroup">
-          <h4>How It Works</h4>
+          <h4>How the Intercloud Works</h4>
           <p>Providers run <a href="https://www.github.com/stackmonkey/utter-va">virtual appliances</a> on top of their <strong>OpenStack clusters</strong>, which allows a limited amount of control over the cluster by the appliances.  Appliances listen to the <strong>Bitcoin blockchain</strong> for payments to a given <strong>Bitcoin address</strong>.  When a payment is noted to an address, an instance is started using the <strong>Instance Flavor</strong> associated with that address.</p>
-          <p>Right before an instance is started, the appliance will ask the <a href="https://www.github.com/stackmonkey/utter-pool">pool software</a> for provisioning details related to the instance, including ssh-keys and post boot configuration scripts.</p>
-          <p>The pool software provides a centralized location where appliances can advertise their instances for sale for a given <strong>Ask Price</strong>. By providing users the ability to search and bid on instances, this effectively creates a marketplace where compute can be openly sold, purchased or traded.  These transactions are currently done via <strong>Instance Reservations</strong>.  Here is a screenshot of an instance reservation using an OpenStack service provider located in Nairobi, Kenya:</p>
+          <p>Right before an instance is started, the appliance will ask the <a href="https://www.github.com/stackmonkey/utter-pool">pool software</a> for provisioning details related to the instance, including ssh-keys and post boot configuration scripts. When users want to start instance of an Open Source project, the project repository tells {{ app_name }} how to instruct the appliance to provision the instance.</p>
+          <p>The pool software provides a centralized location where appliances can advertise their instances for sale for a given <strong>Ask Price</strong>. By providing users the ability to search for instances of a given size and price, this effectively creates a marketplace where compute can be openly sold, purchased or traded.  These transactions are currently done via <strong>Instance Reservations</strong>.  Here is a screenshot of an instance reservation using an OpenStack service provider located in Nairobi, Kenya:</p>
           <p><img src="/img/site/instance_reservation.png"/></p>
         </div>
 
@@ -54,8 +55,9 @@
         <div id="can-i-trust-it" class="subgroup">
           <h4>Can I Trust It?</h4>
           <p>Trusting public cloud infrastructure has been an ongoing challenge for companies with higher level trust-based use cases.  Because cloud computing use cases come in a wide variety of required trust levels, the answer to whether you can trust a coop infrastructure varies wildly with your specific use case.</p>
-          <p>For example, trusting an unknown provider to do continuous integration tests for you on Open Source software make significantly more sense than allowing it to handle financial transactions using closed source proprietary code.</p>
-          <p>For high trust use cases, Utter.io provides a feature called <strong>Hybrid Groups</strong> which allows users and operators to <a href="#pool-groups">form appliance groups</a>, allowing the sharing of excess compute resources between entities who trust each other.  Future versions of the software will provide these types of additional trust levels automatically.</p>
+          <p>For example, trusting an unknown provider to do continuous integration tests for your Open Source project makes significantly more sense than allowing it to handle financial transactions for your closed source proprietary code.</p>
+          <p>From a provider standpoint, trusting anonymous users is easier when you know what use cases they are running on your hardware. Trusting someone who is testing out the latest version of <a href="https://ghost.org">Ghost's blogging framework</a> is far easier than trusting someone to running an anonymous server for a command and control system for a bot network.</p>
+          <p>When high trust use cases are required by users or providers, Utter.io provides a feature called <strong>Hybrid Groups</strong> which allows users and providers to <a href="#pool-groups">form appliance groups</a>, allowing the sharing of excess compute resources between entities who trust each other.  Future versions of the software will provide these types of additional trust levels automatically.</p>
         </div>
 
         <div class="bs-callout bs-callout-danger bs-callout-top">

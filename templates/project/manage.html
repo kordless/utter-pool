@@ -1,0 +1,197 @@
+{% import "macros.html" as macros %}
+{% extends base_layout %}
+
+{% block title %}Projects :: {{ project.name }} :: {% endblock %}
+
+{% block page_styles %}
+  <link href="/css/configure.css" rel="stylesheet">
+  <link href="/css/docs.css" rel="stylesheet">
+{% endblock %}
+
+{% block navbar %}
+  {% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<!-- hidden delete modal -->
+<div id="delete" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" >Confirm Removal</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to remove this project from your account?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" id="confirm-remove-button" class="btn btn-danger">Remove Project</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end modal -->
+
+<div class="container content">
+  <div class="row">
+    <div class="col-md-2">
+    {{ macros.side_menu("projects", user_id) }}
+    </div>
+    <div class="col-md-9">
+      <div class="section-header">
+        <h2><small>Project <strong>{{ project.name }}</strong></small></h2>
+      </div>
+      <div class="row">
+        <div class="col-md-10">
+          <div class="bs-callout bs-callout-warning bs-callout-top">
+            <h4>Modify the Project's Repository</h4>
+            <p>The repository this project points to needs to be configured to allow {{ app_name }} to start instances for users. Use the following commands to add the <em>utterio</em> directory structure to this repository:</p>
+            <div class="row">
+              <div class="col-md-8">
+<pre>
+git clone {{ project.url }}
+cd {{ project.repo_name }}
+curl -L http://goo.gl/avqPgq > utterio.tar.gz
+tar xvfz utterio.tar.gz
+mv gist* utterio
+rm utterio.tar.gz
+git add .
+git commit -m 'adding utter.io cloud capabilities'
+git push
+</pre>
+              </div>
+            </div>
+            <p>Once you are done adding the directory to your repository, click the <strong>Sync Project w/Github</strong> button below.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-10">
+            <div class="section-header">
+              <h2><small>Publish Settings</strong></small></h2>
+            </div>
+            <div class="toggle-modern">
+              <div id="publish-slider" class="toggle enabled"></div>
+            </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-10">
+          <form id="form-project" action="{{ url|safe }}" method="post" class="">
+            
+            <div class="section-header">
+              <h2><small>Project Settings</strong></small></h2>
+            </div>
+            <div class="row">
+              <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+              {{ macros.input(form, "name", "Project Name", "col-xs-6", placeholder="Github Project", class="form-control required") }}
+              {{ macros.input(form, "description", "Description", "col-xs-10", placeholder="Description for the Github project.", class="form-control required") }}
+              {{ macros.input(form, "address", "Send Payments to Address", "col-xs-5", placeholder="1JT1mQS74Ub8jyxQ81aKEeoyudSRX8RJTA", class="form-control required") }}
+              {{ macros.input(form, "amount", "Donation Amount <a href=''>?</a> ", "col-xs-4", placeholder="500", class="form-control required") }}
+            </div>
+
+            <div class="section-header">
+              <h2><small>Instance Specifications</strong></small></h2>
+            </div>
+
+            <div class="row">
+              {{ macros.input(form, "vpus", "Minimum VPUs", "col-xs-4", class="form-control pulldown") }}
+              {{ macros.input(form, "mem", "Minimum Memory", "col-xs-4", class="form-control pulldown") }}
+              {{ macros.input(form, "disk", "Minimum Disk", "col-xs-4", class="form-control pulldown") }}
+              {{ macros.input(form, "image", "Disk Image", "col-xs-8", class="form-control pulldown") }}
+              <div id="dynamic-image" class="hidden">
+                {{ macros.input(form, "dynamic_image_url", "Dynamic Image URL", "col-xs-10", placeholder="http://example.com/myfavoriteimage.img", class="form-control") }}
+              </div>
+            </div>
+
+            <div class="controls">
+              <button type="submit" id="save-button" class="btn btn-success">Save Project</button>
+              <button type="button" id="refresh-button" class="btn btn-info">Sync Project w/Github</button>
+              <button type="button" id="remove-button" class="btn btn-danger">Remove Project</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    
+    </div>
+  </div> 
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+  $().ready(function() {
+    // standard stuff
+    var username = "{{username}}";
+    var csrf_token = "{{ csrf_token() }}";
+    var channel_token = "{{ channel_token }}";
+    var refresh_channel = "{{ refresh_channel }}";
+  
+    function numberWithCommas(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    // publish slider
+    $('#publish-slider').toggles({
+      on: $('#publish-slider').hasClass('enabled')
+    });
+
+    // remove project modal
+    $('#remove-button').click(function() {
+      $('#delete').modal();
+    });
+
+    // confirm remove
+    $('#confirm-remove-button').click(function() {
+      $('#delete').modal("hide");
+      $.ajax({
+        url: '/projects/'+{{ project.key.id() }}+'/?_csrf_token='+csrf_token+'&channel_token='+channel_token,
+        type: 'DELETE'
+      });
+    });
+
+    // show custom image input if selected
+    $('#image').change(function() {
+      if ($('#image option:selected').val() == "custom") {
+        $('#dynamic-image').removeClass('hidden');
+      } else {
+        $('#dynamic-image').addClass('hidden');
+        $('#dynamic_image_url').val('');
+      }
+    });
+
+    // hack the pulldowns for the correct values, if they are set
+    {% if project.vpus %}
+    $('#vpus').val("{{ project.vpus }}");
+    $('#mem').val("{{ project.mem }}");
+    $('#disk').val("{{ project.disk }}");
+    {% endif %}
+
+    // show image URL entry if set to dynamic
+    if ($('#image option:selected').val() == "custom") {
+      $('#dynamic-image').removeClass('hidden');
+    }
+
+
+    // listen to our refresh channel for page reload
+    onMessage = function() {
+      window.location.reload();
+    };
+    channel = new goog.appengine.Channel(refresh_channel);
+    socket = channel.open();
+    socket.onmessage = onMessage;
+  });
+
+</script>
+{% endblock %}
+
+{% block extras %}
+  <script type="text/javascript" src="/_ah/channel/jsapi"></script>
+  <script type="text/javascript" src="/js/jquery.qrcode.js"></script>
+  <script type="text/javascript" src="/js/qrcode.js"></script>
+  <script type="text/javascript" src="/js/toggles.js"></script>
+{% endblock %}
+

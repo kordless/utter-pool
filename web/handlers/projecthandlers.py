@@ -122,7 +122,7 @@ class ProjectNewHandler(BaseHandler):
 		time.sleep(1)
 
 		# check if the repo has the utterio directory
-		response = project.sync(project.url)
+		response = project.sync()
 
 		# log to alert
 		if response['response'] == "success":

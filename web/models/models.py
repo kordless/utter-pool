@@ -473,7 +473,7 @@ class Project(ndb.Model):
 		return results
 
 	def sync(self):
-		message = github.repo_sync_contents(result, self.url)
+		message = github.repo_sync_contents(self.key.get(), self.url)
 		return message
 
 # wisp model

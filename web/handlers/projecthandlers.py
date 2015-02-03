@@ -122,7 +122,7 @@ class ProjectNewHandler(BaseHandler):
 		time.sleep(1)
 
 		# check if the repo has the utterio directory
-		response = project.sync(project.url)
+		response = project.sync()
 
 		# log to alert
 		if response['response'] == "success":
@@ -167,7 +167,6 @@ class ProjectDetailHandler(BaseHandler):
 		images = Image.get_all()
 		for image in images:
 			self.form.image.choices.insert(0, (str(image.key.id()), image.description))
-
 
 		# setup channel to do page refresh
 		channel_token = user_info.key.urlsafe()
@@ -274,6 +273,42 @@ class ProjectDetailHandler(BaseHandler):
 	@webapp2.cached_property
 	def form(self):
 		return forms.ProjectForm(self)
+
+# provide editing for projects		
+class ProjectMethodHandler(BaseHandler):
+	@user_required
+	def get(self, project_id = None, action = None):
+		# lookup user's auth info
+		user_info = User.get_by_id(long(self.user_id))
+		
+		# load the project in question
+		project = Project.get_by_id(long(project_id))
+
+		# refresh
+		if action == 'refresh':
+			# sync if project exists and the user is owner
+			if project and project.owner == user_info.key:
+				response = project.sync()
+				time.sleep(1)
+
+			# log to alert
+			if response['response'] == "success":
+				self.add_message("Project %s successfully synced!" % project.name, "success")
+			else:
+				self.add_message("%s" % response['result']['message'], "fail")
+
+		# publish status
+		if action == 'private':
+			project.public = False
+			project.put()
+		if action == 'public':
+			project.public = True
+			project.put()
+
+		# use the channel to tell the browser we are done and reload
+		channel_token = self.request.get('channel_token')
+		channel.send_message(channel_token, 'reload')
+		return
 
 """
 Old methods for showing demo bid launches

@@ -53,7 +53,8 @@ _routes = [
 		RedirectRoute('/projects/list/', projecthandlers.ProjectListHandler, name='account-projects', strict_slash=True),
 		RedirectRoute('/projects/new/', projecthandlers.ProjectNewHandler, name='account-projects-new', strict_slash=True),
 		RedirectRoute('/projects/<project_id>/', projecthandlers.ProjectDetailHandler, name='account-projects-detail', strict_slash=True),
-
+		RedirectRoute('/projects/<project_id>/<action>/', projecthandlers.ProjectMethodHandler, name='account-projects-method', strict_slash=True),
+		
 		RedirectRoute('/clouds/', cloudhandlers.CloudHandler, name='account-clouds', strict_slash=True),
 		RedirectRoute('/clouds/<cloud_id>/', cloudhandlers.CloudConfigureHandler, name='account-clouds-configure', strict_slash=True),
 		RedirectRoute('/clouds/<cloud_id>/instances/<instance_id>/', cloudhandlers.CloudRemoveInstanceHandler, name='clouds-remove-instance', strict_slash=True),

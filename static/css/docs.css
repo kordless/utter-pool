@@ -622,6 +622,16 @@ h1[id] {
     overflow: hidden;
 }
 
+.bs-callout-success {
+    background-color: #f7fdf7;
+    border-color: #8cc152;
+}
+
+.bs-callout-success h4 {
+    color: #8cc152;
+}
+
+
 .color-swatch {
     float: left;
     width: 60px;

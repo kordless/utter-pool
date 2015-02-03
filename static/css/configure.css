@@ -100,3 +100,71 @@ h2 small {
   height: 500px;
   width: 100%;
 }
+
+.demos {
+  overflow: hidden;
+  margin-top: 6px;
+  margin-bottom: 24px;
+  padding-left: 0px;
+}
+
+.demos li {
+  position: relative;
+  float: left;
+  width: 200px;
+  height: 200px;
+  margin-right: 20px;
+  list-style-type: none;
+  display: inline-block !important;
+  float: none !important;
+  border: 1px solid #BBB;
+  border-radius: 6px 6px 6px 6px;
+}
+
+.demos a {
+  position: absolute;
+  right: 23px;
+  bottom: 13px;
+  z-index: 5;
+  opacity: .8;
+}
+
+.demos b {
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: 2px;
+  margin-right: 4px;
+  text-transform: uppercase;
+}
+
+.demos a:hover {
+  opacity: 1;
+}
+
+.demos img {
+  pointer-events: none;
+  border-radius: 6px;
+}
+
+.demos b {
+  position: absolute;
+  left: 10px;
+  bottom: 20px;
+  z-index: 4;
+  color: #fff;
+  text-shadow: 0 4px 14px rgba(0,0,0,0.3);
+}
+
+.demos .mask {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 3;
+  display: block;
+  width: 100%;
+  height: 120px;
+  border-radius: 0px 0px 6px 6px;
+  background: -webkit-linear-gradient(rgba(40,40,40,0), rgba(40,40,40,0.5));
+  background: linear-gradient(rgba(40,40,40,0), rgba(40,40,40,0.5));
+}

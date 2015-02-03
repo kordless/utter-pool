@@ -472,12 +472,21 @@ class Project(ndb.Model):
 		results = query.fetch()
 		return results
 
-	@classmethod
-	def sync(cls, url):
-		query = cls.query().filter(cls.url == url)
-		result = query.get()
-		message = github.repo_sync_contents(result, url)
+	def sync(self):
+		message = github.repo_sync_contents(self)
 		return message
+
+	def is_configured(self):
+		if not self.readme_url:
+			return False
+		if not self.json_url:
+			return False
+		if not self.install_url:
+			return False
+		if not self.icon_url:
+			return False
+
+		return True
 
 # wisp model
 class Wisp(ndb.Model):

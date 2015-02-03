@@ -34,10 +34,10 @@ def repo_base(url):
 		response = {'response': 'fail', 'result': {'message': "Project was not added. %s" % ex} }
 		return response
 
-def repo_sync_contents(project, url):
+def repo_sync_contents(project):
 	try:
 		# parse the url and build a normalized github URL
-		parts = urlparse(url)
+		parts = urlparse(project.url)
 		url = "https://%s/%s" % (config.github_url.strip('/'), parts[2].strip('/'))
 		
 		# use the path to make an API GET for the repo JSON
@@ -78,6 +78,9 @@ def repo_sync_contents(project, url):
 				missing = "%s%s, " % (missing, key)
 		missing = missing.strip(', ')
 
+		# update the repo
+		project.put()
+
 		# build the response object
 		response = {'response': "success", 'result': {'message': ''}}
 
@@ -93,7 +96,7 @@ def repo_sync_contents(project, url):
 
 	except Exception as ex:
 		# build and return the failure
-		response = {'response': "fail", 'result': {'message': "The repository doesn't contain an utterio configuration. %s" % ex} }
+		response = {'response': "fail", 'result': {'message': "This repository needs an utterio directory added to it."} }
 		return response
 
 

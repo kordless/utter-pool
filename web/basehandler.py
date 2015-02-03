@@ -382,6 +382,7 @@ class BaseHandler(webapp2.RequestHandler):
 			'app_name': config.app_name,
 			'app_email': config.app_email,
 			'app_domain': config.app_domain,
+			'website_url': config.website_url,
 			'app_description': config.app_description,
 			'copyright_date': config.copyright_date,
 			'copyright_name': config.copyright_name,

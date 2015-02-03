@@ -42,17 +42,18 @@
       <div class="section-header">
         <h2><small>Project <strong>{{ project.name }}</strong></small></h2>
       </div>
+      {% if not project.is_configured() %}
       <div class="row">
         <div class="col-md-10">
-          <div class="bs-callout bs-callout-warning bs-callout-top">
-            <h4>Modify the Project's Repository</h4>
-            <p>The repository this project points to needs to be configured to allow {{ app_name }} to start instances for users. Use the following commands to add the <em>utterio</em> directory structure to this repository:</p>
+          <div class="bs-callout bs-callout-danger bs-callout-top">
+            <h4>Step #1: Modify the Project's Repository</h4>
+            <p>This project's <a target="_blank" href="{{ project.url }}">repository</a> needs to be configured to allow {{ app_name }} to start instances for its users. Use the following commands to add the <em>utterio</em> directory structure to this repository:</p>
             <div class="row">
               <div class="col-md-8">
 <pre>
 git clone {{ project.url }}
 cd {{ project.repo_name }}
-curl -L http://goo.gl/avqPgq > utterio.tar.gz
+curl -L http://goo.gl/SValjx > utterio.tar.gz
 tar xvfz utterio.tar.gz
 mv gist* utterio
 rm utterio.tar.gz
@@ -62,39 +63,109 @@ git push
 </pre>
               </div>
             </div>
-            <p>Once you are done adding the directory to your repository, click the <strong>Sync Project w/Github</strong> button below.</p>
+            <p>Once you are done adding the directory to your repository, click the <strong>Sync Project w/Github</strong> button below. If the files necessary for configuration are present in the repository, this warning message will disappear.</p>
           </div>
         </div>
       </div>
-
+      {% elif not project.address > "" %}
       <div class="row">
         <div class="col-md-10">
-            <div class="section-header">
-              <h2><small>Publish Settings</strong></small></h2>
-            </div>
-            <div class="toggle-modern">
-              <div id="publish-slider" class="toggle enabled"></div>
-            </div>
+          <div class="bs-callout bs-callout-warning bs-callout-top">
+            <h4>Step #2: Setup Payment Address</h4>
+            <p>Before you publish, you'll need to enter a Bitcoin payment address which will be used to send launch donations to your project. You will also need to pick a suggested donation percentage, which will be used to calculate the cost of the instance donation shown to the user.</p>
+          </div>
         </div>
       </div>
+      {% elif not project.public %}
+      <div class="row">
+        <div class="col-md-10">
+          <div class="bs-callout bs-callout-info bs-callout-top">
+            <h4>Step #3: Edit Files & Enable</h4>
+            <p>The following project's configuration files have been located and loaded into {{ app_name }}:</p>
+            <div>
+            <ul>
+              <li><a target="_blank" href="{{ project.readme_link }}">README.md</a></li>
+              <li><a target="_blank" href="{{ project.json_link }}">utterio.json</a></li>
+              <li><a target="_blank" href="{{ project.install_link }}">install.sh</a></li>
+              <li><a target="_blank" href="{{ project.icon_link }}">icon.png</a></li>
+            <ul>
+            </div>
+            <p>Please edit the <strong>utterio.json</strong> and <strong>install.sh</strong> files to match your repository's deployment flow</strong>. Update the <strong>icon.png</strong> file with a <strong>200px by 200px</strong> PNG-based image. Edit the <strong>README.md</strong> file to provide details about using a deployed instance of your project. Click on the publish slider to make your project live.</p> 
+            <p>Once you edit and commit the files to your repository, you may click the <strong>Sync Project w/Github</strong> button to update the assets shown here. </p>
+            <button type="button" id="refresh-button" class="btn btn-info">Sync Project w/Github</button>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div class="row">
+        <div class="col-md-10">
+          <div class="bs-callout bs-callout-success bs-callout-top">
+            <h4>Project is Ready to Serve!</h4>
+            <p>Congratulations! Your project is ready to start serving instances.  Be sure to test start a few instances and keep your deployment scripts tested and up-to-date to ensure the best user experience! The more successful launches your project has, the more you will make.</p>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if project.is_configured() and project.address > "" %}
+      <div class="row">
+        <div class="col-md-10">
+          <div class="section-header">
+            <h2><small>Preview & Publish</strong></small></h2>
+          </div>
+          <div class="row">
+            <a href="">
+            <div class="col-md-3">
+              <ul class="demos">
+                <li id="demo" class="software">
+                  <b>{{ project.name }}</b>
+                  <span><img src="{{ project.icon_url }}"></span>
+                  <span class="mask"></span>
+                </li>
+              </ul>
+            </div>
+            </a>
+            <div class="col-md-6">
+              <div class="toggle-modern">
+                <p id="publish-state"></p>
+                <div class="toggle-modern">
+                  <div id="publish-slider" class="toggle {% if project.public %}enabled{% endif %}"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
 
       <div class="row">
         <div class="col-md-10">
           <form id="form-project" action="{{ url|safe }}" method="post" class="">
             
             <div class="section-header">
-              <h2><small>Project Settings</strong></small></h2>
+              <h2><small>Project Profile</strong></small></h2>
+              <p>The following profile information will be used to display the project's instance page. {% if not project.address %}Before you can publish the repository, you'll need to update its payment address so we can send you payments as instances are launched by users.{% else %} The payment address will be used to pay the project and the suggested donation percentage will be used to calculate the instance price shown to the end user.{% endif %}</p>
             </div>
             <div class="row">
               <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
               {{ macros.input(form, "name", "Project Name", "col-xs-6", placeholder="Github Project", class="form-control required") }}
               {{ macros.input(form, "description", "Description", "col-xs-10", placeholder="Description for the Github project.", class="form-control required") }}
+            {% if not project.is_configured() %}
+            <div class="hidden">
+            {% endif %}
               {{ macros.input(form, "address", "Send Payments to Address", "col-xs-5", placeholder="1JT1mQS74Ub8jyxQ81aKEeoyudSRX8RJTA", class="form-control required") }}
-              {{ macros.input(form, "amount", "Donation Amount <a href=''>?</a> ", "col-xs-4", placeholder="500", class="form-control required") }}
+              {{ macros.input(form, "amount", "Suggested Donation Percentage <a href=''>?</a> ", "col-xs-4", class="form-control required") }}
+            {% if not project.is_configured() %}
+            </div>
+            {% endif %}
             </div>
 
+            {% if not project.is_configured() %}
+            <div class="hidden">
+            {% endif %}
             <div class="section-header">
               <h2><small>Instance Specifications</strong></small></h2>
+              <p>The settings below specify the minimum system requirements for launching your project on an instance. When users are presented with the launch view, we'll use these settings to recommend a flavor which can handle the requirements you specify here. Remember, if you specify a dynamic image URL the image must be <a href="http://docs.openstack.org/image-guide/content/ch_obtaining_images.html">capable of running on OpenStack</a>!</p>
             </div>
 
             <div class="row">
@@ -106,10 +177,15 @@ git push
                 {{ macros.input(form, "dynamic_image_url", "Dynamic Image URL", "col-xs-10", placeholder="http://example.com/myfavoriteimage.img", class="form-control") }}
               </div>
             </div>
+            {% if not project.is_configured() %}
+            </div>
+            {% endif %}
 
             <div class="controls">
               <button type="submit" id="save-button" class="btn btn-success">Save Project</button>
+              {% if project.public %}
               <button type="button" id="refresh-button" class="btn btn-info">Sync Project w/Github</button>
+              {% endif %}
               <button type="button" id="remove-button" class="btn btn-danger">Remove Project</button>
             </div>
           </form>
@@ -137,6 +213,37 @@ git push
     // publish slider
     $('#publish-slider').toggles({
       on: $('#publish-slider').hasClass('enabled')
+    });
+
+    // states
+    var public_state_enabled = "This project is live and serving instances.";
+    var public_state_disabled = "This project is currently disabled. Use the slider below to enable."
+
+    // set initial state
+    $('#publish-state').html({% if project.public %}public_state_enabled{% else %}public_state_disabled{% endif %});
+
+    // make calls to publish/private the project
+    $('#publish-slider').on('toggle', function (e, active) {
+      var action = "";
+      if (active) {
+        action = "public";
+        $('#publish-state').html(public_state_enabled);
+      } else {
+        action = "private";
+        $('#publish-state').html(public_state_disabled);
+      }
+      $.ajax({
+        url: '/projects/'+{{ project.key.id() }}+'/'+action+'/?_csrf_token='+csrf_token+'&channel_token='+channel_token,
+        type: 'GET'
+      });
+    });
+
+    // confirm remove
+    $('#refresh-button').click(function() {
+      $.ajax({
+        url: '/projects/'+{{ project.key.id() }}+'/refresh/?_csrf_token='+csrf_token+'&channel_token='+channel_token,
+        type: 'GET'
+      });
     });
 
     // remove project modal
@@ -168,13 +275,13 @@ git push
     $('#vpus').val("{{ project.vpus }}");
     $('#mem').val("{{ project.mem }}");
     $('#disk').val("{{ project.disk }}");
+    $('#amount').val("{{ project.amount }}");
     {% endif %}
 
     // show image URL entry if set to dynamic
     if ($('#image option:selected').val() == "custom") {
       $('#dynamic-image').removeClass('hidden');
     }
-
 
     // listen to our refresh channel for page reload
     onMessage = function() {

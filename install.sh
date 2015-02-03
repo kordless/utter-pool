@@ -5,7 +5,7 @@ echo "would install"
 clear
 
 echo "==================================="
-echo "Starting setup for new Xov.io pool."
+echo "Starting setup for a new pool."
 echo "==================================="
 
 # make a new copy of the config.py template
@@ -17,6 +17,14 @@ if [[ $OSTYPE == 'linux-gnu' ]]; then
   sed -i 's/ADMIN_PORT/'$admin_port'/g' config.py
 else
   sed -i '' 's/ADMIN_PORT/'$admin_port'/g' config.py
+fi
+
+# local dev service port
+service_port=$2
+if [[ $OSTYPE == 'linux-gnu' ]]; then
+  sed -i 's/SERVICE_PORT/'$service_port'/g' config.py
+else
+  sed -i '' 's/SERVICE_PORT/'$service_port'/g' config.py
 fi
 
 # random 32 character string generator
@@ -96,8 +104,6 @@ if [[ $OSTYPE == 'linux-gnu' ]]; then
 else
   sed -i '' 's/SALT/'$salt'/g' config.py
 fi
-
-# admin url setup
 
 # job token generation
 job_token=$(randstring)

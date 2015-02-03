@@ -29,7 +29,18 @@
                   <h4>Adding New Projects</h4>
                   <p><strong>Projects</strong> are software repositories hosted on <strong>Github</strong> which are used by the system to create <strong>Wisps</strong> for users. <strong>Wisps</strong> are scripts used by <strong>Appliances</strong> to launch <strong>Instances</strong> with the deployed project after noting a payment to a given <strong>Bitcoin Address</strong>.</p>
                   <p>To create a new project, paste the URL of a <strong>Public Repository</strong> below and then click <span class="label label-success">Add Project</span>.</p>
-                  <p><strong>Note:</strong> You may also create a new project by adding the launcher badge to an existing application's repository and then clicking on it.</p>
+
+                  <p>Alternately, a new project can be added by placing a launcher badge at the top of the application's README.md file and then clicking on it from Github:</p>
+              
+                  <div class="row">
+                    <div class="col-md-8">
+<pre>
+[![Deploy with {{ app_name }}](https://img.shields.io/badge/stackmonkey-deploy%20an%20instance-green.svg?style=flat-square)](https://www.stackmonkey.com/projects/)
+</pre>
+                    </div>
+                  </div>
+                  <p><img src="https://img.shields.io/badge/stackmonkey-deploy%20an%20instance-green.svg?style=flat-square"></p>
+                  <p>You may change the color and style of the button by referring to the <a href="http://shields.io">shields.io site</a>.</p>
                 </div>
                 <form id="form-new-app" action="{{ url|safe }}" method="post" class="form-horizontal">
                   <div class="row">

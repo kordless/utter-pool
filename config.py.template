@@ -12,6 +12,7 @@ app_name = "StackMonkey"
 app_description = "Distributed servers for everyone."
 app_email = "info@stackmonkey.com"
 app_owner = "Kord Campbell"
+app_domain = "stackmonkey.com"
 
 # contact form emails
 contact_sender = "CONTACT_EMAIL"
@@ -73,9 +74,10 @@ locales = ['en_US']
 # admin urls
 if os.environ['SERVER_SOFTWARE'].startswith('Dev'):
 	admin_interface_url = 'http://localhost:ADMIN_PORT/_ah/admin/datastore'
+    website_url = 'http://localhost:SERVICE_PORT/'
 else:
 	admin_interface_url = 'https://appengine.google.com/dashboard?&app_id=s~zenopsio'
-
+    website_url = 'https://%s.%s/' % (app_subdomain, app_domain)
 
 # html whitelist for bleached articles
 bleach_tags = ['p', 'em', 'strong', 'code', 'h1', 'h2', 'h3', 'h4', 'h5', 'td', 'li', 'ul', 'ol', 'table', 'tbody', 'thead', 'iframe', 'tr', 'th', 'span',  'pre', 'i', 'button', 'img', 'a']

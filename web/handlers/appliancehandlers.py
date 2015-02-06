@@ -10,7 +10,8 @@ from web.models.models import User, LogVisit, Appliance, Group, GroupMembers, In
 from web.basehandler import BaseHandler
 from web.basehandler import user_required
 
-class ApplianceHandler(BaseHandler):
+# appliance list
+class ApplianceListHandler(BaseHandler):
 	@user_required
 	def get(self):
 		# lookup user's auth info
@@ -30,7 +31,7 @@ class ApplianceHandler(BaseHandler):
 			'channel_token': channel_token 
 		}
 
-		return self.render_template('appliance/appliances.html', **params)
+		return self.render_template('appliance/list.html', **params)
 
 
 # new appliances
@@ -156,8 +157,9 @@ class ApplianceNewHandler(BaseHandler):
 	def form(self):
 		return forms.ApplianceForm(self)
 
-# appliance detail
-class ApplianceConfigureHandler(BaseHandler):
+
+# appliance edit
+class ApplianceEditHandler(BaseHandler):
 	@user_required
 	def get(self, appliance_id = None):
 		# lookup user's auth info
@@ -195,7 +197,7 @@ class ApplianceConfigureHandler(BaseHandler):
 			'group_id': group_id,
 			'gform': self.gform
 		}
-		return self.render_template('appliance/appliance_edit.html', **parms)
+		return self.render_template('appliance/edit.html', **parms)
 
 	@user_required
 	def post(self, appliance_id = None):
@@ -309,7 +311,7 @@ class ApplianceConfigureHandler(BaseHandler):
 		return forms.ApplianceForm(self)
 
 
-class ApplianceStatusHandler(BaseHandler):
+class ApplianceViewHandler(BaseHandler):
 	@user_required
 	def get(self, appliance_id = None):
 		# lookup user's auth info
@@ -330,4 +332,4 @@ class ApplianceStatusHandler(BaseHandler):
 			'appliance': appliance,
 			'instances': instances
 		}
-		return self.render_template('appliance/status.html', **parms)
+		return self.render_template('appliance/view.html', **parms)

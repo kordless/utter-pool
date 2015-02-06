@@ -35,7 +35,7 @@
 <div class="container content">
   <div class="row">
     <div class="col-md-2">
-    {{ macros.side_menu("wisps", user_id) }}
+    {{ macros.side_menu("wisps", user_id, provider) }}
     </div>
     <div class="col-md-9">
       <div class="row">
@@ -78,6 +78,7 @@
                       <input class="form-control" id="default" name="default" type="checkbox" {% if form.default.data %}checked{% endif %}>
                     </div>
                   </div>
+                  
                   <button type="submit" id="create-button" class="btn btn-success">Save Wisp</button>
                   <button type="button" id="delete-button" class="btn btn-danger">Delete Wisp</button>
                 </form>

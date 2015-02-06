@@ -111,8 +111,8 @@ h2 small {
 .demos li {
   position: relative;
   float: left;
-  width: 200px;
-  height: 200px;
+  width: 196px;
+  height: 196px;
   margin-right: 20px;
   list-style-type: none;
   display: inline-block !important;

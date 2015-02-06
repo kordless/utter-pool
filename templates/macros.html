@@ -7,7 +7,7 @@
 {%- endmacro %}
 
 <!-- side menu widget -->
-{% macro side_menu(page, user_id) -%}
+{% macro side_menu(page, user_id, provider) -%}
   <ul class="nav nav-pills nav-stacked">
     {% if user_id %}
     <li{% if page=="status" %} class="active"{% endif %}><a href="{{ uri_for('account-status') }}">Status</a></li>

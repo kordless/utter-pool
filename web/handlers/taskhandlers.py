@@ -5,13 +5,18 @@ import logging
 from google.appengine.api import channel
 
 import config
-from web.models.models import Instance, InstanceBid, Wisp
+from web.models.models import Instance, InstanceBid, Wisp, Appliance
 from web.basehandler import BaseHandler
 
 def channel_message(token, message):
 	channel_token = token
 	refresh_channel = channel.create_channel(channel_token)
 	channel.send_message(refresh_channel, message)
+
+# search and delete stale appliance's instances
+class AppliancesHandler(BaseHandler):
+	def get(self):
+		pass
 
 # search and delete instances who 
 class InstancesHandler(BaseHandler):

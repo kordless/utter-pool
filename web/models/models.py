@@ -169,6 +169,10 @@ class Appliance(ndb.Model):
 		return cls.query(cls.token == token).get()
 
 	@classmethod
+	def get_all(cls):
+		return cls.query().fetch
+
+	@classmethod
 	def get_by_user(cls, user):
 		return cls.query().filter(cls.owner == user).order(-cls.created).fetch()
 
@@ -378,6 +382,33 @@ class Flavor(ndb.Model, ModelSchemaMixin):
 			flavor_key.get()
 			for flavor_key in cls.keys_with_instances_on_sale()]
 
+	@classmethod
+	def keys_with_instances_by_appliance_on_sale(cls, appliance):
+		flavors = set()
+		for instance in Instance.get_all_offered():
+			if instance.appliance == appliance:
+				flavors.add(instance.flavor)
+
+		return list(flavors)
+
+	@classmethod
+	def flavors_with_min_specs_by_appliance_on_sale(cls, specs, appliance):
+		flavors = [
+			flavor_key.get()
+			for flavor_key in cls.keys_with_instances_by_appliance_on_sale(appliance)]
+
+		results = []
+		for flavor in flavors:
+			if flavor.vpus < specs['vpus']:
+				continue
+			if flavor.memory < specs['memory']:
+				continue
+			if flavor.disk < specs['disk']:
+				continue
+			results.append(flavor)
+
+		return sorted(results, key=lambda flavor: flavor.memory)
+
 	def ask_prices(self):
 		return [
 			instance.ask
@@ -433,9 +464,10 @@ class Project(ndb.Model):
 	address = ndb.StringProperty()
 	amount = ndb.IntegerProperty()
 	vpus = ndb.IntegerProperty()
-	mem = ndb.IntegerProperty()
+	memory = ndb.IntegerProperty()
 	disk = ndb.IntegerProperty()
 	image = ndb.KeyProperty(kind=Image)
+	dynamic_image_name = ndb.StringProperty()
 	dynamic_image_url = ndb.StringProperty()
 	readme_url = ndb.StringProperty()
 	readme_link = ndb.StringProperty()
@@ -461,8 +493,8 @@ class Project(ndb.Model):
 		return result
 
 	@classmethod
-	def get_by_user_url(cls, owner, url):
-		query = cls.query().filter(cls.url == url, cls.owner == owner)
+	def get_by_url(cls, url):
+		query = cls.query().filter(cls.url == url)
 		result = query.get()
 		return result
 
@@ -680,15 +712,19 @@ class Instance(ndb.Model, ModelSchemaMixin):
 		self.started = datetime.utcnow()
 
 	@classmethod
+	def get_all(cls):
+		return cls.query().fetch
+
+	@classmethod
 	def get_all_offered(cls, seconds=900):
 		delta = datetime.now() - timedelta(seconds=seconds)
 		return cls.query().filter(cls.state == 1, cls.updated > delta).order().fetch()
 
 	@classmethod
 	def get_by_name_appliance(cls, name, appliance):
-		instance_query = cls.query().filter(cls.name == name, cls.appliance == appliance)
-		instance = instance_query.get()
-		return instance
+		query = cls.query().filter(cls.name == name, cls.appliance == appliance)
+		result = instance_query.get()
+		return result
 
 	@classmethod
 	def get_by_token(cls, token):
@@ -697,35 +733,41 @@ class Instance(ndb.Model, ModelSchemaMixin):
 
 	@classmethod
 	def get_by_name(cls, name):
-		instance_query = cls.query().filter(cls.name == name)
-		instance = instance_query.get()
-		return instance
+		query = cls.query().filter(cls.name == name)
+		result = query.get()
+		return result
+
+	@classmethod
+	def get_by_group(cls, group):
+		query = cls.query().filter(cls.group == group)
+		results = query.fetch()
+		return results
 
 	@classmethod
 	def get_by_appliance(cls, appliance):
-		instance_query = cls.query().filter(cls.appliance == appliance)
-		instances = instance_query.fetch()
-		return instances
+		query = cls.query().filter(cls.appliance == appliance)
+		results = query.fetch()
+		return results
 
 	@classmethod
 	def get_by_cloud(cls, cloud):
-		instance_query = cls.query().filter(cls.cloud == cloud)
-		instances = instance_query.fetch()
-		return instances
+		query = cls.query().filter(cls.cloud == cloud)
+		results = query.fetch()
+		return results
 
 	@classmethod
 	def get_count_by_cloud(cls, cloud):
-		instance_query = cls.query().filter(cls.cloud == cloud)
-		count = instance_query.count()
+		query = cls.query().filter(cls.cloud == cloud)
+		count = query.count()
 		return count
 
 	# feteches instances older than delta many seconds
 	@classmethod
 	def get_older_than(cls, seconds):
 		delta = datetime.now() - timedelta(seconds=seconds)
-		instance_query = cls.query().filter(cls.updated < delta)
-		instances = instance_query.fetch()
-		return instances
+		query = cls.query().filter(cls.updated < delta)
+		results = query.fetch()
+		return results
 
 	# insert or update instance
 	# note that appliance is an object, not a dict
@@ -754,6 +796,9 @@ class Instance(ndb.Model, ModelSchemaMixin):
 			# update ask
 			instance.ask = appliance_instance['flavor']['ask']
 			instance.state = appliance_instance['state']
+			instance.appliance = appliance.key
+			instance.group = appliance.group
+			instance.owner = appliance.owner
 			instance.put()
 
 		return instance

@@ -1,7 +1,7 @@
 {% import "macros.html" as macros %}
 {% extends base_layout %}
 
-{% block title %}New Appliance :: {% endblock %}
+{% block title %}Appliance Edit :: {{ appliance.name }} :: {% endblock %}
 
 {% block page_styles %}
   <link href="/css/configure.css" rel="stylesheet">
@@ -44,39 +44,38 @@
 <div class="container content">
   <div class="row">
     <div class="col-md-2">
-    {{ macros.side_menu("appliances", user_id) }}
+    {{ macros.side_menu("appliances", user_id, provider) }}
     </div>
-    <div class="col-md-10">
+    <div class="col-md-9">
       <div class="row">
         <div class="col-md-12">
           <div class="section-header">
             <h2><small>Edit Appliance <strong>{{ appliance.name }}</strong></small></h2>
+            <div class="row">
+              <div class="col-md-12">
+                <form id="form_edit_profile" action="{{ url|safe }}" method="post" class="form-horizontal">
+                  <p>Please use the following form to edit your appliance settings. Please note that appliance settings such as location and instance settings are located inside the appliance UI, which will be accessable from the instance you run on your OpenStack cluster.</p>
+                  <div class="row">
+
+                      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                      <input type="hidden" id="hidden-custom" name="custom" value="Custom">
+                      {{ macros.input(form, "name", "Name", "col-xs-8", placeholder="Awesome Appliance", class="form-control") }}
+                      {{ macros.input(form, "token", "Token", "col-xs-8", placeholder="7DOItbpFuVYWFthFVYlxlBzMbaRuVyswpJ89mK94PfWjxpKBaa1KMARJh6SlRHEm", class="form-control") }}
+                      <div class="row">
+                        <div class="col-md-12">
+                        {{ macros.input(form, "group", "Group", "col-xs-5", class="form-control pulldown") }}
+                        <button type="button" id="new-group-create-button" class="btn btn-danger"><span class="glyphicon glyphicon-plus"></span></button>
+                        </div>
+                      </div>
+                  </div>
+                  <button type="submit" id="save-appliance-button" class="btn btn-success">Save Appliance</button>
+                  <button type="button" id="cancel-button" class="btn btn-danger">Cancel</button>
+                </form>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col-md-10">
-          <p>Please use the following form to edit your appliance settings.  Use the <strong>Save Appliance</strong> button to save your changes.</p>
-          <form id="form_edit_profile" action="{{ url|safe }}" method="post" class="">
-            <div class="row">
-              <div class="col-md-10 form-padding" id="authcode-form">
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-                <input type="hidden" id="hidden-custom" name="custom" value="Custom">
-                {{ macros.input(form, "name", "Name", "col-xs-12", placeholder="Awesome Appliance", class="form-control") }}
-                {{ macros.input(form, "token", "Token", "col-xs-12", placeholder="7DOItbpFuVYWFthFVYlxlBzMbaRuVyswpJ89mK94PfWjxpKBaa1KMARJh6SlRHEm", class="form-control") }}
-                {{ macros.input(form, "group", "Group", "col-xs-8", class="form-control pulldown") }}
-                <button type="button" id="new-group-create-button" class="btn btn-danger"><span class="glyphicon glyphicon-plus"></span></button>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md10 form-buttons">
-                <button type="submit" id="save-appliance-button" class="btn btn-success">Save Appliance</button>
-                <button type="button" id="cancel-button" class="btn btn-danger">Cancel</button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>  
     </div>
   </div> 
 </div>

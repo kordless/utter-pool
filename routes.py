@@ -1,34 +1,17 @@
 from webapp2_extras.routes import RedirectRoute
 from web.handlers import sitehandlers, adminhandlers, userhandlers, apihandlers, bloghandlers, emailhandlers, taskhandlers
-from web.handlers import statushandlers, projecthandlers, appliancehandlers, grouphandlers, cloudhandlers, wisphandlers, labhandlers
+from web.handlers import projecthandlers, appliancehandlers, grouphandlers, cloudhandlers, wisphandlers, labhandlers
 
 secure_scheme = 'https'
 
 _routes = [
-		# tasks
-		RedirectRoute('/tasks/sendinvite/', emailhandlers.SendEmailInviteHandler, name='tasks-sendinvite', strict_slash=True),
-		RedirectRoute('/tasks/instances/', taskhandlers.InstancesHandler, name='tasks-instances', strict_slash=True),
-		RedirectRoute('/tasks/instancebids/', taskhandlers.InstanceBidsHandler, name='tasks-instancebids', strict_slash=True),
-		RedirectRoute('/tasks/wisps/', taskhandlers.AnonymousWispHandler, name='tasks-anonymous-wisps', strict_slash=True),
-	    RedirectRoute('/tasks/mail/', sitehandlers.SendEmailHandler, name='taskqueue-send-email', strict_slash=True),
-
-		# admin
-		RedirectRoute('/admin/', adminhandlers.AdminHandler, name='admin', strict_slash=True),
-		RedirectRoute('/admin/users/', adminhandlers.UsersHandler, name='admin-users', strict_slash=True),
-		RedirectRoute('/admin/users/export/', adminhandlers.UsersExportHandler, name='admin-users-export', strict_slash=True),
-		RedirectRoute('/admin/flavors/', adminhandlers.FlavorsListHandler, name='admin-flavors', strict_slash=True),
-		RedirectRoute('/admin/flavors/<flavor_id>/', adminhandlers.FlavorsActionsHandler, name='admin-flavors-action', strict_slash=True),
-		RedirectRoute('/admin/images/', adminhandlers.ImagesListHandler, name='admin-images', strict_slash=True),
-		RedirectRoute('/admin/images/<image_id>/', adminhandlers.ImagesActionsHandler, name='admin-images-action', strict_slash=True),
-		RedirectRoute('/admin/groups/', adminhandlers.GroupsHandler, name='admin-groups', strict_slash=True),
-
 		# website
 		RedirectRoute('/', sitehandlers.HomeRequestHandler, name='home', strict_slash=True),
 		RedirectRoute('/about/', sitehandlers.AboutHandler, name='about', strict_slash=True),
 		RedirectRoute('/sponsor/', sitehandlers.SponsorHandler, name='sponsor', strict_slash=True),
 		RedirectRoute('/features/', sitehandlers.FeaturesHandler, name='features', strict_slash=True),
 		RedirectRoute('/docs/', sitehandlers.DocsHandler, name='docs', strict_slash=True),
-		RedirectRoute('/projects/', sitehandlers.ProjectsHandler, name='projects', strict_slash=True),
+		RedirectRoute('/projects/', projecthandlers.ProjectsHandler, name='projects', strict_slash=True),
 		RedirectRoute('/terms/', sitehandlers.TermsHandler, name='terms', strict_slash=True),
 		RedirectRoute('/privacy/', sitehandlers.PrivacyHandler, name='privacy', strict_slash=True),
 		
@@ -39,9 +22,7 @@ _routes = [
 		RedirectRoute('/login/tfa', userhandlers.TwoFactorLoginHandler, name='login-tfa', strict_slash=True),
 		RedirectRoute('/settings/', userhandlers.SettingsHandler, name='account-settings', strict_slash=True),
 		RedirectRoute('/settings/tfa', userhandlers.TwoFactorSettingsHandler, name='account-tfa', strict_slash=True),
-		
-		# status
-		RedirectRoute('/status/', statushandlers.StatusHandler, name='account-status', strict_slash=True),
+		RedirectRoute('/status/', userhandlers.StatusHandler, name='account-status', strict_slash=True),
 
 		# instances
 		RedirectRoute('/launcher/', labhandlers.LauncherHandler, name='lab-launcher', strict_slash=True),
@@ -49,28 +30,34 @@ _routes = [
 		RedirectRoute('/bids/<token>/', labhandlers.BidDetailHandler, name='lab-bid-detail', strict_slash=True),
 		RedirectRoute('/instances/<token>/', labhandlers.InstanceDetailHandler, name='lab-instance-detail', strict_slash=True),
 
-		# projects, clouds, bids and wisps
+		# projects
 		RedirectRoute('/projects/list/', projecthandlers.ProjectListHandler, name='account-projects', strict_slash=True),
 		RedirectRoute('/projects/new/', projecthandlers.ProjectNewHandler, name='account-projects-new', strict_slash=True),
-		RedirectRoute('/projects/<project_id>/', projecthandlers.ProjectDetailHandler, name='account-projects-detail', strict_slash=True),
+		RedirectRoute('/projects/<project_id>/', projecthandlers.ProjectViewHandler, name='account-projects-view', strict_slash=True),
+		RedirectRoute('/projects/<project_id>/edit/', projecthandlers.ProjectEditHandler, name='account-projects-detail', strict_slash=True),
 		RedirectRoute('/projects/<project_id>/<action>/', projecthandlers.ProjectMethodHandler, name='account-projects-method', strict_slash=True),
 		
-		RedirectRoute('/clouds/', cloudhandlers.CloudHandler, name='account-clouds', strict_slash=True),
-		RedirectRoute('/clouds/<cloud_id>/', cloudhandlers.CloudConfigureHandler, name='account-clouds-configure', strict_slash=True),
-		RedirectRoute('/clouds/<cloud_id>/instances/<instance_id>/', cloudhandlers.CloudRemoveInstanceHandler, name='clouds-remove-instance', strict_slash=True),
-		RedirectRoute('/wisps/', wisphandlers.WispHandler, name='account-wisps', strict_slash=True),
+		# clouds
+		RedirectRoute('/clouds/list/', cloudhandlers.CloudListHandler, name='account-clouds', strict_slash=True),
+		RedirectRoute('/clouds/<cloud_id>/edit/', cloudhandlers.CloudEditHandler, name='account-clouds-configure', strict_slash=True),
+		RedirectRoute('/clouds/<cloud_id>/instances/<instance_id>/', cloudhandlers.CloudInstanceHandler, name='clouds-remove-instance', strict_slash=True),
+		
+		# wisps
+		RedirectRoute('/wisps/list/', wisphandlers.WispListHandler, name='account-wisps', strict_slash=True),
 		RedirectRoute('/wisps/new/', wisphandlers.WispNewHandler, name='account-wisps-new', strict_slash=True),
-		RedirectRoute('/wisps/<wisp_id>/', wisphandlers.WispDetailHandler, name='account-wisps-detail', strict_slash=True),		
+		RedirectRoute('/wisps/<wisp_id>/edit/', wisphandlers.WispEditHandler, name='account-wisps-detail', strict_slash=True),		
 
-		# appliances and groups
-		RedirectRoute('/appliances/', appliancehandlers.ApplianceHandler, name='account-appliances', strict_slash=True),
+		# appliances
+		RedirectRoute('/appliances/list/', appliancehandlers.ApplianceListHandler, name='account-appliances', strict_slash=True),
 		RedirectRoute('/appliances/new/', appliancehandlers.ApplianceNewHandler, name='account-appliances-new', strict_slash=True),
-		RedirectRoute('/appliances/<appliance_id>/', appliancehandlers.ApplianceConfigureHandler, name='account-appliances-configure', strict_slash=True),
-		RedirectRoute('/appliances/<appliance_id>/status/', appliancehandlers.ApplianceStatusHandler, name='account-appliances-configure', strict_slash=True),
-		RedirectRoute('/groups/', grouphandlers.GroupHandler, name='account-groups', strict_slash=True),
-		RedirectRoute('/groups/<group_id>/', grouphandlers.GroupConfigureHandler, name='account-groups-configure', strict_slash=True),
-		RedirectRoute('/groups/<group_id>/members/', grouphandlers.GroupMemberHandler, name='account-groups-members', strict_slash=True),
-		RedirectRoute('/groups/<group_id>/members/<member_id>/', grouphandlers.GroupMemberConfigureHandler, name='account-groups-members-configure', strict_slash=True),
+		RedirectRoute('/appliances/<appliance_id>/', appliancehandlers.ApplianceViewHandler, name='account-appliances-view', strict_slash=True),
+		RedirectRoute('/appliances/<appliance_id>/edit/', appliancehandlers.ApplianceEditHandler, name='account-appliances-configure', strict_slash=True),
+		
+		# groups
+		RedirectRoute('/groups/list/', grouphandlers.GroupListHandler, name='account-groups', strict_slash=True),
+		RedirectRoute('/groups/<group_id>/edit/', grouphandlers.GroupEditHandler, name='account-groups-configure', strict_slash=True),
+		RedirectRoute('/groups/<group_id>/edit/members/', grouphandlers.GroupMemberHandler, name='account-groups-members', strict_slash=True),
+		RedirectRoute('/groups/<group_id>/edit/members/<member_id>/', grouphandlers.GroupMemberEditHandler, name='account-groups-members-configure', strict_slash=True),
 		RedirectRoute('/invites/', grouphandlers.GroupInviteHandler, name='account-groups-invites', strict_slash=True),
 
 		# api
@@ -88,6 +75,24 @@ _routes = [
 		RedirectRoute('/api/v1/appliances/geopoints/', apihandlers.ApplianceGeoPoints, name='api-appliances-geopoints', strict_slash=True),
 		RedirectRoute('/api/v1/bids/', apihandlers.BidsHandler, name='api-bids', strict_slash=True),
 		RedirectRoute('/api/v1/bids/<token>/', apihandlers.BidsDetailHandler, name='api-bids-detail', strict_slash=True),
+
+		# tasks
+		RedirectRoute('/tasks/sendinvite/', emailhandlers.SendEmailInviteHandler, name='tasks-sendinvite', strict_slash=True),
+		RedirectRoute('/tasks/instances/', taskhandlers.InstancesHandler, name='tasks-instances', strict_slash=True),
+		RedirectRoute('/tasks/instancebids/', taskhandlers.InstanceBidsHandler, name='tasks-instancebids', strict_slash=True),
+		RedirectRoute('/tasks/appliances/', taskhandlers.AppliancesHandler, name='tasks-appliances', strict_slash=True),
+		RedirectRoute('/tasks/wisps/', taskhandlers.AnonymousWispHandler, name='tasks-anonymous-wisps', strict_slash=True),
+	    RedirectRoute('/tasks/mail/', sitehandlers.SendEmailHandler, name='taskqueue-send-email', strict_slash=True),
+
+		# admin
+		RedirectRoute('/admin/', adminhandlers.AdminHandler, name='admin', strict_slash=True),
+		RedirectRoute('/admin/users/', adminhandlers.UsersHandler, name='admin-users', strict_slash=True),
+		RedirectRoute('/admin/users/export/', adminhandlers.UsersExportHandler, name='admin-users-export', strict_slash=True),
+		RedirectRoute('/admin/flavors/', adminhandlers.FlavorsListHandler, name='admin-flavors', strict_slash=True),
+		RedirectRoute('/admin/flavors/<flavor_id>/', adminhandlers.FlavorsActionsHandler, name='admin-flavors-action', strict_slash=True),
+		RedirectRoute('/admin/images/', adminhandlers.ImagesListHandler, name='admin-images', strict_slash=True),
+		RedirectRoute('/admin/images/<image_id>/', adminhandlers.ImagesActionsHandler, name='admin-images-action', strict_slash=True),
+		RedirectRoute('/admin/groups/', adminhandlers.GroupsHandler, name='admin-groups', strict_slash=True),
 
 		# blog handlers
 		RedirectRoute('/blog/', bloghandlers.BlogHandler, name='blog', strict_slash=True),

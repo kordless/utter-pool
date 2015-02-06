@@ -11,7 +11,7 @@ from web.basehandler import BaseHandler
 from web.basehandler import user_required
 
 
-class CloudHandler(BaseHandler):
+class CloudListHandler(BaseHandler):
 	@user_required
 	def get(self):
 		# lookup user's auth info
@@ -36,7 +36,7 @@ class CloudHandler(BaseHandler):
 			'channel_token': channel_token 
 		}
 
-		return self.render_template('cloud/clouds.html', **params)
+		return self.render_template('cloud/list.html', **params)
 
 	@user_required
 	def post(self):
@@ -77,7 +77,7 @@ class CloudHandler(BaseHandler):
 
 
 # provide editing for cloud instance		
-class CloudRemoveInstanceHandler(BaseHandler):
+class CloudInstanceHandler(BaseHandler):
 	@user_required
 	def delete(self, cloud_id = None, instance_id = None):
 		# hangout for a second
@@ -104,7 +104,7 @@ class CloudRemoveInstanceHandler(BaseHandler):
 
 
 # provide editing for cloud object		
-class CloudConfigureHandler(BaseHandler):
+class CloudEditHandler(BaseHandler):
 	@user_required
 	def get(self, cloud_id = None):
 		# lookup user's auth info
@@ -132,7 +132,7 @@ class CloudConfigureHandler(BaseHandler):
 			'channel_token': channel_token 
 		}
 
-		return self.render_template('cloud/cloud_manage.html', **params)
+		return self.render_template('cloud/edit.html', **params)
 	
 	@user_required
 	def post(self, cloud_id = None):

@@ -54,7 +54,7 @@ h1 {
 .team {
 	overflow: hidden;
 	padding-left: 0px;
-	margin-top: 10px;
+	margin-top: 40px;
 	margin-bottom: 48px;
 }
 .team li {
@@ -63,9 +63,9 @@ h1 {
   width: 208px;
   height: 208px;
   margin-right: 20px;
-	list-style-type: none;
-	display: inline-block !important;
-	float: none !important;
+  list-style-type: none;
+  display: inline-block !important;
+  float: none !important;
 }
 
 .team a {

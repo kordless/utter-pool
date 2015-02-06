@@ -30,6 +30,10 @@ html, body {
   margin-bottom: 20px;
 }
 
+.blurb a {
+  color: #fff;
+}
+
 #heroimage {
   width: 570px;
   height: 333px;

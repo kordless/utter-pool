@@ -20,12 +20,11 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
-  <div class="row">
-    <div class="col-md-9">
-      <div class="row">
-        <div class="col-md-1 col-sm-1">
-          <img src="{{ article_gravatar_url }}" class="img-rounded avatar" alt="Author Image">
+<div class="inverse">
+  <div class="container">
+      <div class="row author-banner">
+        <div class="col-md-1">
+          <img height=120% width=120% src="{{ article_gravatar_url }}" class="img-rounded avatar" alt="Author Image">
         </div>
         <div class="col-md-3 col-sm-3">
           <span>{{ article_created }}</span>
@@ -34,6 +33,11 @@
           </div>
         </div>
       </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col-md-9">
       <div class="post">
         {{ article_html|safe }}
       </div>

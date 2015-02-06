@@ -12,7 +12,7 @@ from web.models.models import User, Appliance, Group, GroupMembers
 from web.basehandler import BaseHandler
 from web.basehandler import user_required
 
-class GroupHandler(BaseHandler):
+class GroupListHandler(BaseHandler):
 	@user_required
 	def get(self):
 		# lookup user's auth info
@@ -40,7 +40,7 @@ class GroupHandler(BaseHandler):
 			'channel_token': channel_token 
 		}
 
-		return self.render_template('groups/groups.html', **params)
+		return self.render_template('groups/list.html', **params)
 
 	@user_required
 	def post(self):
@@ -89,8 +89,8 @@ class GroupHandler(BaseHandler):
 	def form(self):
 		return forms.GroupForm(self)
 
-# http://example.com/groups/5645717330722816/
-class GroupConfigureHandler(BaseHandler):
+# http://example.com/groups/5645717330722816/edit/
+class GroupEditHandler(BaseHandler):
 	@user_required
 	def get(self, group_id = None):
 		# lookup user's auth info
@@ -138,7 +138,7 @@ class GroupConfigureHandler(BaseHandler):
 			'channel_token': channel_token 
 		}
 
-		return self.render_template('groups/group_manage.html', **params)
+		return self.render_template('groups/edit.html', **params)
 
 	@user_required
 	def post(self, group_id = None):
@@ -298,7 +298,7 @@ class GroupMemberHandler(BaseHandler):
 
 # handle removal of users from the group
 # http://example.com/groups/5645717330722816/members/6428569609699328/
-class GroupMemberConfigureHandler(BaseHandler):
+class GroupMemberEditHandler(BaseHandler):
 	@user_required
 	def delete(self, group_id = None, member_id = None):
 		# lookup user's auth info

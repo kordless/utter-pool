@@ -51,8 +51,10 @@ class NewProjectForm(BaseForm):
 
 class LaunchProjectForm(BaseForm):
     ssh_key = fields.TextAreaField('Public SSH Key', [validators.Length(max=2048)]) 
+    provider = fields.SelectField('Provider')
+    flavor = fields.SelectField('Flavor')
 
-
+    
 # form validators
 def validate_address_field(form, field):
     if not validate_address(field.data) and field.data != "":
@@ -69,11 +71,11 @@ class ProjectForm(BaseForm):
     address = fields.TextField('Payment Address', [validate_address_field])
     amount = fields.SelectField('Donation Percentage', choices=[('50', "50% of Instance Cost"), ('100', "100% of Instance Cost (even split)"), ('200', "200% of Instance Cost")])
     vpus = fields.SelectField('Minimum VPUs', choices=[('1', "1 VPU"), ('2', "2 VPUs"), ('4', "4 VPUs")])
-    mem = fields.SelectField('Minimum Memory', choices=[('512', "512MB of RAM"), ('1024', "1GB of RAM"), ('2048', "2GB of RAM"), ('4096', "4GB of RAM"), ('8192', "8GB of RAM")])
+    memory = fields.SelectField('Minimum Memory', choices=[('512', "512MB of RAM"), ('1024', "1GB of RAM"), ('2048', "2GB of RAM"), ('4096', "4GB of RAM"), ('8192', "8GB of RAM")])
     disk = fields.SelectField('Minimum Disk', choices=[('10', "10GB of Disk"), ('20', "20GB of Disk"), ('40', "40GB of Disk"), ('80', "80GB of Disk")])
     image = fields.SelectField('Image')
     dynamic_image_url = fields.TextField('Dynamic Image URL', [validate_image, validators.Length(max=1024)])
-
+    dynamic_image_name = fields.TextField('Dynamic Image Name', [])
 
 # form validators
 def validate_dynamic_image(form, field):

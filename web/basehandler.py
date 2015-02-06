@@ -285,8 +285,10 @@ class BaseHandler(webapp2.RequestHandler):
 		if self.user:
 			try:
 				user_info = models.User.get_by_id(long(self.user_id))
-				if users.provider:
+				appliances = models.Appliance.get_by_user(user_info.key)
+				if appliances:
 					return True
+
 			except AttributeError, e:
 				pass
 

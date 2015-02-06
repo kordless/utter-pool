@@ -1,5 +1,5 @@
 html, body {
-  padding-top: 40px;
+  padding-top: 25px;
 }
 .page-header {
   margin-top: 0px;
@@ -7,7 +7,7 @@ html, body {
 /* blog pages */
 .avatar {
 	padding-right: 0px;
-  margin-right: 0px;
+	margin-right: 0px;
 }
 .article-owner {
 	padding-top: 2px;
@@ -32,7 +32,13 @@ a.btn-comments {
 	color: white;
 	margin-bottom: 60px;
 }
-
+.inverse {
+	background-color: #252525;
+	color: #fff;
+	padding-left: 20px;
+	padding-bottom: 30px;
+	margin-bottom: 20px;
+}
 /* create forms */
 .help-inline {
 	color: #d00;
@@ -61,4 +67,8 @@ a.btn-comments {
 }
 .table {
 	font-size: 16px;
+}
+.author-banner {
+	padding-top: 32px;
+	font-size: 18px;
 }

@@ -4,13 +4,14 @@ import json
 import webapp2
 
 from google.appengine.api import channel
+from google.appengine.ext import ndb
 
 from lib.github import github
 
 import config
 
 import web.forms as forms
-from web.models.models import User, Project, Image
+from web.models.models import User, Project, Image, Appliance, Group, Flavor
 from web.basehandler import BaseHandler
 from web.basehandler import user_required
 
@@ -95,7 +96,7 @@ class ProjectNewHandler(BaseHandler):
 		url = self.form.url.data.strip()
 		
 		# check if we have it already
-		if Project.get_by_user_url(user_info.key, url):
+		if Project.get_by_url(url):
 			self.add_message("A project with that URL already exists.", "error")
 			return self.redirect_to('account-projects')		
 
@@ -139,7 +140,7 @@ class ProjectNewHandler(BaseHandler):
 
 
 # provide editing for projects		
-class ProjectDetailHandler(BaseHandler):
+class ProjectEditHandler(BaseHandler):
 	@user_required
 	def get(self, project_id = None):
 		# lookup user's auth info
@@ -158,7 +159,7 @@ class ProjectDetailHandler(BaseHandler):
 		self.form.address.data = project.address
 		self.form.amount.data = project.amount
 		self.form.vpus.data = project.vpus
-		self.form.mem.data = project.mem
+		self.form.memory.data = project.memory
 		self.form.disk.data = project.disk
 		self.form.dynamic_image_url.data = project.dynamic_image_url
 
@@ -179,7 +180,7 @@ class ProjectDetailHandler(BaseHandler):
 			'channel_token': channel_token 
 		}
 
-		return self.render_template('project/manage.html', **params)
+		return self.render_template('project/edit.html', **params)
 	
 	@user_required
 	def post(self, project_id = None):
@@ -231,8 +232,8 @@ class ProjectDetailHandler(BaseHandler):
 		# pulldowns (no errors)
 		vpus = self.form.vpus.data
 		project.vpus = int(vpus)
-		mem = self.form.mem.data
-		project.mem = int(mem)
+		memory = self.form.memory.data
+		project.memory = int(memory)
 		disk = self.form.disk.data
 		project.disk = int(disk)
 		image = self.form.image.data
@@ -284,6 +285,10 @@ class ProjectMethodHandler(BaseHandler):
 		# load the project in question
 		project = Project.get_by_id(long(project_id))
 
+		# deny if not owner
+		if project.owner != user_info.key:
+			return
+
 		# refresh
 		if action == 'refresh':
 			# sync if project exists and the user is owner
@@ -309,6 +314,134 @@ class ProjectMethodHandler(BaseHandler):
 		channel_token = self.request.get('channel_token')
 		channel.send_message(channel_token, 'reload')
 		return
+
+
+# returns list of public projects or auto-navigates to project if coming from github
+class ProjectsHandler(BaseHandler):
+	def get(self):
+		# check for referer (only works SSL to SSL site)
+		url = ""
+		if self.request.referer:
+			if config.github_url in self.request.referer:
+				url = self.request.referer
+
+		# if we have a URL, we look it up
+		if url:
+			project = App.get_by_url(user_info.key, url)
+			if project:
+				# go to the existing project
+				return self.redirect_to('account-project-view', project_id = project.key.id())
+
+		# load all public projects
+		projects = Project.get_public()
+
+		# params build out
+		params = {
+			'projects': projects
+		}
+
+		return self.render_template('site/projects.html', **params)
+
+
+# provides launches for projects
+class ProjectViewHandler(BaseHandler):
+	def get(self, project_id = None):
+		project = Project.get_by_id(long(project_id))
+		# if no project
+		if not project:
+			return self.redirect_to('projects')
+
+		if not project.public:
+			# see if we have a user
+			try:
+				user_info = User.get_by_id(long(self.user_id))
+				if user_info.key != project.owner:
+					raise Exception
+
+			except:
+				self.add_message("You must be the owner to do this.", "fail")
+				return self.redirect_to('projects')
+		else:
+			try:
+				user_info = User.get_by_id(long(self.user_id))
+			except:
+				user_info = None
+
+		# define minimum specifications for the instance
+		specs = {
+			'vpus': project.vpus,
+			'memory': project.memory,
+			'disk': project.disk
+		}
+
+		# empty forms
+		self.form.provider.choices = []
+		self.form.flavor.choices = []
+
+		# dict of providers
+		providers = {}
+
+		# find the all public provider's appliances and add to providers object
+		appliances = Appliance.get_by_group(None)
+		for appliance in appliances:
+			providers[appliance.key.id()] = {
+				'name': "%s (Public)" % appliance.name,
+				'location': [appliance.location.lat, appliance.location.lon],
+				'flavors': []
+			}
+
+		# if there is a user, find his groups and do the same with appliances in those groups
+		if user_info:
+			groups = Group.get_by_owner(user_info.key)
+			for group in groups:
+				appliances = Appliance.get_by_group(group.key)
+				for appliance in appliances:
+					providers[str(appliance.key.id())] = {
+						'name': "%s of %s (Hybrid Group)" % (appliance.name, group.name),
+						'location': [appliance.location.lat, appliance.location.lon],
+						'flavors': []
+					}
+
+		# iterate over the dictionary of providers
+		for provider in providers:
+			# find the list of flavors for this provider which support this project
+			flavors = Flavor.flavors_with_min_specs_by_appliance_on_sale(
+				specs, 
+				ndb.Key('Appliance', long(provider))
+			)
+
+			# add provider to the form and the flavors to provider object if flavors exist
+			if flavors:
+				# insert this provider's appliance into the form
+				self.form.provider.choices.insert(0, (provider, providers[provider]['name']))
+
+				# insert flavors into object
+				for flavor in flavors:
+					providers[provider]['flavors'].append(
+						{
+							'id': str(flavor.key.id()),
+							'name': flavor.name,
+							'description': flavor.description
+						}
+					)
+
+		# setup channel to do page refresh
+		channel_token = 'changeme'
+		refresh_channel = channel.create_channel(channel_token)
+
+		# params build out
+		params = {
+			'project': project,
+			'providers': json.dumps(providers),
+			'refresh_channel': refresh_channel,
+			'channel_token': channel_token 
+		}
+
+		return self.render_template('project/view.html', **params)
+
+	@webapp2.cached_property
+	def form(self):
+		return forms.LaunchProjectForm(self)
 
 """
 Old methods for showing demo bid launches

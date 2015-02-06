@@ -1,0 +1,161 @@
+{% import "macros.html" as macros %}
+{% extends base_layout %}
+
+{% block title %}Projects :: {{ project.name }} {% endblock %}
+
+{% block description %}Let's launch {{ project.name }}.{% endblock %}
+
+{% block page_styles %}
+  <link href="/css/demo.css" rel="stylesheet">
+  <link href="/css/docs.css" rel="stylesheet">
+{% endblock %}
+
+{% block navbar %}
+  {% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="inverse">
+  <div class="container">
+    <div class="row">
+      <div class="logo col-md-1">
+        <img src="{{ project.icon_url }}">
+      </div>
+      <div class="col-md-10">
+        <h1>{{ project.name }}</h1>
+        <p class="blurb">{{ project.description }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col-md-10">
+      <h3 id="step">Step #1: Reserve Your Instance</h3>
+      <p>If you would like shell access to the instance after it starts, please paste a <strong>public SSH key</strong> in the field below. Select the provider and flavor you would like to launch this instance on and then click <strong>Reserve Instance</strong> to locate and reserve an instance for payment.</p>
+      <div class="row form-group">
+        <div class="col-md-12">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+          <div class="row">
+            {{ macros.input(form, "provider", "Cloud Provider", "col-xs-6", class="form-control pulldown") }}
+          </div>
+          <div class="row">
+            {{ macros.input(form, "flavor", "Flavor", "col-xs-8", class="form-control pulldown") }}
+          </div>
+          <div class="row">
+            {{ macros.input(form, "ssh_key", "Public SSH Key (optional)", "col-xs-12", class="form-control form-ssh-key", rows=4, placeholder="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAklOUpkDHrfHY17SbrmTIpNLTGK9Tjom/BWDSUGPl+nafzlHDTYW7hdI4yZ5ew18JH4JW9jbhUFrviQzM7xlELEVf4h9lFX5QVkbPppSwg0cda3Pbv7kOdJ/MTyBlWXFCR+HAo3FXRitBqxiX1nKhXpHAZsMciLq8V6RjsNAQwdsdMFvSlVK/7XAt3FaoJoAsncM1Q9x5+3V0Ww68/eIFmb1zuUFljQJKprrX88XypNDvjYNby6vw/Pb0rwert/EnmZ+AW4OZPnTPI89ZPmVMLuayrD2cE86Z/il8b+gw3r3+1nKatmIkjn2so1d01QraTlMqVSsbxNrRFi9wrf+M7Q== anonymous@bitcoin.local") }}
+          </div>
+        </div>
+      </div>
+      <div class="launch-buttons">
+        <button type="button" id="launch-button" class="btn btn-success">Reserve Instance</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="/js/jquery.qrcode.js"></script>
+<script type="text/javascript" src="/js/qrcode.js"></script>
+
+  <script type="text/javascript">
+    $().ready(function() {
+      // list of provider's various flavors which match project specs
+      {#
+      // the {{ providers }} object is safe because the appliance name, the only
+      // user editable item in this object, is stripped when it is submitted by the 
+      // user during POST creation and update in appliancehandlers.py
+      #}
+      var providers = {{ providers|safe }};
+
+
+
+      var update_pulldowns = function() {
+        // populate flavor pulldown based on provider ID
+        var provider = $("#provider option:selected").val();
+        
+        // empty the pulldown  
+        $('#flavor').empty();
+
+        // loop through the flavors
+        $.each( providers[provider].flavors, function(index, flavor) {
+          // update the flavor pulldown
+          $("<option />", {
+            val: flavor.id,
+            text: flavor.description
+          }).appendTo('#flavor');
+        });
+      }
+
+      update_pulldowns();
+
+      // crate wisps
+      var create_wisp = function(ssh_key) {
+        // create wisp data
+        var wisp_post_data = {
+          "ssh_key": ssh_key,
+          "post_creation": "#cloud-init\nhostname: coreos-demo\nmanage_etc_hosts: true\n",
+          "dynamic_image_url": "http://alpha.release.core-os.net/amd64-usr/current/coreos_production_openstack_image.img.bz2",
+          "image_disk_format": "qcow2",
+          "image_container_format": "bare"
+        }
+
+        // create a new wisp
+        $.ajax({
+          type: "POST",
+          url: "{{ uri_for('api-wisp') }}",
+          data: JSON.stringify(wisp_post_data),
+          dataType: "json",
+          processData: false
+        }).fail(function(data) {
+          alertify.error(data.responseJSON.result.message);
+        }).done(function(data) {
+          // create instance bid
+          var wisp_id = data.result.wisp.id;
+          var bid_post_data = {
+            "flavor": "m2048.v2.d30.e0.i0",
+            "wisp_id": data.result.wisp.id
+          }
+
+          // create a new bid
+          $.ajax({
+            type: "POST",
+            url: "{{ uri_for('api-bids') }}",
+            data: JSON.stringify(bid_post_data),
+            dataType: "json",
+            processData: false
+          }).fail(function(data) {
+            if (data.responseJSON.result.bid) {
+              // go to bid/instance page
+              window.location = data.responseJSON.result.bid.token+"/";
+            } else {
+              alertify.error(data.responseJSON.result.message);
+              alertify.log("Please try again in a few minutes.")
+              setTimeout(function() {
+                window.location = "{{ uri_for('projects') }}";
+              }, 3000);
+            }
+          }).done(function(data) {
+            console.log(data.result);
+            // go to bid/instance page
+            window.location = data.result.bid.token+"/";
+          });
+
+        });
+      }
+      // end crating of wisp
+
+      // enable or disable button?
+      var launch_keys_disabled = false;
+
+      // launch
+      $('#launch-button').click(function() {
+        $('#launch-button').attr('disabled', 'disabled');
+        create_wisp("");
+      })
+
+    });
+  </script>
+{% endblock %}

@@ -11,7 +11,7 @@ from web.models.models import Flavor, Image, Appliance, Group, Cloud, Wisp
 from web.basehandler import BaseHandler
 from web.basehandler import user_required
 
-class WispHandler(BaseHandler):
+class WispListHandler(BaseHandler):
 	@user_required
 	def get(self):
 		# lookup user's auth info
@@ -43,7 +43,7 @@ class WispHandler(BaseHandler):
 		if not default:
 			self.add_message("Please set a wisp to be default!", "error")
 
-		return self.render_template('wisp/wisps.html', **params)
+		return self.render_template('wisp/list.html', **params)
 
 class WispNewHandler(BaseHandler):
 	@user_required
@@ -148,7 +148,7 @@ class WispNewHandler(BaseHandler):
 	def form(self):
 		return forms.WispForm(self)
 
-class WispDetailHandler(BaseHandler):
+class WispEditHandler(BaseHandler):
 	@user_required
 	def get(self, wisp_id = None):
 		# lookup user's auth info
@@ -198,7 +198,7 @@ class WispDetailHandler(BaseHandler):
 				'channel_token': channel_token 
 			}
 
-			return self.render_template('wisp/wisp_detail.html', **params)
+			return self.render_template('wisp/edit.html', **params)
 		
 		else:
 			return self.redirect_to('account-wisps')

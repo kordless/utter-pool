@@ -18,7 +18,6 @@ from google.appengine.api import channel
 import config
 import web.forms as forms
 import web.models.models as models
-from web.models.models import InstanceBid, Instance, Project
 
 from lib import utils, httpagentparser
 from web.basehandler import BaseHandler
@@ -128,11 +127,6 @@ class AboutHandler(BaseHandler):
 	@webapp2.cached_property
 	def form(self):
 		return forms.AboutForm(self)
-
-
-class ProjectsHandler(BaseHandler):
-	def get(self):
-		return self.render_template('site/projects.html')
 
 
 class DocsHandler(BaseHandler):

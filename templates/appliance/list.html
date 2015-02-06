@@ -1,7 +1,7 @@
 {% import "macros.html" as macros %}
 {% extends base_layout %}
 
-{% block title %}Appliances :: {% endblock %}
+{% block title %}Appliances List :: {% endblock %}
 
 {% block page_styles %}
   <link href="/css/configure.css" rel="stylesheet">
@@ -36,7 +36,7 @@
 <div class="container content">
   <div class="row">
     <div class="col-md-2">
-    {{ macros.side_menu("appliances", user_id) }}
+    {{ macros.side_menu("appliances", user_id, provider) }}
     </div>
     <div class="col-md-9">
       <div class="row">
@@ -67,7 +67,7 @@
                   <tbody>
                     {% for appliance in appliances %}
                     <tr>
-                      <td><a href="{{ uri_for('account-appliances-configure', self.request, appliance_id=appliance.key.id()) }}">{{ appliance.name }}</a></td>
+                      <td><a href="{{ uri_for('account-appliances-view', self.request, appliance_id=appliance.key.id()) }}">{{ appliance.name }}</a></td>
                       <td>{% if appliance.group %}{{ appliance.group.get().name }}{% else %}Public{% endif %}</td>
                       <td>{{ appliance.token|truncate(32, killwords=True) }}</td>
                       <td>{{ appliance.updated | appliance_update }}</td>
@@ -117,7 +117,7 @@
     $('button[id^="edit-"]').each(function(index){
       $('#'+this.id).click(function() {
         appliance_id = this.id.split("-").pop();
-        window.location = appliance_id+"/"
+        window.location = "/appliances/"+appliance_id+"/edit/";
       })
     });
 
@@ -130,7 +130,7 @@
         $('#delete-button').click(function() {
           $('#delete').modal('hide');
           $.ajax({
-            url: '/appliances/'+appliance_id+'/?_csrf_token='+csrf_token+'&channel_token='+channel_token,
+            url: '/appliances/'+appliance_id+'/edit/?_csrf_token='+csrf_token+'&channel_token='+channel_token,
             type: 'DELETE'
           });
         });

@@ -18,14 +18,22 @@
 {% endblock %}
 
 {% block content %}
+<div class="inverse">
+  <div class="container">
+    <div class="row">
+      <h1>Blog</h1>
+      <p class="blurb">&#8220;I am no poet, but if you think for yourselves, as I proceed, the facts will form a poem in your minds.&#8221; ― Michael Faraday</p>
+    </div>
+  </div>
+</div>
 <div class="container">
   <div class="row">
     <div class="col-md-9">
       {% for post in blogposts %}
         <div class="row">
-          <div class="col-md-1 col-sm-1">
-            <img src="{{ post.article_gravatar_url }}" class="img-rounded avatar" alt="Author Image">
-          </div>
+        <div class="col-md-1">
+          <img height=120% width=120% src="{{ post.article_gravatar_url }}" class="img-rounded avatar" alt="Author Image">
+        </div>
           <div class="col-md-3 col-sm-3">
             <span>{{ post.article_created }}</span>
             <div class="article-owner">

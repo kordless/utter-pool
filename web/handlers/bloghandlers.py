@@ -74,7 +74,7 @@ class BlogHandler(BaseHandler):
 					gravatar_hash = md5.new(owner_info.email.lower().strip()).hexdigest()
 				except:
 					gravatar_hash = md5.new(config.app_email.strip()).hexdigest()
-				article_gravatar_url = "https://www.gravatar.com/avatar/%s?s=48" % gravatar_hash
+				article_gravatar_url = "https://www.gravatar.com/avatar/%s?s=100" % gravatar_hash
 
 				# build entry
 				entry = {
@@ -294,7 +294,7 @@ class SlugHandler(BaseHandler):
 
 		# build gravatar URL
 		gravatar_hash = md5.new(owner_info.email.lower().strip()).hexdigest()
-		article_gravatar_url = "https://www.gravatar.com/avatar/%s?s=48" % gravatar_hash
+		article_gravatar_url = "https://www.gravatar.com/avatar/%s?s=100" % gravatar_hash
 
 		# date format
 		date_format = "%A, %d %b %Y"

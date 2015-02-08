@@ -133,8 +133,8 @@ git push
             <h2><small>Preview & Publish</strong></small></h2>
           </div>
           <div class="row">
-            <a target="_blank" href="{{ uri_for('account-projects-view', project_id=project.key.id()) }}">
-              <div class="col-md-3">
+            <a href="{{ uri_for('account-projects-view', project_id=project.key.id()) }}">
+              <div class="col-md-5">
                 <ul class="demos">
                   <li id="demo" class="software">
                     <b>{{ project.name }}</b>
@@ -196,6 +196,13 @@ git push
                 {{ macros.input(form, "dynamic_image_url", "Dynamic Image URL", "col-xs-10", placeholder="http://example.com/myfavoriteimage.img", class="form-control") }}
                 {{ macros.input(form, "dynamic_image_name", "Dynamic Image Name", "col-xs-10", placeholder="Ubuntu Utopic 14.10", class="form-control")}}
               </div>
+            </div>
+            <div class="section-header">
+              <h2><small>Instance Access</strong></small></h2>
+              <p>The following fields will be used to format instance access information for the user after launch.</p>
+            </div>
+            <div class="row">
+              {{ macros.input(form, "port", "Web Access Port", "col-xs-4", placeholder="80", class="form-control") }}
             </div>
             {% if not project.is_configured() %}
             </div>
@@ -275,7 +282,7 @@ git push
     $('#confirm-remove-button').click(function() {
       $('#delete').modal("hide");
       $.ajax({
-        url: '/projects/'+{{ project.key.id() }}+'/?_csrf_token='+csrf_token+'&channel_token='+channel_token,
+        url: '/projects/'+{{ project.key.id() }}+'/edit/?_csrf_token='+csrf_token+'&channel_token='+channel_token,
         type: 'DELETE'
       });
     });
@@ -315,6 +322,7 @@ git push
     $('#mem').val("{{ project.mem }}");
     $('#disk').val("{{ project.disk }}");
     $('#amount').val("{{ project.amount }}");
+    $('#image').val("{{ project.image.get().key.id() }}");
     {% endif %}
 
     // show image URL entry if set to dynamic

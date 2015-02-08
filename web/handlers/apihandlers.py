@@ -24,7 +24,7 @@ from lib.apishims import InstanceApiShim
 from web.basehandler import BaseHandler
 
 # note User is not used except to send to channel
-from web.models.models import User, Appliance, Wisp, Cloud, Instance, InstanceBid, Image, Flavor, LogTracking
+from web.models.models import User, Appliance, Wisp, Cloud, Instance, Project, InstanceBid, Image, Flavor, LogTracking
 
 from utter_libs.schemas import schemas
 from utter_libs.schemas.helpers import ApiSchemaHelper
@@ -841,16 +841,47 @@ class WispHandler(BaseHandler):
 		self.response.headers['Content-Type'] = "application/json"
 		self.response.headers['Access-Control-Allow-Origin'] = '*'
 
-		# see if we have our variables
+		# load various variables
 		body = json.loads(self.request.body)
+		
+		# SSH key (not required)
 		try:
 			ssh_key = body['ssh_key']
-			post_creation = body['post_creation']
-			dynamic_image_url = body['dynamic_image_url']
-			image_disk_format = body['image_disk_format']
-			image_container_format = body['image_container_format']
-
 		except:
+			ssh_key = ""
+
+		# project
+		try:
+			project_id = body['project_id']
+			project = Project.get_by_id(long(project_id))
+		except:
+			# not a big deal
+			pass
+
+		# if we don't have a project, look for post creation and image URL
+		if not project:
+			try:
+				post_creation = body['post_creation']
+			except:
+				post_creation = ""
+
+			try:
+				dynamic_image_url = body['dynamic_image_url']
+			except:
+				dynamic_image_url = ""
+
+		
+		# disk and container formats if they were sent (usually qcow/bare)
+		try:
+			image_disk_format = body['image_disk_format']
+		except:
+			image_disk_format = "qcow2"
+		try:
+			image_container_format = body['image_container_format']
+		except:
+			image_container_format = "bare"
+
+
 			params['message'] = "Wisp creation requires sshkey, post_creation, dynamic_image_url, image_disk_format and image_container_format to be set. You do not."
 			self.response.set_status(401)
 			return self.render_template('api/response.json', **params)

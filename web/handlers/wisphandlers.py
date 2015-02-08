@@ -7,7 +7,7 @@ from google.appengine.api import channel
 import config
 import web.forms as forms
 from web.models.models import User, LogVisit
-from web.models.models import Flavor, Image, Appliance, Group, Cloud, Wisp 
+from web.models.models import Flavor, Image, Appliance, Group, Cloud, Wisp, Project
 from web.basehandler import BaseHandler
 from web.basehandler import user_required
 
@@ -55,6 +55,12 @@ class WispNewHandler(BaseHandler):
 		channel_token = user_info.key.urlsafe()
 		refresh_channel = channel.create_channel(channel_token)
 
+		# load projects pulldown
+		self.form.project.choices = []
+		projects = Project.get_public()
+		for project in projects:
+			self.form.project.choices.insert(0, (str(project.key.id()), project.name))
+
 		# insert images into list for wisp
 		self.form.image.choices=[('custom', "Dynamic Image URL")]
 		images = Image.get_all()
@@ -73,6 +79,12 @@ class WispNewHandler(BaseHandler):
 	def post(self):
 		# lookup user's auth info
 		user_info = User.get_by_id(long(self.user_id))
+
+		# load projects pulldown
+		self.form.project.choices = []
+		projects = Project.get_public()
+		for project in projects:
+			self.form.project.choices.insert(0, (str(project.key.id()), project.name))
 
 		# insert images into list for wisp
 		self.form.image.choices=[('custom', "Dynamic Image URL")]
@@ -95,14 +107,20 @@ class WispNewHandler(BaseHandler):
 		callback_url = self.form.callback_url.data.strip()
 		default = self.form.default.data # no strip cause bool
 
+		# check if project is selected
+		if self.form.wisp_type.data.strip() == 'project':
+			project = Project.get_by_id(long(self.form.project.data.strip())).key
+		else:
+			project = None		
+
 		# hack up form to deal with custom image
 		if self.form.image.data.strip() == "custom":
 			image = None
 		else:
-			image = Image.get_by_id(int(self.form.image.data.strip())).key
-		
+			image = Image.get_by_id(long(self.form.image.data.strip())).key
+
 		# hack up form to deal with custom callback
-		if self.form.callback.data.strip() == "custom":
+		if self.form.wisp_type.data.strip() == "custom":
 			image = None
 			ssh_key = None
 			dynamic_image_url = None
@@ -129,7 +147,8 @@ class WispNewHandler(BaseHandler):
 			image_container_format = image_container_format,
 			image_disk_format = image_disk_format,
 			post_creation = post_creation,
-			callback_url = callback_url
+			callback_url = callback_url,
+			project = project
 		)
 		wisp.put()
 
@@ -161,6 +180,12 @@ class WispEditHandler(BaseHandler):
 		if not wisp:
 			return self.redirect_to('account-wisps')
 
+		# load projects pulldown
+		self.form.project.choices = []
+		projects = Project.get_public()
+		for project in projects:
+			self.form.project.choices.insert(0, (str(project.key.id()), project.name))
+
 		# insert images into list for wisp
 		self.form.image.choices=[('custom', "Dynamic Image URL")]
 		images = Image.get_all()
@@ -179,7 +204,7 @@ class WispEditHandler(BaseHandler):
 
 		# hack up the form a bit
 		if wisp.callback_url:
-			self.form.callback.data = "custom"
+			self.form.wisp_type.data = "custom"
 		elif wisp.dynamic_image_url:
 			self.form.image.data = "custom"
 		else:
@@ -215,6 +240,12 @@ class WispEditHandler(BaseHandler):
 		if not wisp:
 			return self.redirect_to('account-wisps')
 
+		# load projects pulldown
+		self.form.project.choices = []
+		projects = Project.get_public()
+		for project in projects:
+			self.form.project.choices.insert(0, (str(project.key.id()), project.name))
+
 		# insert images into list for wisp
 		self.form.image.choices=[('custom', "Dynamic Image URL")]
 		images = Image.get_all()
@@ -243,7 +274,7 @@ class WispEditHandler(BaseHandler):
 			image = Image.get_by_id(int(self.form.image.data.strip())).key
 
 		# hack up form to deal with custom callback
-		if self.form.callback.data.strip() == "custom":
+		if self.form.wisp_type.data.strip() == "custom":
 			image = None
 			ssh_key = None
 			dynamic_image_url = None

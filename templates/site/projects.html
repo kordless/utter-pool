@@ -17,24 +17,39 @@
 <div class="inverse">
   <div class="container">
     <div class="row">
-      <h1>Public Projects</h1>
-      <p class="blurb">The following Open Source projects can be launched and supported by paying with <strong>Bitcoin</strong>. Click one to get started!</p>
+      <div class="logo col-md-1">
+        <img src="/img/site/tldr.png">
+      </div>
+      <div class="col-md-10">
+        <h1>Public Projects</h1>
+        <p class="blurb">The following Open Source projects can be launched and supported by paying with <strong>Bitcoin</strong>. Click one to get started!</p>
+      </div>
     </div>
   </div>
 </div>
 <div class="container">
   <div class="row">
-    <ul class="demos">
       {% for project in projects %}
-      <li id="demo-{{ project.key }}" class="software">
-        <b>{{ project.name }}</b>
-        <a target="_blank" href="{{ project.url }}"><img src="/img/site/twitter.png" alt="Twitter"></a>
-        <a target="_blank" href="{{ project.url }}"><img src="/img/site/github.png" alt="{{ project.name }} on Github"></a>
-        <span><img src="{{ project.icon_url }}"></span>
-        <span class="mask"></span>
-      </li>
+      <a href="{{ uri_for('account-projects-view', project_id=project.key.id()) }}">
+      <div class="col-md-12">
+        <ul class="demos">
+          <li id="demo" class="software">
+            <b>{{ project.name }}</b>
+            <span><img src="{{ project.icon_url }}"></span>
+            <span class="mask"></span>
+          </li>
+        </ul>
+      </div>
+      </a>
       {% endfor %}
-    </ul>
+      {% if not projects %}
+      <div class="container">
+        <div class="text-center">
+          <h2>Oh dear, there were zero public projects found.</h2>
+          <p>Maybe you should <a href="/projects/new/">get to work</a> and create one!</p>
+        </div>
+      </div>
+      {% endif %}
   </div>
 </div>
 {% endblock %}
@@ -42,12 +57,7 @@
 {% block javascript %}
   <script type="text/javascript">
     $().ready(function() {
-      $('li[id^="demo-"]').each(function(index) {
-        $('#'+this.id).click(function() {
-          var demo = this.id.split("-").pop();
-          window.location = "/demo/"+demo+"/";
-        });
-      });
+
     });
   </script>
 {% endblock %}

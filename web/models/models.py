@@ -477,6 +477,7 @@ class Project(ndb.Model):
 	install_link = ndb.StringProperty()
 	icon_url = ndb.StringProperty()
 	icon_link = ndb.StringProperty()
+	port = ndb.IntegerProperty()
 	owner = ndb.KeyProperty(kind=User)
 	public = ndb.BooleanProperty(default=False)
 
@@ -539,6 +540,7 @@ class Wisp(ndb.Model):
 	default = ndb.BooleanProperty(default=False)
 	token = ndb.StringProperty()
 	remote_ip = ndb.StringProperty()
+	project = ndb.KeyProperty(kind=Project)
 
 	@classmethod
 	def get_by_remote_ip(cls, remote_ip):

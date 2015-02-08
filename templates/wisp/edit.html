@@ -49,7 +49,7 @@
                   <div class="row">
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
                     {{ macros.input(form, "name", "Name", "col-xs-10", placeholder="Awesome Instance Template", class="form-control required") }}
-                    {{ macros.input(form, "callback", "Callback Type", "col-xs-4", class="form-control pulldown") }}
+                    {{ macros.input(form, "wisp_type", "Wisp Type", "col-xs-4", class="form-control pulldown") }}
                     <div id="custom-callback" class="col-xs-12 form-padding hidden {% if form.callback_url.errors %}has-error{% endif %}">
                       <div class="row form-group" id="callback_url-field">
                         <div class="col-md-12">
@@ -66,12 +66,25 @@
                       </div>
                     </div>
                     <div id="custom-callback-hide">                  
-                      {{ macros.input(form, "image", "Image", "col-xs-6", class="form-control pulldown") }}
+                      {{ macros.input(form, "image", "Boot Image", "col-xs-6", class="form-control pulldown") }}
                       <div id="dynamic-image" class="hidden">
                         {{ macros.input(form, "dynamic_image_url", "Dynamic Image URL", "col-xs-10", placeholder="http://example.com/myfavoriteimage.img", class="form-control") }}
                       </div>
+                      <div id="image-disk-format" class="hidden">
+                        {{ macros.input(form, "image_disk_format", "Image Disk Format", "col-xs-6", value="qcow2", class="form-control") }}
+                      </div>
+                      <div id="image-container-format" class="hidden">
+                        {{ macros.input(form, "image_container_format", "Image Container Format", "col-xs-6", value="bare", class="form-control") }}
+                      </div>
+                    </div>
+                    <div id="custom-project-hide" class="hidden">
+                      {{ macros.input(form, "project", "Project", "col-xs-6", class="form-control pulldown") }}
+                    </div>
+                    <div id="custom-ssh-hide">
                       {{ macros.input(form, "ssh_key", "Authorized SSH Keys", "col-xs-10", class="form-control form-ssh-key", rows=6, placeholder="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAklOUpkDHrfHY17SbrmTIpNLTGK9Tjom/BWDSUGPl+nafzlHDTYW7hdI4yZ5ew18JH4JW9jbhUFrviQzM7xlELEVf4h9lFX5QVkbPppSwg0cda3Pbv7kOdJ/MTyBlWXFCR+HAo3FXRitBqxiX1nKhXpHAZsMciLq8V6RjsNAQwdsdMFvSlVK/7XAt3FaoJoAsncM1Q9x5+3V0Ww68/eIFmb1zuUFljQJKprrX88XypNDvjYNby6vw/Pb0rwert/EnmZ+AW4OZPnTPI89ZPmVMLuayrD2cE86Z/il8b+gw3r3+1nKatmIkjn2so1d01QraTlMqVSsbxNrRFi9wrf+M7Q== anonymous@bitcoin.local") }}
-                      {{ macros.input(form, "post_creation", "Cloud Configuration <a target='_blank' href='http://cloudinit.readthedocs.org/en/latest/topics/examples.html'>?</a>", "col-xs-8", class="form-control", rows=8, placeholder="#cloud-config") }}
+                    </div>
+                    <div id="custom-config-hide">
+                      {{ macros.input(form, "post_creation", "Cloud Configuration <a target='_blank' href='http://cloudinit.readthedocs.org/en/latest/topics/examples.html'>?</a>", "col-xs-10", class="form-control", rows=8, placeholder="#cloud-config") }}
                     </div>
                     <div class="col-xs-10 form-padding">
                       <label class="control-label" for="default">Default Wisp</label>
@@ -126,23 +139,43 @@
     });
 
     // configure form to show the right fields for custom settings
-    if ($('#callback option:selected').val() == "custom") {
+    if ($('#wisp_type option:selected').val() == "custom") {
       $('#custom-callback').removeClass('hidden');
       $('#custom-callback-hide').addClass('hidden');
+      $('#custom-project-hide').addClass('hidden');
     }
     if ($('#image option:selected').val() == "custom") {
       $('#dynamic-image').removeClass('hidden');
+      $('#image-disk-format').removeClass('hidden');
+      $('#image-container-format').removeClass('hidden');
+    }
+    // configure form to show fields for project type
+    if ($('#wisp_type option:selected').val() == "project") {
+      $('#custom-callback-hide').addClass('hidden');
+      $('#custom-callback').addClass('hidden');
+      $('#custom-project-hide').removeClass('hidden');
     }
 
     // show custom callback input and hide others
-    $('#callback').change(function() {
+    $('#wisp_type').change(function() {
       if ($('#callback option:selected').val() == "custom") {
         $('#custom-callback').removeClass('hidden');
         $('#custom-callback-hide').addClass('hidden');
+        $('#custom-config-hide').addClass('hidden');
+        $('#custom-ssh-hide').addClass('hidden');
+        $('#custom-project-hide').addClass('hidden');
+      } else if ($('#wisp_type option:selected').val() == "project") {
+        $('#custom-callback-hide').addClass('hidden');
+        $('#custom-callback').addClass('hidden');
+        $('#custom-config-hide').addClass('hidden');
+        $('#custom-ssh-hide').removeClass('hidden');
+        $('#custom-project-hide').removeClass('hidden');
       } else {
         $('#custom_callback_url').val('');
         $('#custom-callback').addClass('hidden');
         $('#custom-callback-hide').removeClass('hidden');
+        $('#custom-project-hide').addClass('hidden');
+        $('#custom-config-hide').removeClass('hidden');
       }
     });
 

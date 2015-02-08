@@ -13,7 +13,10 @@ import httplib2
 
 from google.appengine.api.users import NotAllowedError
 from google.appengine.api import users
+from google.appengine.api import urlfetch
+
 from webapp2_extras import jinja2
+from jinja2 import Environment, BaseLoader, FunctionLoader
 from webapp2_extras import auth
 from webapp2_extras import sessions
 
@@ -373,6 +376,17 @@ class BaseHandler(webapp2.RequestHandler):
 		"""
 		self.base_layout = layout
 
+	def loader(self, url):
+		return urlfetch.fetch(url).content
+		
+	def render_url(self, url, **kwargs):
+		env = Environment(loader=FunctionLoader(self.loader))
+		try:
+			self.response.headers['Content-Type'] = 'application/json'
+			self.response.write(env.get_template(url).render(kwargs))
+		except:
+			self.response.set_status(404)
+			
 	def render_template(self, filename, **kwargs):
 		# make all self.view variables available in jinja2 templates
 		if hasattr(self, 'view'):

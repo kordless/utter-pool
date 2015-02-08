@@ -11,7 +11,7 @@ from lib.github import github
 import config
 
 import web.forms as forms
-from web.models.models import User, Project, Image, Appliance, Group, Flavor
+from web.models.models import User, Project, Image, Appliance, Group, Flavor, InstanceBid
 from web.basehandler import BaseHandler
 from web.basehandler import user_required
 
@@ -117,6 +117,7 @@ class ProjectNewHandler(BaseHandler):
 		project.description = repo['description']
 		project.owner = user_info.key
 		project.public = False
+		project.port = 80
 		project.put()
 
 		# give it a second
@@ -161,6 +162,7 @@ class ProjectEditHandler(BaseHandler):
 		self.form.vpus.data = project.vpus
 		self.form.memory.data = project.memory
 		self.form.disk.data = project.disk
+		self.form.port.data = project.port
 		self.form.dynamic_image_url.data = project.dynamic_image_url
 
 		# insert images into list
@@ -237,6 +239,7 @@ class ProjectEditHandler(BaseHandler):
 		disk = self.form.disk.data
 		project.disk = int(disk)
 		image = self.form.image.data
+		port = self.form.port.data
 
 		# save the new project in our database
 		project.put()
@@ -343,6 +346,33 @@ class ProjectsHandler(BaseHandler):
 		return self.render_template('site/projects.html', **params)
 
 
+# render project files stored on github
+class ProjectComponentHandler(BaseHandler):
+	def get(self, project_id = None, component = None):
+		# get project and return github content
+		project = Project.get_by_id(long(project_id))
+		
+		# params build out
+		params = {
+			'project_name': project.name,
+			'project_url': project.url,
+			'donation_address': project.address,
+			'ipv4_address': '127.0.0.1',
+			'ipv6_address': '::1'
+		}
+
+		if project:
+			# return proxied github content
+			if component == 'README.md':
+				return self.render_url(project.readme_url, **params)
+			elif component == 'utterio.json':
+				return self.render_url(project.utterio_url, **params)
+			elif component == 'install.sh':
+				return self.render_url(project.install_url, **params)
+
+		self.response.set_status(404)
+		return
+
 # provides launches for projects
 class ProjectViewHandler(BaseHandler):
 	def get(self, project_id = None):
@@ -351,12 +381,20 @@ class ProjectViewHandler(BaseHandler):
 		if not project:
 			return self.redirect_to('projects')
 
+		# assume this user is not owner
+		owner = False
+
+		print self.render_url(project.json_url, {})
+
+		# determine if we can show the project
 		if not project.public:
 			# see if we have a user
 			try:
 				user_info = User.get_by_id(long(self.user_id))
 				if user_info.key != project.owner:
 					raise Exception
+				else:
+					owner = True
 
 			except:
 				self.add_message("You must be the owner to do this.", "fail")
@@ -364,6 +402,9 @@ class ProjectViewHandler(BaseHandler):
 		else:
 			try:
 				user_info = User.get_by_id(long(self.user_id))
+				if user_info.key == project.owner:
+					owner = True
+
 			except:
 				user_info = None
 
@@ -377,6 +418,9 @@ class ProjectViewHandler(BaseHandler):
 		# empty forms
 		self.form.provider.choices = []
 		self.form.flavor.choices = []
+
+		# plenty?
+		plenty = False
 
 		# dict of providers
 		providers = {}
@@ -412,6 +456,7 @@ class ProjectViewHandler(BaseHandler):
 
 			# add provider to the form and the flavors to provider object if flavors exist
 			if flavors:
+				plenty = True
 				# insert this provider's appliance into the form
 				self.form.provider.choices.insert(0, (provider, providers[provider]['name']))
 
@@ -433,6 +478,8 @@ class ProjectViewHandler(BaseHandler):
 		params = {
 			'project': project,
 			'providers': json.dumps(providers),
+			'plenty': plenty,
+			'owner': owner,
 			'refresh_channel': refresh_channel,
 			'channel_token': channel_token 
 		}
@@ -444,6 +491,40 @@ class ProjectViewHandler(BaseHandler):
 		return forms.LaunchProjectForm(self)
 
 """
+	def post(self, project_id = None):
+		# request basics
+		ip = self.request.remote_addr
+
+		# check if this IP has any other bids open
+		instancebid = InstanceBid.get_incomplete_by_ip(ip)
+
+		# if instance exists, 
+		# look up project
+		project = Project.get_by_id(long(project_id))
+		# if no project
+		if not project:
+			return self.redirect_to('projects')
+
+		# get the form parameters
+		provider_id = self.form.provider.data.strip()
+		flavor_id = self.form.flavor.data.strip()
+		ssh_key = self.form.ssh_key.data.strip()
+
+		# look up the passed in values
+		provider = Appliance.get_by_id(long(provider_id))
+		flavor = Flavor.get_by_id(long(flavor_id))
+
+		print provider
+		print flavor
+		# build out a wisp for the instance reservation
+
+		# grab an instance reservation matching provider and flavor
+
+		# forward to project instance payment page
+
+		pass
+
+
 Old methods for showing demo bid launches
 
 class DemosBidHandler(BaseHandler):

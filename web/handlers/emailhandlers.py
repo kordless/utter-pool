@@ -30,7 +30,7 @@ class SendEmailInviteHandler(BaseHandler):
 			body = """
 Howdy!
 
-You've been invited to the %s group on the %s Compute Pool by %s.  Acceptance of the group invite will require linking the site to your Google account.
+You've been invited to the %s group on %s by %s.  Acceptance of the group invite will require linking the site to your Google account.
 
 %s
 

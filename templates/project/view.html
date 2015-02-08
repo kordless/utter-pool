@@ -30,28 +30,53 @@
 </div>
 <div class="container">
   <div class="row">
+    {% if plenty %}
     <div class="col-md-10">
       <h3 id="step">Step #1: Reserve Your Instance</h3>
-      <p>If you would like shell access to the instance after it starts, please paste a <strong>public SSH key</strong> in the field below. Select the provider and flavor you would like to launch this instance on and then click <strong>Reserve Instance</strong> to locate and reserve an instance for payment.</p>
-      <div class="row form-group">
-        <div class="col-md-12">
-          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-          <div class="row">
-            {{ macros.input(form, "provider", "Cloud Provider", "col-xs-6", class="form-control pulldown") }}
-          </div>
-          <div class="row">
-            {{ macros.input(form, "flavor", "Flavor", "col-xs-8", class="form-control pulldown") }}
-          </div>
-          <div class="row">
-            {{ macros.input(form, "ssh_key", "Public SSH Key (optional)", "col-xs-12", class="form-control form-ssh-key", rows=4, placeholder="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAklOUpkDHrfHY17SbrmTIpNLTGK9Tjom/BWDSUGPl+nafzlHDTYW7hdI4yZ5ew18JH4JW9jbhUFrviQzM7xlELEVf4h9lFX5QVkbPppSwg0cda3Pbv7kOdJ/MTyBlWXFCR+HAo3FXRitBqxiX1nKhXpHAZsMciLq8V6RjsNAQwdsdMFvSlVK/7XAt3FaoJoAsncM1Q9x5+3V0Ww68/eIFmb1zuUFljQJKprrX88XypNDvjYNby6vw/Pb0rwert/EnmZ+AW4OZPnTPI89ZPmVMLuayrD2cE86Z/il8b+gw3r3+1nKatmIkjn2so1d01QraTlMqVSsbxNrRFi9wrf+M7Q== anonymous@bitcoin.local") }}
+      <p>Select the provider and flavor you would like to launch this instance on and then click <strong>Reserve Instance</strong> to locate and reserve an instance for payment. If you would like shell access to the instance after it starts, please paste a <strong>public SSH key</strong> in the field below.</p>
+      {% if not user_id %}
+      <p>An account is not necessary to launch an instance, but <a href="/login/?next={{ url|safe }}">linking a Google account</a> can make it easier to find it later.</p>
+      {% endif %}
+      <form id="form-project" action="{{ url|safe }}" method="post" class=""> 
+        <div class="row form-group">
+          <div class="col-md-12"> 
+              <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+              <div class="row">
+                {{ macros.input(form, "provider", "Cloud Provider", "col-xs-6", class="form-control pulldown") }}
+              </div>
+              <div class="row">
+                {{ macros.input(form, "flavor", "Flavor", "col-xs-8", class="form-control pulldown") }}
+              </div>
+              <div class="row">
+                {{ macros.input(form, "ssh_key", "Public SSH Key (optional)", "col-xs-12", class="form-control form-ssh-key", rows=4, placeholder="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAklOUpkDHrfHY17SbrmTIpNLTGK9Tjom/BWDSUGPl+nafzlHDTYW7hdI4yZ5ew18JH4JW9jbhUFrviQzM7xlELEVf4h9lFX5QVkbPppSwg0cda3Pbv7kOdJ/MTyBlWXFCR+HAo3FXRitBqxiX1nKhXpHAZsMciLq8V6RjsNAQwdsdMFvSlVK/7XAt3FaoJoAsncM1Q9x5+3V0Ww68/eIFmb1zuUFljQJKprrX88XypNDvjYNby6vw/Pb0rwert/EnmZ+AW4OZPnTPI89ZPmVMLuayrD2cE86Z/il8b+gw3r3+1nKatmIkjn2so1d01QraTlMqVSsbxNrRFi9wrf+M7Q== anonymous@bitcoin.local") }}
+              </div>
           </div>
         </div>
+        <div class="launch-buttons">
+          <button type="submit" id="launch-button" class="btn btn-success">Reserve Instance</button>
+          {% if owner %}
+          <button type="button" id="edit-button" class="btn btn-info">Edit Project</button>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+    {% else %}
+    <div class="col-md-10">
+      <h3 id="step">Step #1: Reserve Your Instance</h3>
+      <div class="bs-callout bs-callout-danger bs-callout-top">
+        <h4>Project Instance Unavailable</h4>
+        <p>A search for a minimum flavor size required by this project resulted in zero matches from inside the Intercloud. The minimum instance size required for this project is <strong>{{ project.memory }}MB of RAM, {{ project.vpus }} VPUs, and {{ project.disk }}GB of disk.</strong></p>
+        <p>This can be due to limited public instance resource availablity or a failure of an Intercloud appliance which previously supported this project. You may try again later, <a href="{{ uri_for('account-appliances-new')}}">add your own cluster</a>, or contact the project maintainer by visiting the <a href="{{ project.url }}">project's Github page</a>.</p>
+        <p>The StackMonkey admins have been notified of this event.</p>
       </div>
       <div class="launch-buttons">
-        <button type="button" id="launch-button" class="btn btn-success">Reserve Instance</button>
+        <button type="button" id="public-projects" class="btn btn-success">View Other Projects</button>
+        {% if owner %}
+        <button type="button" id="edit-button" class="btn btn-info">Edit Project</button>
+        {% endif %}
       </div>
-
     </div>
+    {% endif %}
   </div>
 </div>
 {% endblock %}
@@ -70,15 +95,15 @@
       #}
       var providers = {{ providers|safe }};
 
-
-
+      // function to update flavor pulldown
       var update_pulldowns = function() {
-        // populate flavor pulldown based on provider ID
+        // grab provider ID
         var provider = $("#provider option:selected").val();
         
-        // empty the pulldown  
+        // empty the flavor pulldown  
         $('#flavor').empty();
 
+        {% if plenty %}
         // loop through the flavors
         $.each( providers[provider].flavors, function(index, flavor) {
           // update the flavor pulldown
@@ -87,74 +112,26 @@
             text: flavor.description
           }).appendTo('#flavor');
         });
+        {% endif %}
       }
 
+      // run first page view
       update_pulldowns();
 
-      // crate wisps
-      var create_wisp = function(ssh_key) {
-        // create wisp data
-        var wisp_post_data = {
-          "ssh_key": ssh_key,
-          "post_creation": "#cloud-init\nhostname: coreos-demo\nmanage_etc_hosts: true\n",
-          "dynamic_image_url": "http://alpha.release.core-os.net/amd64-usr/current/coreos_production_openstack_image.img.bz2",
-          "image_disk_format": "qcow2",
-          "image_container_format": "bare"
-        }
+      // run when provider is changed
+      $("#provider").change(function () {
+        update_pulldowns();
+      }); 
 
-        // create a new wisp
-        $.ajax({
-          type: "POST",
-          url: "{{ uri_for('api-wisp') }}",
-          data: JSON.stringify(wisp_post_data),
-          dataType: "json",
-          processData: false
-        }).fail(function(data) {
-          alertify.error(data.responseJSON.result.message);
-        }).done(function(data) {
-          // create instance bid
-          var wisp_id = data.result.wisp.id;
-          var bid_post_data = {
-            "flavor": "m2048.v2.d30.e0.i0",
-            "wisp_id": data.result.wisp.id
-          }
+      // other projects
+      $('#public-projects').click(function() {
+        window.location = "{{ uri_for('projects') }}";
+      });
 
-          // create a new bid
-          $.ajax({
-            type: "POST",
-            url: "{{ uri_for('api-bids') }}",
-            data: JSON.stringify(bid_post_data),
-            dataType: "json",
-            processData: false
-          }).fail(function(data) {
-            if (data.responseJSON.result.bid) {
-              // go to bid/instance page
-              window.location = data.responseJSON.result.bid.token+"/";
-            } else {
-              alertify.error(data.responseJSON.result.message);
-              alertify.log("Please try again in a few minutes.")
-              setTimeout(function() {
-                window.location = "{{ uri_for('projects') }}";
-              }, 3000);
-            }
-          }).done(function(data) {
-            console.log(data.result);
-            // go to bid/instance page
-            window.location = data.result.bid.token+"/";
-          });
-
-        });
-      }
-      // end crating of wisp
-
-      // enable or disable button?
-      var launch_keys_disabled = false;
-
-      // launch
-      $('#launch-button').click(function() {
-        $('#launch-button').attr('disabled', 'disabled');
-        create_wisp("");
-      })
+      // edit, if possible
+      $('#edit-button').click(function() {
+        window.location = "edit/";
+      });
 
     });
   </script>

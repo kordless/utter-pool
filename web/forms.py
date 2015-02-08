@@ -54,7 +54,7 @@ class LaunchProjectForm(BaseForm):
     provider = fields.SelectField('Provider')
     flavor = fields.SelectField('Flavor')
 
-    
+
 # form validators
 def validate_address_field(form, field):
     if not validate_address(field.data) and field.data != "":
@@ -76,14 +76,19 @@ class ProjectForm(BaseForm):
     image = fields.SelectField('Image')
     dynamic_image_url = fields.TextField('Dynamic Image URL', [validate_image, validators.Length(max=1024)])
     dynamic_image_name = fields.TextField('Dynamic Image Name', [])
-
+    port = fields.IntegerField()
+    
 # form validators
 def validate_dynamic_image(form, field):
-    if form.image.data == "custom" and form.callback.data != "custom" and field.data == "":
+    if form.image.data == "custom" and form.wisp_type.data not in ["custom", "project"] and field.data == "":
         raise ValidationError("You must specify a custom image URL.")
 
 def validate_custom_callback(form, field):
-    if form.callback.data == "custom" and field.data == "":
+    if form.wisp_type.data == "custom" and field.data == "":
+        raise ValidationError("You must specify a callback URL.")
+
+def validate_project(form, field):
+    if form.wisp_type.data == "project" and field.data == "":
         raise ValidationError("You must specify a callback URL.")
 
 
@@ -95,10 +100,17 @@ class WispForm(BaseForm):
     image_container_format = fields.TextField('Image Container Format', [validators.Length(max=1024)])
     ssh_key = fields.TextAreaField('Public SSH Key', [validators.Length(max=2048)])
     post_creation = fields.TextAreaField('Cloud Configuration', [validators.Length(max=2048)])
-    callback = fields.SelectField('Callback', choices=[('default', "Default Callback"), ('custom', "Custom Callback URL")])
+    wisp_type = fields.SelectField(
+        'Type', 
+        choices=[
+            ('default', "Stock"),
+            ('project', "Project"),
+            ('custom', "Custom Callback")
+        ]
+    )
     callback_url = fields.TextField('Custom Callback URL', [validate_custom_callback, validators.Length(max=1024)]) 
     default = fields.BooleanField('Default Wisp')
-
+    project = fields.SelectField('Project', [validate_project], choices=[])
 
 class ApplianceForm(BaseForm):
     name = fields.TextField('Name', [validators.Required(), validators.Length(max=50)])

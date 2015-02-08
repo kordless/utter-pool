@@ -56,6 +56,7 @@ class LoginHandler(BaseHandler):
 
 		# check if we have somewhere to go
 		next = self.request.get('next')
+		print next
 		if next:
 			dest_url=self.uri_for('login-complete', next=next)
 		else:

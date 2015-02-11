@@ -162,6 +162,11 @@ indexes:
   - name: created
     direction: desc
 
+- kind: Project
+  properties:
+  - name: owner
+  - name: public
+
 - kind: Wisp
   properties:
   - name: name

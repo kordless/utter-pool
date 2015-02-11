@@ -37,7 +37,7 @@
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
                     {{ macros.input(form, "name", "Name", "col-xs-10", placeholder="Awesome Instance Template", class="form-control required") }}
                     {{ macros.input(form, "wisp_type", "Wisp Type", "col-xs-4", class="form-control pulldown") }}
-                    <div id="custom-callback" class="col-xs-12 form-padding hidden {% if form.callback_url.errors %}has-error{% endif %}">
+                    <div id="custom-callback" class="col-xs-10 form-padding hidden {% if form.callback_url.errors %}has-error{% endif %}">
                       <div class="row form-group" id="callback_url-field">
                         <div class="col-md-12">
                           {{ form.callback_url.label(class="control-label") }}
@@ -97,36 +97,11 @@
     // standard stuff
     var username = "{{username}}";
     var csrf_token = "{{ csrf_token() }}";
-    var channel_token = "{{ channel_token }}";
-    var refresh_channel = "{{ refresh_channel }}";
 
-    // listen to our refresh channel for page reload
-    onMessage = function() {
-        window.location.reload();
-    };
-    channel = new goog.appengine.Channel(refresh_channel);
-    socket = channel.open();
-    socket.onmessage = onMessage;
-
-    // configure form to show the right fields for custom types
-    if ($('#wisp_type option:selected').val() == "custom") {
-      $('#custom-callback').removeClass('hidden');
-      $('#custom-callback-hide').addClass('hidden');
-      $('#custom-project-hide').addClass('hidden');
-      $('#custom-config-hide').addClass('hidden');
-      $('#custom-ssh-hide').addClass('hidden');
-    }
-    if ($('#image option:selected').val() == "custom") {
-      $('#dynamic-image').removeClass('hidden');
-      $('#image-disk-format').removeClass('hidden');
-      $('#image-container-format').removeClass('hidden');
-    }
-    // configure form to show fields for project type
-    if ($('#wisp_type option:selected').val() == "project") {
-      $('#custom-callback-hide').addClass('hidden');
-      $('#custom-callback').addClass('hidden');
-      $('#custom-project-hide').removeClass('hidden');
-    }
+    // callback example
+    $("#callback-example-button").click(function() {
+      window.open("https://gist.github.com/kordless/7b496134997d233f2664#file-callback-json");
+    });
 
     // focus the name input field
     $('#name').focus();

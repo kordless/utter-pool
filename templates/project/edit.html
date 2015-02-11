@@ -44,7 +44,7 @@
       </div>
       {% if not project.is_configured() %}
       <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-12">
           <div class="bs-callout bs-callout-danger bs-callout-top">
             <h4>Step #1: Modify the Project's Repository</h4>
             <p>This project's <a target="_blank" href="{{ project.url }}">repository</a> needs to be configured to allow {{ app_name }} to start instances for its users. Use the following commands to add the <em>utterio</em> directory structure to this repository:</p>
@@ -64,12 +64,13 @@ git push
               </div>
             </div>
             <p>Once you are done adding the directory to your repository, click the <strong>Sync Project w/Github</strong> button below. If the files necessary for configuration are present in the repository, this warning message will disappear.</p>
+            <button type="button" id="refresh-button" class="btn btn-info">Sync Project w/Github</button>
           </div>
         </div>
       </div>
       {% elif not project.address > "" %}
       <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-12">
           <div class="bs-callout bs-callout-warning bs-callout-top">
             <h4>Step #2: Setup Payment Address</h4>
             <p>Before you publish, you'll need to enter a Bitcoin payment address which will be used to send launch donations to your project. You will also need to pick a suggested donation percentage, which will be used to calculate the cost of the instance donation shown to the user.</p>
@@ -78,7 +79,7 @@ git push
       </div>
       {% elif not project.public %}
       <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-12">
           <div class="bs-callout bs-callout-info bs-callout-top">
             <h4>Step #3: Edit Files & Enable</h4>
             <p>The following project's configuration files have been located and loaded into {{ app_name }}:</p>
@@ -91,14 +92,14 @@ git push
             <ul>
             </div>
             <p>Please edit the <strong>utterio.json</strong> and <strong>install.sh</strong> files to match your repository's deployment flow</strong>. Update the <strong>icon.png</strong> file with a <strong>200px by 200px</strong> PNG image with a <strong>transparent or solid colored background</strong> for best results. You may also want to edit the <strong>README.md</strong> file, which will be show to the user while deploying an instance of your project.</p> 
-            <p>Once you edit and commit the files to your repository, you may click the <strong>Sync Project w/Github</strong> button to sync the updated files to the site. </p>
+            <p>Once you edit and commit the files to your repository, you may click the <strong>Sync Project w/Github</strong> button to sync the updated files to the site. Once you've done a sync, click the slider below to publish the project.</p>
             <button type="button" id="refresh-button" class="btn btn-info">Sync Project w/Github</button>
           </div>
         </div>
       </div>
       {% else %}
       <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-12">
           <div class="bs-callout bs-callout-success bs-callout-top">
             <div class="toggle-help-badge hidden">
               <h4>Step #4: Add the Badge</h4>
@@ -114,7 +115,7 @@ git push
               </div>
 
               <p>To change the color and style of the button please refer to the <a target="_blank" href="http://shields.io">shields.io</a> site.</p>
-              <button type="button" id="hide-help-button" class="btn btn-success">Dismiss</button>
+              <button type="button" id="hide-help-button" class="btn btn-success">I'm Finished!</button>
             </div>
             <div class="toggle-help-done hidden">
               <h4>Remember, Maintenance is Important!</h4>
@@ -130,7 +131,7 @@ git push
       <div class="row">
         <div class="col-md-10">
           <div class="section-header">
-            <h2><small>Preview & Publish</strong></small></h2>
+            <h2><small>Preview & Publish</small></h2>
           </div>
           <div class="row">
             <a href="{{ uri_for('account-projects-view', project_id=project.key.id()) }}">
@@ -162,7 +163,7 @@ git push
           <form id="form-project" action="{{ url|safe }}" method="post" class="">
             
             <div class="section-header">
-              <h2><small>Project Profile</strong></small></h2>
+              <h2><small>Project Profile</small></h2>
               <p>The following profile information will be used to display the project's instance page. {% if not project.address %}Before you can publish the repository, you'll need to update its payment address so we can send you payments as instances are launched by users.{% else %} The payment address will be used to pay the project and the suggested donation percentage will be used to calculate the instance price shown to the end user.{% endif %}</p>
             </div>
             <div class="row">
@@ -183,7 +184,7 @@ git push
             <div class="hidden">
             {% endif %}
             <div class="section-header">
-              <h2><small>Instance Specifications</strong></small></h2>
+              <h2><small>Instance Specifications</small></h2>
               <p>The settings below specify the minimum system requirements for launching your project on an instance. When users are presented with the launch view, we'll use these settings to recommend a flavor which can handle the requirements you specify here. Remember, if you specify a dynamic image URL the image must be <a href="http://docs.openstack.org/image-guide/content/ch_obtaining_images.html">capable of running on OpenStack</a> and support the <a href="https://cloudinit.readthedocs.org/en/latest/">cloud-init  configuration framework</a>!</p>
             </div>
 
@@ -198,7 +199,7 @@ git push
               </div>
             </div>
             <div class="section-header">
-              <h2><small>Instance Access</strong></small></h2>
+              <h2><small>Instance Access</small></h2>
               <p>The following fields will be used to format instance access information for the user after launch.</p>
             </div>
             <div class="row">
@@ -289,11 +290,11 @@ git push
 
     // hide help section
     $('#hide-help-button').click(function() {
-      $.cookie('hide-project-help', 'hide');
+      $.cookie('project-edit-help', 'hide', { expires: 3650, path: '/' });
       $('.toggle-help-badge').addClass('hidden');
       $('.toggle-help-done').removeClass('hidden');
     });
-    if ($.cookie('hide-project-help') == 'hide') {
+    if ($.cookie('project-edit-help') == 'hide') {
       $('.toggle-help-badge').addClass('hidden');
       $('.toggle-help-done').removeClass('hidden');
     } else {
@@ -301,7 +302,7 @@ git push
       $('.toggle-help-done').addClass('hidden');
     }
     $('#badge-code-link').click(function() {
-      $.cookie('hide-project-help', 'show');
+      $.cookie('project-edit-help', 'show', { expires: 3650, path: '/' });
       $('.toggle-help-badge').removeClass('hidden');
       $('.toggle-help-done').addClass('hidden');
     });

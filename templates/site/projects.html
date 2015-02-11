@@ -27,21 +27,15 @@
     </div>
   </div>
 </div>
+
 <div class="container">
   <div class="row">
-      {% for project in projects %}
-      <a href="{{ uri_for('account-projects-view', project_id=project.key.id()) }}">
-      <div class="col-md-12">
-        <ul class="demos">
-          <li id="demo" class="software">
-            <b>{{ project.name }}</b>
-            <span><img src="{{ project.icon_url }}"></span>
-            <span class="mask"></span>
-          </li>
-        </ul>
-      </div>
-      </a>
-      {% endfor %}
+    <div class="col-md-12">
+      <ul class="demos">
+        {% for project in projects %}
+        <a href="{{ uri_for('account-projects-view', project_id=project.key.id()) }}"><li><b>{{ project.name }}</b><span><img src="{{ project.icon_url }}"></span><span class="mask"></span><span class="clickmask"></span></li></a>
+        {% endfor %}
+      </ul>
       {% if not projects %}
       <div class="container">
         <div class="text-center">
@@ -50,6 +44,7 @@
         </div>
       </div>
       {% endif %}
+    </div>
   </div>
 </div>
 {% endblock %}

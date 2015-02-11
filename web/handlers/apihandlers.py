@@ -181,7 +181,6 @@ class BidsHandler(BaseHandler):
 		# load the wisp, if there is one
 		if 'wisp_id' in request:
 			wisp_id = request['wisp_id']
-			print request
 			wisp = Wisp.get_by_id(long(wisp_id))
 		else:
 			wisp = None
@@ -204,7 +203,7 @@ class BidsHandler(BaseHandler):
 			except Exception as ex:
 				return error_response(self, "The callback URL is unreachable.", 403, params)
 		elif wisp:
-			if wisp.image == None and wisp.dynamic_image_url == None:
+			if wisp.image == None and wisp.dynamic_image_url == None and wisp.project == None:
 				return error_response(self, "A valid wisp or a callback URL is required.", 403, params)
 
 		# grab a new bid hash to use for the new bid
@@ -632,7 +631,7 @@ class InstanceDetailHandler(BaseHandler):
 		# load the json from the call
 		try:
 			body = json.loads(self.request.body)
-			print body
+
 			# loop through key space and set meta data
 			for key in body:
 				meta[key] = body[key]
@@ -691,7 +690,7 @@ class InstanceDetailHandler(BaseHandler):
 			"instance": instance,
 			"meta": json.loads(meta)
 		}
-		print json.loads(instance.meta)
+
 		params['response'] = "success"
 		self.response.headers['Content-Type'] = 'application/json'
 		
@@ -825,13 +824,19 @@ class TrackingPingHandler(BaseHandler):
 		return self.render_template('api/response.json', **params)
 
 
-# create anonymous wisps
+# create wisps, anonymously if needed
 # http://0.0.0.0/api/v1/wisp/ via GET, POST
 class WispHandler(BaseHandler):
 	# disable csrf check in basehandler
 	csrf_exempt = True
 
 	def post(self):
+		# try to pull get user info from a browser based session
+		if self.user_id:
+			user_info = User.get_by_id(long(self.user_id))
+		else:
+			user_info = None
+
 		# paramters, assume failure, response type
 		params = {}
 		params['response'] = "error"
@@ -850,62 +855,75 @@ class WispHandler(BaseHandler):
 		except:
 			ssh_key = ""
 
-		# project
+		# load project if we have it
 		try:
 			project_id = body['project_id']
 			project = Project.get_by_id(long(project_id))
 		except:
-			# not a big deal
-			pass
+			project = None
 
-		# if we don't have a project, look for post creation and image URL
-		if not project:
+		# handle project wisps differently
+		if project:
+			wisp = Wisp().from_project(
+				ssh_key,
+				project,
+				user_info
+			)
+		else:
 			try:
 				post_creation = body['post_creation']
 			except:
 				post_creation = ""
 
 			try:
-				dynamic_image_url = body['dynamic_image_url']
+				image_id = body['image_id']
+				image = Image.get_by_id(long(image_id))
 			except:
-				dynamic_image_url = ""
+				try:
+					dynamic_image_url = body['dynamic_image_url']
+				except:
+					# we don't have an image or a URL, so nothing can do
+					params['message'] = "Wisps require an image to boot."
+					self.response.set_status(401)
+					return self.render_template('api/response.json', **params)
 
-		
-		# disk and container formats if they were sent (usually qcow/bare)
-		try:
-			image_disk_format = body['image_disk_format']
-		except:
-			image_disk_format = "qcow2"
-		try:
-			image_container_format = body['image_container_format']
-		except:
-			image_container_format = "bare"
+			# disk and container formats if they were sent (usually qcow/bare)
+			try:
+				image_disk_format = body['image_disk_format']
+			except:
+				image_disk_format = "qcow2"
+			try:
+				image_container_format = body['image_container_format']
+			except:
+				image_container_format = "bare"
 
+			# create an anonymous wisp if we don't have it already
+			wisp = Wisp().from_stock(
+				ssh_key, 
+				post_creation, 
+				dynamic_image_url, 
+				image_disk_format, 
+				image_container_format,
+				user_info
+			)
 
-			params['message'] = "Wisp creation requires sshkey, post_creation, dynamic_image_url, image_disk_format and image_container_format to be set. You do not."
+		if wisp:	
+			# return JSON response
+			params['response'] = "success"
+			params['wisp'] = wisp
+			
+			return self.render_template('api/wisp.json', **params)
+		else:
+			params['message'] = "Wisp creation failed."
 			self.response.set_status(401)
 			return self.render_template('api/response.json', **params)
-
-		try:
-			token = body['token']
-		except:
-			token = None
-
-		# create an anonymous wisp if we don't have it already
-		wisp = Wisp().anonymous(ssh_key, post_creation, dynamic_image_url, image_disk_format, image_container_format, token)
-
-		# return JSON response
-		params['response'] = "success"
-		params['wisp'] = wisp
-		
-		return self.render_template('api/wisp.json', **params)
-
+	
 	def get(self):
 		return self.post()
 
 # create anonymous wisp
 # http://0.0.0.0/api/v1/wisp/<token>/ via GET, POST
-class WispDetailHandler(BaseHandler):
+class WispViewHandler(BaseHandler):
 	def get(self, token=None):
 		# paramters, assume failure, response type
 		# response, type, cross posting

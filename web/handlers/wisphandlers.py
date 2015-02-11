@@ -57,7 +57,9 @@ class WispNewHandler(BaseHandler):
 
 		# load projects pulldown
 		self.form.project.choices = []
-		projects = Project.get_public()
+
+		# public + private
+		projects = Project.get_available(user_info.key)
 		for project in projects:
 			self.form.project.choices.insert(0, (str(project.key.id()), project.name))
 
@@ -82,7 +84,9 @@ class WispNewHandler(BaseHandler):
 
 		# load projects pulldown
 		self.form.project.choices = []
-		projects = Project.get_public()
+
+		# public + private
+		projects = Project.get_available(user_info.key)
 		for project in projects:
 			self.form.project.choices.insert(0, (str(project.key.id()), project.name))
 
@@ -125,9 +129,13 @@ class WispNewHandler(BaseHandler):
 			ssh_key = None
 			dynamic_image_url = None
 			post_creation = None
+		elif self.form.wisp_type.data.strip() == "project":
+			image = None
+			dynamic_image_url = None
+			post_creation = None
 		else:
 			callback_url = None
-			
+
 		# check if we have it already
 		if Wisp.get_by_user_name(user_info.key, name):
 			self.add_message("A wisp with that name already exists in this account!", "error")
@@ -161,7 +169,7 @@ class WispNewHandler(BaseHandler):
 
 		# give it a few seconds to update db, then redirect
 		time.sleep(1)
-		return self.redirect_to('account-wisps')
+		return self.redirect_to('account-wisps-detail', wisp_id=wisp.key.id())
 
 	@webapp2.cached_property
 	def form(self):
@@ -182,7 +190,7 @@ class WispEditHandler(BaseHandler):
 
 		# load projects pulldown
 		self.form.project.choices = []
-		projects = Project.get_public()
+		projects = Project.get_available(user_info.key)
 		for project in projects:
 			self.form.project.choices.insert(0, (str(project.key.id()), project.name))
 
@@ -192,7 +200,7 @@ class WispEditHandler(BaseHandler):
 		for image in images:
 			self.form.image.choices.insert(0, (str(image.key.id()), image.description))
 
-		# load form values
+		# load values out of db to show in form
 		self.form.name.data = wisp.name
 		self.form.ssh_key.data = wisp.ssh_key
 		self.form.dynamic_image_url.data = wisp.dynamic_image_url
@@ -202,13 +210,18 @@ class WispEditHandler(BaseHandler):
 		self.form.callback_url.data = wisp.callback_url
 		self.form.default.data = wisp.default
 
-		# hack up the form a bit
+		# adjust the form's pulldown settings
+		self.form.wisp_type.data = "stock"
+		if wisp.image:
+			self.form.image.data = str(wisp.image.id())
 		if wisp.callback_url:
 			self.form.wisp_type.data = "custom"
-		elif wisp.dynamic_image_url:
+		if wisp.project:
+			self.form.wisp_type.data = "project"
+			self.form.project.data = str(wisp.project.id())
+		if wisp.dynamic_image_url:
+			self.form.wisp_type.data = "stock"
 			self.form.image.data = "custom"
-		else:
-			self.form.image.data = str(wisp.image.id())
 
 		# check if the owner is this user
 		if wisp and wisp.owner == user_info.key:
@@ -242,7 +255,7 @@ class WispEditHandler(BaseHandler):
 
 		# load projects pulldown
 		self.form.project.choices = []
-		projects = Project.get_public()
+		projects = Project.get_available(user_info.key)
 		for project in projects:
 			self.form.project.choices.insert(0, (str(project.key.id()), project.name))
 
@@ -267,20 +280,35 @@ class WispEditHandler(BaseHandler):
 		callback_url = self.form.callback_url.data.strip()
 		default = self.form.default.data
 
-		# hack up form to deal with custom image
-		if self.form.image.data.strip() == "custom":
-			image = None
-		else:
-			image = Image.get_by_id(int(self.form.image.data.strip())).key
-
 		# hack up form to deal with custom callback
 		if self.form.wisp_type.data.strip() == "custom":
+			# custom callback, so zero everything
 			image = None
 			ssh_key = None
 			dynamic_image_url = None
 			post_creation = None
-		else:
+			project = None
+		elif self.form.wisp_type.data.strip() == "project":
+			# project, so zero image, urls, post_creation
+			image = None
+			dynamic_image_url = None
+			post_creation = None
 			callback_url = None
+			project = Project.get_by_id(long(self.form.project.data.strip())).key
+		else:
+			# stock
+			callback_url = None
+			project = None
+
+		# hack up results to deal with custom images
+		if self.form.image.data.strip() == "custom":
+			image = None
+		else:
+			if project:
+				image = None
+			else:
+				image = Image.get_by_id(int(self.form.image.data.strip())).key
+
 
 		# check if the wisp owner is this user
 		if wisp and wisp.owner == user_info.key:
@@ -293,6 +321,7 @@ class WispEditHandler(BaseHandler):
 			wisp.image_disk_format = image_disk_format
 			wisp.post_creation = post_creation
 			wisp.callback_url = callback_url
+			wisp.project = project
 			wisp.put()
 
 			# set default if true, or turn it off if false

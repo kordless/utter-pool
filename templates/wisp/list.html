@@ -48,8 +48,8 @@
                 <table class="table table-hover">
                   <thead>
                     <tr>
-                      <th class=>Type</th>
                       <th>Name</th>
+                      <th>Type</th>  
                       <th>Boot Image</th>
                       <th>Public SSH Key</th>
                       <th class="text-center">Default</th>
@@ -59,14 +59,14 @@
                   <tbody>
                     {% for wisp in wisps %}
                     <tr>
-                      <td>{% if wisp.callback_url %}Custom{% elif wisp.project %}Project{% else %}Stock{% endif %}</td>
                       <td><a href="{{ uri_for('account-wisps-detail', self.request, wisp_id=wisp.key.id()) }}">{{ wisp.name }}</a></td>
-
-                      <td>{% if wisp.image %}{{ wisp.image.get().description|truncate(32, killwords=True) }}{% else %}Dynamic Image {% if wisp.callback_url %} from Callback {% endif %}{% endif %}</td>
+                      <td>{% if wisp.callback_url %}Custom{% elif wisp.project %}Project{% else %}Stock{% endif %}</td>
+                      <td>{% if wisp.image %}{{ wisp.image.get().description|truncate(32, killwords=True) }}{% elif wisp.project %}{{ wisp.project.get().image.get().description }}{% elif wisp.callback_url %}Custom Callback{% elif wisp.dynamic_image_url %}<a href="{{ wisp.dynamic_image_url }}">{{ wisp.dynamic_image_url }}</a>{% endif %}</td>
                       <td class="form-ssh-key">{% if wisp.ssh_key %}{{ wisp.ssh_key|truncate(32, killwords=True) }}{% endif %}</td>
                       <td class="text-center">{% if wisp.default %}<span class="glyphicon glyphicon-ok"></span>{% endif %}</td>
                       <td>
-                        <button type="button" id="remove-{{wisp.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
+                        <button type="button" id="remove-{{wisp.key.id()}}" class="btn btn-danger btn-xs" title="Remove Wisp" href="#"><span class="glyphicon glyphicon-remove"></span></button>
+                        <button type="button" id="launch-{{wisp.key.id()}}" class="btn btn-info btn-xs" title="Reserve Instance" href="#"><span class="glyphicon glyphicon-cloud"></span></button>
                       </td>
                     </tr>
                     {% endfor %}

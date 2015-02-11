@@ -34,10 +34,11 @@ _routes = [
 		RedirectRoute('/projects/list/', projecthandlers.ProjectListHandler, name='account-projects', strict_slash=True),
 		RedirectRoute('/projects/new/', projecthandlers.ProjectNewHandler, name='account-projects-new', strict_slash=True),
 		RedirectRoute('/projects/<project_id>/', projecthandlers.ProjectViewHandler, name='account-projects-view', strict_slash=True),
+		RedirectRoute('/projects/bid/<token>/', projecthandlers.ProjectBidHandler, name='account-projects-bid', strict_slash=True),
 		RedirectRoute('/projects/<project_id>/edit/', projecthandlers.ProjectEditHandler, name='account-projects-detail', strict_slash=True),
 		RedirectRoute('/projects/<project_id>/component/<component>', projecthandlers.ProjectComponentHandler, name='account-projects-component', strict_slash=False),
 		RedirectRoute('/projects/<project_id>/<action>/', projecthandlers.ProjectMethodHandler, name='account-projects-method', strict_slash=True),
-		
+
 		# clouds
 		RedirectRoute('/clouds/list/', cloudhandlers.CloudListHandler, name='account-clouds', strict_slash=True),
 		RedirectRoute('/clouds/<cloud_id>/edit/', cloudhandlers.CloudEditHandler, name='account-clouds-configure', strict_slash=True),
@@ -67,7 +68,7 @@ _routes = [
 		RedirectRoute('/api/v1/images/', apihandlers.ImagesHandler, name='api-images', strict_slash=True),
 		RedirectRoute('/api/v1/flavors/<action:.*>', apihandlers.FlavorsHandler, name='api-flavors', strict_slash=True),
 		RedirectRoute('/api/v1/wisp/', apihandlers.WispHandler, name='api-wisp', strict_slash=True),
-		RedirectRoute('/api/v1/wisp/<token>/', apihandlers.WispDetailHandler, name='api-wisps', strict_slash=True),
+		RedirectRoute('/api/v1/wisp/<token>/', apihandlers.WispViewHandler, name='api-view-wisp', strict_slash=True),
 		RedirectRoute('/api/v1/broker/', apihandlers.BrokerHandler, name='api-broker', strict_slash=True),
 		RedirectRoute('/api/v1/instances/', apihandlers.InstancesHandler, name='api-instances', strict_slash=True),
 		RedirectRoute('/api/v1/instances/<instance_name>/', apihandlers.InstanceDetailHandler, name='api-instance-details', strict_slash=True),

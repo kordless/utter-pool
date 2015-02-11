@@ -11,7 +11,7 @@ from lib.github import github
 import config
 
 import web.forms as forms
-from web.models.models import User, Project, Image, Appliance, Group, Flavor, InstanceBid
+from web.models.models import User, Project, Image, Instance, Appliance, Group, Flavor, InstanceBid
 from web.basehandler import BaseHandler
 from web.basehandler import user_required
 
@@ -384,7 +384,7 @@ class ProjectViewHandler(BaseHandler):
 		# assume this user is not owner
 		owner = False
 
-		print self.render_url(project.json_url, {})
+		# print self.render_url(project.json_url, {})
 
 		# determine if we can show the project
 		if not project.public:
@@ -490,50 +490,17 @@ class ProjectViewHandler(BaseHandler):
 	def form(self):
 		return forms.LaunchProjectForm(self)
 
-"""
-	def post(self, project_id = None):
-		# request basics
-		ip = self.request.remote_addr
 
-		# check if this IP has any other bids open
-		instancebid = InstanceBid.get_incomplete_by_ip(ip)
-
-		# if instance exists, 
-		# look up project
-		project = Project.get_by_id(long(project_id))
-		# if no project
-		if not project:
-			return self.redirect_to('projects')
-
-		# get the form parameters
-		provider_id = self.form.provider.data.strip()
-		flavor_id = self.form.flavor.data.strip()
-		ssh_key = self.form.ssh_key.data.strip()
-
-		# look up the passed in values
-		provider = Appliance.get_by_id(long(provider_id))
-		flavor = Flavor.get_by_id(long(flavor_id))
-
-		print provider
-		print flavor
-		# build out a wisp for the instance reservation
-
-		# grab an instance reservation matching provider and flavor
-
-		# forward to project instance payment page
-
-		pass
-
-
-Old methods for showing demo bid launches
-
-class DemosBidHandler(BaseHandler):
-	def get(self, demo_name = None, token = None):
+class ProjectBidHandler(BaseHandler):
+	def get(self, token = None):
 		# lookup up bid
 		bid = InstanceBid.get_by_token(token)
 		if not bid:
 			self.add_message("Instance reservation token %s has expired." % token, 'error')
-			return self.redirect_to('demos', demo_name=demo_name)
+			return self.redirect_to('projects')
+
+		# grab the project from the bid
+		project = Project.get_by_id(bid.wisp.get().project.id())
 
 		# grab the instance
 		instance = Instance.get_by_token(token)
@@ -548,10 +515,11 @@ class DemosBidHandler(BaseHandler):
 		params = {
 			'instance': instance,
 			'bid': bid,
+			'project': project,
 			'refresh_channel': refresh_channel,
 			'channel_token': channel_token 
 		}
-		return self.render_template('site/demos/%s_bid.html' % demo_name, **params)
+		return self.render_template('project/bid.html', **params)
 
 
 class DemosInstanceHandler(BaseHandler):
@@ -582,4 +550,4 @@ class DemosInstanceHandler(BaseHandler):
 		}
 		return self.render_template('site/demos/%s_instance.html' % demo_name, **params)
 
-"""
+

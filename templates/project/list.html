@@ -61,8 +61,8 @@
                       <td>{{ project.description }}</td>
                       <td><a target="_blank" href="{{ project.url }}">{{ project.url }}</a></td>
                       <td>
-                        <button type="button" id="remove-{{project.key.id()}}" class="btn btn-danger btn-xs" title="remove" href="#"><span class="glyphicon glyphicon-remove"></span></button>
-                        <button type="button" id="view-{{project.key.id()}}" class="btn btn-inverse btn-xs" title="view" href="#"><span class="glyphicon glyphicon-eye-open"></button>
+                        <button type="button" id="remove-{{project.key.id()}}" class="btn btn-danger btn-xs" title="Remove Project" href="#"><span class="glyphicon glyphicon-remove"></span></button>
+                        <button type="button" id="view-{{project.key.id()}}" class="btn btn-info btn-xs" title="View Project" href="#"><span class="glyphicon glyphicon-eye-open"></button>
                       </td>
                     </tr>
                     {% endfor %}

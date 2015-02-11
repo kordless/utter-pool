@@ -505,6 +505,15 @@ class Project(ndb.Model):
 		results = query.fetch()
 		return results
 
+	@classmethod
+	def get_available(cls, user):
+		query = cls.query().filter(cls.public == True)
+		results = query.fetch()
+		query = cls.query().filter(cls.public != True, cls.owner == user)
+		for result in query.fetch():
+			results.append(result)
+		return results
+
 	def sync(self):
 		message = github.repo_sync_contents(self)
 		return message
@@ -595,7 +604,56 @@ class Wisp(ndb.Model):
 		return wisp
 
 	@classmethod
-	def anonymous(cls, ssh_key, post_creation, dynamic_image_url, image_disk_format, image_container_format, token):
+	def from_project(
+		cls,
+		ssh_key,
+		project,
+		owner
+	):
+		# calculate the hash of the ssh_key+project.key.id()
+		import hashlib
+		m = hashlib.md5()
+		m.update(ssh_key)
+		m.update(str(project.key.id()))
+		ssh_key_hash = m.hexdigest()
+
+		# do we have this wisp already?
+		if not owner:		
+			entry = cls.query().filter(
+				cls.ssh_key_hash == ssh_key_hash
+			).get()
+		else:
+			entry = cls.query().filter(
+				cls.ssh_key_hash == ssh_key_hash, 
+				cls.owner == owner.key
+			).get()
+		
+		# create if we didn't find it
+		if not entry:
+			# generate new token and create new entry 
+			token = "%s" % generate_token(size=16, caselimit=True)
+			entry = Wisp(
+				name = project.name,
+				ssh_key = ssh_key,
+				ssh_key_hash = ssh_key_hash,
+				token = token,
+				project = project.key,
+				owner = owner.key
+			)
+			entry.put()
+
+		return entry
+
+	@classmethod
+	def from_stock(
+		cls,
+		ssh_key,
+		post_creation,
+		dynamic_image_url,
+		image_disk_format,
+		image_container_format,
+		owner
+	):
 		# calculate the hash of the ssh_key+post_creation+dynamic_image_url
 		import hashlib
 		m = hashlib.md5()
@@ -604,13 +662,17 @@ class Wisp(ndb.Model):
 		m.update(dynamic_image_url)
 		ssh_key_hash = m.hexdigest()
 
-		# blank string our token if we don't have one
-		if token == None:
-			token = ""
+		# do we have this wisp already?
+		if not owner:		
+			entry = cls.query().filter(
+				cls.ssh_key_hash == ssh_key_hash
+			).get()
+		else:
+			entry = cls.query().filter(
+				cls.ssh_key_hash == ssh_key_hash, 
+				cls.owner == owner.key
+			).get()
 		
-		# do we have this ssh-key already?
-		entry = cls.query().filter(cls.ssh_key_hash == ssh_key_hash).get()
-
 		# create if we didn't find it
 		if not entry:
 			# generate new token and create new entry 
@@ -623,7 +685,8 @@ class Wisp(ndb.Model):
 				dynamic_image_url = dynamic_image_url,
 				image_disk_format = image_disk_format,
 				image_container_format = image_container_format,
-				token = token
+				token = token,
+				owner = owner.key
 			)
 			entry.put()
 

@@ -381,24 +381,36 @@ class WispEditHandler(BaseHandler):
 # render project files locally from those stored on project's github repo
 class WispProjectFilesHandler(BaseHandler):
 	def get(self, wisp_id = None, file = None):
-		# get project and return github content
-		project = Project.get_by_id(long(project_id))
-		
-		# params build out
-		params = {
-			'project_name': project.name,
-			'project_url': project.url,
-			'donation_address': project.address,
-			'ipv4_address': '127.0.0.1',
-			'ipv6_address': '::1'
-		}
+		# get wisp
+		wisp = Wisp.get_by_id(long(wisp_id))
+		try:
+			# get the project
+			project = wisp.project.get()
 
-		if project:
-			# return proxied github content
-			if file == 'README.md':
-				return self.render_url(project.readme_url, **params)
-			elif file == 'install.sh':
-				return self.render_url(project.install_url, **params)
+			# params build out
+			params = {
+				'project_name': project.name,
+				'project_url': project.url,
+				'donation_address': project.address,
+				'port': project.port,
+				'state': 1,
+				'ipv4_address': '127.0.0.1',
+				'ipv6_address': '::1'
+			}
+
+			# pull out the meta data from the instance and build into key/values
+			# for key,value in instance.meta_data
+			# params[key] = value
+
+			if project:
+				# return proxied github content
+				if file == 'README.md':
+					return self.render_url(project.readme_url, **params)
+
+				elif file == 'install.sh':
+					return self.render_url(project.install_url, **params)
+		except:
+			pass
 		
 		# default response is we don't have it
 		self.response.set_status(404)

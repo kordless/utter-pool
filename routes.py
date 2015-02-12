@@ -47,7 +47,7 @@ _routes = [
 		RedirectRoute('/wisps/list/', wisphandlers.WispListHandler, name='account-wisps', strict_slash=True),
 		RedirectRoute('/wisps/new/', wisphandlers.WispNewHandler, name='account-wisps-new', strict_slash=True),
 		RedirectRoute('/wisps/<wisp_id>/edit/', wisphandlers.WispEditHandler, name='account-wisps-detail', strict_slash=True),		
-		RedirectRoute('/wisps/<wisp_id>/files/<file>', wisphandlers.WispProjectFilesHandler, name='account-wisp-project-files', strict_slash=False),
+		RedirectRoute('/wisps/<wisp_id>/<file>', wisphandlers.WispProjectFilesHandler, name='account-wisp-project-files', strict_slash=False),
 		
 		# appliances
 		RedirectRoute('/appliances/list/', appliancehandlers.ApplianceListHandler, name='account-appliances', strict_slash=True),

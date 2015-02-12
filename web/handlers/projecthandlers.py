@@ -1,5 +1,6 @@
 import time
 import json
+import urllib2
 
 import webapp2
 
@@ -11,7 +12,7 @@ from lib.github import github
 import config
 
 import web.forms as forms
-from web.models.models import User, Project, Image, Instance, Appliance, Group, Flavor, InstanceBid
+from web.models.models import User, Project, Image, Instance, Appliance, Group, Flavor, Wisp, InstanceBid
 from web.basehandler import BaseHandler
 from web.basehandler import user_required
 
@@ -57,14 +58,19 @@ class ProjectNewHandler(BaseHandler):
 		# check for url param or referer
 		url = ""
 		if 'url' in self.request.GET:
-			url = self.request.GET['url']
+			url = urllib2.unquote(self.request.GET['url'])
 		elif self.request.referer:
 			if config.github_url in self.request.referer:
-				url = self.request.referer
+				url = urllib2.unquote(self.request.referer)
 
+		# ensure we don't have a master README view click
+		if 'blob/master/README.md' in url:
+			url = url[:-21]
+
+		print url
 		# if we have a URL, we deal with it
 		if url:
-			project = App.get_by_user_url(user_info.key, url)
+			project = Project.get_by_url(url)
 			if not project:
 				# create a new project for this user
 				self.form.url.data = url
@@ -105,7 +111,9 @@ class ProjectNewHandler(BaseHandler):
 		if response['response'] == 'success':
 			repo = response['result']['repo']
 		else:
+			repo = None
 			self.add_message(response['result']['message'], 'error')
+			return self.redirect_to('projects')
 
 		# save the new project in our database
 		project = Project()           
@@ -259,9 +267,14 @@ class ProjectEditHandler(BaseHandler):
 		# pull the entry from the db
 		project = Project.get_by_id(long(project_id))
 
-		# if we found it and own it, delete
+		# if we found it and own it
 		if project and project.owner == user_info.key:
+			# patch all wisps using project to stock
+			Wisp.patch_to_stock(project.key)
+
+			# delete the project
 			project.key.delete()
+
 			self.add_message('Project successfully deleted!', 'success')
 		else:
 			self.add_message('Project was not deleted.  Something went horribly wrong somewhere!', 'warning')
@@ -330,10 +343,15 @@ class ProjectsHandler(BaseHandler):
 
 		# if we have a URL, we look it up
 		if url:
-			project = App.get_by_url(user_info.key, url)
+			project = Project.get_by_url(url)
 			if project:
 				# go to the existing project
-				return self.redirect_to('account-project-view', project_id = project.key.id())
+				return self.redirect_to('account-projects-view', project_id = project.key.id())
+			else:
+				# if user is logged in, redirect to the new page
+				if self.user_id:
+					params = {'url': url}
+					return self.redirect_to('account-projects-new', **params)
 
 		# load all public projects
 		projects = Project.get_public()
@@ -345,33 +363,6 @@ class ProjectsHandler(BaseHandler):
 
 		return self.render_template('site/projects.html', **params)
 
-
-# render project files stored on github
-class ProjectComponentHandler(BaseHandler):
-	def get(self, project_id = None, component = None):
-		# get project and return github content
-		project = Project.get_by_id(long(project_id))
-		
-		# params build out
-		params = {
-			'project_name': project.name,
-			'project_url': project.url,
-			'donation_address': project.address,
-			'ipv4_address': '127.0.0.1',
-			'ipv6_address': '::1'
-		}
-
-		if project:
-			# return proxied github content
-			if component == 'README.md':
-				return self.render_url(project.readme_url, **params)
-			elif component == 'utterio.json':
-				return self.render_url(project.utterio_url, **params)
-			elif component == 'install.sh':
-				return self.render_url(project.install_url, **params)
-
-		self.response.set_status(404)
-		return
 
 # provides launches for projects
 class ProjectViewHandler(BaseHandler):
@@ -506,7 +497,7 @@ class ProjectBidHandler(BaseHandler):
 		instance = Instance.get_by_token(token)
 		if not instance:
 			self.add_message("All available instance reservations are in use. Please try again in a few minutes.", 'error')
-			return self.redirect_to('demos', demo_name=demo_name)
+			return self.redirect_to('projects')
 
 		# setup channel to do page refresh
 		channel_token = token

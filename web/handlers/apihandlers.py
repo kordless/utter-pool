@@ -106,7 +106,14 @@ class BidsHandler(BaseHandler):
 		# check if this IP has any other bids open
 		instancebid = InstanceBid.get_incomplete_by_ip(ip)
 
+
+		# check we have an instancebid already
 		if instancebid:
+			# validate wisp
+			if instancebid.wisp == None:
+				instancebid.key.delete()
+				return error_response(self, "Deleting bid because no wisp was associated.", 403, params)
+
 			# load the payment address
 			if instancebid.instance:
 				instancebid.address = instancebid.instance.get().address
@@ -413,7 +420,9 @@ class InstanceDetailHandler(BaseHandler):
 			# fetch appliance and instance
 			appliance = Appliance.get_by_token(appliance_schema.apitoken.as_dict())
 			instance = Instance.get_by_name_appliance(
-				instance_schema.name.as_dict(), appliance.key)
+				instance_schema.name.as_dict(), 
+				appliance.key
+			)
 
 			# if instance doesn't already exist, create it
 			if not instance:
@@ -475,9 +484,9 @@ class InstanceDetailHandler(BaseHandler):
 			if instancebid.callback_url > "":
 				# put the callback into the instance
 				instance.callback_url = instancebid.callback_url
-			else:
-				# assuming we have a wisp, try to get the wisp's callback URL
-				# maybe add a check to see if we have a wisp here...
+			
+			elif instancebid.wisp:
+				# otherwise, get the wisp's callback URL	
 				callback_url = instancebid.wisp.get().callback_url
 			
 				# if the wisp has an empty callback URL, populate the instance with the wisp's bid details
@@ -555,21 +564,23 @@ class InstanceDetailHandler(BaseHandler):
 
 		# grab the instance's wisp
 		if instance.wisp:
-			# used if registered user is using a wisp
+			# if instance is using a wisp
 			wisp = Wisp.get_by_id(instance.wisp.id())
 		else:
+			# no wisp on instance
 			wisp = Wisp.get_user_default(instance.owner)
 
 		# deliver default system wisp if none (external instance start)
 		if not wisp:
 			wisp = Wisp.get_system_default()
 
+		# load wisp image
 		if not wisp.use_dynamic_image:
 			image = wisp.image.get()
 		else:
 			image = wisp.get_dynamic_image()
 
-		# pop the ssh_key script into an array
+		# pop the ssh_key into an array
 		if wisp.ssh_key:
 			ssh_keys = []
 			for line in iter(wisp.ssh_key.splitlines()):
@@ -577,6 +588,7 @@ class InstanceDetailHandler(BaseHandler):
 		else:
 			ssh_keys = [""]
 
+		# 
 		# pop the post creation script into an array
 		if wisp.post_creation:
 			post_creation = []

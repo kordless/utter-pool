@@ -125,7 +125,17 @@
     // standard stuff
     var username = "{{username}}";
     var csrf_token = "{{ csrf_token() }}";
+    var channel_token = "{{ channel_token }}";
+    var refresh_channel = "{{ refresh_channel }}";
 
+    // listen to our refresh channel for page reload
+    onMessage = function() {
+        window.location.reload();
+    };
+    channel = new goog.appengine.Channel(refresh_channel);
+    socket = channel.open();
+    socket.onmessage = onMessage;
+    
     // callback example
     $("#callback-example-button").click(function() {
       window.open("https://gist.github.com/kordless/7b496134997d233f2664#file-callback-json");

@@ -183,7 +183,11 @@
         dataType: "json",
         processData: false
       }).fail(function(data) {
-        alertify.error(data.responseJSON.result.message);
+        if ("responseJSON" in data) {
+          alertify.error(data.responseJSON.result.message);
+        } else {
+          alertify.error("Something went horribly wrong. Maybe you aren't connected?");
+        }
         $('#reserve-button').prop("disabled", false);
       }).done(function(data) {
           // create instance bid
@@ -206,15 +210,23 @@
             dataType: "json",
             processData: false
           }).fail(function(data) {
-            if (data.responseJSON.result.bid) {
-              // go to bid/instance page
-              window.location = "/projects/bid/" + data.responseJSON.result.bid.token + "/";
+            if ("responseJSON" in data) {
+              if (data.responseJSON.result.bid) {
+                // go to bid/instance page
+                alertify.log("Found existing bid. Forwarding...");
+                setTimeout(function() {
+                  window.location = "/projects/bid/" + data.responseJSON.result.bid.token + "/";
+                }, 2000);
+              } else {
+                alertify.error(data.responseJSON.result.message);
+                alertify.log("Please try again in a few minutes.")
+                setTimeout(function() {
+                  window.location = "{{ uri_for('projects') }}";
+                }, 5000);
+              }
             } else {
-              alertify.error(data.responseJSON.result.message);
-              alertify.log("Please try again in a few minutes.")
-              setTimeout(function() {
-                window.location = "{{ uri_for('projects') }}";
-              }, 3000);
+              alertify.error("Something went horribly wrong. Maybe you aren't connected?");
+              $('#reserve-button').prop("disabled", false);
             }
           }).done(function(data) {
             console.log(data.result);

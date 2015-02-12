@@ -36,7 +36,6 @@ _routes = [
 		RedirectRoute('/projects/<project_id>/', projecthandlers.ProjectViewHandler, name='account-projects-view', strict_slash=True),
 		RedirectRoute('/projects/bid/<token>/', projecthandlers.ProjectBidHandler, name='account-projects-bid', strict_slash=True),
 		RedirectRoute('/projects/<project_id>/edit/', projecthandlers.ProjectEditHandler, name='account-projects-detail', strict_slash=True),
-		RedirectRoute('/projects/<project_id>/component/<component>', projecthandlers.ProjectComponentHandler, name='account-projects-component', strict_slash=False),
 		RedirectRoute('/projects/<project_id>/<action>/', projecthandlers.ProjectMethodHandler, name='account-projects-method', strict_slash=True),
 
 		# clouds
@@ -48,7 +47,8 @@ _routes = [
 		RedirectRoute('/wisps/list/', wisphandlers.WispListHandler, name='account-wisps', strict_slash=True),
 		RedirectRoute('/wisps/new/', wisphandlers.WispNewHandler, name='account-wisps-new', strict_slash=True),
 		RedirectRoute('/wisps/<wisp_id>/edit/', wisphandlers.WispEditHandler, name='account-wisps-detail', strict_slash=True),		
-
+		RedirectRoute('/wisps/<wisp_id>/files/<file>', wisphandlers.WispProjectFilesHandler, name='account-wisp-project-files', strict_slash=False),
+		
 		# appliances
 		RedirectRoute('/appliances/list/', appliancehandlers.ApplianceListHandler, name='account-appliances', strict_slash=True),
 		RedirectRoute('/appliances/new/', appliancehandlers.ApplianceNewHandler, name='account-appliances-new', strict_slash=True),

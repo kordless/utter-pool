@@ -381,7 +381,6 @@ class BaseHandler(webapp2.RequestHandler):
 		
 	def render_url(self, url, **kwargs):
 		env = Environment(loader=FunctionLoader(self.loader))
-		print env
 		try:
 			self.response.headers['Content-Type'] = 'application/json'
 			self.response.write(env.get_template(url).render(kwargs))

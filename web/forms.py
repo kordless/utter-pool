@@ -69,7 +69,7 @@ class ProjectForm(BaseForm):
     name = fields.TextField('Name', [validators.Required(), validators.Length(max=50)])
     description = fields.TextField('Description', [validators.Required(), validators.Length(max=1024)])
     address = fields.TextField('Payment Address', [validate_address_field])
-    amount = fields.SelectField('Donation Percentage', choices=[('50', "50% of Instance Cost"), ('100', "100% of Instance Cost (even split)"), ('200', "200% of Instance Cost")])
+    amount = fields.SelectField('Donation Percentage', choices=[('0', "No Donation"), ('50', "50% of Instance Cost"), ('100', "100% of Instance Cost (even split)"), ('200', "200% of Instance Cost")])
     vpus = fields.SelectField('Minimum VPUs', choices=[('1', "1 VPU"), ('2', "2 VPUs"), ('4', "4 VPUs")])
     memory = fields.SelectField('Minimum Memory', choices=[('512', "512MB of RAM"), ('1024', "1GB of RAM"), ('2048', "2GB of RAM"), ('4096', "4GB of RAM"), ('8192', "8GB of RAM")])
     disk = fields.SelectField('Minimum Disk', choices=[('10', "10GB of Disk"), ('20', "20GB of Disk"), ('40', "40GB of Disk"), ('80', "80GB of Disk")])

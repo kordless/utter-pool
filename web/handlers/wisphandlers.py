@@ -7,7 +7,7 @@ from google.appengine.api import channel
 import config
 import web.forms as forms
 from web.models.models import User, LogVisit
-from web.models.models import Flavor, Image, Appliance, Group, Cloud, Wisp, Project
+from web.models.models import Flavor, Image, Appliance, Group, Cloud, Wisp, Project, InstanceBid
 from web.basehandler import BaseHandler
 from web.basehandler import user_required
 
@@ -38,6 +38,7 @@ class WispListHandler(BaseHandler):
 		# check for default
 		default = False
 		for wisp in wisps:
+			print wisp
 			if wisp.default:
 				default = True
 		if not default:
@@ -350,11 +351,14 @@ class WispEditHandler(BaseHandler):
 		# pull the entry from the db
 		wisp = Wisp.get_by_id(long(wisp_id))
 
-		# check if wisp is in use by a cloud
-
 		# if we found it and own it, delete
 		if wisp and wisp.owner == user_info.key:
+			# delete any associated bids, if they exist
+			InstanceBid.delete_by_wisp(wisp.key)
+
+			# delete the wisp
 			wisp.key.delete()
+
 			self.add_message('Wisp successfully deleted!', 'success')
 		else:
 			self.add_message('Wisp was not deleted.  Something went horribly wrong somewhere!', 'warning')
@@ -362,11 +366,40 @@ class WispEditHandler(BaseHandler):
 		# hangout for a second
 		time.sleep(1)
 
-		# use the channel to tell the browser we are done and reload
-		channel_token = self.request.get('channel_token')
+		# setup channel to do page refresh
+		channel_token = user_info.key.urlsafe()
+		refresh_channel = channel.create_channel(channel_token)
 		channel.send_message(channel_token, 'reload')
+
 		return
 
 	@webapp2.cached_property
 	def form(self):
 		return forms.WispForm(self)
+
+
+# render project files locally from those stored on project's github repo
+class WispProjectFilesHandler(BaseHandler):
+	def get(self, wisp_id = None, file = None):
+		# get project and return github content
+		project = Project.get_by_id(long(project_id))
+		
+		# params build out
+		params = {
+			'project_name': project.name,
+			'project_url': project.url,
+			'donation_address': project.address,
+			'ipv4_address': '127.0.0.1',
+			'ipv6_address': '::1'
+		}
+
+		if project:
+			# return proxied github content
+			if file == 'README.md':
+				return self.render_url(project.readme_url, **params)
+			elif file == 'install.sh':
+				return self.render_url(project.install_url, **params)
+		
+		# default response is we don't have it
+		self.response.set_status(404)
+		return

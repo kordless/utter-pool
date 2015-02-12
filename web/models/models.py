@@ -14,6 +14,7 @@ from datetime import timedelta
 import config
 from webapp2_extras.appengine.auth.models import User
 from google.appengine.ext import ndb
+from google.appengine.api import urlfetch
 
 from lib.utils import generate_token
 from lib.github import github
@@ -530,6 +531,23 @@ class Project(ndb.Model):
 
 		return True
 
+	@property
+	def use_dynamic_image(self):
+		if self.dynamic_image_url is not None and self.dynamic_image_url != "":
+			return True
+			
+	# generate and return a dynamic image
+	def get_dynamic_image(self):
+		class dynamic_image(object):
+			def __init__(self, project):
+				self.url = project.dynamic_image_url
+				self.name = project.dynamic_image_name
+				self.container_format = "bare"
+				self.disk_format = "qcow2"
+
+		return dynamic_image(self)
+
+
 # wisp model
 class Wisp(ndb.Model):
 	name = ndb.StringProperty()
@@ -583,6 +601,49 @@ class Wisp(ndb.Model):
 		wisp_query = cls.query().filter(cls.owner == user, cls.default == True)
 		wisp = wisp_query.get()
 		return wisp
+
+	@classmethod
+	def patch_to_stock(cls, project):
+		# get all the wisps using this project
+		query = cls.query().filter(cls.project == project)
+		wisps = query.fetch()
+		
+		# loop through list of wisps using this project
+		for wisp in wisps:
+			# patch the image
+			project = wisp.project.get()
+			if project.image:
+				wisp.image = project.image
+			elif project.dynamic_image_url:
+				wisp.dynamic_image_url = project.dynamic_image_url
+				wisp.image_disk_format = "qcow2"
+				wisp.image_container_format = "bare"
+
+			# get the rendered json config from ourselves
+			if project.json_url:
+				content = json.loads(
+					urlfetch.fetch(
+						'%s/projects/%s/files/utterio.json' % (
+							config.website_url.strip('/'),
+							project.key.id()
+						)
+					).content
+				)
+				
+				post_creation = ""
+				# grab out the post_create lines
+				for line in content['post_create']:
+					post_creation = post_creation + '%s\n' % line
+
+				# add the wisps cloud-config stuff
+				wisp.post_creation = post_creation	
+			
+			# remove project
+			wisp.project = None
+
+			# update
+			wisp.put()
+
 
 	@classmethod
 	def get_system_default(cls):
@@ -920,7 +981,18 @@ class InstanceBid(ndb.Model):
 		bids = query.fetch()
 
 		return bids
-	
+
+	@classmethod
+	def delete_by_wisp(cls, wisp):
+		query = cls.query().filter(cls.wisp == wisp)
+		bid = query.get()
+		if bid:
+			instance = bid.instance.get()
+			instance.reserved == False
+			instance.token == None
+			bid.key.delete()
+		return
+
 	@classmethod
 	def reserve_instance_by_token(cls, token):
 		query = cls.query().filter(cls.token == token)

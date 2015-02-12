@@ -401,6 +401,9 @@ class WispProjectFilesHandler(BaseHandler):
 			# pull out the meta data from the instance and build into key/values
 			# for key,value in instance.meta_data
 			# params[key] = value
+			
+			# also add api_url
+			#'api_url': '%s/api/v1/instance/' 
 
 			if project:
 				# return proxied github content

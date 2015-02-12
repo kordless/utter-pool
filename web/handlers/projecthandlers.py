@@ -9,6 +9,7 @@ from lib import markdown
 
 from google.appengine.api import channel
 from google.appengine.ext import ndb
+from google.appengine.api import urlfetch
 
 from lib.github import github
 
@@ -502,6 +503,17 @@ class ProjectBidHandler(BaseHandler):
 			self.add_message("All available instance reservations are in use. Please try again in a few minutes.", 'error')
 			return self.redirect_to('projects')
 
+		# grab and render the README.md file
+		content = urlfetch.fetch('http://10.0.1.80:8079/wisps/6048757061779456/README.md').content
+
+		readme_html = bleach.clean(
+			markdown.markdown(
+				unicode(content, 'utf-8')
+			), 
+			config.bleach_tags,
+			config.bleach_attributes
+		)	
+
 		# setup channel to do page refresh
 		channel_token = token
 		refresh_channel = channel.create_channel(channel_token)
@@ -510,6 +522,7 @@ class ProjectBidHandler(BaseHandler):
 			'instance': instance,
 			'bid': bid,
 			'project': project,
+			'readme_html': readme_html,
 			'refresh_channel': refresh_channel,
 			'channel_token': channel_token 
 		}

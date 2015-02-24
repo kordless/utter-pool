@@ -419,6 +419,7 @@ class InstanceDetailHandler(BaseHandler):
 
 			# fetch appliance and instance
 			appliance = Appliance.get_by_token(appliance_schema.apitoken.as_dict())
+
 			instance = Instance.get_by_name_appliance(
 				instance_schema.name.as_dict(), 
 				appliance.key
@@ -446,6 +447,7 @@ class InstanceDetailHandler(BaseHandler):
 		except Exception as e:
 			return error_response(self, 'Error in creating or updating instance from '
 				'post data, with message {0}'.format(str(e)), 500, {})
+
 
 		# update local instance
 		instance.put()
@@ -700,7 +702,7 @@ class InstanceDetailHandler(BaseHandler):
 		# build response
 		params = {
 			"instance": instance,
-			"meta": json.loads(meta)
+			"meta": meta
 		}
 
 		params['response'] = "success"

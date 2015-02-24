@@ -52,16 +52,12 @@ def repo_sync_contents(project):
 		)
 
 		# check for required files
-		check = {'README.md': 0, 'utterio.json': 0, 'install.sh': 0, 'icon.png': 0}
+		check = {'README.md': 0, 'install.sh': 0, 'icon.png': 0}
 		for file in contents:
 			if file['name'] == "README.md":
 				project.readme_url = file['download_url']
 				project.readme_link = file['html_url']
 				check['README.md'] = 1
-			if file['name'] == "utterio.json":
-				project.json_url = file['download_url']
-				project.json_link = file['html_url']
-				check['utterio.json'] = 1
 			if file['name'] == "install.sh":
 				project.install_url = file['download_url']
 				project.install_link = file['html_url']

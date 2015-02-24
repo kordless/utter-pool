@@ -522,8 +522,6 @@ class Project(ndb.Model):
 	def is_configured(self):
 		if not self.readme_url:
 			return False
-		if not self.json_url:
-			return False
 		if not self.install_url:
 			return False
 		if not self.icon_url:
@@ -849,7 +847,7 @@ class Instance(ndb.Model, ModelSchemaMixin):
 	@classmethod
 	def get_by_name_appliance(cls, name, appliance):
 		query = cls.query().filter(cls.name == name, cls.appliance == appliance)
-		result = instance_query.get()
+		result = query.get()
 		return result
 
 	@classmethod

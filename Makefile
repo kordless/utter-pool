@@ -19,3 +19,6 @@ push:
 
 upload:
 	appcfg.py update --skip_sdk_update_check ./
+
+cron:
+	./devtools/devcron.sh	

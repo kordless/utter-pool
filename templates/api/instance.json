@@ -13,7 +13,7 @@
       "updated": "{{ instance.updated }}",
       "expires": {{ instance.expires }},
       "state": {{ instance.state }},
-      "console_output": "{{ instance.console_output | base64encode }}",
+      {% if instance.console_output %}"console_output": "{{ instance.console_output | base64encode }}",{% endif %}
       "ask": {{ instance.ask }},
       "meta": { {% for key, value in meta.iteritems() %}
         "{{ key }}": "{{ value }}"{% if not loop.last %},{% endif %}{% endfor %}

@@ -1,5 +1,6 @@
 import time
 import json
+import re
 import urllib2
 import bleach
 import html5lib
@@ -63,15 +64,7 @@ class ProjectNewHandler(BaseHandler):
 		url = ""
 		if 'url' in self.request.GET:
 			url = urllib2.unquote(self.request.GET['url'])
-		elif self.request.referer:
-			if config.github_url in self.request.referer:
-				url = urllib2.unquote(self.request.referer)
 
-		# ensure we don't have a master README view click
-		if 'blob/master/README.md' in url:
-			url = url[:-21]
-
-		print url
 		# if we have a URL, we deal with it
 		if url:
 			project = Project.get_by_url(url)
@@ -81,7 +74,7 @@ class ProjectNewHandler(BaseHandler):
 				return self.post()
 			else:
 				# go to the existing project
-				return self.redirect_to('account-project-detail', project_id = project.key.id())
+				return self.redirect_to('account-projects-detail', project_id = project.key.id())
 
 		# params build out
 		params = {
@@ -121,7 +114,7 @@ class ProjectNewHandler(BaseHandler):
 
 		# save the new project in our database
 		project = Project()           
-		project.url = url
+		project.url = url.lower().strip('/')
 		project.name = repo['name'] # this one is editable later
 		project.repo_name = repo['name'] # this one is not
 		project.address = None
@@ -339,23 +332,35 @@ class ProjectMethodHandler(BaseHandler):
 # returns list of public projects or auto-navigates to project if coming from github
 class ProjectsHandler(BaseHandler):
 	def get(self):
-		# check for referer (only works SSL to SSL site)
+		# check for referer (only works SSL to SSL site) or parameter in URL (for custom page)
 		url = ""
-		if self.request.referer:
+		if 'url' in self.request.GET:
+			url = urllib2.unquote(self.request.GET['url'])
+		elif self.request.referer:
 			if config.github_url in self.request.referer:
-				url = self.request.referer
+				url = urllib2.unquote(self.request.referer)
 
-		# if we have a URL, we look it up
-		if url:
-			project = Project.get_by_url(url)
-			if project:
-				# go to the existing project
-				return self.redirect_to('account-projects-view', project_id = project.key.id())
-			else:
-				# if user is logged in, redirect to the new page
-				if self.user_id:
-					params = {'url': url}
-					return self.redirect_to('account-projects-new', **params)
+		# lowercase url and strip slashes
+		url = url.lower().strip('/')
+
+		# run regex to get base URL
+		match = re.search('https://github.com/([\w]*)/([\w]*)', url)
+		if match:
+			# pull out the match
+			url = match.group()
+
+			# if we have a URL, we look it up
+			if url:
+				project = Project.get_by_url(url)
+
+				if project:
+					# go to the existing project
+					return self.redirect_to('account-projects-view', project_id = project.key.id())
+				else:
+					# if user is logged in, redirect to the new page
+					if self.user_id:
+						params = {'url': url}
+						return self.redirect_to('account-projects-new', **params)
 
 		# load all public projects
 		projects = Project.get_public()

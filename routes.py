@@ -41,10 +41,10 @@ _routes = [
 ]
 
 def get_routes():
-		return _routes
+	return _routes
 
 def add_routes(app):
-		if app.debug:
-				secure_scheme = 'http'
-		for r in _routes:
-				app.router.add(r)
+	if app.debug:
+		secure_scheme = 'http'
+	for r in _routes:
+		app.router.add(r)

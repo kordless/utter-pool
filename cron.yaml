@@ -1,12 +1,1 @@
 cron:
-- description: instance based tasks
-  url: /tasks/instances/
-  schedule: every 1 minutes
-
-- description: instancebids tasks
-  url: /tasks/instancebids/
-  schedule: every 5 minutes
-
-- description: wisps tasks
-  url: /tasks/wisp/
-  schedule: every 5 minutes

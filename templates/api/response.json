@@ -1,7 +1,0 @@
-{ 
-  "response": "{{ response }}", 
-  "result": { 
-    "message": "{{ message }}"
-  } 
-}
-

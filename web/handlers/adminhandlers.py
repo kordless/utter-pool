@@ -7,7 +7,7 @@ import config
 import web.forms as forms
 from web.basehandler import BaseHandler
 from web.basehandler import user_required, admin_required
-from web.models.models import User, Flavor, Image
+from web.models.models import User
 
 class AdminHandler(BaseHandler):
 	@user_required

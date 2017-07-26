@@ -5,7 +5,7 @@ echo "would install"
 clear
 
 echo "==================================="
-echo "Starting setup for a new pool."
+echo "Starting setup for a new site."
 echo "==================================="
 
 # make a new copy of the config.py template

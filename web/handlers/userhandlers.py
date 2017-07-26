@@ -24,7 +24,7 @@ from google.appengine.api import channel
 
 import config
 import web.forms as forms
-from web.models.models import User, Wisp
+from web.models.models import User
 from web.models.models import LogVisit
 from web.basehandler import BaseHandler
 from web.basehandler import user_required
@@ -353,19 +353,11 @@ class SettingsHandler(BaseHandler):
 		return forms.EditProfileForm(self)
 
 
-
 class StatusHandler(BaseHandler):
 	@user_required
 	def get(self):
 		# lookup user's auth info
 		user_info = User.get_by_id(long(self.user_id))
-
-		# look up wisps
-		wisps = Wisp.get_by_user(user_info.key)
-		if len(wisps) > 0:
-			wisps_exist = True
-		else:
-			wisps_exist = False
 			
 		# setup channel to do page refresh
 		channel_token = user_info.key.urlsafe()
@@ -373,7 +365,6 @@ class StatusHandler(BaseHandler):
 
 		# params build out
 		params = {
-			'wisps_exist': wisps_exist,
 			'refresh_channel': refresh_channel,
 			'channel_token': channel_token 
 		}

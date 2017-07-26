@@ -3,9 +3,9 @@
 
 /* TEAM */
   Developer: Kord Campbell
-  Site: http://geekceo.com/
+  Site: https://wisdom.sh/
   Twitter: @kordless
-  Location: San Francisco, CA
+  Location: Moraga, CA
 
 /* THANKS */
   Who: Buddhism.

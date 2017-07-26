@@ -90,7 +90,7 @@ class AboutHandler(BaseHandler):
 		message = self.form.message.data.strip()
 
 		try:
-			subject = "Contact this person, please."
+			subject = "Contact request from %s." % name
 			
 			# exceptions for error pages that redirect to contact
 			template_val = {
@@ -129,6 +129,12 @@ class AboutHandler(BaseHandler):
 		return forms.AboutForm(self)
 
 
+class APIsHandler(BaseHandler):
+	def get(self):
+		params = {}
+		return self.render_template('site/docs.html', **params)
+
+
 class DocsHandler(BaseHandler):
 	def get(self):
 		params = {}
@@ -139,12 +145,6 @@ class HomeRequestHandler(BaseHandler):
 	def get(self):
 		params = {}
 		return self.render_template('site/index.html', **params)
-
-
-class SponsorHandler(BaseHandler):
-	def get(self):
-		params = {}
-		return self.render_template('site/sponsor.html', **params)
 
 
 class FeaturesHandler(BaseHandler):

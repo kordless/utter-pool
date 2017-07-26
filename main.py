@@ -1,7 +1,7 @@
 """
 The MIT License (MIT)
 
-Copyright (c) 2015 Kord Campbell, StackGeek
+Copyright (c) 2017 Kord Campbell, Stackgeek
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@ THE SOFTWARE.
 """
 
 __author__ = 'Kord Campbell'
-__website__ = 'http://www.stackmonkey.com/'
+__website__ = 'https://wisdom.sh/'
 
 import os,sys
 

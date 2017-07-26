@@ -27,100 +27,6 @@
   <div class="row">
     <!--Main Content -->
     <div class="col-xs-9">
-      <section id="overview" class="group">
-        <h3>Overview</h3>
-        <p>The {{ app_name }} site provides Open Source projects a free service to allow users to start and preview instances running a deployment of the project's code.  Users, not projects, pay {{ app_name }} for starting the instances. {{ app_name }} splits part of the revenue with the project's maintainers and part of the revenue with the the provider whose cloud was used to launch the instance for the user.</p> 
-        <p>Cloud providers participate by running an instance of the <a href="http://utter.io/">Utter.io</a> Intercloud framework, which provides fast location and provisioning of compute resources within a cooperative set of global systems managed by various <a href="http://superuser.openstack.org/">OpenStack operators</a>. Resource accounting inside the network of providers is settled with <a href="https://bitcoin.org/">Bitcoin</a> and purchases of compute instances can be made by users without an account.</p>
-        <div class="bs-callout bs-callout-info bs-callout-top">
-          <h4>Software Licensing</h4>
-          <p>All <a href="https://www.github.com/stackmonkey/">project code</a> is Open Source and licensed under the <a href="http://opensource.org/licenses/MIT">MIT License</a>. You may do whatever you please with the code.</p>
-        </div>
-
-        <div id="how-it-works" class="subgroup">
-          <h4>How the Intercloud Works</h4>
-          <p>Providers run <a href="https://www.github.com/stackmonkey/utter-va">virtual appliances</a> on top of their <strong>OpenStack clusters</strong>, which allows a limited amount of control over the cluster by the appliances.  Appliances listen to the <strong>Bitcoin blockchain</strong> for payments to a given <strong>Bitcoin address</strong>.  When a payment is noted to an address, an instance is started using the <strong>Instance Flavor</strong> associated with that address.</p>
-          <p>Right before an instance is started, the appliance will ask the <a href="https://www.github.com/stackmonkey/utter-pool">pool software</a> for provisioning details related to the instance, including ssh-keys and post boot configuration scripts. When users want to start instance of an Open Source project, the project repository tells {{ app_name }} how to instruct the appliance to provision the instance.</p>
-          <p>The pool software provides a centralized location where appliances can advertise their instances for sale for a given <strong>Ask Price</strong>. By providing users the ability to search for instances of a given size and price, this effectively creates a marketplace where compute can be openly sold, purchased or traded.  These transactions are currently done via <strong>Instance Reservations</strong>.  Here is a screenshot of an instance reservation using an OpenStack service provider located in Nairobi, Kenya:</p>
-          <p><img src="/img/site/instance_reservation.png"/></p>
-        </div>
-
-        <div id="is-it-secure" class="subgroup">
-          <h4>Is It Secure?</h4>
-          <p>From a security standpoint, the system management and payment portions of the project should be reasonably secure against bad actors. The project is Open Source and can be audited by <a href="https://github.com/stackmonkey/">viewing the appliance and pool repositories on Github</a>.</p>
-          <p>Please <a href="https://github.com/StackMonkey/utter-pool/issues/new">open a ticket</a> if you find a security related issue.</p>
-          <p>Instance starts on the network only occur after an appliance has noted a payment on the Bitcoin blockchain.  The notifications are sent into the appliance via webhook calls from <a href="https://www.coinbase.com/docs/merchant_tools/callbacks">Coinbase's payment callbacks</a>. Before an instance is started by the appliance, the callback payload from Coinbase must contact the appliance via a tokenized hostname with the correct Bitcoin address and a special address token known only to Coinbase.</p>
-          <p>The address tokens and tokenized hostname are never shared with the pool and the pool is incapable of contacting an appliance directly to give it commands. Appliances only call into the pool to give status updates on instances (including placing them up for sale) and to fetch suggested lists of flavors.</a>
-        </div>
-
-        <div id="can-i-trust-it" class="subgroup">
-          <h4>Can I Trust It?</h4>
-          <p>Trusting public cloud infrastructure has been an ongoing challenge for companies with higher level trust-based use cases.  Because cloud computing use cases come in a wide variety of required trust levels, the answer to whether you can trust a coop infrastructure varies wildly with your specific use case.</p>
-          <p>For example, trusting an unknown provider to do continuous integration tests for your Open Source project makes significantly more sense than allowing it to handle financial transactions for your closed source proprietary code.</p>
-          <p>From a provider standpoint, trusting anonymous users is easier when you know what use cases they are running on your hardware. Trusting someone who is testing out the latest version of <a href="https://ghost.org">Ghost's blogging framework</a> is far easier than trusting someone to running an anonymous server for a command and control system for a bot network.</p>
-          <p>When high trust use cases are required by users or providers, Utter.io provides a feature called <strong>Hybrid Groups</strong> which allows users and providers to <a href="#pool-groups">form appliance groups</a>, allowing the sharing of excess compute resources between entities who trust each other.  Future versions of the software will provide these types of additional trust levels automatically.</p>
-        </div>
-
-        <div class="bs-callout bs-callout-danger bs-callout-top">
-          <h4>High Trust Levels?</h4>
-          <p>{{ app_name }} recommends you use <strong>Hybrid Groups</strong> formed with trusted parties to enable higher trust level uses cases.  <a href="/groups/">Click here</a> to create your first hybrid group.</p>
-        </div>
-      </section>
-
-      <section id="pool" class="group">
-        <h3>Compute Pool</h3>
-          <p>This section of the documentation covers the use of the compute pool functionality at {{ app_name }}.</p>
-      
-          <div id="account-setup" class="subgroup">
-            <h4>Account Setup</h4>
-            <p>Accounts on the compute pool are provided via federated logins with Google.  When you <a href="{{ uri_for('login') }}">login to {{ app_name }}</a> you will see a Google account chooser.  Select the account you want to use on {{ app_name }}.</p>
-            <p><img src="/img/site/google_chooser.png"/></p>
-            <p>Once you've logged into your Google account, you will be informed about the level of access {{ app_name }} will have to your Google account.  {{ app_name }} only needs access to your <strong>email address</strong>.
-            </p>
-            <p><img src="/img/site/google_access.png"/></p>
-            <p>Click on the <strong>Accept Button</strong> to create and login to your {{ app_name }} account.</p>
-          </div>
-      
-          <div id="two-factor-authentication" class="subgroup">
-            <h4>Two Factor Authentication</h4>
-            <p>Once you have created your account, you should enable two factor authentication.  Start by clicking on the <strong>settings tab</strong> in the left navigation menu, then click on the slider under the <strong>Two Factor Authentication</strong> section.  You will be presented with a two factor authentication setup modal:</p>
-            <p><img src="/img/site/two_factor.png"/></p>
-            <p>To install Google Authenticator you can visit the <a target="_blank" href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en">Google Play Store</a> or the <a target="_blank" href="https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8">iOS App Store</a>.  Once you've installed Authenticator, set up a new account by clicking <strong>Set Up Account</strong> and then clicking <strong>Scan Barcode</strong> and scanning the barcode in the site's modal.  Finish the setup by using the Authenticator app to enter the verification code in the modal.</p>
-            <div class="bs-callout bs-callout-warning bs-callout-top">
-              <h4>Note</h4>
-              <p>After you've enabled two factor authentication on your account, you'll be prompted to enter a code from your phone's <strong>Google Authenticator app</strong> whenever you attempt to login to the {{ app_name }} site.</p>
-            </div>
-          </div>
-
-          <div id="" class="subgroup">
-            <h4></h4>
-          </div> 
-
-      </section>
-
-      <section id="becoming-a-provider" class="group">
-        <h3>Running a Trusted Node Provider</h3>
-        <p>Becoming a provider for the {{ app_name }} pool is relatively straightforward. The following is a short list of requirements needed to provide compute resources to the network:</p>
-        <ul>
-          <li>Access to a user and tenant on an <strong>OpenStack Backed Cluster</strong>.</li>
-          <li>Alternately, access to an OpenStack backed offering such as <strong>HP's Helion Public Cloud</strong>.</li>
-          <li>A <a target="_blank" href="https://coinbase.com/signup?r=52a9c6bf937ab6453a00001e&utm_campaign=user-referral&src=referral-link">Coinbase account</a> and the willingness to take <a href="https://bitcoin.org">Bitcoin</a> in exchange for providing compute resources to others.</li>
-          <li>Healthy tolerance to the software development process and willingness to assist in <a target="_blank" href="https://github.com/StackMonkey/utter-va/issues/new">debugging issues</a> while in Beta.</li>
-          <li>About an hour's worth of your time to <a href="/docs#installing-the-appliance">get the appliance installed</a>.</li>
-        </ul>
-        <div class="bs-callout bs-callout-info bs-callout-top">
-          <h4>Getting Assistance</h4>
-          <p>If you are wanting to become a provider and need assistance in planning or evaluation, please use our handy <a href="/about/#contact">contact form</a> to send us some email.  We're here to help!</p>
-        </div>
-        <p>Here's a short list infrastructure providers who are currently hosting an appliance:</p>
-        <ul>
-          <li><a href="http://hpcloud.com/">HP Helion</a></li>
-          <li><a href="http://kili.io/">Kili</a></li>
-          <li><a href="https://www.nebula.com/">Nebula</a></li>
-          <li><a href="https://www.rackspace.com/">Rackspace</a></li>
-        </ul>
-        <p>Stop sitting there and just <a href="/login">signup already</a>; this is the future of the cloud and you'll just end up missing out on it if you don't.</p>
-      </section>
-
       <section id="installing-the-appliance" class="group">
         <h3>Installing the Appliance</h3>
         <p>The virtual appliance requires a running OpenStack cluster. If you don't have an OpenStack cluster already running, you may follow the instructions for <a href="http://www.stackgeek.com/guides/gettingstarted.html">Installing OpenStack in 10 minutes</a> on the <a href="http://stackgeek.com/">StackGeek website</a>. Over 15,000 people have used the StackGeek scripts to install OpenStack.</p>
@@ -179,93 +85,6 @@ chmod 600 ~/.ssh/stackmonkey.pem
           <p><img src="/img/site/flavor_thumb.png" alt="OpenStack Flavor"></p>
         </div>
 
-        <div id="install-an-ubuntu-image" class="subgroup">
-          <h4>Install an Ubuntu Image</h4>
-          <p>The appliance requires an Ubuntu backed instance to run. If you don't have an Ubuntu image installed on your OpenStack cluster, follow these steps:</p>
-          <ul>
-            <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Images</strong>.</li>
-            <li>Click on the <strong>Create Image</strong> button to the top right.</li>
-            <li>Name the image <strong>Ubuntu Trusty 14.04LTS</strong> and paste the URL <code><a href="http://goo.gl/u2IBP9">http://goo.gl/u2IBP9</a></code> into the location field.</li>
-            <li>Select the <strong>QCOW2</strong> format in the pulldown and make the image public.</li>
-            <li>Click <strong>Create Image</strong> to create the new system image.</li>
-          </ul>
-          <p>You will want to keep this image live on the cluster in case you decide to start another appliance.</p>
-        </div>
-          
-        <div id="set-the-access-rules" class="subgroup">
-          <h4>Set the Access Rules</h4>
-          <p>The appliance instance needs a couple of ports opened up to allow it to operate properly. Follow these steps to setup the access rules for the appliance:</p>
-          <ul>
-            <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Access &amp; Security</strong>.</li>
-            <li>Click on the <strong>Security Groups</strong> tab at the top.  To the right, click on the <strong>Create Security Group</strong> button.</li>
-            <li>Name the security group <strong>'appliance'</strong> and enter a short description.  Click <strong>Create Security Group</strong> to create the group.</li>
-            <li>Click the <strong>Manage Rules</strong> button to the right in the <strong>appliance</strong> security group row.  Click <strong>Add Rule</strong> and then enter the number <strong>'22'</strong> (ssh) in the port field.  Click <strong>Add</strong>.  Repeat this step and enter the number <strong>'80'</strong> (http) in the port field instead.  Click <strong>Add</strong> again. Repeat one more time, and enter the number <strong>8080</strong> in the port filed. Click <strong>Add</strong> one final time.</li>
-            <li>Click the <strong>Manage Rules</strong> button again, but this time click on the <strong>Rule</strong> pulldown and select <strong>Custom ICMP Rule</strong>.  Enter the number '-1' in <strong>both</strong> the <strong>Type</strong> and <strong>Code</strong> fields.  Click <strong>Add</strong> to add the rule.</li>
-          </ul>
-          <p>Your <strong>appliance</strong> security group rules should now look like this:</p>
-          <p><a target="_blank" href="/img/site/appliance_groups.png"><img src="/img/site/appliance_groups_thumb.png" alt="OpenStack Groups"></a></p>
-
-          <div class="bs-callout bs-callout-warning bs-callout-top">
-            <h4>Disabling Appliance Ports</h4>
-            <p>The appliance uses <strong>port 80</strong> for HTTP connections, <strong>port 22</strong> for ssh access, and <strong>port 8080</strong> for the reverse caching proxy for Glance images.  If you would like to disable the appliance's ports for security purposes, you must leave <strong>port 8080</strong> open for image caching if you have that option enabled in the configuration settings.</p>
-          </div>
-
-          <p>The instances being sold by the appliance will need unrestricted access from the Internet if they have publicly accessible IPv4 addresses. The appliance does not currently manage security groups, so you need to manually open up the default group to allow all access to the instances.</p>
-          <p>Follow these steps to set up the access rules for the instances the appliance starts:</p>
-          <ul>
-            <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Access &amp; Security</strong>.</li>
-            <li>Click the <strong>Manage Rules</strong> button to the right in the <strong>default</strong> security group row.</li>
-            <li>Delete any existing rules for the default group by clicking on <strong>Delete Rule</strong> in any of the existing rule's rows.</li>
-            <li>Click <strong>Add Rule</strong> and then select <strong>Custom TCP Rule</strong> from the <strong>Rule</strong> pulldown and <strong>Port Range</strong> from the <strong>Open Port</strong> pulldown.</li>
-            <li>Enter the number <strong>'1'</strong> in the <strong>From Port</strong> field. Enter the number <strong>'65535'</strong> in the <strong>To Port</strong> field. Click <strong>Add</strong>.</li>
-            <li>Repeat the previous two steps, but this time select <strong>Custom UDP Rule</strong> from the <strong>Rule</strong> pulldown.  Enter the same numbers for the range.</li>
-            <li>Click <strong>Add Rule</strong> and then select <strong>Custom ICPMP Rule</strong> from the <strong>Rule</strong> pulldown.</li>
-            <li>Enter the number <strong>'-1'</strong> in <strong>both</strong> the <strong>Type</strong> and <strong>Code</strong> fields.  Click <strong>Add</strong> to add the rule.</li>
-          </ul>
-          <p>Your <strong>default</strong> security group rules should now look like this:</p>
-          <p><a target="_blank" href="/img/site/default_groups.png"><img src="/img/site/default_groups_thumb.png" alt="OpenStack Groups"></a></p>
-        </div>
-
-        <div id="start-the-appliance" class="subgroup">
-          <h4>Start the Appliance</h4>
-          <p>Now it's time to launch an instance which will configure itself into a {{ app_name }} virtual appliance.  Follow these instructions to launch the appliance:</p>
-          <ul>
-            <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Instances</strong>.</li>
-            <li>Click on the <strong>Launch Instance</strong> button.</li>
-            <li>Name the instance <strong>'{{ app_name }} VA'</strong> and then click on the <strong>Flavor</strong> pulldown.</li>
-            <li>If you created the <strong>m1536.v1.d8</strong> flavor earlier, select it from the list.</li>
-            <li>If you are unable to create a custom flavor, select a <strong>m1.small</strong> stock flavor from the pulldown.</li>
-            <li>Click on the <strong>Instance Boot Source</strong> pulldown at the bottom and select <strong>Boot from image</strong>.</li>
-            <li>Under <strong>Image Name</strong>, select the <strong>Ubuntu Trusty 14.04LTS</strong> image you installed earlier.</li>
-            <li>Click on the <strong>Access &amp; Security</strong> tab at the top.</li>
-            <li>Use the <strong>Key Pair</strong> pulldown to select the <strong>stackmonkey</strong> key pair you generated earlier.</li>
-            <li>In the same tab, check the <strong>appliance</strong> security group, and uncheck the <strong>default</strong> group.</li>
-            <li>Click on the <strong>Post-Creation</strong> tab at the top.</li>
-          </ul>
-          <p>In the Customization Script text area that appears in the modal, paste the following exactly as shown:</p>
-<pre>
-#cloud-config
-hostname: stackmonkey-va
-manage_etc_hosts: true
-runcmd:
- - [ wget, "http://goo.gl/KJH5Sa", -O, /tmp/install.sh ]
- - chmod 755 /tmp/install.sh
- - /tmp/install.sh
-</pre>
-          <p>Click on the <strong>Launch</strong> button to launch the appliance.  You can monitor the instance's build state by refreshing the console log tab viewable by clicking on the instance name in the instance list.</p>
-          <p>The appliance will take about 10 minutes to build.</p>
-        </div>
-
-        <div id="accessing-the-appliances-ui" class="subgroup">
-          <h4>Accessing the Appliance's UI</h4>
-          <p>Once the appliance is running, you can access it by its IP address.  This can be found in the Horizon UI of OpenStack, next to the instance.  Here's an example:</p>
-          <p><a target="_blank" href="/img/site/appliance_ip.png"><img src="/img/site/appliance_ip_thumb.png" alt="Appliance IPs"></a></p>
-          <p>Build a URL of the IP address of the appliance and enter it into your browser's address bar:</p>
-          <p><code>http://10.0.47.3/</code></p>
-
-          <p>Remember, it takes about 10 minutes for the appliance to build, so the UI won't appear until it's done!</p>
-        </div> 
-      </section> 
 
       <section id="appliance-operation" class="group">
         <h3>Appliance Operation</h3>
@@ -343,81 +162,6 @@ runcmd:
             </div>
           </div> 
 
-          <div id="connecting-to-openstack" class="subgroup">
-            <h4>Connecting to OpenStack</h4>
-            <p>To set up the appliance's OpenStack connection, you'll need to download a configuration file from the OpenStack interface:</p>
-            <ul>
-              <li>Log into your OpenStack cluster using the <strong>stackmonkey</strong> user you created earlier.</li>
-              <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Access &amp; Security</strong>.</li>
-              <li>Click on the <strong>API Access</strong> tab at the top.  Click on the <strong>Download OpenStack RC File</strong> button to the right.</li>
-            </ul>
-            <p>Switch back to the appliance's page and do the following:</p>
-            <ul>
-              <li>Click on the <strong>Click or drag here to upload your RC file</strong> button at the top. Select the file you just downloaded, and then click on the system dialog's <strong>Open</strong> button at the bottom right.</li>
-              <li>Enter the password you used earlier creating the <strong>stackmonkey</strong> user and then click <strong>Save Configuration</strong>.</li>
-            </ul>
-            <p>Here's a screenshot of a completed OpenStack setup for reference:</p>
-            <p><img src="/img/site/openstack_thumb.png" alt="Openstack Setup"></p>
-          </div> 
-
-          <div id="configuring-flavors" class="subgroup">
-            <h4>Configuring Flavors</h4>
-            <p>The appliance will attempt to download a list of flavors installed on the connected OpenStack cluster.  When the appliance first displays the flavors, they will be disabled and have their ask prices set to zero.<p>
-            <p><img src="/img/site/flavors_thumb.png" alt="Flavors Table"></p>
-            <p>To enable serving a flavor, simply click on the <strong>Serving Slider</strong> next to the flavor you would like to enable. When you enable a flavor that has a zero ask price, you will be prompted to enter an ask price before the appliance will enable it:</p>
-            <p><img src="/img/site/ask_price.png"></p>
-            <p>&nbsp;</p>
-            <div class="bs-callout bs-callout-info bs-callout-top">
-              <h4>Pricing Instances</h4>
-              <p>The pool returns average pricing of instances to your appliance every 15 minutes.  The ask price dialog will auto-populate with the average ask price of other flavors for sale on the pool that have the same properties as the flavor you are enabling.  Set a price for the flavor that makes the most sense for your particular deployment costs.</p>
-            </div>
-          </div>
-
-          <div id="managing-openstack-flavors" class="subgroup">
-            <h4>Managing OpenStack Flavors</h4>
-            <p>This section assumes you personally have admin level privileges on your OpenStack cluster. If you don't have admin on your cluster, you will be unable to create new flavors for selling on the {{ app_name }} site and can safely skip this section.</p>
-            <p>If you have admin privileges and have configured the appliance with an OpenStack user that also has admin privileges, you should be able to install a flavor from the appliance UI. To install a new flavor, start by clicking on the <strong>Install a New Flavor</strong> button and then choosing a flavor to install:</p>
-            <p><img src="/img/site/install_flavor.png"></p>
-            <p>If you <strong>have not</strong> configured the appliance using a user with admin privileges, you can still add flavors manually using the OpenStack interface. Use the following steps to add a new flavor to the cluster and set its ask rate:</p>
-            <ul>
-              <li>Log into your OpenStack cluster with a user that has <strong>Admin Privileges</strong>.</li>
-              <li>To the left, click on the <strong>Admin</strong> tab and then click on <strong>System Panel</strong>.</li>
-              <li>Click on the <strong>Flavors</strong> tab and then, to the right, click on <strong>Create Flavor</strong>.</li>
-              <li>Under <strong>Flavor Info</strong> create a new flavor and set the <strong>name</strong> to <strong>m1.test</strong></li>
-              <li>Set the flavor's <strong>VCPUs</strong> to <strong>1</strong>, <strong>RAM</strong> to <strong>512</strong>, and <strong>Root Disk GB</strong> to <strong>10</strong>.</li>
-              <li>Set both <strong>Ephemeral</strong> and <strong>Swap</strong> Disk to <strong>0</strong>.</li>
-              <li>Click on <strong>Create Flavor</strong> to create the flavor.</li>
-              <li>To the right side of the new flavor entry, click the <strong>More</strong> pulldown and then click <strong>View Extra Specs</strong>.</li>
-              <li>Click the <strong>Create</strong> button and select <strong>Other Key</strong> from the <strong>Keys</strong> pulldown.</li>
-              <li>Enter <strong>stackmonkey:ask_price</strong> for the <strong>Key Name</strong> and then enter <strong>10</strong> for the <strong>Value</strong>.</li>
-              <li>Click the <strong>Create</strong> button to set the extra spec value for <strong>Ask Price</strong>.</li>
-            </ul>
-            <p>Give the appliance a few minutes to pick up the new settings for the flavor after you have edited it.</p>
-            <p>Regardless of whether the appliance has admin privileges or not, you can always set meta data values that the appliance can use for updating the list of flavors it sells.  This example shows editing a custom flavor and setting the <strong>Egress</strong> and <strong>Ingress</strong> rates plus the <strong>Ask Price</strong>:</p>
-            <p><img src="/img/site/openstack_extra_specs.png"></p>
-            <p>You can also set these values using the command line from the <strong>OpenStack Controller</strong> (assuming flavor ID is 1000):</p>
-            <p>
-<pre>
-nova flavor-key 1000 set stackmonkey:ask_price=5
-nova flavor-key 1000 set quota:inbound_average=1
-nova flavor-key 1000 set quota:inbound_average=1
-</pre>
-            </p>
-            <p>&nbsp;</p>
-            <div class="bs-callout bs-callout-warning bs-callout-top">
-              <h4>Adjusting OpenStack's Default Flavor Policy</h4>
-              <p>On many <strong>OpenStack</strong> installations a normal user cannot create or modify flavors by default.  In cases where it is less than ideal to run the appliance user with admin privileges, you can modify the default flavor permissions by editing nova's <strong>policy.json</strong>. For most OpenStack distributions, that file is located at <strong>/etc/nova/policy.json</strong>.</p>
-              <p>The entries that need to be updated for enabling flavor editing are as follows:</p>
-              <p>
-                <code>"compute_extension:flavorextraspecs:create": "rule:admin_api or user_id:12345",</code>
-                <code>"compute_extension:flavorextraspecs:update": "rule:admin_api or user_id:12345",</code>
-                <code>"compute_extension:flavorextraspecs:delete": "rule:admin_api or user_id:12345",</code>
-                <code>"compute_extension:flavormanage": "rule:admin_api or user_id:12345",</code>
-              </p>
-              <p>You will substitute the actual User ID for the string <code>12345</code> above.  The User ID for users is listed in the <strong>OpenStack Users Table</strong> located under <strong>Admin..Identity Panel..Users</strong> tab in the OpenStack UI.</p>
-            </div>
-          </div>
-
           <div id="" class="subgroup">
             <h4></h4>
           </div>           
@@ -429,33 +173,11 @@ nova flavor-key 1000 set quota:inbound_average=1
     <nav class="col-xs-3 bs-docs-sidebar">
       <ul id="sidebar" class="nav nav-stacked" data-spy="affix" data-offset-top="120">
         <li>
-          <a href="#overview">Overview</a>
-          <ul class="nav nav-stacked">
-            <li><a href="#how-it-works">How It Works</a></li>
-            <li><a href="#is-it-secure">Is It Secure?</a></li>
-            <li><a href="#can-i-trust-it">Can I Trust It?</a></li>
-          </ul>
-        </li>
-        <li>
-          <a href="#pool">Compute Pool</a>
-          <ul class="nav nav-stacked">
-            <li><a href="#account-setup">Account Setup</a></li>
-            <li><a href="#two-factor-authentication">Two Factor Auth</a></li>
-          </ul>
-        </li>
-        <li>
-          <a href="#becoming-a-provider">Running a Node</a>
-        </li>
-        <li>
           <a href="#installing-the-appliance">Appliance Install</a>
           <ul class="nav nav-stacked">
             <li><a href="#creating-a-user-and-tenant">Create User/Tenant</a></li>
             <li><a href="#create-a-keypair">Create SSH Keypair</a></li>
             <li><a href="#create-a-flavor-for-the-appliance">Create a Flavor</a></li>
-            <li><a href="#install-an-ubuntu-image">Install an Ubuntu Image</a></li>
-            <li><a href="#set-the-access-rules">Set the Access Rules</a></li>
-            <li><a href="#start-the-appliance">Start the Appliance</a></li>
-            <li><a href="#accessing-the-appliances-ui">Access the UI</a></li>
           </ul>
         </li> 
         <li>
@@ -463,9 +185,6 @@ nova flavor-key 1000 set quota:inbound_average=1
           <ul class="nav nav-stacked">
             <li><a href="#logging-into-the-appliance">Logging In</a></li>
             <li><a href="#appliance-configuration">Configuration</a></li>
-            <li><a href="#connecting-to-openstack">Connect OpenStack</a></li>
-            <li><a href="#configuring-flavors">Configuring Flavors</a></li>
-            <li><a href="#managing-openstack-flavors">Managing Flavors</a></li>
           </ul>
         </li> 
       </ul>

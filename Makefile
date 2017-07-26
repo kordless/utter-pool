@@ -18,7 +18,7 @@ push:
 	git push
 
 upload:
-	appcfg.py update --skip_sdk_update_check ./
+	gcloud app deploy app.yaml index.yaml
 
 cron:
 	./devtools/devcron.sh	

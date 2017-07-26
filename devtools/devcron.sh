@@ -2,14 +2,8 @@
 cd ..
 while [ 1 ] 
 do
-  echo "Running...instance bids tasks"
-  curl -s http://0.0.0.0:8079/tasks/instancebids/
-
-  echo "Running...instance tasks"
-  curl -s http://0.0.0.0:8079/tasks/instances/
-
-  echo "Running...wisp tasks"
-  curl -s http://0.0.0.0:8079/tasks/wisps/
+  echo "Running tasks"
+  curl -s http://0.0.0.0:8079/tasks/foo/
 
   echo "Running in 60"
   sleep 30

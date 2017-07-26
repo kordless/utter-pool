@@ -12,7 +12,7 @@ _routes = [
 	RedirectRoute('/apis/', sitehandlers.APIsHandler, name='projects', strict_slash=True),
 	RedirectRoute('/terms/', sitehandlers.TermsHandler, name='terms', strict_slash=True),
 	RedirectRoute('/privacy/', sitehandlers.PrivacyHandler, name='privacy', strict_slash=True),
-	RedirectRoute('/about/', sitehandlers.AboutHandler, name='privacy', strict_slash=True),
+	RedirectRoute('/about/', sitehandlers.AboutHandler, name='about', strict_slash=True),
 	
 	# users
 	RedirectRoute('/login/', userhandlers.LoginHandler, name='login', strict_slash=True),

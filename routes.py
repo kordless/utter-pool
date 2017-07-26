@@ -25,7 +25,7 @@ _routes = [
 
 	# tasks
 	RedirectRoute('/tasks/sendinvite/', emailhandlers.SendEmailInviteHandler, name='tasks-sendinvite', strict_slash=True),
-  RedirectRoute('/tasks/mail/', sitehandlers.SendEmailHandler, name='taskqueue-send-email', strict_slash=True),
+	RedirectRoute('/tasks/mail/', sitehandlers.SendEmailHandler, name='taskqueue-send-email', strict_slash=True),
 
 	# admin
 	RedirectRoute('/admin/', adminhandlers.AdminHandler, name='admin', strict_slash=True),

@@ -117,24 +117,11 @@ a.navbar-brand {
 
 .bg-img-1 {
     /*background: url(../images/whatruns_2-1_image_without_shadow.png) center no-repeat;*/
-    background: url(../img/moon.png) center no-repeat;
+    background: url(../img/moon.gif) center no-repeat;
     background-size: contain;
     height: 640px;
     width: 42vw;
     /*position: fixed;*/
-}
-
-.bg-img-2 {
-    background: url(../img/whatruns_main_image_v4.gif) center no-repeat;
-  /*  height: 607px;*/
-  height: 640px;
-    background-size: contain;
-    width: 42vw;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    margin-top: 60px;
-    display: none
 }
 
 .title {

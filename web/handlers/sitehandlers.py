@@ -60,8 +60,10 @@ class SendEmailHandler(BaseHandler):
 		except (apiproxy_errors.OverQuotaError, BadValueError):
 			logging.error("Error saving Email Log in datastore")
 
-		mail.send_mail(sender, to, subject, body)
-
+		try:
+			mail.send_mail(sender, to, subject, body)
+		except:
+			logging.error("Error sending email!")
 
 class AboutHandler(BaseHandler):
 	def get(self):
@@ -98,8 +100,7 @@ class AboutHandler(BaseHandler):
 				"email": email,
 				"browser": str(httpagentparser.detect(user_agent)['browser']['name']),
 				"browser_version": str(httpagentparser.detect(user_agent)['browser']['version']),
-				"operating_system": str(httpagentparser.detect(user_agent)['flavor']['name']) + " " +
-									str(httpagentparser.detect(user_agent)['flavor']['version']),
+				"operating_system": str(httpagentparser.detect(user_agent)['flavor']['name']) + " " +str(httpagentparser.detect(user_agent)['flavor']['version']),
 				"ip": remoteip,
 				"message": message
 			}
@@ -144,7 +145,7 @@ class DocsHandler(BaseHandler):
 class HomeRequestHandler(BaseHandler):
 	def get(self):
 		params = {}
-		return self.render_template('site/index.html', **params)
+		return self.render_template('site/index-new.html', **params)
 
 
 class FeaturesHandler(BaseHandler):

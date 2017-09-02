@@ -19,7 +19,6 @@ class SendEmailInviteHandler(BaseHandler):
 		sender = config.contact_sender
 
 		# test to see if the sender_id is real
-
 		invitor = User.get_by_id(long(invitor_id))
 		# if we found the sending user and group
 		if invitor:

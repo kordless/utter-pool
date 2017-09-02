@@ -19,9 +19,6 @@ from google.appengine.api import urlfetch
 from lib.utils import generate_token
 from lib.github import github
 
-from utter_libs.schemas import schemas
-from utter_libs.schemas.model_mixin import ModelSchemaMixin
-
 
 # user model - extends webapp2 User model
 class User(User):
@@ -208,12 +205,9 @@ class LogVisit(ndb.Model):
 
 # log outgoing emails
 class LogEmail(ndb.Model):
-	sender = ndb.StringProperty(
-		required=True)
-	to = ndb.StringProperty(
-		required=True)
-	subject = ndb.StringProperty(
-		required=True)
+	sender = ndb.StringProperty(required=True)
+	to = ndb.StringProperty(required=True)
+	subject = ndb.StringProperty(required=True)
 	body = ndb.TextProperty()
 	when = ndb.DateTimeProperty()
 

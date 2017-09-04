@@ -29,18 +29,18 @@
     <div class="col-xs-9">
       <section id="wisdoms-apis" class="group">
         <h3>Introduction</h3>
-        <p>Wisdom's service provides proxied API calls to various third party services. Eventually, these API calls will carry identity and payment information, effectively implementing the <strong>402</strong> HTTP response code for requiring proof of payment with or for the call.</p>
-        For now, current the deployment supports adding new APIs, proxying calls to those APIs, and providing statistical information about the calls being made.  </p>
+        <p>Wisdom's service provides proxied API calls to various third party services. Eventually, these proxied API calls will carry identity and payment information, effectively implementing the <strong>402</strong> HTTP response code for proof of payment for a given call or credential.</p>
+        For now, current the deployment supports adding new APIs, proxying calls to those APIs, and providing data about the calls being made.  </p>
 
         <div id="service-apis" class="subgroup">
           <h4>Service APIs</h4>
-          <p>Wisdom's service APIs may or may not require payment to play. Service APIs live at the following URL:</p> 
+          <p>Wisdom's service APIs may or may not require payment to make a call. Service APIs live at the following URL:</p> 
           <h5>https://api.wisdom.sh/api/</h5>
         </div>
 
         <div id="service-status" class="subgroup">
           <h4>Service Status</h4>
-          <p>To get started playing with our APIs, issue a <span class="label label-info">GET</span> request to <strong>api.wisdom.sh</strong> for the <strong>/api/status</strong> endpoint in your bash terminal. A JSON formatted response giving system status is returned:</p> 
+          <p>To get started with our APIs, issue a <span class="label label-info">GET</span> request to <strong>api.wisdom.sh</strong> for the <strong>/api/status</strong> endpoint in your bash terminal. A JSON formatted response giving system status is returned:</p> 
         
           <h5>GET /api/status</h5>
 <pre>
@@ -115,7 +115,7 @@ curl https://api.wisdom.sh/eurorates
 
         <div id="api-status" class="subgroup">
           <h4>API Status</h4>
-          <p>Wisdom maps third party APIs and credentials for those APIs onto the <strong>//api.wisdom.com/</strong> space. Use a <span class="label label-info">GET</span> request against the <strong>/api/</strong> service path to query the status of the third party API, and its proxy:</p>
+          <p>Wisdom maps third party APIs and credentials for those APIs onto the <strong>//api.wisdom.com/</strong> space. Use a <span class="label label-info">GET</span> request against the <strong>/api/</strong> service path to query the status of the third party API and the proxy serving it:</p>
           <h5>GET /api/&lt;api_id&gt;/</h5>
         </div>
 <pre>

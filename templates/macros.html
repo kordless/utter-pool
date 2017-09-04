@@ -25,35 +25,10 @@
   </ul>
 {%- endmacro %}
 
-<!-- twitter widget -->
-{% macro tweet_widget(data_url, data_text) -%}
-  <a href="https://twitter.com/share" 
-    data-url="{{data_url}}" 
-    class="twitter-share-button" 
-    data-text="{{data_text}}" 
-    data-via="{{ twitter_handle }}" 
-    data-size="medium">
-    Tweet
-  </a>
-
-  <script type="text/javascript">
-    !function(d,s,id){
-      var js,
-      fjs=d.getElementsByTagName(s)[0];
-      if(!d.getElementById(id)){
-        js=d.createElement(s);
-        js.id=id;
-        js.src="//platform.twitter.com/widgets.js";
-        fjs.parentNode.insertBefore(js,fjs);
-      }
-    }(document,"script","twitter-wjs");
-  </script>
-{%- endmacro %}
-
 <!-- twitter timeline -->
 {% macro tweet_timeline(twitter_handle, twitter_widget_id) -%}
-  <a class="twitter-timeline" href="https://twitter.com/{{twitter_handle}}" data-widget-id="{{twitter_widget_id}}">Tweets by @{{twitter_handle}}</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+<a class="twitter-timeline" href="https://twitter.com/wisdomapi">Tweets by wisdomapi</a>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 {%- endmacro %}
 
 <!-- google plus widget -->

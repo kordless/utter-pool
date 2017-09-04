@@ -8,7 +8,7 @@
     <link href="/css/documentation.css" rel="stylesheet"> 
 {% endblock %}
 
-{% block description %}It looks like you've managed to find the StackMonkey documentation; things are looking up for you!{% endblock %}
+{% block description %}It looks like you've managed to find the Wisdom documentation; things are looking up for you!{% endblock %}
 
 {% block navbar %}
   {% include 'navbar.html' %}
@@ -27,166 +27,145 @@
   <div class="row">
     <!--Main Content -->
     <div class="col-xs-9">
-      <section id="installing-the-appliance" class="group">
-        <h3>Installing the Appliance</h3>
-        <p>The virtual appliance requires a running OpenStack cluster. If you don't have an OpenStack cluster already running, you may follow the instructions for <a href="http://www.stackgeek.com/guides/gettingstarted.html">Installing OpenStack in 10 minutes</a> on the <a href="http://stackgeek.com/">StackGeek website</a>. Over 15,000 people have used the StackGeek scripts to install OpenStack.</p>
-        <p>The following video will help familiarize you with the process of installing the appliance on an OpenStack cluster:</p>
-        <div><iframe src="//player.vimeo.com/video/100944207" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>
-        <p></p>
+      <section id="wisdoms-apis" class="group">
+        <h3>Introduction</h3>
+        <p>Wisdom's service provides proxied API calls to various third party services. Eventually, these API calls will carry identity and payment information, effectively implementing the <strong>402</strong> HTTP response code for requiring proof of payment with or for the call.</p>
+        For now, current the deployment supports adding new APIs, proxying calls to those APIs, and providing statistical information about the calls being made.  </p>
 
-        <div id="creating-a-user-and-tenant" class="subgroup">
-          <h4>Creating a User and Tenant</h4>
-          <p>If you have an admin account on your OpenStack cluster, you'll want to create a separate user and tenant for running the virtual appliance:</p>
-          <ul>
-            <li>Click on the <strong>Admin</strong> tab to the far left and then click on <strong>Identity Panel..Projects</strong>. To the right, click on the <strong>Create Project</strong> button and then enter a new project name called <strong>stackmonkey</strong> in the name field.</li>
-            <li>Click on <strong>Create Project</strong> below to create the new project.</li>
-            <li>Back in the <strong>Admin</strong> panel, click on <strong>Users</strong>.  To the right, click on the <strong>Create User</strong> button and then create a new user called <strong>stackmonkey</strong> and set the user's password.</li>
-            <li>Set the primary project to <strong>stackmonkey</strong> and set role of the new user account to either <strong>member</strong> or <strong>admin</strong>.</li>
-            <li>Log out of the system and then log back in as the <strong>stackmonkey</strong> user. </li>
-          </ul>
-          <div class="bs-callout bs-callout-warning bs-callout-top">
-            <h4>Don't Have Admin?</h4>
-            <p>No worries! If you don't have an admin account on your OpenStack cluster you can still sell instances on it.  Simply skip to the <a href="#install-an-ubuntu-image">Install an Ubuntu Image</a> section below to continue the setup of the appliance.</p>
-          </div>
+        <div id="service-apis" class="subgroup">
+          <h4>Service APIs</h4>
+          <p>Wisdom's service APIs may or may not require payment to play. Service APIs live at the following URL:</p> 
+          <h5>https://api.wisdom.sh/api/</h5>
         </div>
 
-        <div id="create-a-keypair" class="subgroup">
-          <h4>Create an SSH Keypair</h4>
-          <p>You need to create a key pair that you can use to access the virtual appliance's command line console.  Follow these steps to create the key:</p>
-          <ul>
-            <li>Click on the <strong>Project</strong> tab to the far left and then click on <strong>Compute..Instances</strong>. Click on <strong>Access &amp; Security</strong> and then click on the <strong>Key Pairs</strong> tab at the top.</li>
-            <li>Click <strong>Create Key Pair</strong> and name the key pair <strong>stackmonkey</strong>.  Click <strong>Create Key Pair</strong> to create the key pair.  The private key will be downloaded to your local machine.</li>
-          </ul>
-          <p>Next, move the private key into your <strong>.ssh directory</strong> (or similar for Windows) and then change the permissions on it:</p>
+        <div id="service-status" class="subgroup">
+          <h4>Service Status</h4>
+          <p>To get started playing with our APIs, issue a <span class="label label-info">GET</span> request to <strong>api.wisdom.sh</strong> for the <strong>/api/status</strong> endpoint in your bash terminal. A JSON formatted response giving system status is returned:</p> 
+        
+          <h5>GET /api/status</h5>
 <pre>
-cd ~/Downloads/
-mv stackmonkey.pem ~/.ssh/
-chmod 600 ~/.ssh/stackmonkey.pem
+curl -X GET https://api.wisdom.sh/api/status
+
+{  
+  "type": "GET",
+  "status": "200",
+  "view": "https://wisdom.sh/api/status",
+  "timestamp": "2017-09-01 12:00:00",
+  "qps": "2.0"
+}
 </pre>
-          <p>Be sure to keep this key somewhere safe and secure!</p>
-          <div class="bs-callout bs-callout-info bs-callout-top">
-            <h4>Are you a developer?</h4>
-            <p>You can head over to Github to <a target="_blank" href="https://github.com/stackmonkey/utter-va/#shell-access">view the instructions for logging directly into the appliance</a>.</p>
-          </div>
+
         </div>
 
-        <div id="create-a-flavor-for-the-appliance" class="subgroup">
-          <h4>Create a Flavor for the Appliance</h4>
-          <p>The appliance needs about 8GB of drive space for caching boot images. To create a new flavor that is the right size for for the appliance, do the following:</p>
-          <ul>
-            <li>Click on the <strong>Admin</strong> tab to the far left and then click on <strong>System Panel..Flavors</strong>.</li>
-            <li>Click the <strong>Create Flavor</strong> button at the top right.</li>
-            <li>Name the flavor <strong>'m1536.v1.d8'</strong>.</li>
-            <li>Put <strong>'1'</strong> in for the number of <strong>VCPUs</strong>.</li>
-            <li>For <strong>RAM</strong> put <strong>'1536'</strong>.</li>
-            <li>For <strong>Root Disk GB</strong> put <strong>'8'</strong>.</li>
-            <li>Finally, click <strong>Create Flavor</strong> to create the new flavor.</li>
-          </ul>
-          <p><img src="/img/site/flavor_thumb.png" alt="OpenStack Flavor"></p>
+        <div class="bs-callout bs-callout-warning bs-callout-top">
+          <h4>Authentication</h4>
+          <p>Service endpoints on the <strong>/api/</strong> path do not require authentication. However, some endpoints may require payment depending on demand for a given API resource. Endpoints on paths outside the <strong>/api/</strong> service may or may not require authentication.</p>
         </div>
 
+        <div id="api-add" class="subgroup">
+          <h4>Add API</h4>
+          <p>Wisdom proxies API endpoints which are added to the system by users. To add an API to the system, create a <span class="label label-warning">POST</span> request, including the desired <strong>upstream_url</strong> to proxy and the desired <strong>uri</strong> to map onto the <strong>//api.wisdom.sh/</strong> space.</p>
+          <h5>POST /api/</h5>
+        </div>
+<pre>
+curl -X POST \
+  -d '{"upstream_url": "https://api.fixer.io/latest", "uri": "/eurorates"}' \
+  https://api.wisdom.sh/api/
 
-      <section id="appliance-operation" class="group">
-        <h3>Appliance Operation</h3>
-          <p>Before we setup the appliance, you'll need to create or have the following account information available:</p>
-          <ul>
-            <li>A <a target="_blank" href="https://www.stackmonkey.com/login/">{{ app_name }} account</a></li>
-            <li>A <a target="_blank" href="https://coinbase.com/signup?r=52a9c6bf937ab6453a00001e&utm_campaign=user-referral&src=referral-link">Coinbase account</a></li>
-            <li>An <a target="_blank" href="https://ngrok.com/user/signup">Ngrok account</a></li>
-          </ul>
+{  
+  "type": "PUT",
+  "status": "",
+  "preserve_host":false,
+  "created_at":1502942747239,
+  "upstream_connect_timeout":60000,
+  "upstream_url":"https:\/\/api.fixer.io\/latest",
+  "uris":[  
+    "\/eurorates"
+   ],
+  "view": "https://wisdom.sh/api/eurorates",
+  "timestamp": "2017-09-01 12:00:00",
+  "qps": "2.0"
+}
+</pre>
 
-          <div id="logging-into-the-appliance" class="subgroup">
-            <h4>Logging Into the Appliance</h4>
-            <p>Once the web-based UI comes up, you start things off by creating an administrator account.  Enter the username, password, and  password again to create an account. Click the <strong>Create Admin Account</strong> button to create the account and automatically sign in.</p>
-            <p><a target="_blank" href="/img/site/admin.png"><img src="/img/site/admin_thumb.png" alt="Create an admin account."></a></p>
-            <p><strong><em>Note:</em></strong> The appliance URL is not intended to be shared with others.  While connections from the outside are encrypted over the SSL tunnel, and the URL of the appliance is never publicly shared, your local access to the UI via IP address is neither secured nor encrypted.  This will be addressed in later version.</p>
-          </div> 
+      </section>
 
-          <div id="appliance-configuration" class="subgroup">
-            <h4>Appliance Configuration</h4>
-            <p>Once you've logged into the appliance, click on the <strong>Appliance</strong> tab at the top left.  You'll see a few warning messages pop up and go away in the bottom right corner.  There should be some notifications next to a few of the tabs to the left, indicating the appliance isn't functional yet. Here's a view of that configuration screen with warnings:</p>
-            <p><a target="_blank" href="/img/site/appliance_configuration.png"><img src="/img/site/appliance_configuration_thumb.png" alt="Create an admin account."></a></p>
-            <h5>1. Pool API Token</h5>
-            <p>Click the <strong>Register API Token</strong> button to register the appliance with the pool.  If you haven't signed up for the <strong>{{ app_name }} pool</strong> yet, you will be prompted by Google to allow access to your account from the site.  Once you have authenticated with the site, you'll be presented with a new appliance form:</p>
-            <p><img src="/img/site/new_appliance.png" alt="Create an admin account."></p>
-            <p>Enter a name for the appliance and leave it in the <strong>Public</strong> group for now.  Click on <strong>Create Appliance</strong> to add it to your account.</p>
-            <div class="bs-callout bs-callout-danger bs-callout-top">
-              <h4>Setup Two Factor Authentication!</h4>
-              <p>Now that you have an appliance running, take this moment and <a href="/docs#two-factor-authentication">setup two factor authentication</a> on {{ app_name }}.</p>
-            </div>
-            <h5>2. Coinbase Tokens</h5>
-            <p>Navigate to <a href="https://coinbase.com/signup?r=52a9c6bf937ab6453a00001e&amp;utm_campaign=user-referral&amp;src=referral-link">Coinbase</a> and sign up for a new account. Coinbase will email you a confirmation link which you will need to click to complete your login.</p>
-            <ul>
-              <li>To create an API key, click on the <strong>Login Pulldown</strong> at the top right, then click on <strong>Settings</strong>.</li>
-              <li>Click on the <strong>API</strong> tab at the top and then click on the <strong>New API Key</strong> button to the right.</li>
-              <li>You'll be prompted for a password or two factor auth key.  Enter whichever is applicable and click <strong>Verify</strong> to continue.</li>
-            </ul>
-            <p>When you create a new API key on Coinbase, you can specify what actions it can perform on your account.  Given Bitcoin is like money, you'll want to be very careful about the permissions you give external applications.  The {{ app_name }} appliance only needs access to <strong>creating new Bitcoin addresses</strong> for your account.  This allows it to create new addresses for instances, and watch payments to those addresses by individuals.</p>
-            <p>Proceed by ensuring <strong>HMAC (Key + Secret)</strong> is selected at the top.  Check the <strong>My Wallet</strong> checkbox and then check the <strong>addresses</strong> checkbox under permissions.  Verify there are no other method permissions checked, other than addresses:</p>
-            <p><img src="/img/site/coinbase_thumb.png" alt="Create an admin account."></p>
-            <p>Proceed with these steps to finish adding the Coinbase API keys to the appliance:</p>
-            <ul>
-              <li>Click on <strong>Create</strong> to create the new API key and then click on the <strong>Enable</strong> link back in the API key list.</li>
-              <li>Go check your email again for a verification code and copy it into your paste buffer.</li>
-              <li>Back on the Coinbase page, paste the code into the <strong>API Key details</strong> prompt and then click <strong>Verify</strong>.</li>
-              <li>Click on the <strong>Key Link</strong> just to the right of the <strong>enabled</strong> status for the key. You'll be prompted again for a password/2FA key.</li>
-              <li>Enter the appropriate credentials and then click <strong>Verify</strong> again.</li>
-              <li>Copy the <strong>API Key</strong> into your paste buffer and then switch back to the <strong>{{ app_name }} Virtual Appliance</strong> page.</li>
-              <li>Paste the key into the <strong>Coinbase Client ID</strong> field.  Switch back to the <strong>Coinbase</strong> page.</li>
-              <li>Copy the <strong>API Secret</strong> into your paste buffer and then switch back to the <strong>{{ app_name }} Virtual Appliance</strong> page.</li>
-              <li>Paste the key into the <strong>Coinbase Client Secret</strong> field.</li>
-              <li>Click on <strong>Save Configuration</strong> at the bottom.</li>
-            </ul>
-            <p>If you need to see the <strong>Coinbase Client Secret</strong> from the appliance page again, you can click on the <strong>eye</strong> icon next to the <strong>Client ID</strong> field.</p>
-            <h5>3. Ngrok Token</h5>
-            <p>Setting up the Ngrok token takes less than 30 seconds, given you have a Github account.  Begin by following these steps:</p>
-            <ul>
-              <li>Click the <strong>cog</strong> icon next to the <strong>Ngrok Token</strong> field.  The Ngrok site will appear.</li>
-              <li>Click on <strong>Login with Github</strong>.  Github will ask you to approve the Ngrok site's access to your account.</li>
-              <li>Once you've tied Ngrok to your Github account, you'll be presented with an <strong>auth token</strong> at the top of the page.</li>
-              <li>Click the <strong>copy</strong> button to copy the token and then switch back to the <strong>{{ app_name }} Virtual Appliance</strong> page.</li>
-              <li>Paste the token into the <strong>Ngrok Token</strong> field and then click <strong>Save Configuration</strong>.</li>
-            </ul>
-            <p>The Ngrok SSL tunnel will be established as soon as you've completed the rest of the configuration.  The lack of a warning indicator next to the <strong>Appliance</strong> tab will be your cue that the appliance is ready to serve instances.</p>
-            <h5>4. Image Cache Location</h5>
-            <p>The image cache location should be set to an IP address or hostname for the appliance. If you don't know the IP address or hostname of the appliance, you can disable the image cache by clicking on the floppy drive icon to the right of the input box.</p>
-            <p>Under normal conditions, the IP address will be auto-detected by the appliance's boot scripts.</p>
-            <h5>5. Service Location</h5>
-            <p>Use the map to set the physical location of the OpenStack cluster on top of which the appliance is running. If you want to be somewhat private about your exact location that's not a problem, but you should try to set the location to something reasonably close to where you live.  If you live in the country, set it to a few miles from your home.  If you live in the city, set it to a few blocks away.</p>
-            <p><img src="/img/site/service_location_thumb.png" alt="Service Location"></p>
-            <p>Click on <strong>Save Configuration</strong> at any time to save the current service location.</p>
-            <p>The location you set in the appliance will be used by the system to provide geolocation based instances to users.  Setting your location to something a large distance from your location will eventually be detected by the pool and its users.  The lesson here is, be mostly honest about your location or simply don't use the appliance to sell instances!</p>
-            <div class="bs-callout bs-callout-info bs-callout-top">
-              <h4>Successful Configuration?</h4>
-              <p>Once the warning indicators disappear from the the navigation bar on the left, the appliance should be ready to serve instances. Be sure to check any warnings for reasons why the appliance isn't ready.</p>
-            </div>
-          </div> 
+      <section id="third-party-apis" class="group">
+        <h3>Third Party APIs</h3>
+        <p>Wisdom's API space includes proxied third party APIs. As an example, this <span class="label label-info">GET</span> request mapped to the <strong>/eurorates</strong> path returns a default JSON response from the <strong>/latest</strong> path on the <a href=""><strong>fixer.io</strong></a> API:</p>
+        
+        <h5>GET //api.wisdom.sh/eurorates</h5>
+<pre>
+curl https://api.wisdom.sh/eurorates
 
-          <div id="" class="subgroup">
-            <h4></h4>
-          </div>           
+{  
+   "base":"EUR",
+   "date":"2017-09-01",
+   "rates":{  
+      "AUD":1.5021,
+      "BGN":1.9558,
+      "BRL":3.7423,
+      ...
+      "TRY":4.0981,
+      "USD":1.192,
+      "ZAR":15.418
+   }
+}
+</pre>
 
-      </section>    
+        <div id="api-status" class="subgroup">
+          <h4>API Status</h4>
+          <p>Wisdom maps third party APIs and credentials for those APIs onto the <strong>//api.wisdom.com/</strong> space. Use a <span class="label label-info">GET</span> request against the <strong>/api/</strong> service path to query the status of the third party API, and its proxy:</p>
+          <h5>GET /api/&lt;api_id&gt;/</h5>
+        </div>
+<pre>
+curl https://api.wisdom.sh/api/eurorates/
+
+{  
+   "methods":[  
+      "GET"
+   ],
+   "http_if_terminated":true,
+   "id":"eafaf153-21cb-4985-a274-2166f46b1d4f",
+   "hosts":[  
+      "api.wisdom.sh"
+   ],
+   "preserve_host":false,
+   "created_at":1502942747239,
+   "upstream_connect_timeout":60000,
+   "upstream_url":"https:\/\/api.fixer.io\/latest",
+   "uris":[  
+      "\/money"
+   ],
+   "upstream_send_timeout":60000,
+   "https_only":false,
+   "upstream_read_timeout":60000,
+   "strip_uri":true,
+   "name":"moneyapi",
+   "retries":5
+}
+</pre>
+      </section>
+
     </div>
-
+    
     <!--Nav Bar -->
     <nav class="col-xs-3 bs-docs-sidebar">
       <ul id="sidebar" class="nav nav-stacked" data-spy="affix" data-offset-top="120">
         <li>
-          <a href="#installing-the-appliance">Appliance Install</a>
+          <a href="#wisdoms-apis">Wisdom's APIs</a>
           <ul class="nav nav-stacked">
-            <li><a href="#creating-a-user-and-tenant">Create User/Tenant</a></li>
-            <li><a href="#create-a-keypair">Create SSH Keypair</a></li>
-            <li><a href="#create-a-flavor-for-the-appliance">Create a Flavor</a></li>
+            <li><a href="#service-apis">Service APIs</a></li>
+            <li><a href="#service-status">Service Status</a></li>
+            <li><a href="#api-add">Add API</a></li>
           </ul>
         </li> 
         <li>
-          <a href="#appliance-operation">Appliance Operation</a>
+          <a href="#third-party-apis">Third Party APIs</a>
           <ul class="nav nav-stacked">
-            <li><a href="#logging-into-the-appliance">Logging In</a></li>
-            <li><a href="#appliance-configuration">Configuration</a></li>
+            <li><a href="#api-status">API Status</a></li>
           </ul>
-        </li> 
+        </li>
       </ul>
     </nav>
   </div>  

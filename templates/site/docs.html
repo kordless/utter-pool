@@ -29,8 +29,8 @@
     <div class="col-xs-9">
       <section id="wisdoms-apis" class="group">
         <h3>Introduction</h3>
-        <p>Wisdom's service provides proxied API calls to various third party services. Eventually, these proxied API calls will carry identity and payment information, effectively implementing the <strong>402</strong> HTTP response code for proof of payment for a given call or credential.</p>
-        For now, current the deployment supports adding new APIs, proxying calls to those APIs, and providing data about the calls being made.  </p>
+        <p>Wisdom's service provides proxied API calls to various third party services. Eventually, these proxied API calls will carry identity and payment information, effectively implementing the <strong>402</strong> HTTP response code for proof of payment for a given API method call or credential.</p>
+        For now, the deployment supports adding new APIs, proxying calls to those APIs, and providing data about the calls being made on the system.  </p>
 
         <div id="service-apis" class="subgroup">
           <h4>Service APIs</h4>
@@ -59,12 +59,12 @@ curl -X GET https://api.wisdom.sh/api/status
 
         <div class="bs-callout bs-callout-warning bs-callout-top">
           <h4>Authentication</h4>
-          <p>Service endpoints on the <strong>/api/</strong> path do not require authentication. However, some endpoints may require payment depending on demand for a given API resource. Endpoints on paths outside the <strong>/api/</strong> service may or may not require authentication.</p>
+          <p>Service endpoints on the <strong>/api/</strong> path do not require authentication. However, some endpoints may require payment depending on demand for a given API resource. Endpoints on paths outside the <strong>/api/</strong> service may require authentication or payment.</p>
         </div>
 
         <div id="api-add" class="subgroup">
           <h4>Add API</h4>
-          <p>Wisdom proxies API endpoints which are added to the system by users. To add an API to the system, create a <span class="label label-warning">POST</span> request, including the desired <strong>upstream_url</strong> to proxy and the desired <strong>uri</strong> to map onto the <strong>//api.wisdom.sh/</strong> space.</p>
+          <p>Wisdom proxies API endpoints which are added to the system by users. To add an API to the system, create a <span class="label label-warning">POST</span> request, including the desired <strong>upstream_url</strong> to proxy and the desired <strong>uri</strong> to map onto the <strong>//api.wisdom.sh/</strong> namespace.</p>
           <h5>POST /api/</h5>
         </div>
 <pre>
@@ -91,8 +91,8 @@ curl -X POST \
       </section>
 
       <section id="third-party-apis" class="group">
-        <h3>Third Party APIs</h3>
-        <p>Wisdom's API space includes proxied third party APIs. As an example, this <span class="label label-info">GET</span> request mapped to the <strong>/eurorates</strong> path returns a default JSON response from the <strong>/latest</strong> path on the <a href=""><strong>fixer.io</strong></a> API:</p>
+        <h3>Third Party API Endpoints</h3>
+        <p>Wisdom's API space includes proxied third party API endpoints which have been added to the system. As an example, this <span class="label label-info">GET</span> request uses the <strong>/eurorates</strong> path and returns a default JSON response from the <strong>/latest</strong> path on the <strong><a href="http://fixer.io/">fixer.io</a></strong> API:</p>
         
         <h5>GET //api.wisdom.sh/eurorates</h5>
 <pre>
@@ -115,7 +115,7 @@ curl https://api.wisdom.sh/eurorates
 
         <div id="api-status" class="subgroup">
           <h4>API Status</h4>
-          <p>Wisdom maps third party APIs and credentials for those APIs onto the <strong>//api.wisdom.com/</strong> space. Use a <span class="label label-info">GET</span> request against the <strong>/api/</strong> service path to query the status of the third party API and the proxy serving it:</p>
+          <p>Use a <span class="label label-info">GET</span> request against the <strong>/api/</strong> service path to query the status of the third party API and the proxy serving it:</p>
           <h5>GET /api/&lt;api_id&gt;/</h5>
         </div>
 <pre>
@@ -145,6 +145,11 @@ curl https://api.wisdom.sh/api/eurorates/
    "retries":5
 }
 </pre>
+
+        <div class="bs-callout bs-callout-info bs-callout-top">
+          <h4>Versioning</h4>
+          <p>Versioning of APIs will be addressed in the near future.</p>
+        </div>
       </section>
 
     </div>

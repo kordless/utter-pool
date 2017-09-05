@@ -50,7 +50,7 @@
     <div class="collapse navbar-collapse" id="navigation">
       <ul class="nav navbar-nav navbar-right">
         <li><a href="/docs/">Docs</a></li>
-        <li><a href="https://github.com/wisdomproxy/">Github</a></li>
+        <li><a href="https://github.com/wisdomapi/">Github</a></li>
         <li><a target="_blank" href="/blog">Blog</a></li>
 
       </ul>
@@ -76,8 +76,8 @@
           <div class="sub-heading">
             <h5>Wisdom's microservice-architected proxy helps you add identity and micropayment revenue to your favorite APIs in seconds with minimal installation and overhead.</h5>
             <h5>Think &lt;<a href="https://httpstatuses.com/402">402</a> payment required&gt; using the blockchain.</h5>
-            <button id="nav-login" class="btn btn-warning">Login</button>
-            <button id="nav-login" class="btn btn-success">Add API</button>
+            <button id="hero-login-button" class="btn btn-warning">Login</button>
+            <button id="hero-docs-button" class="btn btn-success">Add API</button>
           </div>
         </div>
         </div>
@@ -203,7 +203,7 @@
       <div class="sub-heading">
         <h5 style="margin-top:0;">Register your Github or Google account for early access!</h5>
       </div>
-      <button id="nav-login" class="btn btn-warning">Register</button>
+      <button id="ready-login-button" class="btn btn-warning">Register</button>
     </div>
   </div>
 </div>
@@ -223,8 +223,8 @@
 					<h5>COMPANY</h5>
 					<ul class="no-padding">
 						<li><a href="/about">About</a></li>
-						<li><a href="https://twitter.com/deploywisdom" target="_blank">Twitter</a></li>
-						<li><a href="https://github.com/wisdomproxy/">Code</a></li>
+						<li><a href="https://twitter.com/wisdomapi" target="_blank">Twitter</a></li>
+						<li><a href="https://github.com/wisdomapi/">Github</a></li>
 					</ul>
 				</div>
 				<div class="col-sm-2 col-xs-6 text-left mobile-text-center">
@@ -239,7 +239,7 @@
 			<div class="col-xs-12  mobile-text-center">
 				<div class="col-md-12 no-padding">
 					<div class="col-md-6">
-						<span>Copyright Wisdom, 2017. All Rights Reserved.</span>
+						<span>&copy; 2017 Wisdom, Inc. All Rights Reserved.</span>
 					</div>
 				</div>
 			</div>
@@ -271,6 +271,18 @@
 
     $(document).ready( function(e){
       $('.bg-img-1').show();
+      
+      // buttons
+      $('#hero-login-button').on('click', function(e) { 
+        window.location = "/login"; 
+      });
+      $('#ready-login-button').on('click', function(e) { 
+        window.location = "/login"; 
+      });
+      $('#hero-docs-button').on('click', function(e) { 
+        window.location = "/docs/#api-add"; 
+      });
+
     });
     
     </script>

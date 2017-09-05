@@ -1,0 +1,7 @@
+{  
+  "type": "GET",
+  "status": "200",
+  "view": "https://wisdom.sh/api/status",
+  "timestamp": "2017-09-01 12:00:00",
+  "qps": "2.0"
+}

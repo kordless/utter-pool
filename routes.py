@@ -1,5 +1,5 @@
 from webapp2_extras.routes import RedirectRoute
-from web.handlers import sitehandlers, adminhandlers, userhandlers, bloghandlers, emailhandlers, taskhandlers
+from web.handlers import sitehandlers, adminhandlers, userhandlers, bloghandlers, emailhandlers, taskhandlers, apihandlers
 # from web.handlers import foo
 
 secure_scheme = 'https'
@@ -9,7 +9,6 @@ _routes = [
 	RedirectRoute('/', sitehandlers.HomeRequestHandler, name='home', strict_slash=True),
 	RedirectRoute('/features/', sitehandlers.FeaturesHandler, name='features', strict_slash=True),
 	RedirectRoute('/docs/', sitehandlers.DocsHandler, name='docs', strict_slash=True),
-	RedirectRoute('/apis/', sitehandlers.APIsHandler, name='projects', strict_slash=True),
 	RedirectRoute('/terms/', sitehandlers.TermsHandler, name='terms', strict_slash=True),
 	RedirectRoute('/privacy/', sitehandlers.PrivacyHandler, name='privacy', strict_slash=True),
 	RedirectRoute('/about/', sitehandlers.AboutHandler, name='about', strict_slash=True),
@@ -22,6 +21,10 @@ _routes = [
 	RedirectRoute('/settings/', userhandlers.SettingsHandler, name='account-settings', strict_slash=True),
 	RedirectRoute('/settings/tfa', userhandlers.TwoFactorSettingsHandler, name='account-tfa', strict_slash=True),
 	RedirectRoute('/status/', userhandlers.StatusHandler, name='account-status', strict_slash=True),
+
+	# apis
+	RedirectRoute('/api/v1/status', apihandlers.StatusHandler, name='v1-status', strict_slash=True),
+	RedirectRoute('/api/status', apihandlers.StatusHandler, name='status', strict_slash=True),
 
 	# tasks
 	RedirectRoute('/tasks/sendinvite/', emailhandlers.SendEmailInviteHandler, name='tasks-sendinvite', strict_slash=True),
